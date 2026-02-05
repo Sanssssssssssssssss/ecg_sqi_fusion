@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5a035b3a-c870-41af-802b-10e0d93820c5" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/ecg_sqi_fusion.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/data/download_dbs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/data/download_nstdb.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/data/make_manifest_raw.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/data/make_split_seta.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/data/plot_baseline_record.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/noise/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/noise/dower.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/noise/make_12lead_noise.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/noise/pca_orthogonal.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/preprocess/qrs_detect.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/preprocess/resample.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/sqi/sqi_7.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/paths.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExportToHTMLSettings">
+    <option name="printScope" value="1" />
+    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/exportToHTML" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="373eEzjSwMAUIlLbPSSOfA3xK4S" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.check_noise_corr.executor": "Run",
+    "Python.download_dbs.executor": "Run",
+    "Python.download_nstdb.executor": "Run",
+    "Python.grep_quality_in_headers.executor": "Run",
+    "Python.inspect_labels.executor": "Run",
+    "Python.make_manifest_raw.executor": "Run",
+    "Python.make_split_seta.executor": "Run",
+    "Python.plot_baseline_record.executor": "Run",
+    "Python.stepA1_sqi_diagnostics.executor": "Run",
+    "Python.stepA_record_baseline.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-41e8cd69c857-64d779b69b7a-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.26927.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="5a035b3a-c870-41af-802b-10e0d93820c5" name="更改" comment="" />
+      <created>1766136074228</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1766136074228</updated>
+      <workItem from="1766136075298" duration="24049000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ecg_sqi_fusion$grep_quality_in_headers.coverage" NAME="grep_quality_in_headers 覆盖结果" MODIFIED="1766143102396" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/experiments" />
+    <SUITE FILE_PATH="coverage/ecg_sqi_fusion$inspect_labels.coverage" NAME="inspect_labels 覆盖结果" MODIFIED="1766142441124" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/experiments" />
+    <SUITE FILE_PATH="coverage/ecg_sqi_fusion$download_nstdb.coverage" NAME="download_nstdb 覆盖结果" MODIFIED="1766141309045" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/data" />
+    <SUITE FILE_PATH="coverage/ecg_sqi_fusion$stepA_record_baseline.coverage" NAME="stepA_record_baseline 覆盖结果" MODIFIED="1766190994544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/experiments" />
+    <SUITE FILE_PATH="coverage/ecg_sqi_fusion$download_dbs.coverage" NAME="download_dbs 覆盖结果" MODIFIED="1766140771443" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/data" />
+    <SUITE FILE_PATH="coverage/ecg_sqi_fusion$make_manifest_raw.coverage" NAME="make_manifest_raw 覆盖结果" MODIFIED="1766175321698" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/data" />
+    <SUITE FILE_PATH="coverage/ecg_sqi_fusion$stepA1_sqi_diagnostics.coverage" NAME="stepA1_sqi_diagnostics 覆盖结果" MODIFIED="1766191441107" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/experiments" />
+    <SUITE FILE_PATH="coverage/ecg_sqi_fusion$check_noise_corr.coverage" NAME="check_noise_corr 覆盖结果" MODIFIED="1766183657283" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/experiments" />
+  </component>
+</project>
