@@ -16,6 +16,7 @@ from scipy.signal import butter, filtfilt
 
 from src.utils.paths import project_root
 
+# change parameter
 RECORD_ID = "1007823"   # <- change id here
 LEAD_NAME = "I"        # <- e.g. "II", "V2", ...
 SECONDS = 10            # <- plot duration (sec)
