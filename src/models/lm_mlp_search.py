@@ -33,7 +33,7 @@ MODEL_SELECT_METRIC = "val_acc"  # paper uses val accuracy; also store AUC
 
 # Data
 FEATURES_PARQUET = "record84_norm.parquet"   # from Task 1.6
-SPLIT_CSV = "split_seta_seed0.csv"
+SPLIT_CSV = "split_seta_seed0_balanced.csv"
 
 # Training config (paper)
 EPOCHS_MAX = 100
@@ -42,7 +42,7 @@ STOP_GRAD = 1e-5
 
 # Val early stop for final model (your requirement: train with val preventing overfit)
 FINAL_PATIENCE = 15
-THRESH = 0.5  # label uses 0/1; predict proba >0.5 -> 1
+THRESH = 0.7  # label uses 0/1; predict proba >0.5 -> 1
 
 # LM damping behavior (stable defaults)
 MU_INIT = 1e-3

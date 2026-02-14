@@ -1,40 +1,40 @@
-# src/noise/dower.py
+# src/augment/noise/dower.py
 from __future__ import annotations
+
 import numpy as np
 
-# Dower transform matrix: s = D v
-# s = [V1 V2 V3 V4 V5 V6 I II]^T , v = [X Y Z]^T
-DOWER_D = np.array([
-    [-0.515,  0.157, -0.917],  # V1
-    [ 0.044,  0.164, -1.387],  # V2
-    [ 0.882,  0.098, -1.277],  # V3
-    [ 1.213,  0.127, -0.601],  # V4
-    [ 1.125,  0.127, -0.086],  # V5
-    [ 0.831,  0.076,  0.230],  # V6
-    [ 0.632, -0.235,  0.059],  # I
-    [ 0.235,  1.066, -0.132],  # II
-], dtype=float)
 
-def vcg_to_8lead(vcg_xyz: np.ndarray) -> np.ndarray:
-    """
-    vcg_xyz: (N, 3) -> returns (N, 8) in order [V1..V6, I, II]
-    """
-    assert vcg_xyz.ndim == 2 and vcg_xyz.shape[1] == 3
-    return vcg_xyz @ DOWER_D.T
+LEADS_12 = ["I", "II", "III", "aVR", "aVL", "aVF", "V1", "V2", "V3", "V4", "V5", "V6"]
 
-def lead8_to_lead12(v8: np.ndarray) -> np.ndarray:
-    """
-    v8: (N, 8) in order [V1..V6, I, II]
-    returns (N, 12) in standard order:
-    [I, II, III, aVR, aVL, aVF, V1, V2, V3, V4, V5, V6]
-    """
-    assert v8.ndim == 2 and v8.shape[1] == 8
-    V1,V2,V3,V4,V5,V6,I,II = [v8[:,i] for i in range(8)]
-    III = II - I
-    aVR = -(I + II) / 2.0
-    aVL = I - II / 2.0
-    aVF = II - I / 2.0
-    return np.column_stack([I, II, III, aVR, aVL, aVF, V1, V2, V3, V4, V5, V6])
 
-def vcg_to_12lead(vcg_xyz: np.ndarray) -> np.ndarray:
-    return lead8_to_lead12(vcg_to_8lead(vcg_xyz))
+# A commonly used inverse Dower matrix mapping orthogonal XYZ -> 12-lead ECG.
+# Shape: (12, 3)
+# Reference: widely used "inverse Dower transform" coefficients (approx).
+_IDOWER_12x3 = np.array(
+    [
+        [ 0.156, -0.010, -0.172],  # I
+        [ 0.057, -0.019, -0.106],  # II
+        [-0.099, -0.009,  0.066],  # III
+        [-0.231,  0.019,  0.278],  # aVR
+        [ 0.152,  0.010, -0.112],  # aVL
+        [ 0.080, -0.029, -0.178],  # aVF
+        [-0.239, -0.310,  0.246],  # V1
+        [-0.122, -0.231,  0.174],  # V2
+        [ 0.015, -0.151,  0.106],  # V3
+        [ 0.181, -0.071,  0.041],  # V4
+        [ 0.290, -0.010, -0.010],  # V5
+        [ 0.243,  0.044, -0.022],  # V6
+    ],
+    dtype=np.float64
+)
+
+
+def dower_3_to_12(noise3: np.ndarray) -> np.ndarray:
+    """
+    Map (N,3) orthogonal leads -> (N,12) leads via inverse Dower matrix.
+    """
+    x = np.asarray(noise3, dtype=np.float64)
+    if x.ndim != 2 or x.shape[1] != 3:
+        raise ValueError(f"noise3 must be (N,3), got {x.shape}")
+    y12 = x @ _IDOWER_12x3.T  # (N,12)
+    return y12

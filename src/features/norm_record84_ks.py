@@ -18,7 +18,7 @@ STD_EPS = 1e-8   # avoid std=0
 def main() -> None:
     root = project_root()
 
-    split_csv = root / "artifacts" / "splits" / "split_seta_seed0.csv"
+    split_csv = root / "artifacts" / "splits" / "split_seta_seed0_balanced.csv"
     in_parquet = root / "artifacts" / "features" / "record84.parquet"
     out_dir = root / "artifacts" / "features"
     out_dir.mkdir(parents=True, exist_ok=True)

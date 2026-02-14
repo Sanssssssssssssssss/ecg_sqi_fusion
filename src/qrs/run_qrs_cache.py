@@ -32,7 +32,8 @@ def load_sig125(record_id: str, resampled_dir: Path) -> tuple[np.ndarray, int, l
 
 def main() -> None:
     root = project_root()
-    split_csv = root / "artifacts" / "splits" / "split_seta_seed0.csv"
+    # split_csv = root / "artifacts" / "splits" / "split_seta_seed0.csv"
+    split_csv = root / "artifacts" / "splits" / "split_seta_seed0_balanced.csv"
     resampled_dir = root / "artifacts" / "resampled_125"
     out_dir = root / "artifacts" / "qrs"
     out_dir.mkdir(parents=True, exist_ok=True)

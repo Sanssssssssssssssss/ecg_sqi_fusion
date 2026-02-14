@@ -4,26 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5a035b3a-c870-41af-802b-10e0d93820c5" name="更改" comment="First edition of project">
-      <change afterPath="$PROJECT_DIR$/src/data/raw_qc_seta.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/features/make_record84.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/features/norm_record84_ks.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/features/qc_norm_record84_ks.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/features/qc_record84.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/features/sqi.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/lm_mlp.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/lm_mlp_search.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/preprocess/qc_resample_125.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/preprocess/qc_resample_alias_check.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/preprocess/resample_seta_125.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/qrs/detectors.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/qrs/qc_qrs_cache.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/qrs/run_qrs_cache.py" afterDir="false" />
+    <list default="true" id="5a035b3a-c870-41af-802b-10e0d93820c5" name="更改" comment="sqi and qrs detector, and the first edition of the mlp">
+      <change afterPath="$PROJECT_DIR$/src/noise/pca.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/noise/qc_noisy_cases.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/preprocess/resample_125.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/run_all.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/plot_baseline_record.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/plot_baseline_record.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/preprocess/qrs_detect.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/preprocess/resample.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sqi/sqi_7.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/make_record84.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/make_record84.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/norm_record84_ks.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/norm_record84_ks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/lm_mlp_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/lm_mlp_search.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/noise/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/noise/make_balanced_noisy_cases.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/noise/dower.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/noise/dower.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/noise/make_12lead_noise.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/noise/pca_orthogonal.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/preprocess/resample_seta_125.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/preprocess/resample_seta_125.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/qrs/run_qrs_cache.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/qrs/run_qrs_cache.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,18 +39,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Sanssssssssssssssss"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Sanssssssssssssssss&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Sanssssssssssssssss/ecg_sqi_fusion.git",
-    "accountId": "cc8d45aa-b650-4c4f-8cd8-492a7855c7ab"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Sanssssssssssssssss/ecg_sqi_fusion.git&quot;,
+    &quot;accountId&quot;: &quot;cc8d45aa-b650-4c4f-8cd8-492a7855c7ab&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -76,18 +71,23 @@
     "Python.download_nstdb.executor": "Run",
     "Python.grep_quality_in_headers.executor": "Run",
     "Python.inspect_labels.executor": "Run",
+    "Python.lm_mlp_search.executor": "Run",
+    "Python.make_balanced_noisy_cases.executor": "Run",
     "Python.make_manifest_raw.executor": "Run",
     "Python.make_record84.executor": "Run",
     "Python.make_split_seta.executor": "Run",
     "Python.norm_record84_ks.executor": "Run",
     "Python.plot_baseline_record.executor": "Run",
+    "Python.qc_noisy_cases.executor": "Run",
     "Python.qc_norm_record84_ks.executor": "Run",
     "Python.qc_qrs_cache.executor": "Run",
     "Python.qc_record84.executor": "Run",
     "Python.qc_resample_125.executor": "Run",
     "Python.qc_resample_alias_check.executor": "Run",
     "Python.raw_qc_seta.executor": "Run",
+    "Python.resample_125.executor": "Run",
     "Python.resample_seta_125.executor": "Run",
+    "Python.run_all.executor": "Run",
     "Python.run_qrs_cache.executor": "Run",
     "Python.sqi.executor": "Run",
     "Python.stepA1_sqi_diagnostics.executor": "Run",
@@ -128,7 +128,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770298998662</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="sqi and qrs detector, and the first edition of the mlp">
+      <option name="closed" value="true" />
+      <created>1770493989200</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1770493989200</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -147,7 +155,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="First edition of project" />
-    <option name="LAST_COMMIT_MESSAGE" value="First edition of project" />
+    <MESSAGE value="sqi and qrs detector, and the first edition of the mlp" />
+    <option name="LAST_COMMIT_MESSAGE" value="sqi and qrs detector, and the first edition of the mlp" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ecg_sqi_fusion$grep_quality_in_headers.coverage" NAME="grep_quality_in_headers 覆盖结果" MODIFIED="1766143102396" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/experiments" />
