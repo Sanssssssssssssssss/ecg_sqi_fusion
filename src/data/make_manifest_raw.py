@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
+import logging
 import pandas as pd
 import wfdb
 
@@ -18,6 +20,14 @@ LABEL_FILES = {
     "unacceptable": "RECORDS-unacceptable",
 }
 
+logger = logging.getLogger(__name__)
+
+def _setup_logging(verbose: bool = False) -> None:
+    level = logging.DEBUG if verbose else logging.INFO
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+    )
 
 @dataclass(frozen=True)
 class ChallengePaths:
@@ -163,8 +173,8 @@ def manifest_challenge_seta(challenge_root: Path) -> tuple[pd.DataFrame, pd.Data
     df_unknown = df_all[df_all["quality_record"] == "unknown"].copy()
 
     if unknown_ids:
-        print(f"[WARN] set-a labels do not cover all RECORDS: unknown={len(unknown_ids)}")
-        print("       examples:", unknown_ids[:20])
+        logger.warning("set-a labels do not cover all RECORDS: unknown=%d", len(unknown_ids))
+        logger.warning("unknown examples: %s", unknown_ids[:20])
 
     return df_all, df_unknown
 
@@ -190,32 +200,95 @@ def manifest_nstdb(nstdb_root: Path) -> pd.DataFrame:
         )
     return pd.DataFrame(rows)
 
+def _outputs_exist(out_dir: Path) -> bool:
+    out_c = out_dir / "manifest_challenge2011_seta.csv"
+    out_u = out_dir / "manifest_challenge2011_seta_unknown.csv"
+    out_n = out_dir / "manifest_nstdb_raw.csv"
 
-def main() -> None:
+    def ok(p: Path) -> bool:
+        return p.exists() and p.is_file() and p.stat().st_size > 0
+
+    return ok(out_c) and ok(out_u) and ok(out_n)
+
+def run(params: dict[str, Any]) -> dict[str, Any]:
+    """
+    Pipeline-callable entrypoint.
+
+    params (optional):
+      - verbose: bool
+      - force: bool
+      - artifacts_dir: str (default "artifacts")
+      - challenge_root: str (default project_root()/data/physionet/challenge-2011)
+      - nstdb_root: str (default project_root()/data/physionet/nstdb)
+
+    Returns: {"step": "...", "skipped": bool, "outputs": [..]}
+    """
+    verbose = bool(params.get("verbose", False))
+    force = bool(params.get("force", False))
+    _setup_logging(verbose)
+
     root = project_root()
 
-    challenge_root = root / "data" / "physionet" / "challenge-2011"
-    nstdb_root = root / "data" / "physionet" / "nstdb"
+    # default roots (no CLI pain)
+    challenge_root = params.get("challenge_root")
+    if not challenge_root:
+        challenge_root = root / "data" / "physionet" / "challenge-2011"
+    else:
+        challenge_root = Path(str(challenge_root))
 
-    out_dir = root / "artifacts" / "manifests"
+    nstdb_root = params.get("nstdb_root")
+    if not nstdb_root:
+        nstdb_root = root / "data" / "physionet" / "nstdb"
+    else:
+        nstdb_root = Path(str(nstdb_root))
+
+    artifacts_dir = params.get("artifacts_dir")
+    if not artifacts_dir:
+        artifacts_dir = root / "artifacts"
+    else:
+        artifacts_dir = Path(str(artifacts_dir))
+
+    out_dir = Path(artifacts_dir) / "manifests"
     out_dir.mkdir(parents=True, exist_ok=True)
-
-    df_c, df_u = manifest_challenge_seta(challenge_root)
-    df_n = manifest_nstdb(nstdb_root)
 
     out_c = out_dir / "manifest_challenge2011_seta.csv"
     out_u = out_dir / "manifest_challenge2011_seta_unknown.csv"
     out_n = out_dir / "manifest_nstdb_raw.csv"
 
+    if (not force) and _outputs_exist(out_dir):
+        logger.info("manifest_raw: outputs exist -> skip (set force=True to rerun)")
+        return {"step": "manifest_raw", "skipped": True, "outputs": [str(out_c), str(out_u), str(out_n)]}
+
+    logger.info("manifest_raw: challenge_root=%s", challenge_root)
+    logger.info("manifest_raw: nstdb_root=%s", nstdb_root)
+    logger.info("manifest_raw: out_dir=%s", out_dir)
+
+    df_c, df_u = manifest_challenge_seta(Path(challenge_root))
+    df_n = manifest_nstdb(Path(nstdb_root))
+
     df_c.to_csv(out_c, index=False)
     df_u.to_csv(out_u, index=False)
     df_n.to_csv(out_n, index=False)
 
-    print("Wrote:", out_c, "rows:", len(df_c))
-    print(df_c["quality_record"].value_counts())
-    print("Wrote:", out_u, "rows:", len(df_u))
-    print("Wrote:", out_n, "rows:", len(df_n))
+    # concise logs
+    logger.info("Wrote: %s rows=%d", out_c, len(df_c))
+    logger.info("label_counts: %s", df_c["quality_record"].value_counts(dropna=False).to_dict())
+    logger.info("Wrote: %s rows=%d", out_u, len(df_u))
+    logger.info("Wrote: %s rows=%d", out_n, len(df_n))
 
+    return {"step": "manifest_raw", "skipped": False, "outputs": [str(out_c), str(out_u), str(out_n)]}
+
+
+def main() -> None:
+    root = project_root()
+    params = {
+        "challenge_root": str(root / "data" / "physionet" / "challenge-2011"),
+        "nstdb_root": str(root / "data" / "physionet" / "nstdb"),
+        "artifacts_dir": str(root / "artifacts"),
+        "verbose": False,
+        "force": False,
+    }
+    run(params)
 
 
 if __name__ == "__main__":

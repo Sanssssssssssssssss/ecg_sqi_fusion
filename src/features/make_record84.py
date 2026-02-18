@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
+import logging
 import numpy as np
 import pandas as pd
 
@@ -11,6 +13,15 @@ from src.features.sqi import (
     sqi_bSQI_li2008_global,
     sqi_iSQI_li2008_global_per_lead,
 )
+
+logger = logging.getLogger(__name__)
+
+def _setup_logging(verbose: bool = False) -> None:
+    level = logging.DEBUG if verbose else logging.INFO
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+    )
 
 # =======================
 # Fixed configuration
@@ -28,7 +39,7 @@ WELCH_KW = dict(
 )
 
 FLATLINE_EPS = 1e-4
-PRINT_N = 100
+PRINT_N = 5
 PRINT_ALL_LEADS = True
 
 # iSQI uses ONE detector across all leads
@@ -88,23 +99,76 @@ def print_sample_block(i: int, rid: str, y: int, row: dict, leads: list[str]) ->
             f"{row[f'{ld}__basSQI']:6.3f}"
         )
 
+def _outputs_exist(out_dir: Path) -> bool:
+    """
+    Minimal skip check: record84.parquet exists and non-empty.
+    (lead7.parquet is optional but we include it if you want.)
+    """
+    p1 = out_dir / "record84.parquet"
+    p2 = out_dir / "lead7.parquet"
+    if not (p1.exists() and p1.is_file() and p1.stat().st_size > 0):
+        return False
+    if not (p2.exists() and p2.is_file() and p2.stat().st_size > 0):
+        return False
+    return True
 
+def run(params: dict[str, Any]) -> dict[str, Any]:
+    """
+    Pipeline-callable entrypoint.
 
-def main() -> None:
+    params (optional):
+      - verbose: bool
+      - force: bool
+      - split_csv: str (default artifacts/splits/split_seta_seed0_balanced.csv)
+      - resampled_dir: str (default artifacts/resampled_125)
+      - qrs_dir: str (default artifacts/qrs)
+      - out_dir: str (default artifacts/features)
+      - print_n: int (default PRINT_N)
+      - print_all_leads: bool (default PRINT_ALL_LEADS)
+      - isqi_use: str ("r1" or "r2", default ISQI_USE)
+
+    Returns dict with outputs list and skipped bool.
+    """
+    verbose = bool(params.get("verbose", False))
+    force = bool(params.get("force", False))
+    _setup_logging(verbose)
+
     root = project_root()
 
-    split_csv = root / "artifacts" / "splits" / "split_seta_seed0_balanced.csv"
-    resampled_dir = root / "artifacts" / "resampled_125"
-    qrs_dir = root / "artifacts" / "qrs"
-    out_dir = root / "artifacts" / "features"
+    split_csv = params.get("split_csv") or (root / "artifacts" / "splits" / "split_seta_seed0_balanced.csv")
+    resampled_dir = params.get("resampled_dir") or (root / "artifacts" / "resampled_125")
+    qrs_dir = params.get("qrs_dir") or (root / "artifacts" / "qrs")
+    out_dir = params.get("out_dir") or (root / "artifacts" / "features")
+
+    split_csv = Path(str(split_csv))
+    resampled_dir = Path(str(resampled_dir))
+    qrs_dir = Path(str(qrs_dir))
+    out_dir = Path(str(out_dir))
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"split_csv: {split_csv}")
-    print(f"resampled_125: {resampled_dir}")
-    print(f"qrs cache: {qrs_dir}")
-    print(f"Welch fixed: {WELCH_KW}")
-    print(f"flatline_eps={FLATLINE_EPS}, iSQI_use={ISQI_USE}")
-    print(f"bSQI/iSQI = Li2008 GLOBAL (full 10s segment), no window, no median")
+    # optional overrides (keep defaults)
+    global PRINT_N, PRINT_ALL_LEADS, ISQI_USE
+    if "print_n" in params and params["print_n"] is not None:
+        PRINT_N = int(params["print_n"])
+    if "print_all_leads" in params and params["print_all_leads"] is not None:
+        PRINT_ALL_LEADS = bool(params["print_all_leads"])
+    if "isqi_use" in params and params["isqi_use"] is not None:
+        ISQI_USE = str(params["isqi_use"])
+
+    if (not force) and _outputs_exist(out_dir):
+        logger.info("record84: outputs exist -> skip (set force=True to rerun)")
+        return {
+            "step": "record84",
+            "skipped": True,
+            "outputs": [str(out_dir / "record84.parquet"), str(out_dir / "lead7.parquet")],
+        }
+
+    logger.info("split_csv: %s", split_csv)
+    logger.info("resampled_125: %s", resampled_dir)
+    logger.info("qrs cache: %s", qrs_dir)
+    logger.info("Welch fixed: %s", WELCH_KW)
+    logger.info("flatline_eps=%s, iSQI_use=%s", FLATLINE_EPS, ISQI_USE)
+    logger.info("bSQI/iSQI = Li2008 GLOBAL (full 10s segment), no window, no median")
 
     df_split = pd.read_csv(split_csv)
     record_ids = df_split["record_id"].astype(str).tolist()
@@ -137,7 +201,7 @@ def main() -> None:
         tol_samp = int(round(tol_ms * FS / 1000.0))
         if tol_ms_seen is None:
             tol_ms_seen = tol_ms
-            print(f"beat_match_tol_ms (from qrs npz) = {tol_ms_seen}ms -> {tol_samp} samples")
+            logger.info("beat_match_tol_ms (from qrs npz) = %dms -> %d samples", tol_ms_seen, tol_samp)
 
         # iSQI (Li2008 global): use one detector across leads
         r_for_isqi = r1_all if ISQI_USE == "r1" else r2_all
@@ -148,8 +212,6 @@ def main() -> None:
             x = sig12[:, li]
 
             iSQI = float(iSQI_list[li])
-
-            # bSQI (Li2008 global): use BOTH detectors on same lead (symmetric union ratio)
             bSQI = float(sqi_bSQI_li2008_global(r1_all[li], r2_all[li], tol_samp))
 
             pSQI = float(sqi_pSQI(x, fs=FS, welch_kwargs=WELCH_KW))
@@ -175,10 +237,11 @@ def main() -> None:
         row.update({n: float(v) for n, v in zip(feature_names, feats)})
         feat_rows.append(row)
 
+        # keep your original printing behavior (do not change functionality)
         if i <= PRINT_N and PRINT_ALL_LEADS:
             print_sample_block(i, rid, y, row, LEADS_12)
         if i % 200 == 0:
-            print(f"processed {i}/{len(record_ids)}")
+            logger.info("processed %d/%d", i, len(record_ids))
 
     df_record84 = pd.DataFrame(feat_rows)
     df_lead7 = pd.DataFrame(lead_rows)
@@ -189,19 +252,35 @@ def main() -> None:
     df_record84.to_parquet(out_record84, index=False)
     df_lead7.to_parquet(out_lead7, index=False)
 
-    print("\n=== Saved features ===")
-    print(f"record84 -> {out_record84} rows={len(df_record84)} cols={df_record84.shape[1]}")
-    print(f"lead7    -> {out_lead7} rows={len(df_lead7)} cols={df_lead7.shape[1]}")
+    logger.info("=== Saved features ===")
+    logger.info("record84 -> %s rows=%d cols=%d", out_record84, len(df_record84), df_record84.shape[1])
+    logger.info("lead7    -> %s rows=%d cols=%d", out_lead7, len(df_lead7), df_lead7.shape[1])
 
     nan_any = {k: v for k, v in nan_count.items() if v > 0}
     if nan_any:
         top = sorted(nan_any.items(), key=lambda kv: kv[1], reverse=True)[:20]
-        print("\n[WARN] NaN/inf features found. Top20:")
+        logger.warning("NaN/inf features found. Top20:")
         for k, v in top:
-            print(f"  {k}: {v}")
+            logger.warning("  %s: %d", k, v)
     else:
-        print("\nNaN check: OK (no NaN/inf in any feature)")
+        logger.info("NaN check: OK (no NaN/inf in any feature)")
 
+    return {
+        "step": "record84",
+        "skipped": False,
+        "outputs": [str(out_record84), str(out_lead7)],
+    }
+
+def main() -> None:
+    params = {
+        "verbose": False,
+        "force": False,
+        # 可选：调小打印
+        "print_n": 5,
+        "print_all_leads": True,
+        # "isqi_use": "r1",
+    }
+    run(params)
 
 if __name__ == "__main__":
     main()

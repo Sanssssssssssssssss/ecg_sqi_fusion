@@ -26,16 +26,18 @@ class LMMLP:
     Targets y are 0/1 (you will map -1->0 outside).
     """
 
-    def __init__(self, J: int, device: torch.device, dtype: torch.dtype = torch.float64, seed: int = 0):
+    def __init__(self, J: int, device: torch.device, dtype: torch.dtype = torch.float64, seed: int = 0, D: int = 84):
         self.J = int(J)
         self.device = device
         self.dtype = dtype
+        self.D = int(D)
 
         g = torch.Generator(device="cpu")
         g.manual_seed(seed)
 
         # Xavier-ish init
-        W1 = torch.randn(self.J, 84, generator=g, dtype=torch.float64) * np.sqrt(2.0 / (84 + self.J))
+        D = self.D
+        W1 = torch.randn(self.J, D, generator=g, dtype=torch.float64) * np.sqrt(2.0 / (D + self.J))
         b1 = torch.zeros(self.J, dtype=torch.float64)
         w2 = torch.randn(self.J, generator=g, dtype=torch.float64) * np.sqrt(2.0 / (self.J + 1))
         b2 = torch.zeros(1, dtype=torch.float64)
@@ -52,7 +54,7 @@ class LMMLP:
 
     def forward(self, X: torch.Tensor) -> torch.Tensor:
         """
-        X: (N,84)
+        X: (N,D)
         return yhat: (N,)
         """
         a1 = X @ self.W1.t() + self.b1  # (N,J)
@@ -62,8 +64,8 @@ class LMMLP:
         return y
 
     def num_params(self) -> int:
-        # W1: J*84, b1: J, w2: J, b2: 1
-        return self.J * 84 + self.J + self.J + 1  # 86J + 1
+        # W1: J*D, b1: J, w2: J, b2: 1
+        return self.J * self.D + self.J + self.J + 1  # 86J + 1
 
     def get_param_vector(self) -> torch.Tensor:
         """
@@ -83,16 +85,17 @@ class LMMLP:
         """
         v = v.to(device=self.device, dtype=self.dtype).reshape(-1)
         J = self.J
-        nW1 = J * 84
+        D = self.D
+        nW1 = J * D
         nb1 = J
         nw2 = J
         nb2 = 1
 
         p0 = 0
-        W1 = v[p0:p0 + nW1].reshape(J, 84); p0 += nW1
-        b1 = v[p0:p0 + nb1].reshape(J);     p0 += nb1
-        w2 = v[p0:p0 + nw2].reshape(J);     p0 += nw2
-        b2 = v[p0:p0 + nb2].reshape(1);     p0 += nb2
+        W1 = v[p0:p0 + nW1].reshape(J, D); p0 += nW1
+        b1 = v[p0:p0 + nb1].reshape(J); p0 += nb1
+        w2 = v[p0:p0 + nw2].reshape(J); p0 += nw2
+        b2 = v[p0:p0 + nb2].reshape(1); p0 += nb2
 
         self.W1 = W1.contiguous()
         self.b1 = b1.contiguous()
@@ -128,12 +131,12 @@ class LMMLP:
         # dy/db1_j      = d2 * w2_j * d1[:,j]
 
         # --- W1 block ---
+        D = self.D
         col = 0
         for j in range(J):
-            scale = d2 * self.w2[j] * d1[:, j]              # (N,)
-            # each column k: scale * X[:,k]
-            Jmat[:, col:col + 84] = scale[:, None] * X      # (N,84)
-            col += 84
+            scale = d2 * self.w2[j] * d1[:, j]  # (N,)
+            Jmat[:, col:col + D] = scale[:, None] * X  # (N,D)
+            col += D
 
         # --- b1 block ---
         for j in range(J):
@@ -306,6 +309,7 @@ class LMMLP:
         """
         return {
             "J": int(self.J),
+            "D": int(self.D),
             "W1": self.W1.detach().cpu().numpy(),
             "b1": self.b1.detach().cpu().numpy(),
             "w2": self.w2.detach().cpu().numpy(),
@@ -314,7 +318,8 @@ class LMMLP:
 
     @staticmethod
     def from_pickle_dict(d: dict, device: torch.device, dtype: torch.dtype = torch.float64) -> "LMMLP":
-        m = LMMLP(J=int(d["J"]), device=device, dtype=dtype, seed=0)
+        D = int(d.get("D", d["W1"].shape[1]))  # backward compatible
+        m = LMMLP(J=int(d["J"]), D=D, device=device, dtype=dtype, seed=0)
         m.W1 = torch.tensor(d["W1"], device=device, dtype=dtype).contiguous()
         m.b1 = torch.tensor(d["b1"], device=device, dtype=dtype).contiguous()
         m.w2 = torch.tensor(d["w2"], device=device, dtype=dtype).contiguous()

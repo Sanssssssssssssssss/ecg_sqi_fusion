@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
+import logging
 import numpy as np
 import pandas as pd
 
@@ -12,6 +14,14 @@ from scipy.signal import decimate
 
 from src.utils.paths import project_root
 
+logger = logging.getLogger(__name__)
+
+def _setup_logging(verbose: bool = False) -> None:
+    level = logging.DEBUG if verbose else logging.INFO
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+    )
 
 # ================== CONFIG (edit here) ==================
 SEED = 0  # (not used, kept for convention)
@@ -122,29 +132,80 @@ def resample_500_to_125(sig500_12: np.ndarray) -> np.ndarray:
     )
     return y.astype(np.float32)
 
+def _outputs_exist(out_dir: Path, split_csv: Path) -> bool:
+    """
+    Minimal skip check:
+      - output directory exists and contains at least one .npz
+      - split_csv exists
+    (We keep it simple for stability.)
+    """
+    if not (split_csv.exists() and split_csv.is_file() and split_csv.stat().st_size > 0):
+        return False
+    if not out_dir.exists():
+        return False
+    # if already produced anything, we assume step done unless force=True
+    return any(out_dir.glob("*.npz"))
 
-def main() -> None:
+
+def run(params: dict[str, Any]) -> dict[str, Any]:
+    """
+    Pipeline-callable entrypoint.
+
+    params (optional):
+      - verbose: bool
+      - force: bool
+      - overwrite: bool   (default uses OVERWRITE constant)
+      - split_csv: str    (override SPLIT_CSV)
+      - cases_500_dir: str (override CASES_500_DIR)
+      - out_dir: str      (override OUT_DIR)
+
+    Returns dict with outputs list and skipped bool.
+    """
+    verbose = bool(params.get("verbose", False))
+    force = bool(params.get("force", False))
+    _setup_logging(verbose)
+
     root = project_root()
 
-    split_csv = root / SPLIT_CSV
-    cases_dir = root / CASES_500_DIR
-    out_dir = root / OUT_DIR
+    # allow lightweight override, but keep defaults identical
+    split_csv = params.get("split_csv") or SPLIT_CSV
+    cases_500_dir = params.get("cases_500_dir") or CASES_500_DIR
+    out_dir_s = params.get("out_dir") or OUT_DIR
+    overwrite = params.get("overwrite")
+    if overwrite is None:
+        overwrite = OVERWRITE
+    else:
+        overwrite = bool(overwrite)
+
+    split_csv_p = root / split_csv
+    cases_dir = root / cases_500_dir
+    out_dir = root / out_dir_s
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"[resample_125] split_csv: {split_csv}")
-    print(f"[resample_125] cases_500: {cases_dir}")
-    print(f"[resample_125] out_dir:   {out_dir}")
-    print(f"[resample_125] {FS_IN}Hz -> {FS_OUT}Hz | q={DECIM_Q} | decimate(ftype={DECIMATE_FTYPE}, zero_phase={DECIMATE_ZERO_PHASE})")
-    print(f"[resample_125] overwrite={OVERWRITE} | crop={CASE_SEC}s ({N_SAMPLES_IN} samples at {FS_IN}Hz)")
+    if (not force) and _outputs_exist(out_dir, split_csv_p):
+        logger.info("resample_125: outputs exist -> skip (set force=True to rerun)")
+        return {"step": "resample_125", "skipped": True, "outputs": [str(out_dir)]}
 
-    df = pd.read_csv(split_csv)
+    logger.info("[resample_125] split_csv: %s", split_csv_p)
+    logger.info("[resample_125] cases_500: %s", cases_dir)
+    logger.info("[resample_125] out_dir:   %s", out_dir)
+    logger.info(
+        "[resample_125] %dHz -> %dHz | q=%d | decimate(ftype=%s, zero_phase=%s)",
+        FS_IN, FS_OUT, DECIM_Q, DECIMATE_FTYPE, DECIMATE_ZERO_PHASE
+    )
+    logger.info(
+        "[resample_125] overwrite=%s | crop=%.1fs (%d samples at %dHz)",
+        overwrite, CASE_SEC, N_SAMPLES_IN, FS_IN
+    )
+
+    df = pd.read_csv(split_csv_p)
     if "record_id" not in df.columns:
         raise ValueError("split csv must contain record_id column")
 
     df["record_id"] = df["record_id"].apply(_rid_str)
     record_ids = df["record_id"].astype(str).tolist()
 
-    print(f"[resample_125] total record_ids: {len(record_ids)}")
+    logger.info("[resample_125] total record_ids: %d", len(record_ids))
 
     n_ok = 0
     n_skip = 0
@@ -153,10 +214,10 @@ def main() -> None:
     for i, rid in enumerate(record_ids, start=1):
         out_path = out_dir / f"{rid}.npz"
 
-        if out_path.exists() and not OVERWRITE:
+        if out_path.exists() and (not overwrite):
             n_skip += 1
             if (i <= 5) or (i % 200 == 0):
-                print(f"[skip] {rid} exists")
+                logger.info("[skip] %s exists", rid)
             continue
 
         try:
@@ -173,17 +234,28 @@ def main() -> None:
 
             n_ok += 1
             if (i <= 5) or (i % 200 == 0):
-                print(f"[ok] {rid}: {sig500.shape} -> {sig125.shape} saved {out_path.name}")
+                logger.info("[ok] %s: %s -> %s saved %s", rid, sig500.shape, sig125.shape, out_path.name)
 
         except Exception as e:
             n_fail += 1
-            print(f"[FAIL] {rid}: {type(e).__name__}: {e}")
+            logger.warning("[FAIL] %s: %s: %s", rid, type(e).__name__, e)
 
-    print("\n=== DONE resample_125 (cases_500 -> resampled_125) ===")
-    print(f"saved/overwritten: {n_ok}")
-    print(f"skipped:           {n_skip}")
-    print(f"failed:            {n_fail}")
-    print(f"output dir:        {out_dir}")
+    logger.info("=== DONE resample_125 (cases_500 -> %s) ===", out_dir_s)
+    logger.info("saved/overwritten: %d", n_ok)
+    logger.info("skipped:           %d", n_skip)
+    logger.info("failed:            %d", n_fail)
+    logger.info("output dir:        %s", out_dir)
+
+    return {"step": "resample_125", "skipped": False, "outputs": [str(out_dir)]}
+
+
+def main() -> None:
+    params = {
+        "verbose": False,
+        "force": False,
+        # "overwrite": OVERWRITE,   # 可不写，默认用常量
+    }
+    run(params)
 
 
 if __name__ == "__main__":

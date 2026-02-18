@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
+import logging
 import numpy as np
 import pandas as pd
 import wfdb
@@ -59,6 +61,16 @@ MAX_NEW_PER_SPLIT = None  # e.g. 50
 # write an audit csv (recommended). Set False if you truly hate it :)
 WRITE_AUDIT_CSV = True
 # ========================================================
+
+logger = logging.getLogger(__name__)
+
+def _setup_logging(verbose: bool = False) -> None:
+    level = logging.DEBUG if verbose else logging.INFO
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+    )
+
 
 
 def ensure_lead_order(sig: np.ndarray, sig_name: list[str]) -> np.ndarray:
@@ -226,9 +238,9 @@ def cache_all_clean_cases(df_split: pd.DataFrame, root: Path) -> None:
         n_ok += 1
 
         if (i <= 5) or (i % 200 == 0):
-            print(f"[cache clean] ok {rid} -> {out_path.name}")
+            logger.info("[cache clean] ok %s -> %s", rid, out_path.name)
 
-    print(f"\n[cache clean] done. new={n_ok}, skipped(existing)={n_skip}, total={len(record_ids)}")
+    logger.info("[cache clean] done. new=%d, skipped(existing)=%d, total=%d", n_ok, n_skip, len(record_ids))
 
 
 
@@ -259,7 +271,7 @@ def balance_one_split(
     need = max(0, target_bad - n_bad)
 
     if need == 0:
-        print(f"[{split_name}] already balanced: good={n_good}, bad={n_bad}")
+        logger.info("[%s] already balanced: good=%d, bad=%d", split_name, n_good, n_bad)
         return [], []
 
     # Each chosen clean case can generate len(NOISE_TYPES) noisy cases
@@ -270,8 +282,8 @@ def balance_one_split(
 
     chosen = rng.choice(good, size=k, replace=False).tolist()
 
-    print(f"[{split_name}] good={n_good}, bad={n_bad} -> need {need} new bad")
-    print(f"[{split_name}] choose {k} clean cases, generate {len(NOISE_TYPES)*k} noisy (cap to need)")
+    logger.info("[%s] good=%d, bad=%d -> need %d new bad", split_name, n_good, n_bad, need)
+    logger.info("[%s] choose %d clean cases, generate %d noisy (cap to need)",split_name, k, len(NOISE_TYPES) * k)
 
     half = HALF_POLICY.get(split_name, "first")
 
@@ -340,24 +352,93 @@ def balance_one_split(
 
     return new_rows, audit
 
+def _outputs_exist(root: Path) -> bool:
+    """
+    Minimal skip check:
+      - balanced split csv exists and non-empty
+      - cases_500 dir exists
+    (We do NOT try to verify every npz for stability.)
+    """
+    out_csv = root / OUT_SPLIT_CSV
+    cases_dir = root / CASES_500_DIR
 
-def main() -> None:
+    if not (out_csv.exists() and out_csv.is_file() and out_csv.stat().st_size > 0):
+        return False
+    if not cases_dir.exists():
+        return False
+    return True
+
+def run(params: dict[str, Any]) -> dict[str, Any]:
+    """
+    Pipeline-callable entrypoint.
+    Minimal parameterization, defaults keep current behavior.
+
+    params (optional):
+      - verbose: bool
+      - force: bool
+      - seed: int
+      - snr_db: float
+      - split_csv: str (relative to project root or absolute)
+      - out_split_csv: str
+      - cases_500_dir: str
+      - set_a_dir: str
+      - nstdb_dir: str
+      - max_new_per_split: int|None
+      - write_audit_csv: bool
+
+    Returns: {"step": "...", "skipped": bool, "outputs": [...]}
+    """
+    verbose = bool(params.get("verbose", False))
+    force = bool(params.get("force", False))
+    _setup_logging(verbose)
+
     root = project_root()
+
+    # ---- optional overrides (keep original constants as defaults) ----
+    global SEED, SNR_DB, SPLIT_CSV, OUT_SPLIT_CSV, CASES_500_DIR, SET_A_DIR, NSTDB_DIR, MAX_NEW_PER_SPLIT, WRITE_AUDIT_CSV
+    if "seed" in params and params["seed"] is not None:
+        SEED = int(params["seed"])
+    if "snr_db" in params and params["snr_db"] is not None:
+        SNR_DB = float(params["snr_db"])
+    if "split_csv" in params and params["split_csv"]:
+        SPLIT_CSV = str(params["split_csv"])
+    if "out_split_csv" in params and params["out_split_csv"]:
+        OUT_SPLIT_CSV = str(params["out_split_csv"])
+    if "cases_500_dir" in params and params["cases_500_dir"]:
+        CASES_500_DIR = str(params["cases_500_dir"])
+    if "set_a_dir" in params and params["set_a_dir"]:
+        SET_A_DIR = str(params["set_a_dir"])
+    if "nstdb_dir" in params and params["nstdb_dir"]:
+        NSTDB_DIR = str(params["nstdb_dir"])
+    if "max_new_per_split" in params:
+        MAX_NEW_PER_SPLIT = params["max_new_per_split"]
+    if "write_audit_csv" in params and params["write_audit_csv"] is not None:
+        WRITE_AUDIT_CSV = bool(params["write_audit_csv"])
+
+    if (not force) and _outputs_exist(root):
+        out_csv = root / OUT_SPLIT_CSV
+        logger.info("balanced_noise: outputs exist -> skip (set force=True to rerun)")
+        outs = [str(out_csv)]
+        if WRITE_AUDIT_CSV:
+            outs.append(str(out_csv.with_suffix(".audit.csv")))
+        return {"step": "balanced_noise", "skipped": True, "outputs": outs}
+
+    # ---- resolve paths ----
     split_csv = root / SPLIT_CSV
     nstdb_dir = root / NSTDB_DIR
 
-    print(f"split_csv: {split_csv}")
-    print(f"set-a dir (500Hz): {root / SET_A_DIR}")
-    print(f"cases_500 out: {root / CASES_500_DIR}")
-    print(f"nstdb_dir: {nstdb_dir}")
-    print(f"STRICT: add noise at {FS_ECG}Hz (no downsample here)")
-    print(f"snr_db={SNR_DB}, seed={SEED}, case={CASE_SEC}s (N={N_SAMPLES})")
-    print(f"noise types={NOISE_TYPES}, NSTDB fs={FS_NOISE_IN}, half_policy={HALF_POLICY}")
+    logger.info("split_csv: %s", split_csv)
+    logger.info("set-a dir (500Hz): %s", root / SET_A_DIR)
+    logger.info("cases_500 out: %s", root / CASES_500_DIR)
+    logger.info("nstdb_dir: %s", nstdb_dir)
+    logger.info("STRICT: add noise at %dHz (no downsample here)", FS_ECG)
+    logger.info("snr_db=%.1f, seed=%d, case=%.1fs (N=%d)", SNR_DB, SEED, CASE_SEC, N_SAMPLES)
+    logger.info("noise types=%s, NSTDB fs=%d, half_policy=%s", NOISE_TYPES, FS_NOISE_IN, HALF_POLICY)
 
     df = pd.read_csv(split_csv)
 
     # 0) cache ALL original clean records into cases_500 first (your requirement)
-    print("\n[Step0] caching all original clean 500Hz records into cases_500 ...")
+    logger.info("[Step0] caching all original clean 500Hz records into cases_500 ...")
     cache_all_clean_cases(df, root)
 
     df["record_id"] = df["record_id"].astype(str)
@@ -395,12 +476,15 @@ def main() -> None:
     out_csv = root / OUT_SPLIT_CSV
     out_csv.parent.mkdir(parents=True, exist_ok=True)
     df_bal.to_csv(out_csv, index=False)
-    print(f"\n[saved] balanced split -> {out_csv} rows={len(df_bal)} (new={len(df_new)})")
+    logger.info("[saved] balanced split -> %s rows=%d (new=%d)", out_csv, len(df_bal), len(df_new))
+
+    outputs = [str(out_csv)]
 
     if WRITE_AUDIT_CSV:
         audit_csv = out_csv.with_suffix(".audit.csv")
         pd.DataFrame(all_audit).to_csv(audit_csv, index=False)
-        print(f"[saved] audit -> {audit_csv} rows={len(all_audit)}")
+        logger.info("[saved] audit -> %s rows=%d", audit_csv, len(all_audit))
+        outputs.append(str(audit_csv))
 
     # summary
     for split_name in ["train", "test"]:
@@ -408,7 +492,19 @@ def main() -> None:
         n_good = int((d["y"] == 1).sum())
         n_bad = int((d["y"] == -1).sum())
         n_aug = int((d.get("is_augmented", 0) == 1).sum()) if len(d) else 0
-        print(f"[{split_name}] after balance: good={n_good}, bad={n_bad}, total={len(d)}, augmented={n_aug}")
+        logger.info("[%s] after balance: good=%d, bad=%d, total=%d, augmented=%d",
+                    split_name, n_good, n_bad, len(d), n_aug)
+
+    return {"step": "balanced_noise", "skipped": False, "outputs": outputs}
+
+
+def main() -> None:
+    # keep single-file runnable; defaults identical to old behavior
+    params = {
+        "verbose": False,
+        "force": False,
+    }
+    run(params)
 
 
 if __name__ == "__main__":

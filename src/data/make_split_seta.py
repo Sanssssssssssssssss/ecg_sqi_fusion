@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
+import logging
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -11,6 +13,14 @@ import matplotlib.pyplot as plt
 
 from src.utils.paths import project_root
 
+logger = logging.getLogger(__name__)
+
+def _setup_logging(verbose: bool = False) -> None:
+    level = logging.DEBUG if verbose else logging.INFO
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+    )
 
 @dataclass(frozen=True)
 class SplitConfig:
@@ -72,15 +82,66 @@ def plot_label_counts(df_split: pd.DataFrame, out_png: Path) -> None:
     plt.close()
 
 
-def main() -> None:
-    cfg = SplitConfig(seed=0, split_ratio=(0.70, 0.15, 0.15))
+def _outputs_exist(out_path: Path, qc_png: Path) -> bool:
+    def ok(p: Path) -> bool:
+        return p.exists() and p.is_file() and p.stat().st_size > 0
+    return ok(out_path) and ok(qc_png)
+
+
+def run(params: dict[str, Any]) -> dict[str, Any]:
+    """
+    Pipeline-callable entrypoint.
+
+    params (optional):
+      - verbose: bool
+      - force: bool
+      - seed: int (default 0)
+      - split_ratio: tuple/list of 3 floats (default (0.70,0.15,0.15))
+      - artifacts_dir: str (default project_root()/artifacts)
+      - manifest_csv: str (default artifacts/manifests/manifest_challenge2011_seta.csv)
+      - out_csv: str (default artifacts/splits/split_seta_seed{seed}.csv)
+      - qc_png: str (default artifacts/report_figs/split_seta_seed{seed}_label_counts.png)
+
+    Returns dict with outputs list and skipped bool.
+    """
+    verbose = bool(params.get("verbose", False))
+    force = bool(params.get("force", False))
+    _setup_logging(verbose)
 
     root = project_root()
-    manifest_path = root / "artifacts" / "manifests" / "manifest_challenge2011_seta.csv"
-    out_path = root / "artifacts" / "splits" / "split_seta_seed0.csv"
-    qc_png = root / "artifacts" / "report_figs" / "split_seta_seed0_label_counts.png"
+    seed = int(params.get("seed", 0))
+    split_ratio = params.get("split_ratio", (0.70, 0.15, 0.15))
+    cfg = SplitConfig(seed=seed, split_ratio=tuple(split_ratio))
 
-    print(f"[Task 1.1] Reading manifest: {manifest_path}")
+    artifacts_dir = params.get("artifacts_dir")
+    if not artifacts_dir:
+        artifacts_dir = root / "artifacts"
+    else:
+        artifacts_dir = Path(str(artifacts_dir))
+
+    manifest_path = params.get("manifest_csv")
+    if not manifest_path:
+        manifest_path = Path(artifacts_dir) / "manifests" / "manifest_challenge2011_seta.csv"
+    else:
+        manifest_path = Path(str(manifest_path))
+
+    out_path = params.get("out_csv")
+    if not out_path:
+        out_path = Path(artifacts_dir) / "splits" / f"split_seta_seed{seed}.csv"
+    else:
+        out_path = Path(str(out_path))
+
+    qc_png = params.get("qc_png")
+    if not qc_png:
+        qc_png = Path(artifacts_dir) / "report_figs" / f"split_seta_seed{seed}_label_counts.png"
+    else:
+        qc_png = Path(str(qc_png))
+
+    if (not force) and _outputs_exist(out_path, qc_png):
+        logger.info("split_seta: outputs exist -> skip (set force=True to rerun)")
+        return {"step": "split_seta", "skipped": True, "outputs": [str(out_path), str(qc_png)]}
+
+    logger.info("Reading manifest: %s", manifest_path)
     df = pd.read_csv(manifest_path)
 
     # --- sanity: required columns from your manifest script ---
@@ -89,14 +150,13 @@ def main() -> None:
         if c not in df.columns:
             raise ValueError(f"manifest missing column '{c}', got columns={list(df.columns)}")
 
-    print(f"Manifest rows: {len(df)}")
-    print("Quality counts (manifest):")
-    print(df["quality_record"].value_counts(dropna=False))
+    logger.info("Manifest rows: %d", len(df))
+    logger.info("Quality counts (manifest): %s", df["quality_record"].value_counts(dropna=False).to_dict())
 
     # --- filter unknown and map labels ---
     df_f = df[df["quality_record"].isin(["acceptable", "unacceptable"])].copy()
     dropped = len(df) - len(df_f)
-    print(f"\nFiltered to acceptable/unacceptable: {len(df_f)} rows (dropped {dropped} unknown/other)")
+    logger.info("Filtered to acceptable/unacceptable: %d rows (dropped %d unknown/other)", len(df_f), dropped)
 
     df_f["y"] = df_f["quality_record"].map(LABEL_MAP).astype(int)
 
@@ -119,9 +179,8 @@ def main() -> None:
     )
 
     # --- QC: label counts ---
-    print("\n=== QC: label counts by split ===")
     qc_table = out_df.groupby(["split", "y"]).size().unstack(fill_value=0).sort_index()
-    print(qc_table)
+    logger.info("QC label counts by split: %s", qc_table.to_dict())
 
     # --- QC: record_id disjoint ---
     r_train = set(out_df.loc[out_df["split"] == "train", "record_id"])
@@ -130,22 +189,37 @@ def main() -> None:
     inter_tv = r_train & r_val
     inter_tt = r_train & r_test
     inter_vt = r_val & r_test
-    print("\n=== QC: record_id intersection sizes ===")
-    print(f"train∩val={len(inter_tv)}, train∩test={len(inter_tt)}, val∩test={len(inter_vt)}")
+    logger.info("QC record_id intersections: train∩val=%d train∩test=%d val∩test=%d",
+                len(inter_tv), len(inter_tt), len(inter_vt))
     if inter_tv or inter_tt or inter_vt:
         raise AssertionError("Record leakage detected across splits!")
 
     # --- save outputs ---
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_df.to_csv(out_path, index=False)
-    print(f"\nSaved split CSV -> {out_path} (rows={len(out_df)})")
+    logger.info("Saved split CSV -> %s (rows=%d)", out_path, len(out_df))
 
     plot_label_counts(out_df, qc_png)
-    print(f"Saved QC plot -> {qc_png}")
+    logger.info("Saved QC plot -> %s", qc_png)
 
-    # quick assert ratios (roughly)
-    print("\n=== QC: split sizes ===")
-    print(out_df["split"].value_counts())
+    logger.info("QC split sizes: %s", out_df["split"].value_counts().to_dict())
+
+    return {"step": "split_seta", "skipped": False, "outputs": [str(out_path), str(qc_png)]}
+
+
+def main() -> None:
+    root = project_root()
+    params = {
+        "seed": 0,
+        "split_ratio": (0.70, 0.15, 0.15),
+        "artifacts_dir": str(root / "artifacts"),
+        "manifest_csv": str(root / "artifacts" / "manifests" / "manifest_challenge2011_seta.csv"),
+        "out_csv": str(root / "artifacts" / "splits" / "split_seta_seed0.csv"),
+        "qc_png": str(root / "artifacts" / "report_figs" / "split_seta_seed0_label_counts.png"),
+        "verbose": False,
+        "force": False,
+    }
+    run(params)
 
 
 if __name__ == "__main__":
