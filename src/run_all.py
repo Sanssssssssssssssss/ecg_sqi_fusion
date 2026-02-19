@@ -132,6 +132,8 @@ STEPS: list[StepSpec] = [
     StepSpec("norm_record84_ks", "src.features.norm_record84_ks", enabled=True),
     StepSpec("lm_mlp_search", "src.models.lm_mlp_search", enabled=True),
     StepSpec("svm_tables", "src.models.svm_tables", enabled=True),
+    StepSpec("logreg_baseline", "src.models.logreg_baseline", enabled=True),
+    StepSpec("gnb_baseline", "src.models.gnb_baseline", enabled=True),
 ]
 
 

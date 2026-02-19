@@ -1,0 +1,9 @@
+numpy
+pandas
+scipy
+matplotlib
+wfdb
+scikit-learn
+torch
+pyarrow
+openpyxl

@@ -4,24 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5a035b3a-c870-41af-802b-10e0d93820c5" name="更改" comment="The First executable progress">
-      <change afterPath="$PROJECT_DIR$/src/models/svm_rbf.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/svm_tables.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/tool/make_paper_tables.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/tool/read_mitbih_atr.py" afterDir="false" />
+    <list default="true" id="5a035b3a-c870-41af-802b-10e0d93820c5" name="更改" comment="Add run_all.py to run all the pipeline of the program">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/download_dbs.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/download_nstdb.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/make_manifest_raw.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/make_manifest_raw.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/make_split_seta.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/make_split_seta.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/make_record84.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/make_record84.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/norm_record84_ks.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/norm_record84_ks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/lm_mlp.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/lm_mlp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/lm_mlp_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/lm_mlp_search.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/noise/make_balanced_noisy_cases.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/noise/make_balanced_noisy_cases.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/preprocess/resample_125.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/preprocess/resample_125.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/qrs/detectors.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/qrs/detectors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/qrs/run_qrs_cache.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/qrs/run_qrs_cache.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/run_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/run_all.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -107,7 +93,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "ml.llm.LLMConfigurable",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -151,7 +137,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771095050752</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Add run_all.py to run all the pipeline of the program">
+      <option name="closed" value="true" />
+      <created>1771429680139</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1771429680139</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -172,7 +166,8 @@
     <MESSAGE value="First edition of project" />
     <MESSAGE value="sqi and qrs detector, and the first edition of the mlp" />
     <MESSAGE value="The First executable progress" />
-    <option name="LAST_COMMIT_MESSAGE" value="The First executable progress" />
+    <MESSAGE value="Add run_all.py to run all the pipeline of the program" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add run_all.py to run all the pipeline of the program" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ecg_sqi_fusion$grep_quality_in_headers.coverage" NAME="grep_quality_in_headers 覆盖结果" MODIFIED="1766143102396" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/experiments" />
