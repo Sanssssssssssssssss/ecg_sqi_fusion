@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5a035b3a-c870-41af-802b-10e0d93820c5" name="更改" comment="Add run_all.py to run all the pipeline of the program">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="5a035b3a-c870-41af-802b-10e0d93820c5" name="更改" comment="Add requirements.txt and change the code structure in lm_mlp_search.py">
+      <change afterPath="$PROJECT_DIR$/src/models/gnb_baseline.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/logreg_baseline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/lm_mlp_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/lm_mlp_search.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/run_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/run_all.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +145,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771429680139</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Add requirements.txt and change the code structure in lm_mlp_search.py">
+      <option name="closed" value="true" />
+      <created>1771516332612</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1771516332612</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -167,7 +175,8 @@
     <MESSAGE value="sqi and qrs detector, and the first edition of the mlp" />
     <MESSAGE value="The First executable progress" />
     <MESSAGE value="Add run_all.py to run all the pipeline of the program" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add run_all.py to run all the pipeline of the program" />
+    <MESSAGE value="Add requirements.txt and change the code structure in lm_mlp_search.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add requirements.txt and change the code structure in lm_mlp_search.py" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ecg_sqi_fusion$grep_quality_in_headers.coverage" NAME="grep_quality_in_headers 覆盖结果" MODIFIED="1766143102396" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/experiments" />
