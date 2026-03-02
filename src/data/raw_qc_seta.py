@@ -43,8 +43,8 @@ def load_record_seta(record_id: str, data_dir: Path) -> tuple[np.ndarray, float,
     rec = wfdb.rdrecord(str(rec_path), physical=True)
     sig = rec.p_signal
     fs = float(rec.fs)
-    sig_name = list(rec.sig_name) if rec.sig_name is not None else [f"ch{i}" for i in range(sig.shape[1])]
-    return sig, fs, sig_name
+    sig_name = list(rec.sig_name) if rec.sig_name is not None else [f"ch{i}" for i in range(sig.shape[1])] # type: ignore
+    return sig, fs, sig_name # type: ignore
 
 
 def ensure_lead_order(sig: np.ndarray, sig_name: list[str]) -> np.ndarray:

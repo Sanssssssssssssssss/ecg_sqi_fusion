@@ -36,7 +36,7 @@ def ensure_lead_order(sig: np.ndarray, sig_name: list[str]) -> np.ndarray:
 
 def load_record_500(record_id: str, data_dir: Path) -> tuple[np.ndarray, float, list[str]]:
     rec = wfdb.rdrecord(str(data_dir / record_id), physical=True)
-    return rec.p_signal, float(rec.fs), list(rec.sig_name)
+    return rec.p_signal, float(rec.fs), list(rec.sig_name) # type: ignore
 
 
 def load_npz_125(record_id: str, resampled_dir: Path) -> np.ndarray:

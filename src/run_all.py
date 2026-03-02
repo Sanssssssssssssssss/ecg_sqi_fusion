@@ -42,7 +42,7 @@ def print_step_header(step_name: str) -> None:
 
     if _HAS_COLOR:
         # cyan header, bold-ish style
-        msg = f"\n{Fore.CYAN}{line}\n{header}\n{line}{Style.RESET_ALL}\n"
+        msg = f"\n{Fore.CYAN}{line}\n{header}\n{line}{Style.RESET_ALL}\n" # type: ignore
     else:
         msg = f"\n{line}\n{header}\n{line}\n"
 
@@ -53,7 +53,7 @@ def print_step_header(step_name: str) -> None:
 
 # ===========================
 # User-editable params override
-# 你想换数据集/路径，就改这里（平时不用动）
+# Change Path for different dataset
 # ===========================
 PARAMS_OVERRIDE: dict[str, Any] = {
     # Example:
@@ -120,7 +120,7 @@ def load_step_callable(spec: StepSpec) -> Callable[..., dict]:
     fn = getattr(mod, spec.func, None)
     if fn is None or not callable(fn):
         raise AttributeError(f"{spec.module}.{spec.func} not found or not callable")
-    return fn
+    return fn # type: ignore
 
 STEPS: list[StepSpec] = [
     StepSpec("manifest_raw", "src.data.make_manifest_raw", enabled=True),
@@ -139,7 +139,7 @@ STEPS: list[StepSpec] = [
 
 def build_default_params(*, verbose: bool, force: bool, artifacts_dir: str | Path = "artifacts") -> dict[str, Any]:
     """
-    ✅ By default, “just run it and it works”:
+    By default, “just run it and it works”:
     Automatically derives data paths from project_root()
     To switch datasets: modify PARAMS_OVERRIDE
     """

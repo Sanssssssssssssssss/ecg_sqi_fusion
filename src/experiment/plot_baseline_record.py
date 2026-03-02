@@ -1,4 +1,4 @@
-# src/data/plot_baseline_fixed.py
+# src/experiment/plot_baseline_fixed.py
 from __future__ import annotations
 
 from pathlib import Path
@@ -17,8 +17,8 @@ from scipy.signal import butter, filtfilt
 from src.utils.paths import project_root
 
 # change parameter
-RECORD_ID = "1007823"   # <- change id here
-LEAD_NAME = "I"        # <- e.g. "II", "V2", ...
+RECORD_ID = "1156063"   # <- change id here
+LEAD_NAME = "III"        # <- e.g. "II", "V2", ...
 SECONDS = 10            # <- plot duration (sec)
 BASELINE_CUTOFF_HZ = 1.0  # paper figure: 1 Hz low-pass, 2nd order, zero-phase
 
@@ -31,7 +31,7 @@ OUT_DIR_REL = "artifacts/report_figs"
 
 def butter_lowpass_2nd(fc_hz: float, fs_hz: float):
     wn = fc_hz / (fs_hz / 2.0)
-    b, a = butter(N=2, Wn=wn, btype="lowpass")
+    b, a = butter(N=2, Wn=wn, btype="lowpass") # type: ignore
     return b, a
 
 
@@ -65,8 +65,8 @@ def main() -> None:
     rec = wfdb.rdrecord(str(rec_path), physical=True)
     fs = float(rec.fs)
     sig = rec.p_signal  # (N, n_sig) in physical units (mV typically)
-    sig_len = int(sig.shape[0])
-    n_sig = int(sig.shape[1])
+    sig_len = int(sig.shape[0]) # type: ignore
+    n_sig = int(sig.shape[1]) # type: ignore
     sig_name = list(rec.sig_name) if rec.sig_name is not None else [f"ch{i}" for i in range(n_sig)]
 
     # ---- print header-like summary ----
@@ -110,7 +110,7 @@ def main() -> None:
     # ---- crop ----
     n_plot = min(int(round(SECONDS * fs)), sig_len)
     t = np.arange(n_plot) / fs
-    x = sig[:n_plot, lead_idx]
+    x = sig[:n_plot, lead_idx] # type: ignore
 
     # ---- baseline ----
     bl = baseline_lpf_zero_phase(x, fs=fs, fc=BASELINE_CUTOFF_HZ)

@@ -18,6 +18,12 @@ import matplotlib.pyplot as plt
 
 from sklearn.metrics import roc_auc_score, roc_curve, confusion_matrix
 from sklearn.naive_bayes import GaussianNB
+from sklearn.calibration import CalibratedClassifierCV
+try:
+    # sklearn>=1.8 path
+    from sklearn.frozen import FrozenEstimator
+except Exception:  # pragma: no cover
+    FrozenEstimator = None  # type: ignore
 
 from src.utils.paths import project_root
 
@@ -33,15 +39,24 @@ class RunConfig:
     split_csv: Path = Path("split_seta_seed0_balanced.csv")
 
     # feature selection
-    feature_set: Literal["all84", "selected5"] = "all84"
+    feature_set: Literal["all84", "selected5", "single1"] = "all84"
+    single_sqi: str = "fSQI"   # used when feature_set == "single1"
 
     # evaluation
-    threshold_fixed: float = 0.7
+    threshold_fixed: float = 0.5
     maxacc_grid: int = 2001
 
     # runtime
     verbose: bool = False
     force: bool = False
+
+        # gnb knobs
+    var_smoothing: float = 1e-3
+
+    # threshold selection (on val)
+    threshold_metric: Literal["acc", "youden"] = "acc"
+    use_calibration: bool = False
+    calib_method: Literal["sigmoid", "isotonic"] = "sigmoid"
 
 
 @dataclass(frozen=True)
@@ -66,6 +81,7 @@ class Paths:
 
 LEADS_12 = ["I", "II", "III", "aVR", "aVL", "aVF", "V1", "V2", "V3", "V4", "V5", "V6"]
 SELECTED_5 = ["bSQI", "basSQI", "kSQI", "sSQI", "fSQI"]
+SINGLE_1 = ["fSQI"]
 
 
 def _setup_logging(verbose: bool) -> None:
@@ -101,7 +117,7 @@ def prepare_paths(cfg: RunConfig, params: dict[str, Any]) -> Paths:
     )
 
 
-def _read_inputs(paths: Paths, feature_set: str) -> tuple[np.ndarray, np.ndarray, np.ndarray, list[str]]:
+def _read_inputs(paths: Paths, feature_set: str, single_sqi: str) -> tuple[np.ndarray, np.ndarray, np.ndarray, list[str]]:
     df_feat = pd.read_parquet(paths.features_parquet)
     df_split = pd.read_csv(paths.split_csv)
 
@@ -124,6 +140,14 @@ def _read_inputs(paths: Paths, feature_set: str) -> tuple[np.ndarray, np.ndarray
         missing = [c for c in feat_cols if c not in dfm.columns]
         if missing:
             raise ValueError(f"Missing selected5 columns: {missing[:5]} ... total={len(missing)}")
+
+    elif feature_set == "single1":
+        sqi = str(single_sqi)
+        feat_cols = _cols_for_sqis_12lead([sqi])
+        missing = [c for c in feat_cols if c not in dfm.columns]
+        if missing:
+            raise ValueError(f"Missing single1 columns for sqi={sqi}: {missing[:5]} ... total={len(missing)}")
+
     else:
         feat_cols = sorted([c for c in dfm.columns if c not in drop_cols])
 
@@ -174,6 +198,55 @@ def find_maxacc_threshold(y01: np.ndarray, p: np.ndarray, n_grid: int = 2001) ->
                     "tn": int(tn), "fp": int(fp), "fn": int(fn), "tp": int(tp)}
     return best
 
+def select_threshold_on_val(y01: np.ndarray, p: np.ndarray, metric: str = "acc", n_grid: int = 2001) -> dict[str, Any]:
+    """
+    Select threshold using validation set only.
+    metric:
+      - "acc": maximize accuracy
+      - "youden": maximize Youden's J = TPR - FPR
+    Tie-break: prefer threshold closer to 0.5 (stability), then smaller threshold.
+    """
+    y = y01.astype(int).ravel()
+    p = p.astype(np.float64).ravel()
+    ts = np.linspace(0.0, 1.0, int(n_grid))
+
+    best = None
+    for t in ts:
+        pred = (p > t).astype(int)
+        tn, fp, fn, tp = confusion_matrix(y, pred, labels=[0, 1]).ravel()
+        acc = (tp + tn) / max(1, tp + tn + fp + fn)
+        tpr = tp / max(1, tp + fn)
+        fpr = fp / max(1, fp + tn)
+        youden = tpr - fpr
+
+        score = acc if metric == "acc" else youden
+
+        cand = {
+            "threshold": float(t),
+            "score": float(score),
+            "metric": str(metric),
+            "acc": float(acc),
+            "se": float(tpr),
+            "sp": float(tn / max(1, tn + fp)),
+            "tn": int(tn), "fp": int(fp), "fn": int(fn), "tp": int(tp),
+        }
+
+        if best is None:
+            best = cand
+        else:
+            if cand["score"] > best["score"]:
+                best = cand
+            elif cand["score"] == best["score"]:
+                # tie-break: threshold closer to 0.5 (avoid extreme thresholds)
+                if abs(cand["threshold"] - 0.5) < abs(best["threshold"] - 0.5):
+                    best = cand
+                elif abs(cand["threshold"] - 0.5) == abs(best["threshold"] - 0.5):
+                    if cand["threshold"] < best["threshold"]:
+                        best = cand
+
+    assert best is not None
+    return best
+
 
 def plot_roc(y01: np.ndarray, p: np.ndarray, out_png: Path, title: str) -> None:
     fpr, tpr, _ = roc_curve(y01.astype(int), p.astype(np.float64))
@@ -219,11 +292,21 @@ def outputs_exist(paths: Paths, seed: int) -> bool:
 def build_cfg(params: dict[str, Any]) -> RunConfig:
     return RunConfig(
         seed=int(params.get("seed", 0)),
-        feature_set=("selected5" if str(params.get("feature_set", "all84")).lower() == "selected5" else "all84"),
-        threshold_fixed=float(params.get("threshold_fixed", 0.7)),
+        feature_set=("selected5" if str(params.get("feature_set", "all84")).lower() == "selected5"
+                     else "single1" if str(params.get("feature_set", "all84")).lower() in {"single1", "single", "single_sqi"}
+                     else "all84"),
+        single_sqi=str(params.get("single_sqi", "fSQI")),
+
+        threshold_fixed=float(params.get("threshold_fixed", 0.5)),
+        maxacc_grid=int(params.get("maxacc_grid", 2001)),
+
+        var_smoothing=float(params.get("var_smoothing", 1e-3)),
+        threshold_metric=("youden" if str(params.get("threshold_metric", "acc")).lower() == "youden" else "acc"),
+        use_calibration=bool(params.get("use_calibration", False)),
+        calib_method=("isotonic" if str(params.get("calib_method", "sigmoid")).lower() == "isotonic" else "sigmoid"),
+
         verbose=bool(params.get("verbose", False)),
         force=bool(params.get("force", False)),
-        maxacc_grid=int(params.get("maxacc_grid", 2001)),
     )
 
 
@@ -254,8 +337,10 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
         ]
         logger.info("gnb: outputs exist -> skip (force=True to rerun)")
         return {"step": "gnb", "skipped": True, "outputs": outs}
+    if cfg.feature_set == "single1":
+        logger.info("single1 sqi=%s (12 leads)", cfg.single_sqi)
 
-    X, y01, split, feat_cols = _read_inputs(paths, cfg.feature_set)
+    X, y01, split, feat_cols = _read_inputs(paths, cfg.feature_set, cfg.single_sqi)
 
     Xtr = X[split == "train"]; ytr = y01[split == "train"]
     Xva = X[split == "val"];   yva = y01[split == "val"]
@@ -267,19 +352,47 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     logger.info("splits: train=%d val=%d test=%d",
                 int((split == "train").sum()), int((split == "val").sum()), int((split == "test").sum()))
 
-    # ---- fit on train+val (no hyperparams) ----
-    Xtrva = np.vstack([Xtr, Xva])
-    ytrva = np.concatenate([ytr, yva])
-
+        # ---- fit on train only ----
     t0 = time.time()
-    model = GaussianNB()
-    model.fit(Xtrva, ytrva)
+    base = GaussianNB(var_smoothing=float(cfg.var_smoothing))
+    base.fit(Xtr, ytr)
     train_time_s = float(time.time() - t0)
 
-    # ---- test once ----
+    # ---- optionally calibrate using val (recommended if probs are weird) ----
+    if cfg.use_calibration:
+        if FrozenEstimator is not None:
+            # sklearn>=1.8: prefit mode replaced by FrozenEstimator
+            model = CalibratedClassifierCV(
+                estimator=FrozenEstimator(base),
+                method=cfg.calib_method,
+                cv=None,
+            )
+            model.fit(Xva, yva)  # calibration learns mapping on val
+        else:
+            # compatibility fallback for older sklearn
+            model = CalibratedClassifierCV(base, method=cfg.calib_method, cv="prefit")
+            model.fit(Xva, yva)  # calibration learns mapping on val
+        model_tag = f"gnb_cal_{cfg.calib_method}"
+    else:
+        model = base
+        model_tag = "gnb"
+
+    # ---- select threshold on VAL ----
+    p_val = model.predict_proba(Xva)[:, 1]
+    thr_val_best = select_threshold_on_val(
+        yva, p_val,
+        metric=str(cfg.threshold_metric),
+        n_grid=int(cfg.maxacc_grid),
+    )
+    thr_star = float(thr_val_best["threshold"])
+
+    # ---- TEST once using val-selected threshold ----
     p_test = model.predict_proba(Xte)[:, 1]
-    test_metrics_fixed = compute_metrics(yte, p_test, threshold=cfg.threshold_fixed)
+    test_metrics_at_thrstar = compute_metrics(yte, p_test, threshold=thr_star)
     test_maxacc = find_maxacc_threshold(yte, p_test, n_grid=cfg.maxacc_grid)
+
+    # optional: keep fixed-0.5 for reference only (not the main result)
+    test_metrics_fixed = compute_metrics(yte, p_test, threshold=float(cfg.threshold_fixed))
 
     outs: list[str] = []
 
@@ -318,15 +431,27 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
 
     out_metrics = paths.out_dir / f"gnb_test_metrics_seed{cfg.seed}.json"
     with open(out_metrics, "w", encoding="utf-8") as f:
-        json.dump(
+                json.dump(
             {
                 "seed": cfg.seed,
                 "feature_set": cfg.feature_set,
+                "single_sqi": getattr(cfg, "single_sqi", None),
                 "D": int(X.shape[1]),
+
+                "gnb": {
+                    "var_smoothing": float(cfg.var_smoothing),
+                    "use_calibration": bool(cfg.use_calibration),
+                    "calib_method": str(cfg.calib_method) if cfg.use_calibration else None,
+                    "threshold_metric": str(cfg.threshold_metric),
+                },
+
                 "threshold_fixed": float(cfg.threshold_fixed),
                 "train_time_s": train_time_s,
-                "test_metrics_fixed": test_metrics_fixed,
-                "test_maxacc": test_maxacc,
+
+                "val_threshold_selected": thr_val_best,          # contains threshold + val acc/se/sp
+                "test_metrics_at_val_threshold": test_metrics_at_thrstar,
+
+                "test_metrics_fixed_ref": test_metrics_fixed,    # reference only
             },
             f,
             indent=2,
@@ -334,9 +459,27 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     outs.append(str(out_metrics))
     logger.info("[saved] %s", out_metrics)
 
-    logger.info("=== GNB FINAL TEST (once) ===")
-    logger.info("acc=%.4f se=%.4f sp=%.4f auc=%.4f",
-                test_metrics_fixed["acc"], test_metrics_fixed["se"], test_metrics_fixed["sp"], test_metrics_fixed["auc"])
+    logger.info("=== GNB FINAL TEST (val-selected threshold) ===")
+    logger.info("thr*=%.4f | acc=%.4f se=%.4f sp=%.4f auc=%.4f",
+                thr_star,
+                test_metrics_at_thrstar["acc"], test_metrics_at_thrstar["se"],
+                test_metrics_at_thrstar["sp"], test_metrics_at_thrstar["auc"])
+    logger.info("REF (thr=%.3f): acc=%.4f se=%.4f sp=%.4f auc=%.4f",
+                cfg.threshold_fixed,
+                test_metrics_fixed["acc"], test_metrics_fixed["se"],
+                test_metrics_fixed["sp"], test_metrics_fixed["auc"])
+    
+    logger.info("p_test stats: min=%.4g p1=%.4g p5=%.4g p50=%.4g p95=%.4g p99=%.4g max=%.4g mean=%.4g",
+            float(np.min(p_test)),
+            float(np.quantile(p_test, 0.01)),
+            float(np.quantile(p_test, 0.05)),
+            float(np.quantile(p_test, 0.50)),
+            float(np.quantile(p_test, 0.95)),
+            float(np.quantile(p_test, 0.99)),
+            float(np.max(p_test)),
+            float(np.mean(p_test)))
+    logger.info("pred@thr=0.5: positive_rate=%.4f", float((p_test > 0.5).mean()))
+
 
     return {"step": "gnb", "skipped": False, "outputs": outs}
 
@@ -345,8 +488,19 @@ def main() -> None:
     params = {
         "verbose": False,
         "force": True,
-        "feature_set": "all84",  # or "selected5"
-        "threshold_fixed": 0.7,
+
+        # choose one:
+        # "feature_set": "all84",
+        # "feature_set": "selected5",
+        "feature_set": "single1",
+        "single_sqi": "basSQI",   # try: "bSQI", "basSQI", "kSQI", "sSQI", "fSQI"
+
+        "var_smoothing": 1e-4,
+        "threshold_metric": "youden",
+        "use_calibration": False,
+        "calib_method": "sigmoid",
+
+        "maxacc_grid": 2001,
     }
     run(params)
 

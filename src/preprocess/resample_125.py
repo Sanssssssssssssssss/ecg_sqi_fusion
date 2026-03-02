@@ -253,7 +253,7 @@ def main() -> None:
     params = {
         "verbose": False,
         "force": False,
-        # "overwrite": OVERWRITE,   # 可不写，默认用常量
+        # "overwrite": OVERWRITE
     }
     run(params)
 

@@ -316,7 +316,7 @@ def to_tensors(X: np.ndarray, y: np.ndarray, cfg: RunConfig) -> tuple[torch.Tens
 
 
 def compute_metrics(y01: np.ndarray, p: np.ndarray, threshold: float) -> dict[str, Any]:
-    y01 = y01.astype(int).ravel()
+    y01 = y01.astype(int).ravel() # astype to int and then ravel flat to 1D
     p = p.astype(np.float64).ravel()
     pred = (p > threshold).astype(int)
 
@@ -364,7 +364,7 @@ def plot_val_curve(df_res: pd.DataFrame, out_png: Path) -> None:
     ax.plot(df_res["J"], df_res["val_auc"], marker="o", label="val_auc")
     ax.set_xlabel("Hidden units J")
     ax.set_ylabel("Metric")
-    ax.set_title("LM-MLP architecture search (84–J–1)")
+    ax.set_title("LM-MLP architecture search (84-J-1)")
     ax.legend()
     fig.tight_layout()
     fig.savefig(out_png, dpi=200)
@@ -437,7 +437,7 @@ def search_best_J(data: DataSplit, cfg: RunConfig) -> SearchResult:
     results: list[dict[str, Any]] = []
     stop_counts: dict[str, int] = {}
 
-    logger.info("[Task 1.7] LM-MLP search J=%d..%d", min(cfg.j_range), max(cfg.j_range))
+    logger.info("LM-MLP search J=%d..%d", min(cfg.j_range), max(cfg.j_range))
     for J in cfg.j_range:
         t0 = time.time()
         m = LMMLP(J=int(J), device=cfg.device, dtype=cfg.dtype, seed=cfg.seed)
@@ -666,7 +666,7 @@ def save_main_artifacts(paths: Paths, cfg: RunConfig, data: DataSplit, search: S
 
 
 # ============================================================
-# Tables (optional) — keep logic, but move out of run()
+# Tables
 # ============================================================
 
 def _cols_for_sqis_12lead(sqis: list[str]) -> list[str]:
@@ -818,7 +818,7 @@ def run_tables(data: DataSplit, cfg: RunConfig, paths: Paths, bestJ_global: int)
     y01_all = data.y01_all
 
     # -------- Table 5 --------
-    logger.info("Table5-like (MLP): each SQI individually on 12-lead")
+    logger.info("Table5 (MLP): each SQI individually on 12-lead")
     rows5: list[dict[str, Any]] = []
     for s in SQI_LIST:
         res = fit_eval_setting_from_dfm(
@@ -849,7 +849,7 @@ def run_tables(data: DataSplit, cfg: RunConfig, paths: Paths, bestJ_global: int)
     outs.append(str(out5))
 
     # -------- Table 6 --------
-    logger.info("Table6-like (MLP): SQI combinations on 12-lead")
+    logger.info("Table6 (MLP): SQI combinations on 12-lead")
     rows6: list[dict[str, Any]] = []
     for grp, sqis in COMBOS:
         res = fit_eval_setting_from_dfm(
@@ -877,7 +877,7 @@ def run_tables(data: DataSplit, cfg: RunConfig, paths: Paths, bestJ_global: int)
     outs.append(str(out6))
 
     # -------- Table 7 --------
-    logger.info("Table7-like (MLP): selected five SQIs on 12-lead (your split proxy)")
+    logger.info("Table7 (MLP): selected five SQIs on 12-lead (your split proxy)")
     res7 = fit_eval_setting_from_dfm(
         dfm=dfm, split_all=split_all, y01_all=y01_all,
         cfg=cfg, paths=paths, name="Selected5", sqis=SELECTED_5,

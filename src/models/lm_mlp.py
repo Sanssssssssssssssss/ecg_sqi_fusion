@@ -20,7 +20,7 @@ class LMConfig:
 
 class LMMLP:
     """
-    84–J–1 MLP with sigmoid hidden + sigmoid output, trained by LM on MSE loss.
+    84-J-1 MLP with sigmoid hidden + sigmoid output, trained by LM on MSE loss.
 
     y_hat = sigmoid( sigmoid(XW1 + b1) W2 + b2 )
     Targets y are 0/1 (you will map -1->0 outside).

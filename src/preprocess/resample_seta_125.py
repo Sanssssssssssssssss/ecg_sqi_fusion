@@ -35,8 +35,8 @@ def load_record_500(record_id: str, data_dir: Path) -> tuple[np.ndarray, float, 
     rec = wfdb.rdrecord(str(rec_path), physical=True)
     sig = rec.p_signal  # (N, n_sig) physical units
     fs = float(rec.fs)
-    sig_name = list(rec.sig_name) if rec.sig_name is not None else [f"ch{i}" for i in range(sig.shape[1])]
-    return sig, fs, sig_name
+    sig_name = list(rec.sig_name) if rec.sig_name is not None else [f"ch{i}" for i in range(sig.shape[1])] # pyright: ignore[reportOptionalMemberAccess]
+    return sig, fs, sig_name # pyright: ignore[reportReturnType]
 
 
 def resample_500_to_125(sig12_500: np.ndarray) -> np.ndarray:

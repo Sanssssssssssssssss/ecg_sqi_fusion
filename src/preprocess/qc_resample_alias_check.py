@@ -130,7 +130,7 @@ def lowpass_40hz_125(x: np.ndarray, fs: float = FS_OUT, fc: float = 40.0) -> np.
     where bandwidth is the primary concern, as per the paper.
     """
     wn = fc / (fs / 2.0)
-    b, a = butter(N=4, Wn=wn, btype="lowpass")
+    b, a = butter(N=4, Wn=wn, btype="lowpass") # type: ignore
     return filtfilt(b, a, x)
 
 

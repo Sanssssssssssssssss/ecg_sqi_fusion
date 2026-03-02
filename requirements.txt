@@ -7,3 +7,5 @@ scikit-learn
 torch
 pyarrow
 openpyxl
+PyWavelets
+tqdm

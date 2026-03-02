@@ -5,6 +5,10 @@ import time
 from pathlib import Path
 from typing import Any
 
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
 import numpy as np
 import pandas as pd
 from sklearn.metrics import confusion_matrix, roc_auc_score, roc_curve
@@ -19,7 +23,7 @@ SEED = 0
 LEADS_12 = ["I", "II", "III", "aVR", "aVL", "aVF", "V1", "V2", "V3", "V4", "V5", "V6"]
 SQI_LIST = ["bSQI", "iSQI", "kSQI", "sSQI", "pSQI", "fSQI", "basSQI"]
 
-# === Paper (your screenshot) Table 6 combos (12-lead) ===
+# === Paper Table 6 combos (12-lead) ===
 COMBOS = [
     ("Pairs",       ["iSQI", "basSQI"]),
     ("Triplets",    ["bSQI", "basSQI", "pSQI"]),
@@ -48,7 +52,6 @@ def _load_df(features_parquet: Path, split_csv: Path) -> pd.DataFrame:
 
 
 def _get_feature_cols_12lead(sqis: list[str]) -> list[str]:
-    # concatenate features across all leads, fixed lead order
     cols: list[str] = []
     for lead in LEADS_12:
         for s in sqis:
@@ -81,6 +84,7 @@ def _metrics(y01: np.ndarray, p: np.ndarray, threshold: float = 0.5) -> dict[str
         "tn": int(tn), "fp": int(fp), "fn": int(fn), "tp": int(tp),
     }
 
+
 def _max_acc_threshold(y01: np.ndarray, p: np.ndarray, n_grid: int = 2001) -> dict[str, Any]:
     y = y01.astype(int).ravel()
     p = p.astype(np.float64).ravel()
@@ -103,16 +107,11 @@ def plot_roc_with_maxacc(y01: np.ndarray, p: np.ndarray, out_png: Path) -> dict[
     fpr, tpr, thr = roc_curve(y01.astype(int), p.astype(np.float64))
     best = _max_acc_threshold(y01, p)
 
-    # 找 ROC 曲线中最接近 best threshold 的点，画出来
     if len(thr) > 0:
         idx = int(np.argmin(np.abs(thr - best["threshold"])))
         x = float(fpr[idx]); y = float(tpr[idx])
     else:
         x, y = 0.0, 0.0
-
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
 
     fig, ax = plt.subplots(figsize=(6, 5))
     ax.plot(fpr, tpr)
@@ -136,11 +135,43 @@ def _save_probs_npz(out_npz: Path, y01: np.ndarray, p: np.ndarray, threshold_fix
     )
 
 
+def _fit_fixed_params(model: SVMRBF, X: np.ndarray, y: np.ndarray, *, C: float, gamma: float) -> dict[str, Any]:
+    """
+    Fit SVMRBF once with fixed (C, gamma), no grid search.
+    Keeps using YOUR SVMRBF object; we just build its pipeline and set params.
+    """
+    X = np.asarray(X, dtype=np.float64)
+    y = np.asarray(y, dtype=int).ravel()
+
+    pipe = model._make_pipeline()
+    pipe.set_params(svc__C=float(C), svc__gamma=float(gamma))
+
+    t0 = time.time()
+    pipe.fit(X, y)
+    total_s = float(time.time() - t0)
+
+    model.best_estimator_ = pipe
+    model.best_params_ = {"svc__C": float(C), "svc__gamma": float(gamma)}
+    model.best_cv_score_ = float("nan")
+
+    return {"train_time_s": total_s}
+
+
 def _fit_eval_12lead(
     df: pd.DataFrame,
     sqis: list[str],
     svm_cfg: SVMConfig,
     threshold: float = 0.5,
+    *,
+    # selection control
+    use_global_best: bool = True,
+    C_star: float | None = None,
+    gamma_star: float | None = None,
+    # only used if not use_global_best
+    select_metric: str = "val_acc",
+    log_each: bool = True,
+    # bookkeeping
+    global_report: dict[str, Any] | None = None,
     save_model: bool = False,
     model_out: Path | None = None,
     meta: dict[str, Any] | None = None,
@@ -151,19 +182,54 @@ def _fit_eval_12lead(
         raise ValueError(f"Missing feature columns (examples): {missing[:10]}")
 
     tr = df["split"].to_numpy() == "train"
+    va = df["split"].to_numpy() == "val"
     te = df["split"].to_numpy() == "test"
 
     Xtr = df.loc[tr, cols].to_numpy(dtype=np.float64)
     ytr = df.loc[tr, "y01"].to_numpy(dtype=int)
+    Xva = df.loc[va, cols].to_numpy(dtype=np.float64)
+    yva = df.loc[va, "y01"].to_numpy(dtype=int)
     Xte = df.loc[te, cols].to_numpy(dtype=np.float64)
     yte = df.loc[te, "y01"].to_numpy(dtype=int)
 
     model = SVMRBF(svm_cfg)
 
-    t0 = time.time()
-    gs = model.fit_gridsearch(Xtr, ytr)
-    train_time = float(time.time() - t0)
+    # ---- training ----
+    if use_global_best:
+        if C_star is None or gamma_star is None:
+            raise ValueError("use_global_best=True but C_star/gamma_star not provided")
+        fit_info = _fit_fixed_params(model, Xtr, ytr, C=float(C_star), gamma=float(gamma_star))
+        train_time = float(fit_info["train_time_s"])
 
+        # keep table fields intact (fill with global search report if provided)
+        best_params = {"svc__C": float(C_star), "svc__gamma": float(gamma_star)}
+        if global_report is None:
+            best_score = float("nan")
+            best_val_acc = float("nan")
+            best_val_auc = float("nan")
+            n_grid = 0
+        else:
+            best_score = float(global_report.get("best_score", np.nan))
+            best_val_acc = float(global_report.get("best_val_acc", np.nan))
+            best_val_auc = float(global_report.get("best_val_auc", np.nan))
+            n_grid = int(global_report.get("n_grid", 0))
+
+    else:
+        gs = model.fit_gridsearch(
+            Xtr, ytr,
+            Xva, yva,
+            select_metric=select_metric,
+            threshold=threshold,
+            log_each=log_each,
+        )
+        train_time = float(gs["train_time_s"])
+        best_score = float(gs["best_score"])
+        best_val_acc = float(gs["best_val_acc"])
+        best_val_auc = float(gs["best_val_auc"])
+        best_params = dict(gs["best_params"])
+        n_grid = int(gs.get("n_grid", -1))
+
+    # ---- eval ----
     p_tr = model.predict_proba(Xtr)
     p_te = model.predict_proba(Xte)
 
@@ -173,9 +239,12 @@ def _fit_eval_12lead(
     out = {
         "sqis": ",".join(sqis),
         "n_features": int(len(cols)),
-        "best_cv_score": float(gs["best_cv_score"]),
-        "best_params": gs["best_params"],
-        "train_time_s": train_time,
+        "best_score": float(best_score),
+        "best_val_acc": float(best_val_acc),
+        "best_val_auc": float(best_val_auc),
+        "best_params": best_params,  # {"svc__C":..., "svc__gamma":...}
+        "n_grid": int(n_grid),
+        "train_time_s": float(train_time),
         "train": met_tr,
         "test": met_te,
         "p_test": p_te,
@@ -190,25 +259,6 @@ def _fit_eval_12lead(
 
 
 def run(params: dict[str, Any]) -> dict[str, Any]:
-    """
-    12-lead SVM tables (paper-like):
-      - Table 5: each SQI individually on 12-lead (train CV selects C/gamma)
-      - Table 6: specified SQI combos on 12-lead
-
-    params (optional):
-      - verbose: bool
-      - force: bool
-      - seed: int
-      - features_parquet: str (default artifacts/features/record84_norm.parquet)
-      - split_csv: str (default artifacts/splits/split_seta_seed0_balanced.csv)
-      - out_dir: str (default artifacts/models/svm)
-      - threshold: float (default 0.5)
-      - save_models: bool (default False)
-      - cv_folds: int (default 5)
-      - C_list: list[float] (override)
-      - gamma_list: list[float] (override)
-      - use_standard_scaler: bool (default True)
-    """
     verbose = bool(params.get("verbose", False))
     force = bool(params.get("force", False))
     _setup_logging(verbose)
@@ -223,15 +273,15 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     out_dir = Path(str(params.get("out_dir") or (root / "artifacts" / "models" / "svm")))
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    roc_dir = out_dir / "roc"
-    roc_dir.mkdir(parents=True, exist_ok=True)
-    probs_dir = out_dir / "probs"
-    probs_dir.mkdir(parents=True, exist_ok=True)
-    maxacc_dir = out_dir / "maxacc"
-    maxacc_dir.mkdir(parents=True, exist_ok=True)
+    roc_dir = out_dir / "roc"; roc_dir.mkdir(parents=True, exist_ok=True)
+    probs_dir = out_dir / "probs"; probs_dir.mkdir(parents=True, exist_ok=True)
+    maxacc_dir = out_dir / "maxacc"; maxacc_dir.mkdir(parents=True, exist_ok=True)
 
     threshold = float(params.get("threshold", 0.5))
     save_models = bool(params.get("save_models", False))
+
+    select_metric = str(params.get("select_metric", "val_acc"))
+    log_each = bool(params.get("log_each", True))
 
     # outputs
     out_table5 = out_dir / f"table5_12lead_single_sqi_seed{SEED}.csv"
@@ -256,19 +306,61 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     svm_cfg = SVMConfig(
         seed=SEED,
         cv_folds=int(params.get("cv_folds", 5)),
-        use_standard_scaler=bool(params.get("use_standard_scaler", True)),
+        use_standard_scaler=bool(params.get("use_standard_scaler", False)),
     )
-    # Optional overrides (keep stable, no extra features)
     if params.get("C_list") is not None:
         object.__setattr__(svm_cfg, "C_list", tuple(float(x) for x in params["C_list"]))
     if params.get("gamma_list") is not None:
         object.__setattr__(svm_cfg, "gamma_list", tuple(float(x) for x in params["gamma_list"]))
 
+    # ----------------------------------------
+    # GLOBAL grid search (run ONCE) to get C*, gamma*
+    # ----------------------------------------
+    global_search_sqis = list(params.get(
+        "global_search_sqis",
+        ["bSQI", "iSQI", "kSQI", "sSQI", "pSQI", "fSQI", "basSQI"],
+    ))
+    global_cols = _get_feature_cols_12lead(global_search_sqis)
+
+    tr_mask = df["split"].to_numpy() == "train"
+    Xtr_global = df.loc[tr_mask, global_cols].to_numpy(dtype=np.float64)
+    ytr_global = df.loc[tr_mask, "y01"].to_numpy(dtype=int)
+
+    va_mask = df["split"].to_numpy() == "val"
+    Xva_global = df.loc[va_mask, global_cols].to_numpy(dtype=np.float64)
+    yva_global = df.loc[va_mask, "y01"].to_numpy(dtype=int)
+
+    logger.info("GLOBAL search: sqis=%s | n_features=%d", ",".join(global_search_sqis), Xtr_global.shape[1]) # type: ignore
+
+    global_model = SVMRBF(svm_cfg)
+    gs_global = global_model.fit_gridsearch(
+        Xtr_global, ytr_global,
+        Xva_global, yva_global,
+        select_metric=select_metric,
+        threshold=threshold,
+        log_each=log_each,
+    )
+
+    C_star = float(gs_global["best_params"]["svc__C"])
+    gamma_star = float(gs_global["best_params"]["svc__gamma"])
+
+    global_report = {
+        "best_score": float(gs_global["best_score"]),
+        "best_val_acc": float(gs_global["best_val_acc"]),
+        "best_val_auc": float(gs_global["best_val_auc"]),
+        "n_grid": int(gs_global.get("n_grid", 0)),
+    }
+
+    logger.info(
+        "GLOBAL BEST: C=%.6g gamma=%.6g | val_acc=%.4f val_auc=%.4f",
+        C_star, gamma_star, global_report["best_val_acc"], global_report["best_val_auc"]
+    )
+
     # -----------------------
-    # Table 5: each SQI alone (12-lead)
+    # Table 5: each SQI alone (12-lead) -- USE GLOBAL BEST (no re-search)
     # -----------------------
     rows5: list[dict[str, Any]] = []
-    logger.info("Table 5: 12-lead, each SQI individually (grid search on train only)")
+    logger.info("Table 5: 12-lead, each SQI individually (USING GLOBAL BEST params)")
 
     for sqi in SQI_LIST:
         sqis = [sqi]
@@ -283,13 +375,16 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
             sqis=sqis,
             svm_cfg=svm_cfg,
             threshold=threshold,
+            use_global_best=True,
+            C_star=C_star,
+            gamma_star=gamma_star,
+            global_report=global_report,
             save_model=save_models,
             model_out=model_path,
-            meta={"mode": "12lead", "sqis": sqis},
+            meta={"mode": "12lead", "sqis": sqis, "global_best": {"C": C_star, "gamma": gamma_star}},
         )
 
-        # ---- per-setting artifacts (test probs + ROC + maxAcc) ----
-        key = f"single_{sqi}"
+        key = f"{sqi}"
         out_probs = probs_dir / f"{key}_seed{SEED}.npz"
         _save_probs_npz(out_probs, res["y01_test"], res["p_test"], threshold)
 
@@ -302,7 +397,12 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
         rows5.append({
             "SQI": sqi,
             "n_features": res["n_features"],
-            "cv_acc": res["best_cv_score"],
+            "val_score": res["best_score"],
+            "val_acc_best": res["best_val_acc"],
+            "val_auc_best": res["best_val_auc"],
+            "best_C": res["best_params"]["svc__C"],
+            "best_gamma": res["best_params"]["svc__gamma"],
+            "n_grid": res["n_grid"],
             "Ac_train": res["train"]["Ac"],
             "Se_train": res["train"]["Se"],
             "Sp_train": res["train"]["Sp"],
@@ -314,17 +414,17 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
             "maxAcc_test": best_thr["acc"],
         })
 
-        logger.info("  %-6s | cv=%.4f | test Ac=%.4f", sqi, res["best_cv_score"], res["test"]["Ac"])
+        logger.info("  %-6s | using GLOBAL (C,gamma)=(%.3g,%.3g) | test Ac=%.4f",
+                    sqi, C_star, gamma_star, res["test"]["Ac"])
 
-    df5 = pd.DataFrame(rows5)
-    df5.to_csv(out_table5, index=False)
+    pd.DataFrame(rows5).to_csv(out_table5, index=False)
     logger.info("[saved] %s", out_table5)
 
     # -----------------------
-    # Table 6: SQI combos (12-lead)
+    # Table 6: SQI combos (12-lead) -- USE GLOBAL BEST (no re-search)
     # -----------------------
     rows6: list[dict[str, Any]] = []
-    logger.info("Table 6: 12-lead, SQI combinations (grid search on train only)")
+    logger.info("Table 6: 12-lead, SQI combinations (USING GLOBAL BEST params)")
 
     for group, sqis in COMBOS:
         safe_name = group.replace(" ", "")
@@ -338,12 +438,16 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
             sqis=sqis,
             svm_cfg=svm_cfg,
             threshold=threshold,
+            use_global_best=True,
+            C_star=C_star,
+            gamma_star=gamma_star,
+            global_report=global_report,
             save_model=save_models,
             model_out=model_path,
-            meta={"mode": "12lead", "group": group, "sqis": sqis},
+            meta={"mode": "12lead", "group": group, "sqis": sqis, "global_best": {"C": C_star, "gamma": gamma_star}},
         )
 
-        key = f"combo_{group.replace(' ', '')}"
+        key = f"{group.replace(' ', '')}"
         out_probs = probs_dir / f"{key}_seed{SEED}.npz"
         _save_probs_npz(out_probs, res["y01_test"], res["p_test"], threshold)
 
@@ -357,7 +461,12 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
             "Group": group,
             "Selected_SQI": ",".join(sqis),
             "n_features": res["n_features"],
-            "cv_acc": res["best_cv_score"],
+            "val_score": res["best_score"],
+            "val_acc_best": res["best_val_acc"],
+            "val_auc_best": res["best_val_auc"],
+            "best_C": res["best_params"]["svc__C"],
+            "best_gamma": res["best_params"]["svc__gamma"],
+            "n_grid": res["n_grid"],
             "Ac_train": res["train"]["Ac"],
             "Ac_test": res["test"]["Ac"],
             "AUC_test": res["test"]["AUC"],
@@ -365,10 +474,10 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
             "maxAcc_test": best_thr["acc"],
         })
 
-        logger.info("  %-11s | cv=%.4f | test Ac=%.4f", group, res["best_cv_score"], res["test"]["Ac"])
+        logger.info("  %-11s | using GLOBAL (C,gamma)=(%.3g,%.3g) | test Ac=%.4f",
+                    group, C_star, gamma_star, res["test"]["Ac"])
 
-    df6 = pd.DataFrame(rows6)
-    df6.to_csv(out_table6, index=False)
+    pd.DataFrame(rows6).to_csv(out_table6, index=False)
     logger.info("[saved] %s", out_table6)
 
     return {
@@ -387,11 +496,12 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
 def main() -> None:
     params = {
         "verbose": False,
-        "force": False,
-        # 建议先跑快一点（可选）：
-        # "cv_folds": 3,
-        # "C_list": [2**-1, 2**1, 2**3, 2**5, 2**7],
-        # "gamma_list": [2**-7, 2**-5, 2**-3, 2**-1],
+        "force": True,
+        "C_list": (1.0, 2.0**1, 2.0**3, 25, 2.0**5, 2.0**7, 2.0**9),
+        "gamma_list": (2.0**-11, 2.0**-9, 2.0**-7, 2.0**-5, 2.0**-3, 0.14, 2.0**-1, 0.7, 1, 1.5, 2),
+        "select_metric": "val_acc",    # or "val_auc"
+        "log_each": True,              # only affects GLOBAL search printing
+        "global_search_sqis": ["bSQI", "iSQI", "kSQI", "sSQI", "pSQI", "fSQI", "basSQI"],
     }
     run(params)
 

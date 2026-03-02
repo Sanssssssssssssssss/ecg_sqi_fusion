@@ -40,7 +40,7 @@ class RunConfig:
     select_metric: Literal["val_acc", "val_auc"] = "val_acc"
 
     # evaluation
-    threshold_fixed: float = 0.7
+    threshold_fixed: float = 0.5
     maxacc_grid: int = 2001
 
     # runtime
@@ -225,11 +225,12 @@ def build_cfg(params: dict[str, Any]) -> RunConfig:
     return RunConfig(
         seed=int(params.get("seed", 0)),
         feature_set=("selected5" if str(params.get("feature_set", "all84")).lower() == "selected5" else "all84"),
-        threshold_fixed=float(params.get("threshold_fixed", 0.7)),
+        threshold_fixed=float(params.get("threshold_fixed", 0.5)),
         verbose=bool(params.get("verbose", False)),
         force=bool(params.get("force", False)),
         select_metric=("val_auc" if str(params.get("select_metric", "val_acc")).lower() == "val_auc" else "val_acc"),
-        c_grid=tuple(params.get("c_grid", (1e-4, 1e-3, 1e-2, 1e-1, 1.0, 10.0, 100.0))),
+        # c_grid=tuple(params.get("c_grid", (1e-4, 1e-3, 1e-2, 1e-1, 1.0, 10.0, 100.0))),
+        c_grid = tuple(np.logspace(-6, 6, 61)),
         maxacc_grid=int(params.get("maxacc_grid", 2001)),
     )
 
@@ -412,7 +413,7 @@ def main() -> None:
         "force": True,
         "feature_set": "all84",     # or "selected5"
         "select_metric": "val_acc", # or "val_auc"
-        "threshold_fixed": 0.7,
+        "threshold_fixed": 0.5,
     }
     run(params)
 

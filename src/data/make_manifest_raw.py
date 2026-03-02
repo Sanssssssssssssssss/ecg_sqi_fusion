@@ -163,7 +163,7 @@ def manifest_challenge_seta(challenge_root: Path) -> tuple[pd.DataFrame, pd.Data
                 fs=float(h.fs),
                 sig_len=int(h.sig_len),
                 n_sig=int(h.n_sig),
-                duration_s=float(h.sig_len / h.fs),
+                duration_s=float(h.sig_len / h.fs), # type: ignore
                 sig_name=",".join(h.sig_name) if getattr(h, "sig_name", None) else "",
                 base_path=str(paths.set_a_dir),
             )
@@ -192,7 +192,7 @@ def manifest_nstdb(nstdb_root: Path) -> pd.DataFrame:
                 fs=float(h.fs),
                 sig_len=int(h.sig_len),
                 n_sig=int(h.n_sig),
-                duration_s=float(h.sig_len / h.fs),
+                duration_s=float(h.sig_len / h.fs), # type: ignore
                 sig_name=",".join(h.sig_name) if getattr(h, "sig_name", None) else "",
                 base_path=str(nstdb_root),
                 split_index=int(h.sig_len // 2),

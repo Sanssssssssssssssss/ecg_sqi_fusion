@@ -454,7 +454,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     all_new_rows: list[dict] = []
     all_audit: list[dict] = []
 
-    for split_name in ["train", "test"]:
+    for split_name in ["train", "val", "test"]:
         new_rows, audit = balance_one_split(df, split_name, nstdb_signals, rng, root)
         all_new_rows.extend(new_rows)
         all_audit.extend(audit)
@@ -487,13 +487,23 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
         outputs.append(str(audit_csv))
 
     # summary
-    for split_name in ["train", "test"]:
+    # individual split stats
+    for split_name in ["train", "val", "test"]:
         d = df_bal[df_bal["split"] == split_name]
         n_good = int((d["y"] == 1).sum())
         n_bad = int((d["y"] == -1).sum())
         n_aug = int((d.get("is_augmented", 0) == 1).sum()) if len(d) else 0
         logger.info("[%s] after balance: good=%d, bad=%d, total=%d, augmented=%d",
                     split_name, n_good, n_bad, len(d), n_aug)
+
+    # combined train+val
+    d_tv = df_bal[df_bal["split"].isin(["train", "val"])]
+    n_good_tv = int((d_tv["y"] == 1).sum())
+    n_bad_tv = int((d_tv["y"] == -1).sum())
+    n_aug_tv = int((d_tv.get("is_augmented", 0) == 1).sum()) if len(d_tv) else 0
+
+    logger.info("[train (include val)] after balance: good=%d, bad=%d, total=%d, augmented=%d",
+                n_good_tv, n_bad_tv, len(d_tv), n_aug_tv)
 
     return {"step": "balanced_noise", "skipped": False, "outputs": outputs}
 
@@ -502,7 +512,7 @@ def main() -> None:
     # keep single-file runnable; defaults identical to old behavior
     params = {
         "verbose": False,
-        "force": False,
+        "force": True,
     }
     run(params)
 
