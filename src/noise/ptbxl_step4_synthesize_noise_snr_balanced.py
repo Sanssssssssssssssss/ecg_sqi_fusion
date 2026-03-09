@@ -20,6 +20,13 @@ except ModuleNotFoundError:
     from src.utils.paths import project_root
 
 
+
+# --------- Fixed Hyperparams (edit here) ---------
+GOOD_SNR = (16, 20)
+MEDIUM_SNR = (2, 6)
+BAD_SNR = (-6, -2)
+
+
 SEED = 0
 FS = 125
 WIN_SEC = 10
@@ -63,10 +70,10 @@ def assign_balanced_classes(n: int, rng: np.random.Generator) -> np.ndarray:
 
 def sample_snr_db(y_class: str, rng: np.random.Generator) -> float:
     if y_class == "good":
-        return float(rng.uniform(16, 20))
+        return float(rng.uniform(*GOOD_SNR))
     if y_class == "medium":
-        return float(rng.uniform(4, 8))
-    return float(rng.uniform(-6, -2))
+        return float(rng.uniform(*MEDIUM_SNR))
+    return float(rng.uniform(*BAD_SNR))
 
 
 def add_noise_at_snr(x: np.ndarray, v: np.ndarray, snr_db: float) -> np.ndarray:

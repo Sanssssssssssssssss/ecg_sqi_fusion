@@ -10,6 +10,7 @@
 # ECG project outputs (VERY IMPORTANT)
 # ======================
 artifacts/
+artifact1/
 models/
 data/
 
@@ -18,6 +19,7 @@ data/
 # ======================
 .idea/
 .vscode/
+logs/
 
 # ======================
 # cache
@@ -25,3 +27,4 @@ data/
 __pycache__/
 *.pyc
 /run.ps1
+

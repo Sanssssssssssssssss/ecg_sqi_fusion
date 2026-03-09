@@ -40,7 +40,7 @@ P_THR = 0.43             # for binary
 WAVELET_MODE = "binary"  # "binary" or "continuous" or "off"
 WAVELET = "db6"
 LEVEL = 4
-W_Q = 0.65               # quantile threshold for binary mask
+W_THR = 0                # direct threshold for binary mask on normalized wavelet score
 ALPHA = 3.0              # only used for "continuous" (visual scale hint)
 
 # R-peak display
@@ -100,10 +100,12 @@ def shade_p(ax: plt.Axes, t: np.ndarray, p: np.ndarray) -> None: # type: ignore
 
 def wavelet_weight(x: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """
+    Paper-aligned proxy:
+      a(t) = reconstructed detail coefficients at chosen level
+      mask = 1{a(t) > 0}
     Returns:
-      w_norm in [0,1] length T
-      w_mask binary {0,1} length T from quantile(W_Q)
-    DWT (wavedec) + interpolate details back to T.
+      a_t   float32 length T   (can be negative)
+      m     uint8   length T   (binary gate)
     """
     if pywt is None:
         raise RuntimeError("PyWavelets not installed. pip install PyWavelets")
@@ -115,21 +117,15 @@ def wavelet_weight(x: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     lev = int(min(LEVEL, maxlev if maxlev >= 1 else 1))
 
     coeffs = pywt.wavedec(x, wavelet=WAVELET, level=lev, mode="symmetric")
-    details = coeffs[1:]  # cD_lev ... cD1
+    # coeffs = [cA_lev, cD_lev, cD_{lev-1}, ..., cD1]
 
-    e = np.zeros(T, dtype=np.float64)
-    for d in details:
-        d_abs = np.abs(d)
-        xp = np.linspace(0, T - 1, num=len(d_abs))
-        e += np.interp(np.arange(T), xp, d_abs)
+    # reconstruct ONLY cD_lev back to time domain (paper assumption)
+    rec = [np.zeros_like(c) for c in coeffs]
+    rec[1] = coeffs[1]  # keep cD_lev
+    a_t = pywt.waverec(rec, wavelet=WAVELET, mode="symmetric")[:T]
 
-    e -= np.min(e)
-    e /= (np.max(e) + 1e-12)
-    w = e.astype(np.float32)
-
-    thr = float(np.quantile(w, W_Q))
-    m = (w >= thr).astype(np.uint8)
-    return w, m
+    m = (a_t > 0).astype(np.uint8)
+    return a_t.astype(np.float32), m
 
 
 def shade_wavelet(ax: plt.Axes, t: np.ndarray, w: np.ndarray, m: np.ndarray) -> tuple[float, float]: # type: ignore
