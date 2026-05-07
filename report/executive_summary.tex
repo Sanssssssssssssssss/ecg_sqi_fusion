@@ -1,0 +1,35 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=black}
+
+\title{Executive Summary: ECG SQI Fusion}
+\author{Chang Xu}
+\date{May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\textbf{Executive summary word count: approximately 640 words}\\
+\textit{Current runnable code state: local tag \texttt{runnable-node-2026-05-07}.}
+\end{center}
+
+This project investigates signal quality assessment for ECG recordings. The central aim is to understand how well signal quality indices (SQIs) can identify usable and unusable ECG segments, and how traditional SQI fusion compares with a newer transformer-based waveform model. The current repository contains two related but separate research strands.
+
+The first strand is a classical SQI and machine learning pipeline. It uses PhysioNet Challenge 2011 style ECG records and noise data to build a balanced signal-quality classification task. The pipeline extracts seven SQIs from each of twelve ECG leads, producing an 84-dimensional record representation. The seven SQIs cover spectral quality, baseline stability, skewness, kurtosis, flatline behaviour, beat-detector agreement, and inter-lead agreement. This representation is then evaluated with conventional models including a Levenberg-Marquardt multilayer perceptron, support vector machines, logistic regression, and Gaussian naive Bayes.
+
+The classical strand is the main attribution component of the project. Because each feature has a defined meaning, it is possible to compare individual SQIs, SQI families, and fused SQI sets. The current artifacts show that SQI fusion is highly competitive. The current LM-MLP reaches 0.927 test accuracy, 0.922 sensitivity, 0.931 specificity, and AUC 0.962 on the balanced test split. Logistic regression over the same 84 features reaches 0.914 test accuracy and AUC 0.945, showing that much of the signal is linearly accessible. Gaussian naive Bayes using only basSQI features is weaker, with 0.819 test accuracy, but remains useful as a simple baseline. Generated paper-style tables also show that fused SQI sets are generally more stable than single SQI families, especially for SVM models.
+
+The second strand is a transformer-based PTB-XL workflow. It operates on 10 second Lead I waveform segments sampled at 125 Hz. Synthetic noise is added to create good, medium, and bad quality classes, and the training data also include clean waveforms and pseudo noise-level targets. The model uses a convolutional patch embedding, transformer encoder and decoder blocks, and three output heads: denoising, noise-level estimation, and three-class quality classification.
+
+The transformer strand reaches 0.923 test accuracy on the PTB-XL synthetic-noise task. Its confusion matrix shows strongest performance on the good and bad extremes, with more mistakes in the medium class, which is expected because medium-quality signals lie between clean and severely corrupted examples. The denoising behaviour is promising but not yet fully calibrated. Mean SNR improves by 3.44 dB for medium-noise samples and 6.98 dB for bad-noise samples, but decreases by 4.88 dB for good samples. This means the model has learned useful restoration for noisy ECG but can damage already-clean ECG, suggesting that future work should include a stronger identity constraint or class-conditioned denoising rule.
+
+The main conclusion is that handcrafted SQI fusion remains a strong and interpretable approach for ECG signal-quality classification. It is fast, transparent, and directly supports attribution analysis. The transformer model is a promising complementary direction because it learns from raw waveform data and can jointly classify and denoise, but it requires more careful evaluation before it can replace SQI-based attribution. A fair final comparison should evaluate both approaches on a shared benchmark, add stronger tests around data processing and model shape assumptions, and investigate transformer interpretability by comparing learned representations with SQI features.
+
+\section*{Declaration of Use of Autogeneration Tools}
+
+This executive summary was drafted with assistance from OpenAI Codex using the local repository code and generated artifacts. The project author remains responsible for reviewing, editing, verifying word count, and ensuring compliance with course declaration requirements.
+
+\end{document}

@@ -1,0 +1,228 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+\setlist[itemize]{leftmargin=1.5em}
+\setlist[enumerate]{leftmargin=1.5em}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue,
+  citecolor=black
+}
+
+\title{Attribution of Signal Quality Indices for Biosignals: ECG SQI Fusion}
+\author{Chang Xu}
+\date{May 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+\textbf{Project 20: Attribution of Signal Quality Indices for Biosignals}\\
+\textbf{Report word count: approximately 3,450 words}\\
+\textit{This is a repository report draft for the current runnable code state tagged locally as \texttt{runnable-node-2026-05-07}.}
+\end{center}
+
+\begin{abstract}
+This project investigates ECG signal quality assessment using two complementary modelling strands. The first strand is a classical signal quality index (SQI) pipeline that extracts interpretable handcrafted features from multi-lead ECG records and trains conventional machine learning classifiers. The second strand is a transformer-based PTB-XL workflow that learns directly from noisy Lead I waveform segments with multi-task objectives for quality classification, denoising, and noise-level estimation. The codebase now supports reproducible data preparation, feature extraction, model training, evaluation, and artifact generation for both strands. The classical pipeline provides strong, explainable baselines, with the current Levenberg-Marquardt MLP reaching 0.927 test accuracy and AUC 0.962 on the balanced Challenge 2011 derived test split. The transformer workflow reaches 0.923 test accuracy on a three-class synthetic PTB-XL quality task and improves mean SNR by 3.44 dB on medium-noise segments and 6.98 dB on bad-noise segments. The main scientific conclusion is that SQI fusion remains a competitive and transparent quality-assessment method, while transformer-based waveform modelling adds a route toward noise-aware representation learning and restoration when labelled or synthetic noisy data are available.
+\end{abstract}
+
+\section{Introduction}
+
+Reliable electrocardiogram (ECG) analysis depends on the quality of the recorded waveform. Motion artefact, baseline wander, electrode motion, muscle noise, and acquisition failures can all degrade clinical interpretability and reduce the reliability of downstream algorithms. Signal quality indices provide a practical way to quantify whether an ECG segment is likely to be useful. They are also attractive because many SQIs have physical or statistical interpretations: some measure spectral concentration, some measure baseline contamination, some measure higher-order amplitude statistics, and others measure agreement between beat detectors or between leads.
+
+The allocated project, ``Attribution of Signal Quality Indices for Biosignals'', is therefore naturally concerned with two questions. First, which SQIs and combinations of SQIs are useful for classifying ECG signal quality? Second, how should classical SQI fusion be compared with modern learned representations that operate directly on waveform data? The repository answers these questions through two related but deliberately separate code paths.
+
+The first path is a classical machine learning pipeline centred on PhysioNet Challenge 2011 Set-a style data, the Noise Stress Test Database, and a balanced synthetic corruption workflow. It extracts seven SQIs from each of twelve ECG leads, producing an 84-dimensional record representation. It then evaluates several classical classifiers, including a Levenberg-Marquardt trained multilayer perceptron, support vector machines, logistic regression, and Gaussian naive Bayes. This strand emphasises interpretability, reproducibility, and direct attribution of the value of individual SQIs and SQI combinations.
+
+The second path is a transformer-based PTB-XL workflow. It constructs noisy 10 second Lead I waveform segments at 125 Hz, attaches class labels and pseudo noise-level targets, then trains a multi-task transformer. The transformer predicts three outputs: a denoised waveform, a per-sample noise-level trace, and a three-class signal-quality label. This strand asks whether direct waveform learning can match SQI fusion for classification while also learning a useful restoration behaviour.
+
+\section{Repository State and Reproducibility}
+
+The repository is organised around source code under \path{src/}, generated artifacts under \path{artifacts/} and \path{artifact1/}, and submission material under \path{report/}. The current runnable node is the local commit \texttt{d489a17}, tagged locally as \texttt{runnable-node-2026-05-07}. That commit updates the transformer training configuration to a 20 epoch schedule with stronger classification and denoising weights.
+
+The classical pipeline has a single orchestration entry point: \path{src/run_all.py}. It builds a run summary, applies default paths through \path{src/utils/paths.py}, and executes the enabled pipeline steps in order. The command
+\begin{verbatim}
+python src/run_all.py --verbose
+\end{verbatim}
+runs the default classical workflow. The runner also supports partial execution with \texttt{--only}, clean regeneration with \texttt{--fresh}, and overwrite-style execution with \texttt{--force}.
+
+The PTB-XL transformer workflow is currently script-driven rather than integrated into \path{src/run_all.py}. The main scripts form a numbered sequence: manifest creation, 10 second segment generation, clean split construction, synthetic noise generation, pseudo noise-level construction, transformer training, and best-checkpoint evaluation. The training command is:
+\begin{verbatim}
+python -u src/models/ptbxl_step6_train_mtl_transformer.py
+\end{verbatim}
+and best-checkpoint evaluation is:
+\begin{verbatim}
+python -u src/experiment/ptbxl_eval_best_step6.py
+\end{verbatim}
+
+This separation is useful at the current stage. The classical pipeline is mature enough to run as a compact end-to-end system, while the transformer workflow remains an active experimental line with fixed paths, fixed hyperparameters, and cluster-oriented scripts such as \path{slurm/run_ampere.sh}. The README makes this explicit and documents the expected data folders for both workflows.
+
+\section{Classical SQI and Machine Learning Strand}
+
+\subsection{Data Flow}
+
+The classical strand starts with raw PhysioNet Challenge 2011 Set-a ECG records and NSTDB noise records. \path{src/run_all.py} executes the following sequence:
+\begin{enumerate}
+  \item Raw manifest creation for Challenge 2011 Set-a and NSTDB.
+  \item Train, validation, and test split generation.
+  \item Balanced noisy case synthesis.
+  \item Resampling to 125 Hz.
+  \item QRS detector cache generation.
+  \item Record-level SQI feature extraction.
+  \item Feature normalisation.
+  \item Training and evaluation of baseline classifiers.
+\end{enumerate}
+
+The working sampling frequency is 125 Hz. The split file \path{artifacts/splits/split_seta_seed0_balanced.csv} contains 1546 balanced records, split into 1082 training, 232 validation, and 232 test examples. The extracted \path{artifacts/features/record84.parquet} file contains 84 feature columns plus metadata and labels, with 773 positive and 773 negative labels.
+
+\subsection{SQI Definitions and Feature Representation}
+
+The SQI implementation is in \path{src/features/sqi.py}. The seven SQIs are:
+\begin{itemize}
+  \item \textbf{pSQI}: relative QRS-band spectral power, defined from 5--15 Hz over 5--40 Hz.
+  \item \textbf{basSQI}: baseline stability, computed as one minus the 0--1 Hz power fraction over 0--40 Hz.
+  \item \textbf{sSQI}: skewness of the amplitude distribution.
+  \item \textbf{kSQI}: Pearson kurtosis of the amplitude distribution.
+  \item \textbf{fSQI}: a flatline proxy based on the fraction of near-zero first differences.
+  \item \textbf{bSQI}: Li-style beat detector agreement, computed globally using matched beats over the union of detected beats.
+  \item \textbf{iSQI}: inter-lead agreement, computed from pairwise lead agreement and summarised per lead.
+\end{itemize}
+
+\path{src/features/make_record84.py} applies these indices to twelve leads, producing $12 \times 7 = 84$ features per record. \path{src/features/norm_record84_ks.py} then normalises the skewness and kurtosis features using training-set statistics. This matters because higher-order moment features can have heavy-tailed distributions and can dominate distance-based models if left untreated.
+
+\subsection{Classical Models}
+
+The classical model suite is intentionally broad but lightweight. The Levenberg-Marquardt MLP in \path{src/models/lm_mlp.py} uses an 84-\textit{J}-1 architecture with sigmoid hidden and output units, trained with mean squared error. \path{src/models/lm_mlp_search.py} selects the hidden size \textit{J} using validation performance and then reports fixed-threshold and maximum-accuracy test metrics.
+
+The support vector machine workflow evaluates RBF-kernel SVMs over SQI subsets and hyperparameters. Logistic regression provides a regularised linear baseline over all 84 features, and Gaussian naive Bayes provides a deliberately simple probabilistic baseline. The purpose of this suite is not only to maximise accuracy, but to expose how much of the classification task is explained by individual SQIs, SQI families, and fused representations.
+
+\subsection{Classical Results}
+
+Table~\ref{tab:classical-main} summarises the main current model results from stored artifacts.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lrrrr}
+\toprule
+Model & Features & Test accuracy & Sensitivity & Specificity \\
+\midrule
+LM-MLP & 84 SQIs & 0.927 & 0.922 & 0.931 \\
+Logistic regression & 84 SQIs & 0.914 & 0.922 & 0.905 \\
+Gaussian naive Bayes & 12 basSQI & 0.819 & 0.810 & 0.828 \\
+\bottomrule
+\end{tabular}
+\caption{Current classical baseline performance on the balanced test split. LM-MLP and logistic regression values use the fixed reported threshold.}
+\label{tab:classical-main}
+\end{table}
+
+The best current LM-MLP uses \textit{J}=7 hidden units and reaches 0.927 test accuracy, 0.922 sensitivity, 0.931 specificity, and AUC 0.962. Logistic regression is close, with 0.914 fixed-threshold accuracy and AUC 0.945. Gaussian naive Bayes is weaker but still informative: with only the twelve basSQI features, it reaches 0.819 test accuracy and AUC 0.886.
+
+The paper-table artifacts show the value of feature fusion. For MLP models, the best single-SQI family is fSQI with 0.935 test accuracy, while all seven SQIs together reach 0.914 in the generated Table 6 setting. For SVM models, all SQIs reach 0.944 test accuracy, improving over the best single family, sSQI, at 0.909. These tables should be read alongside the standalone LM-MLP and logistic-regression metrics because different scripts use different thresholding and model-selection conventions. The consistent pattern is that several individual SQIs are useful, but fused SQI representations are more stable across model families.
+
+\section{Transformer-Based PTB-XL Strand}
+
+\subsection{Data Flow}
+
+The transformer strand uses PTB-XL Lead I ECG segments. The scripts under \path{src/data/}, \path{src/preprocess/}, and \path{src/noise/} construct 10 second windows at 125 Hz. The prepared noisy dataset contains 19,044 samples split into 13,330 training, 2,856 validation, and 2,858 test examples. The three signal-quality classes are approximately balanced: good, medium, and bad each have about 6,350 examples. The synthetic noise sources are also balanced across motion artefact, electrode motion, and mixed noise.
+
+The pseudo noise-level file \path{artifact1/datasets/synth_10s_125hz_labels_with_level.csv} adds supervision for the noise-level task. Almost all samples have valid RR-derived pseudo labels: 19,025 valid and 19 invalid. These labels support a secondary target beyond class labels, but the current best test report records a zero contribution for noise-level loss in evaluation, so this target should still be treated as experimental.
+
+\subsection{Model Architecture}
+
+The transformer architecture is implemented in \path{src/models/mtl_transformer.py}. It operates on tensors of shape $(B,1,1250)$, corresponding to a 10 second single-lead ECG segment at 125 Hz. A convolutional patch embedding stack converts the signal into 124 overlapping tokens. The encoder has six transformer blocks with model width 128 and eight attention heads. A linear projection reduces the decoder width to 64, followed by three decoder-style self-attention blocks.
+
+The network has three heads:
+\begin{itemize}
+  \item A denoising head that maps each token to a 20-sample patch, reconstructs the waveform by overlap-add, and applies a smoothing convolution.
+  \item A noise-level head that predicts a per-sample noise-level trace using the same patch reconstruction idea.
+  \item A classification head that mean-pools decoder tokens and predicts good, medium, or bad quality.
+\end{itemize}
+
+This architecture is a good fit for the project because it uses waveform-level information while preserving a quality-assessment objective. It also allows evaluation to separate classification performance from denoising behaviour.
+
+\subsection{Training Objective}
+
+The current training script \path{src/models/ptbxl_step6_train_mtl_transformer.py} uses a phased multi-task schedule. The committed runnable configuration is:
+\begin{itemize}
+  \item 20 total epochs.
+  \item 15 denoising-focused epochs after classification activation.
+  \item 5 noise-level epochs.
+  \item classification loss weight 10.
+  \item denoising loss weight 120.
+  \item noise-level loss weight 1.
+  \item cosine learning rate schedule from $6 \times 10^{-5}$ to $4 \times 10^{-6}$.
+\end{itemize}
+
+The denoising objective uses mean squared error against the clean segment. The script also includes a wavelet gate for good-quality samples and a curriculum for bad-quality denoising samples. The curriculum prevents very noisy examples from dominating the denoising loss too early, then gradually increases their contribution. This is a sensible design choice for a multi-task model because the classification task and denoising task can otherwise compete.
+
+\subsection{Transformer Results}
+
+The best-checkpoint evaluation report at \path{artifact1/models/mtl_transformer_seed0_step6/eval_best/test_report_best.json} gives 0.923 test accuracy. The confusion matrix is:
+\[
+\begin{bmatrix}
+922 & 28 & 3 \\
+92 & 797 & 64 \\
+12 & 21 & 919
+\end{bmatrix}
+\]
+where rows are true classes and columns are predicted classes in the order good, medium, bad.
+
+The model is strongest on the good and bad extremes and less certain in the medium class. This is expected because medium-quality ECG lies between clean and severely corrupted waveforms, and the synthetic label boundary is inherently less crisp. The denoising metrics are more nuanced. On medium-quality samples, mean SNR improves by 3.44 dB. On bad-quality samples, it improves by 6.98 dB. On good-quality samples, however, the model reduces SNR by 4.88 dB, meaning that denoising currently damages already-clean examples. This is an important limitation and a useful diagnostic: the model has learned meaningful restoration for noisy inputs but needs either a stronger identity constraint for clean data or a class-conditioned denoising policy.
+
+\section{Comparison of the Two Strands}
+
+The classical and transformer strands serve different scientific purposes. The SQI/ML pipeline is more interpretable. Each feature has a defined meaning, and attribution can be studied directly by comparing single-SQI models, SQI family combinations, and full fusion models. It is also computationally efficient. The LM-MLP artifact reports training in under one second on CPU for the current feature table, which makes repeated ablation and threshold analysis practical.
+
+The transformer strand is less transparent but more flexible. It can learn waveform-level patterns that are not captured by handcrafted SQIs, and it can perform denoising and quality classification in one model. Its classification accuracy is already comparable to the stronger classical baselines, although it is evaluated on a different PTB-XL synthetic-noise task rather than the classical balanced Challenge split. The denoising results show clear gains on medium and bad examples, which the classical SQI models do not attempt to provide.
+
+For the project theme of SQI attribution, the classical strand remains the primary evidence base because it directly measures the predictive value of SQIs. The transformer strand is best understood as an extension: it tests whether learned representations can provide a noise-aware alternative or complement. A mature final analysis should not claim that one strand ``beats'' the other without a shared dataset and metric. Instead, the current conclusion is that classical SQI fusion is strong and explainable, while transformer waveform modelling adds restoration and representation-learning capabilities that are promising but need more calibration.
+
+\section{Software Engineering Assessment}
+
+The codebase has several positive engineering properties. It separates data preparation, feature extraction, models, experiments, and utilities into distinct modules. The classical runner uses a step specification list and dynamic imports, which makes the pipeline easy to subset and rerun. Generated artifacts are written into stable folders, and the README documents the expected data layout, environment, and commands.
+
+There are also areas for improvement. The transformer workflow is still controlled by hard-coded script constants and fixed artifact paths. This is acceptable for an active experiment, but the next engineering step should be to expose a configuration file or command-line interface for dataset paths, hyperparameters, and output directories. The two strands also use different artifact roots, \path{artifacts/} and \path{artifact1/}. Keeping them separate helps avoid accidental overwrite, but a final submission would be clearer if both were described in a common experiment registry or if the naming convention were made explicit in the report.
+
+Testing is currently mostly empirical and artifact-based. There are useful QC scripts for resampling, QRS cache generation, feature extraction, and PTB-XL model forward checks. For a stronger software-development submission, the repository would benefit from unit tests for SQI edge cases, deterministic split generation, and tensor-shape contracts in the transformer.
+
+\section{Limitations and Future Work}
+
+The most important limitation is that the two strands are not yet evaluated on the same benchmark. The classical pipeline uses a balanced Challenge 2011 style setup, while the transformer uses synthetic PTB-XL Lead I segments and three quality classes. This is scientifically reasonable for development but limits direct comparison. Future work should evaluate both approaches on a shared dataset or train a transformer on the same labels used by the SQI pipeline.
+
+The second limitation is the treatment of synthetic noise. Synthetic corruption enables controlled class balance and clean targets for denoising, but it may not capture all real acquisition failures. External validation on real noisy ECG records would strengthen the claim that the transformer learns clinically relevant quality cues.
+
+The third limitation is interpretability. Classical SQI attribution is straightforward through ablation and feature-family performance. Transformer attribution would require additional methods such as attention analysis, saliency maps, perturbation experiments, or comparison with SQI-derived labels. A valuable next step would be to compute SQIs on PTB-XL noisy segments and compare them with transformer embeddings and predictions.
+
+Finally, the clean-sample denoising degradation should be addressed. Possible fixes include an identity loss for good samples, class-conditioned denoising weights, a denoising bypass for high-quality inputs, or a multi-objective selection criterion that penalises negative SNR improvement on clean segments.
+
+\section{Conclusion}
+
+The current repository contains a coherent two-strand ECG signal-quality project. The classical SQI/ML strand is the main attribution engine: it extracts 84 interpretable features, evaluates individual and fused SQI sets, and achieves strong test performance with lightweight models. The transformer strand is a modern waveform-learning extension: it reaches comparable three-class classification accuracy on PTB-XL synthetic-noise data and demonstrates meaningful denoising gains on medium and bad samples.
+
+Together, these strands support a balanced conclusion. Handcrafted SQIs remain highly valuable because they are interpretable, efficient, and competitive. Transformer-based modelling is promising because it can learn directly from waveforms and support restoration objectives, but it needs careful calibration and shared-benchmark evaluation before it can replace SQI attribution. The current codebase is therefore a solid runnable research node and a useful base for final experiments, ablations, and submission polishing.
+
+\section*{References}
+
+\begin{enumerate}
+  \item Goldberger AL, Amaral LAN, Glass L, Hausdorff JM, Ivanov PCh, Mark RG, Mietus JE, Moody GB, Peng CK, Stanley HE. PhysioBank, PhysioToolkit, and PhysioNet: Components of a new research resource for complex physiologic signals. \textit{Circulation}. 2000.
+  \item Moody GB, Muldrow WE, Mark RG. A noise stress test for arrhythmia detectors. \textit{Computers in Cardiology}. 1984.
+  \item Reyna MA, Sadr N, Perez Alday EA, Gu A, Shah A, Robichaux C, Rad AB, Elola A, Seyedi S, Ansari S, Ghanbari H, Li Q, Sharma A, Clifford GD. Will two do? Varying dimensions in electrocardiography: the PhysioNet/Computing in Cardiology Challenge 2021. \textit{Computing in Cardiology}. 2021.
+  \item Wagner P, Strodthoff N, Bousseljot RD, Kreiseler D, Lunze FI, Samek W, Schaeffter T. PTB-XL, a large publicly available electrocardiography dataset. \textit{Scientific Data}. 2020.
+  \item Li Q, Mark RG, Clifford GD. Robust heart rate estimation from multiple asynchronous noisy sources using signal quality indices and a Kalman filter. \textit{Physiological Measurement}. 2008.
+\end{enumerate}
+
+\section*{Declaration of Use of Autogeneration Tools}
+
+This draft report was prepared with assistance from OpenAI Codex, an AI coding and writing assistant, using the repository contents and generated artifacts available in the local project directory. The assistant helped inspect the codebase, summarise the two modelling strands, extract reported metrics from stored JSON and CSV artifacts, and draft the report text. The project author remains responsible for checking factual accuracy, editing the final prose, confirming word counts, and ensuring that the final submitted report complies with the course handbook and declaration requirements.
+
+\end{document}
