@@ -46,10 +46,10 @@ PIN_MEMORY = False
 LR = 6e-5
 LR_ETA_MIN = 4e-6  # cosine lowest lr (after epochs decay)
 
-EPOCHS = 30
+EPOCHS = 20
 E_CLS = 0
-E_DENOISE = 30
-E_LEVEL = 0
+E_DENOISE = 15
+E_LEVEL = 5
 E_UNCERT = 0
 
 # ---- denoise on bad curriculum ---- (focus on this affect the system)
@@ -57,8 +57,8 @@ BAD_DEN_W_MAX = 0.2     # final weight of bad samples denoise loss（0.2~0.5）
 BAD_DEN_W_WARMUP_EPOCHS = 10  # epochs take linearly increase the bad weights from 0 to the maximum
 
 ALPHA = 8.0
-LAMBDA_CLS = 1.0
-LAMBDA_DEN = 12.0
+LAMBDA_CLS = 10.0
+LAMBDA_DEN = 120.0
 LAMBDA_LVL = 1.0
 WAVELET = "db6"
 WAVELET_LEVEL = 4
