@@ -7,26 +7,20 @@ Research code for ECG signal-quality assessment and noise-robust modelling. The 
 
 ## Repository layout
 
-`src/run_all.py`
-Main entrypoint for the classical end-to-end pipeline.
+`src/sqi_pipeline/`
+Classical SQI/ML pipeline package and command line entrypoint.
 
 `src/data/`
-Manifest creation, train/validation/test splitting, and PTB-XL preprocessing helpers.
+PTB-XL preprocessing helpers.
 
 `src/preprocess/`
-Signal resampling and preprocessing utilities.
-
-`src/qrs/`
-QRS detector wrappers and cached R-peak generation.
-
-`src/features/`
-SQI feature extraction, including the 84-feature record representation.
+PTB-XL preprocessing scripts.
 
 `src/models/`
-Baseline models and the PTB-XL multi-task transformer.
+PTB-XL multi-task transformer code.
 
 `src/experiment/`
-Evaluation, debugging, and visualisation scripts.
+PTB-XL evaluation, debugging, and visualisation scripts.
 
 `slurm/run_ampere.sh`
 Example SLURM job for training on Cambridge CSD3 Ampere GPUs.
@@ -65,10 +59,10 @@ The classical pipeline mainly writes to `artifacts/`. The PTB-XL scripts current
 The default runner is:
 
 ```bash
-python src/run_all.py --verbose
+python -m src.sqi_pipeline.cli --verbose
 ```
 
-`src/run_all.py` is configured to execute:
+`src.sqi_pipeline.cli` executes:
 
 - raw manifest creation
 - set-a split generation
@@ -82,14 +76,15 @@ python src/run_all.py --verbose
 Useful flags:
 
 ```bash
-python src/run_all.py --fresh
-python src/run_all.py --only manifest_raw,split_seta,record84
-python src/run_all.py --force
+python -m src.sqi_pipeline.cli --fresh
+python -m src.sqi_pipeline.cli --only manifest_raw,split_seta,record84
+python -m src.sqi_pipeline.cli --force
+python -m src.sqi_pipeline.validate_outputs --write artifacts/validation/current_seed0.json
 ```
 
 ## PTB-XL workflow
 
-The PTB-XL work is script-driven rather than wired into `run_all.py`. The main scripts are:
+The PTB-XL work is script-driven and separate from the SQI package. The main scripts are:
 
 ```text
 src/data/filter_ptbxl_lead_i.py

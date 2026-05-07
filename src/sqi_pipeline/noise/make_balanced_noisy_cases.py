@@ -14,8 +14,8 @@ matplotlib.use("Agg")  # safe for headless
 from scipy.signal import resample_poly
 
 from src.utils.paths import project_root
-from src.noise.pca import make_3_orthogonal_from_2
-from src.noise.dower import dower_3_to_12, LEADS_12
+from src.sqi_pipeline.noise.pca import make_3_orthogonal_from_2
+from src.sqi_pipeline.noise.dower import dower_3_to_12, LEADS_12
 
 
 # ================== CONFIG (edit here) ==================

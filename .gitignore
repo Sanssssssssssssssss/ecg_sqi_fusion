@@ -9,10 +9,10 @@
 # ======================
 # ECG project outputs (VERY IMPORTANT)
 # ======================
-artifacts/
-artifact1/
-models/
-data/
+/artifacts/
+/artifact1/
+/models/
+/data/
 
 # ======================
 # IDE
@@ -27,4 +27,3 @@ logs/
 __pycache__/
 *.pyc
 /run.ps1
-

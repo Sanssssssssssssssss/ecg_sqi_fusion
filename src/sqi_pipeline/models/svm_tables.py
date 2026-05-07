@@ -14,7 +14,7 @@ import pandas as pd
 from sklearn.metrics import confusion_matrix, roc_auc_score, roc_curve
 
 from src.utils.paths import project_root
-from src.models.svm_rbf import SVMConfig, SVMRBF, _setup_logging
+from src.sqi_pipeline.models.svm_rbf import SVMConfig, SVMRBF, _setup_logging
 
 logger = logging.getLogger(__name__)
 

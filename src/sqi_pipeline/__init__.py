@@ -1,0 +1,1 @@
+"""Classical ECG SQI pipeline."""

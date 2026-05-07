@@ -21,7 +21,7 @@ from sklearn.metrics import roc_auc_score, roc_curve, confusion_matrix
 import torch
 
 from src.utils.paths import project_root
-from src.models.lm_mlp import LMMLP, LMConfig
+from src.sqi_pipeline.models.lm_mlp import LMMLP, LMConfig
 
 
 logger = logging.getLogger(__name__)

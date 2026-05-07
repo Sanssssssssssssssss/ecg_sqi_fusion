@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from src.utils.paths import project_root
-from src.features.sqi import (
+from src.sqi_pipeline.features.sqi import (
     sqi_pSQI, sqi_basSQI, sqi_sSQI, sqi_kSQI, sqi_fSQI,
     sqi_bSQI_li2008_global,
     sqi_iSQI_li2008_global_per_lead,
@@ -39,7 +39,7 @@ WELCH_KW = dict(
 )
 
 FLATLINE_EPS = 1e-4
-PRINT_N = 5
+PRINT_N = 0
 PRINT_ALL_LEADS = True
 
 # iSQI uses ONE detector across all leads
@@ -131,6 +131,11 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     """
     verbose = bool(params.get("verbose", False))
     force = bool(params.get("force", False))
+    print_n = int(params.get("print_n", PRINT_N))
+    print_all_leads = bool(params.get("print_all_leads", PRINT_ALL_LEADS))
+    isqi_use = str(params.get("isqi_use", ISQI_USE))
+    if isqi_use not in {"r1", "r2"}:
+        raise ValueError("isqi_use must be 'r1' or 'r2'")
     _setup_logging(verbose)
 
     root = project_root()
@@ -146,15 +151,6 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     out_dir = Path(str(out_dir))
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # optional overrides (keep defaults)
-    global PRINT_N, PRINT_ALL_LEADS, ISQI_USE
-    if "print_n" in params and params["print_n"] is not None:
-        PRINT_N = int(params["print_n"])
-    if "print_all_leads" in params and params["print_all_leads"] is not None:
-        PRINT_ALL_LEADS = bool(params["print_all_leads"])
-    if "isqi_use" in params and params["isqi_use"] is not None:
-        ISQI_USE = str(params["isqi_use"])
-
     if (not force) and _outputs_exist(out_dir):
         logger.info("record84: outputs exist -> skip (set force=True to rerun)")
         return {
@@ -167,7 +163,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     logger.info("resampled_125: %s", resampled_dir)
     logger.info("qrs cache: %s", qrs_dir)
     logger.info("Welch fixed: %s", WELCH_KW)
-    logger.info("flatline_eps=%s, iSQI_use=%s", FLATLINE_EPS, ISQI_USE)
+    logger.info("flatline_eps=%s, iSQI_use=%s", FLATLINE_EPS, isqi_use)
     logger.info("bSQI/iSQI = Li2008 GLOBAL (full 10s segment), no window, no median")
 
     df_split = pd.read_csv(split_csv)
@@ -204,7 +200,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
             logger.info("beat_match_tol_ms (from qrs npz) = %dms -> %d samples", tol_ms_seen, tol_samp)
 
         # iSQI (Li2008 global): use one detector across leads
-        r_for_isqi = r1_all if ISQI_USE == "r1" else r2_all
+        r_for_isqi = r1_all if isqi_use == "r1" else r2_all
         iSQI_list = sqi_iSQI_li2008_global_per_lead(r_for_isqi, tol_samp)
 
         feats: list[float] = []
@@ -237,8 +233,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
         row.update({n: float(v) for n, v in zip(feature_names, feats)})
         feat_rows.append(row)
 
-        # keep your original printing behavior (do not change functionality)
-        if i <= PRINT_N and PRINT_ALL_LEADS:
+        if i <= print_n and print_all_leads:
             print_sample_block(i, rid, y, row, LEADS_12)
         if i % 200 == 0:
             logger.info("processed %d/%d", i, len(record_ids))
@@ -275,10 +270,6 @@ def main() -> None:
     params = {
         "verbose": False,
         "force": False,
-        # 可选：调小打印
-        "print_n": 5,
-        "print_all_leads": True,
-        # "isqi_use": "r1",
     }
     run(params)
 

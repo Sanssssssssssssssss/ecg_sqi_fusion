@@ -9,7 +9,7 @@ import pandas as pd
 
 
 from src.utils.paths import project_root
-from src.qrs.detectors import run_xqrs, run_gqrs
+from src.sqi_pipeline.qrs.detectors import run_xqrs, run_gqrs
 
 logger = logging.getLogger(__name__)
 

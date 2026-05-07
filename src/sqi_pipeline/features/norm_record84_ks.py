@@ -153,13 +153,11 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     df_out.to_parquet(Path(out_parquet), index=False)
     logger.info("wrote normalized features -> %s rows=%d cols=%d", out_parquet, len(df_out), df_out.shape[1])
 
-    # keep your preview behavior (do not change functionality)
     sample_cols = ["II__sSQI", "II__kSQI"]
     sample_cols = [c for c in sample_cols if c in df_out.columns]
     if sample_cols:
-        logger.info("preview (first 2 rows) columns=%s", sample_cols)
-        # still prints table; keep identical
-        print(df_out[["record_id", "y"] + sample_cols].head(2).to_string(index=False))
+        preview = df_out[["record_id", "y"] + sample_cols].head(2).to_string(index=False)
+        logger.debug("preview (first 2 rows) columns=%s\n%s", sample_cols, preview)
 
     return {"step": "norm_record84_ks", "skipped": False, "outputs": [str(out_stats), str(out_parquet)]}
 
