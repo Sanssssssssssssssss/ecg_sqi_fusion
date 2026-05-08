@@ -1060,7 +1060,6 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
     print(f"saved: {OUT_BEST}")
     print(f"saved: {OUT_LOG}")
     print(f"saved: {OUT_TEST}")
-    print("NEXT INPUT: artifact1/models/mtl_transformer_seed0_step6/ckpt_best_val.pt")
     return {"step": "train", "skipped": False, "outputs": [str(p) for p in output_paths()]}
 
 

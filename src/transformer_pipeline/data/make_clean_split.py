@@ -54,7 +54,6 @@ def main() -> None:
     print(f"val segments: {int(counts.get('val', 0))}")
     print(f"test segments: {int(counts.get('test', 0))}")
     print(f"Output: {out_csv}")
-    print("NEXT INPUT: artifact1/splits/ptbxl_leadI_clean_10s_125hz_split.csv")
 
 
 if __name__ == "__main__":

@@ -74,7 +74,6 @@ def run(params: dict | None = None) -> dict:
     else:
         print("\n[SKIP] No real dataset found at artifact1/datasets/synth_10s_125hz_noisy.npz")
 
-    print("\nNEXT: if L mismatch happens, adjust cfg.conv3_padding (or revisit conv3 dilation/padding).")
     return {"step": "forward_check", "skipped": False, "outputs": []}
 
 

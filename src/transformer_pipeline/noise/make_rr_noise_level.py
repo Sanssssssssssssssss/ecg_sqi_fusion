@@ -208,7 +208,6 @@ def main() -> None:
         print(f"[{sp}] P>0.5 frac: {float((P[m] > 0.5).mean()):.6f}")
     print(f"Saved: {out_npz}")
     print(f"Saved: {out_lbl}")
-    print("NEXT INPUT: artifact1/datasets/synth_10s_125hz_noise_level.npz (+ labels csv)")
 
 
 if __name__ == "__main__":

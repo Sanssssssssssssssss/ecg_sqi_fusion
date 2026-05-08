@@ -122,7 +122,6 @@ def main() -> None:
     print(f"Filtered segments: {filtered}")
     print(f"Output NPZ: {out_npz}")
     print(f"Output CSV: {out_idx}")
-    print("NEXT INPUT: artifact1/segments/ptbxl_leadI_segments_10s_125hz.csv and artifact1/segments/ptbxl_leadI_x_10s_125hz.npz")
 
 
 if __name__ == "__main__":

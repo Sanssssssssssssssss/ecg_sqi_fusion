@@ -163,7 +163,6 @@ def main() -> None:
     print(f"Saved clean: {out_clean}")
     print(f"Saved noisy: {out_noisy}")
     print(f"Saved labels: {out_lbl}")
-    print("NEXT INPUT: artifact1/datasets/synth_10s_125hz_labels.csv + npz files")
 
 
 if __name__ == "__main__":

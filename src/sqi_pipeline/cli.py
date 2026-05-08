@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
+import warnings
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -34,6 +35,12 @@ def setup_logging(verbose: bool) -> None:
     )
     logging.getLogger("matplotlib").setLevel(logging.WARNING)
     logging.getLogger("fsspec").setLevel(logging.WARNING)
+    warnings.filterwarnings(
+        "ignore",
+        message="'penalty' was deprecated.*",
+        category=FutureWarning,
+        module="sklearn.linear_model._logistic",
+    )
 
 
 def main() -> None:
