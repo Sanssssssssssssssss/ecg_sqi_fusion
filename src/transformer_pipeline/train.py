@@ -25,14 +25,14 @@ except Exception:
 
 try:
     from src.utils.paths import project_root
-    from src.models.mtl_transformer import MTLTransformerConfig, MTLTransformerPTBXL
+    from src.transformer_pipeline.models.mtl_transformer import MTLTransformerConfig, MTLTransformerPTBXL
 except ModuleNotFoundError:
     this_file = Path(__file__).resolve()
     root = this_file.parents[2]
     if str(root) not in sys.path:
         sys.path.insert(0, str(root))
     from src.utils.paths import project_root
-    from src.models.mtl_transformer import MTLTransformerConfig, MTLTransformerPTBXL
+    from src.transformer_pipeline.models.mtl_transformer import MTLTransformerConfig, MTLTransformerPTBXL
 
 
 # --------- Fixed Hyperparams (edit here) ---------
@@ -41,6 +41,7 @@ BATCH_SIZE = 32
 WEIGHT_DECAY = 0.03
 NUM_WORKERS = 0
 PIN_MEMORY = False
+VERBOSE = False
 
 # ---- LR scheduler ----
 LR = 6e-5
@@ -84,6 +85,42 @@ OUT_LAST = OUT_DIR / "ckpt_last.pt"
 OUT_BEST = OUT_DIR / "ckpt_best_val.pt"
 OUT_LOG = OUT_DIR / "train_log.json"
 OUT_TEST = OUT_DIR / "test_report.json"
+
+
+def configure_from_params(params: dict[str, Any]) -> None:
+    global SEED, BATCH_SIZE, NUM_WORKERS, PIN_MEMORY, EPOCHS, VERBOSE
+    global OUT_DIR, OUT_LAST, OUT_BEST, OUT_LOG, OUT_TEST
+
+    if params.get("seed") is not None:
+        SEED = int(params["seed"])
+    if params.get("batch_size") is not None:
+        BATCH_SIZE = int(params["batch_size"])
+    if params.get("num_workers") is not None:
+        NUM_WORKERS = int(params["num_workers"])
+    if params.get("pin_memory") is not None:
+        PIN_MEMORY = bool(params["pin_memory"])
+    if params.get("epochs") is not None:
+        EPOCHS = int(params["epochs"])
+    VERBOSE = bool(params.get("verbose", False))
+
+    model_dir = params.get("model_dir")
+    if model_dir:
+        OUT_DIR = Path(str(model_dir))
+        OUT_LAST = OUT_DIR / "ckpt_last.pt"
+        OUT_BEST = OUT_DIR / "ckpt_best_val.pt"
+        OUT_LOG = OUT_DIR / "train_log.json"
+        OUT_TEST = OUT_DIR / "test_report.json"
+
+
+def output_paths() -> list[Path]:
+    return [
+        OUT_LAST,
+        OUT_BEST,
+        OUT_LOG,
+        OUT_TEST,
+        OUT_DIR / "debug" / "denoise_examples_test.png",
+        OUT_DIR / "debug" / "denoise_examples_val.png",
+    ]
 
 
 # --------- Utils ---------
@@ -416,6 +453,7 @@ def run_epoch(
         loader,
         desc=f"{phase} {'train' if train_mode else 'val'}",
         leave=False,
+        disable=(not VERBOSE or not sys.stderr.isatty()),
     )
     for batch in iterator:
         x_noisy = batch["x_noisy"].to(device=device, dtype=torch.float32)
@@ -443,7 +481,7 @@ def run_epoch(
                 l_total.backward()
                 optimizer.step()
 
-        if train_mode:
+        if train_mode and VERBOSE and sys.stderr.isatty():
             post = {
                 "L": f"{float(l_total.detach().cpu()):.3f}",
                 "C": f"{float(l_cls.detach().cpu()):.3f}",
@@ -836,7 +874,11 @@ def export_denoise_examples_by_class(
 
 
 # --------- Save Artifacts ---------
-def main() -> None:
+def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
+    params = params or {}
+    configure_from_params(params)
+    dry_run = bool(params.get("dry_run", False))
+
     seed_all(SEED)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -852,6 +894,22 @@ def main() -> None:
     test_loader = DataLoader(datasets["test"], batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS, pin_memory=PIN_MEMORY)
 
     model, uw = build_model(device)
+
+    if dry_run:
+        batch = next(iter(train_loader))
+        x_noisy = batch["x_noisy"].to(device=device, dtype=torch.float32)
+        with torch.no_grad():
+            y_denoise, y_level, logits = model(x_noisy)
+        expected = (x_noisy.shape[0], 1, MTLTransformerConfig().T)
+        if tuple(y_denoise.shape) != expected:
+            raise RuntimeError(f"dry-run denoise shape mismatch: {tuple(y_denoise.shape)} != {expected}")
+        if tuple(y_level.shape) != expected:
+            raise RuntimeError(f"dry-run level shape mismatch: {tuple(y_level.shape)} != {expected}")
+        if tuple(logits.shape) != (x_noisy.shape[0], 3):
+            raise RuntimeError(f"dry-run logits shape mismatch: {tuple(logits.shape)}")
+        print("[dry-run] transformer train inputs and one forward pass OK")
+        return {"step": "train", "skipped": True, "dry_run": True, "outputs": []}
+
     optimizer = torch.optim.AdamW(
         list(model.parameters()) + list(uw.parameters()),
         lr=LR,
@@ -1003,6 +1061,11 @@ def main() -> None:
     print(f"saved: {OUT_LOG}")
     print(f"saved: {OUT_TEST}")
     print("NEXT INPUT: artifact1/models/mtl_transformer_seed0_step6/ckpt_best_val.pt")
+    return {"step": "train", "skipped": False, "outputs": [str(p) for p in output_paths()]}
+
+
+def main() -> None:
+    run({})
 
 
 if __name__ == "__main__":

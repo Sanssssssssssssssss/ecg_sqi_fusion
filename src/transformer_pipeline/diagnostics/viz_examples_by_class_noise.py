@@ -1,4 +1,4 @@
-# src/experiment/ptbxl_viz_examples_by_class_noise.py
+# Plot PTB-XL noisy examples by class and noise type.
 from __future__ import annotations
 
 import sys

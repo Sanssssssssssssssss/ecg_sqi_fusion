@@ -10,17 +10,11 @@ Research code for ECG signal-quality assessment and noise-robust modelling. The 
 `src/sqi_pipeline/`
 Classical SQI/ML pipeline package and command line entrypoint.
 
-`src/data/`
-PTB-XL preprocessing helpers.
+`src/transformer_pipeline/`
+PTB-XL Lead I transformer data, training, evaluation, and diagnostics pipeline.
 
-`src/preprocess/`
-PTB-XL preprocessing scripts.
-
-`src/models/`
-PTB-XL multi-task transformer code.
-
-`src/experiment/`
-PTB-XL evaluation, debugging, and visualisation scripts.
+`src/utils/`
+Shared project-root helpers.
 
 `slurm/run_ampere.sh`
 Example SLURM job for training on Cambridge CSD3 Ampere GPUs.
@@ -52,7 +46,7 @@ artifacts/
 artifact1/
 ```
 
-The classical pipeline mainly writes to `artifacts/`. The PTB-XL scripts currently use `artifact1/` for manifests, datasets, checkpoints, and reports.
+The SQI pipeline writes to `artifacts/`. The transformer pipeline writes to `artifact1/`.
 
 ## Classical SQI pipeline
 
@@ -84,31 +78,40 @@ python -m src.sqi_pipeline.validate_outputs --write artifacts/validation/current
 
 ## PTB-XL workflow
 
-The PTB-XL work is script-driven and separate from the SQI package. The main scripts are:
-
-```text
-src/data/filter_ptbxl_lead_i.py
-src/data/ptbxl_step1_make_manifest_leadI.py
-src/data/ptbxl_step3_split_clean_segments.py
-src/noise/ptbxl_step4_synthesize_noise_snr_balanced.py
-src/noise/ptbxl_step5_make_rr_pseudo_noise_level.py
-src/models/ptbxl_step6_train_mtl_transformer.py
-src/experiment/ptbxl_eval_best_step6.py
-```
-
-Training:
+The default transformer runner is:
 
 ```bash
-python -u src/models/ptbxl_step6_train_mtl_transformer.py
+python -m src.transformer_pipeline.cli --verbose
 ```
 
-Evaluation of the best saved checkpoint:
+It executes:
+
+- filter PTB-XL metadata to exclude Lead I noise labels
+- build the Lead I manifest
+- make 10 s, 125 Hz Lead I segments
+- split clean segments by `ecg_id`
+- synthesize balanced SNR classes with NSTDB noise
+- generate RR-level pseudo noise labels
+- run a model forward check
+- train the multi-task transformer
+- evaluate the best checkpoint
+
+Useful commands:
 
 ```bash
-python -u src/experiment/ptbxl_eval_best_step6.py
+python -m src.transformer_pipeline.cli --only train --dry-run --verbose
+python -m src.transformer_pipeline.cli --only train --verbose
+python -m src.transformer_pipeline.cli --only evaluate --verbose
+python -m src.transformer_pipeline.validate_outputs --write artifact1/validation/current_seed0.json
 ```
 
-The current transformer script expects prepared PTB-XL arrays under `artifact1/datasets/` and writes checkpoints and reports under `artifact1/models/mtl_transformer_seed0_step6/`.
+Cluster training:
+
+```bash
+sbatch slurm/run_ampere.sh
+```
+
+The transformer train step expects prepared arrays under `artifact1/datasets/` and writes checkpoints and reports under `artifact1/models/mtl_transformer_seed0_step6/`.
 
 ## Cluster usage
 
@@ -122,6 +125,5 @@ The SLURM script assumes the repository lives at `/home/cx272/final_project/ecg_
 
 ## Notes
 
-- This is research code with several fixed paths and hyperparameters inside scripts.
+- This is research code with fixed model hyperparameters inside the training module.
 - `src/utils/paths.py` resolves the project root automatically from `.git` or `pyproject.toml`.
-- The PTB-XL workflow is still under active development, so intermediate experiment scripts under `src/experiment/` are intentionally kept in the repository.

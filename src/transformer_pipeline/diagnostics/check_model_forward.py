@@ -1,4 +1,4 @@
-# src/experiment/ptbxl_check_model_forward.py
+# Transformer model forward check.
 from __future__ import annotations
 
 import sys
@@ -16,10 +16,10 @@ except ModuleNotFoundError:
         sys.path.insert(0, str(root))
     from src.utils.paths import project_root
 
-from src.models.mtl_transformer import MTLTransformerPTBXL, MTLTransformerConfig
+from src.transformer_pipeline.models.mtl_transformer import MTLTransformerPTBXL, MTLTransformerConfig
 
 
-def main() -> None:
+def run(params: dict | None = None) -> dict:
     root = project_root()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -75,6 +75,11 @@ def main() -> None:
         print("\n[SKIP] No real dataset found at artifact1/datasets/synth_10s_125hz_noisy.npz")
 
     print("\nNEXT: if L mismatch happens, adjust cfg.conv3_padding (or revisit conv3 dilation/padding).")
+    return {"step": "forward_check", "skipped": False, "outputs": []}
+
+
+def main() -> None:
+    run({})
 
 
 if __name__ == "__main__":

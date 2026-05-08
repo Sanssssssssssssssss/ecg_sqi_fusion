@@ -161,7 +161,6 @@ def run_pipeline(cfg: SQIPipelineConfig, *, only: list[str] | None = None) -> di
 
     for spec in STEPS:
         if allowed is not None and spec.name not in allowed:
-            logger.info("skip step (not in --only): %s", spec.name)
             continue
 
         _log_step(spec.name)

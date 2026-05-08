@@ -10,7 +10,7 @@ import pandas as pd
 try:
     from src.utils.paths import project_root
 except ModuleNotFoundError:
-    # Support direct execution: python src/data/filter_ptbxl_lead_i.py
+    # Support direct execution from inside the package.
     this_file = Path(__file__).resolve()
     root = this_file.parents[2]
     if str(root) not in sys.path:

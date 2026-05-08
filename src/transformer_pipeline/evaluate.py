@@ -7,16 +7,20 @@ from pathlib import Path
 import torch
 
 try:
-    from src.models import ptbxl_step6_train_mtl_transformer as m
+    from src.transformer_pipeline import train as m
 except ModuleNotFoundError:
     this_file = Path(__file__).resolve()
     root = this_file.parents[2]
     if str(root) not in sys.path:
         sys.path.insert(0, str(root))
-    from src.models import ptbxl_step6_train_mtl_transformer as m
+    from src.transformer_pipeline import train as m
 
 
-def main() -> None:
+def run(params: dict | None = None) -> dict:
+    params = params or {}
+    if params.get("model_dir"):
+        m.configure_from_params({"model_dir": params["model_dir"]})
+
     m.seed_all(m.SEED)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -83,8 +87,6 @@ def main() -> None:
 
     print(f"[saved] {out_test}")
     print(f"[saved] {out_val}")
-    print(f"[saved] {eval_debug_dir / 'denoise_examples_test.png'}")
-    print(f"[saved] {eval_debug_dir / 'denoise_examples_val.png'}")
     print(f"[ckpt ] {ckpt_path}")
 
     d = test_report.get("denoise_metrics_by_class", {})
@@ -92,6 +94,20 @@ def main() -> None:
         for k in ["good", "medium", "bad"]:
             if k in d:
                 print(f"[test:{k}] snr_improve_db_mean={d[k].get('snr_improve_db_mean', None)}")
+    return {
+        "step": "evaluate",
+        "skipped": False,
+        "outputs": [
+            str(out_test),
+            str(out_val),
+            str(eval_debug_dir / "denoise_examples_test.png"),
+            str(eval_debug_dir / "denoise_examples_val.png"),
+        ],
+    }
+
+
+def main() -> None:
+    run({})
 
 
 if __name__ == "__main__":
