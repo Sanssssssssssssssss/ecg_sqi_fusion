@@ -235,12 +235,11 @@ class MTLTransformerPTBXL(nn.Module):
         x = F.relu(self.ln3(x))
         return x
 
-    def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, ...]:
+    def forward_features(self, x: torch.Tensor) -> dict[str, torch.Tensor]:
         """
-        returns:
-          y_denoise: (B, 1, T)
-          y_level:   (B, 1, T)
-          logits:    (B, 3)
+        Return encoder/decoder token states and the pooled classification feature.
+        This is used by isolated pretraining experiments; it does not add parameters
+        or change the public forward output.
         """
         cfg = self.cfg
         assert x.ndim == 3 and x.shape[1] == cfg.in_ch, f"expect (B,1,T), got {tuple(x.shape)}"
@@ -283,6 +282,21 @@ class MTLTransformerPTBXL(nn.Module):
         else:
             g = torch.cat([h.mean(dim=1), z.mean(dim=1)], dim=1)  # (B, 192)
         g = self.cls_drop(g)
+        return {"encoder": h, "decoder": z, "pooled": g, "denoise": y1, "level": y2}
+
+    def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, ...]:
+        """
+        returns:
+          y_denoise: (B, 1, T)
+          y_level:   (B, 1, T)
+          logits:    (B, 3)
+        """
+        cfg = self.cfg
+        features = self.forward_features(x)
+        z = features["decoder"]
+        g = features["pooled"]
+        y1 = features["denoise"]
+        y2 = features["level"]
         logits = self.cls_fc(g)  # (B, 3)
 
         out: tuple[torch.Tensor, ...] = (y1, y2, logits)

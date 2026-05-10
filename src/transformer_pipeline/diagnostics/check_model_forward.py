@@ -27,11 +27,11 @@ def run(params: dict | None = None) -> dict:
     if not artifact_dir.is_absolute():
         artifact_dir = root / artifact_dir
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    dropout = float(params.get("dropout", MTLTransformerConfig().dropout))
-    cls_pool = str(params.get("cls_pool", MTLTransformerConfig().cls_pool))
+    dropout = float(_value_or_default(params.get("dropout"), MTLTransformerConfig().dropout))
+    cls_pool = str(_value_or_default(params.get("cls_pool"), MTLTransformerConfig().cls_pool))
     if cls_pool not in {"decoder", "encoder", "both"}:
         raise ValueError("cls_pool must be 'decoder', 'encoder', or 'both'")
-    input_mode = str(params.get("input_mode", "raw"))
+    input_mode = str(_value_or_default(params.get("input_mode"), "raw"))
     if input_mode not in {"raw", "robust", "raw_robust"}:
         raise ValueError("input_mode must be 'raw', 'robust', or 'raw_robust'")
     in_ch = 2 if input_mode == "raw_robust" else 1
@@ -127,6 +127,10 @@ def _print_extra_shapes(out: tuple[torch.Tensor, ...], cfg: MTLTransformerConfig
         extra_i += 1
     if cfg.use_sqi_head:
         print(f"sqi_hat   : {tuple(out[extra_i].shape)}     (expect (B,7))")
+
+
+def _value_or_default(value: object, default: object) -> object:
+    return default if value is None or value == "" else value
 
 
 def main() -> None:
