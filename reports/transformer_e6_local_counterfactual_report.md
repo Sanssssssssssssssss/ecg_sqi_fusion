@@ -221,6 +221,42 @@ Test recall:
 
 E8 gives the best medium recall so far, but it lowers good recall enough that total test accuracy does not improve.
 
+## E7 Plus Boundary Fine-Tune
+
+Artifact root:
+
+`outputs/transformer_e6_local_counterfactual/models/e7_masked_boundary_e6_ft`
+
+Setup:
+
+- initialized from the E7 masked denoising checkpoint
+- added ordinal head and SNR regression head during E6 fine-tuning
+- increased medium class weight from 1.2 to 1.4
+- reduced bad class weight from 0.8 to 0.7
+
+Training:
+
+- best val acc: 0.8862 at epoch 19
+- test acc: 0.8809
+
+Test confusion matrix, rows=true and cols=pred:
+
+```text
+[[ 454,  57,   14],
+ [  51, 1057,  98],
+ [  10, 151, 1308]]
+```
+
+Test recall:
+
+| class | recall |
+|---|---:|
+| good | 0.8648 |
+| medium | 0.8765 |
+| bad | 0.8904 |
+
+This confirms the boundary losses can recover medium recall, but the total test accuracy falls back to the E6/E8 range. It is useful evidence, but not the current best checkpoint.
+
 ## Experiment Comparison
 
 | run | test acc | best val acc | good recall | medium recall | bad recall | main effect |
@@ -231,6 +267,7 @@ E8 gives the best medium recall so far, but it lowers good recall enough that to
 | E7 masked denoise pretrain | 0.8891 | 0.8822 | 0.8724 | 0.8400 | 0.9353 | best total accuracy |
 | E8 contrastive severity pretrain | 0.8803 | 0.8828 | 0.8476 | 0.8798 | 0.8924 | best medium recall |
 | E9 SQI teacher distillation | 0.8816 | 0.8878 | 0.8781 | 0.8648 | 0.8965 | no total gain from weak teacher |
+| E7 + boundary fine-tune | 0.8809 | 0.8862 | 0.8648 | 0.8765 | 0.8904 | medium improves, total does not |
 
 ## Interpretation
 
@@ -240,7 +277,7 @@ The current transformer still overfits: train acc reaches 0.9937 while best val 
 
 E9 confirms that SQI teacher distillation is not the first lever to pull. The SQI teacher transfers some boundary information for medium samples, but it also inherits the teacher's blind spot: local placement is compressed away by summary SQI features.
 
-E7 and E8 split the tradeoff clearly. Masked denoising pretraining is better for overall accuracy and bad/noisy cases. Contrastive severity pretraining is better for medium recall, which means it is shaping the decision boundary in the intended direction, but it currently hurts good recall.
+E7 and E8 split the tradeoff clearly. Masked denoising pretraining is better for overall accuracy and bad/noisy cases. Contrastive severity pretraining is better for medium recall, which means it is shaping the decision boundary in the intended direction, but it currently hurts good recall. The E7 plus boundary fine-tune reproduces that same tradeoff: medium recall improves, but not enough to beat E7 total accuracy.
 
 ## Recommendation
 
@@ -250,7 +287,7 @@ Most recommended route:
 2. Use E7 masked denoising pretraining as the current best route when optimizing total test accuracy.
 3. Use E8 contrastive severity as the next route if the target is medium recall; it needs rebalanced fine-tuning so good recall does not collapse.
 4. Treat E9 SQI teacher distillation as lower priority on E6, because the teacher itself is weak on this benchmark.
-5. Next experiment should combine E7 pretraining with a lighter E8-style medium-boundary loss during fine-tuning, not as a separate heavy pretrain.
+5. Do not use the current E7 plus boundary fine-tune as the default checkpoint; it is a diagnostic result, not a better model.
 
 Current best E6 result:
 
@@ -263,3 +300,7 @@ Current E9 result:
 Current E8 result:
 
 `outputs/transformer_e6_local_counterfactual/models/e8_contrastive_pretrain_e6_ft`
+
+Current E7 boundary diagnostic:
+
+`outputs/transformer_e6_local_counterfactual/models/e7_masked_boundary_e6_ft`
