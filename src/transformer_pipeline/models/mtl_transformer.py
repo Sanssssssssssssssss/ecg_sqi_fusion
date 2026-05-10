@@ -65,6 +65,9 @@ class MTLTransformerConfig:
     cls_pool: str = "decoder"
     use_ordinal_head: bool = False
     use_snr_head: bool = False
+    use_local_mask_head: bool = False
+    use_noise_type_head: bool = False
+    noise_type_classes: int = 4
 
     # smooth (paper says only for denoise head)
     smooth_k: int = 5
@@ -209,6 +212,10 @@ class MTLTransformerPTBXL(nn.Module):
             self.ordinal_fc = nn.Linear(cls_in, 2)
         if cfg.use_snr_head:
             self.snr_fc = nn.Linear(cls_in, 1)
+        if cfg.use_local_mask_head:
+            self.head_local_mask = nn.Linear(cfg.dec_d_model, cfg.head_patch_out)
+        if cfg.use_noise_type_head:
+            self.noise_type_fc = nn.Linear(cls_in, cfg.noise_type_classes)
 
     # --------- Internal: patch embedding forward ---------
     def _patch_embed(self, x: torch.Tensor) -> torch.Tensor:
@@ -279,4 +286,10 @@ class MTLTransformerPTBXL(nn.Module):
             out = out + (self.ordinal_fc(g),)
         if cfg.use_snr_head:
             out = out + (self.snr_fc(g).squeeze(1),)
+        if cfg.use_local_mask_head:
+            p3 = self.head_local_mask(z)  # (B, L, 20)
+            y3 = unpatchify_overlap_add(p3, T=cfg.T, stride=cfg.stride).unsqueeze(1)
+            out = out + (y3,)
+        if cfg.use_noise_type_head:
+            out = out + (self.noise_type_fc(g),)
         return out

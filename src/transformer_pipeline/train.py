@@ -48,6 +48,8 @@ CLS_POOL = MTLTransformerConfig().cls_pool
 INPUT_MODE = "raw"
 USE_ORDINAL_HEAD = False
 USE_SNR_HEAD = False
+USE_LOCAL_MASK_HEAD = False
+USE_NOISE_TYPE_HEAD = False
 
 # ---- LR scheduler ----
 LR = 6e-5
@@ -69,6 +71,8 @@ LAMBDA_DEN = 120.0
 LAMBDA_LVL = 1.0
 LAMBDA_ORD = 0.5
 LAMBDA_SNR = 0.3
+LAMBDA_LOCAL_MASK = 0.5
+LAMBDA_NOISE_TYPE = 0.2
 LABEL_SMOOTHING = 0.0
 CLASS_WEIGHT_GOOD = 1.0
 CLASS_WEIGHT_MEDIUM = 1.0
@@ -86,6 +90,7 @@ EARLYSTOP_PHASES = {"B_add_denoise", "D_joint", "E_uncertainty_joint"}
 EARLYSTOP_ENABLED = False
 SELECT_BEST_BY = "val_acc"
 UNCERTAINTY_MODE = "kendall"
+INIT_CHECKPOINT = ""
 
 
 # --------- Paths ---------
@@ -94,6 +99,7 @@ IN_NOISY = ROOT / "outputs/transformer" / "datasets" / "synth_10s_125hz_noisy.np
 IN_CLEAN = ROOT / "outputs/transformer" / "datasets" / "synth_10s_125hz_clean.npz"
 IN_LEVEL = ROOT / "outputs/transformer" / "datasets" / "synth_10s_125hz_noise_level.npz"
 IN_LABELS = ROOT / "outputs/transformer" / "datasets" / "synth_10s_125hz_labels_with_level.csv"
+IN_LOCAL_MASK = ROOT / "outputs/transformer" / "datasets" / "synth_10s_125hz_local_mask.npz"
 
 OUT_DIR = ROOT / "outputs/transformer" / "models" / "mtl_transformer_seed0_step6"
 OUT_LAST = OUT_DIR / "ckpt_last.pt"
@@ -108,14 +114,15 @@ OUT_PROBE = OUT_DIR / "probe_summary.json"
 def configure_from_params(params: dict[str, Any]) -> None:
     global SEED, BATCH_SIZE, NUM_WORKERS, PIN_MEMORY, EPOCHS, VERBOSE
     global WEIGHT_DECAY, LR, LR_ETA_MIN, MODEL_DROPOUT, CLS_POOL, INPUT_MODE
-    global USE_ORDINAL_HEAD, USE_SNR_HEAD
+    global USE_ORDINAL_HEAD, USE_SNR_HEAD, USE_LOCAL_MASK_HEAD, USE_NOISE_TYPE_HEAD
     global E_CLS, E_DENOISE, E_LEVEL, E_UNCERT
     global BAD_DEN_W_MAX, BAD_DEN_W_WARMUP_EPOCHS
     global LAMBDA_CLS, LAMBDA_DEN, LAMBDA_LVL, LAMBDA_ORD, LAMBDA_SNR
+    global LAMBDA_LOCAL_MASK, LAMBDA_NOISE_TYPE
     global LABEL_SMOOTHING, CLASS_WEIGHT_GOOD, CLASS_WEIGHT_MEDIUM, CLASS_WEIGHT_BAD
     global EARLYSTOP_ENABLED, EARLYSTOP_PATIENCE, EARLYSTOP_MIN_DELTA, EARLYSTOP_START_EPOCH
-    global SELECT_BEST_BY, UNCERTAINTY_MODE
-    global IN_NOISY, IN_CLEAN, IN_LEVEL, IN_LABELS
+    global SELECT_BEST_BY, UNCERTAINTY_MODE, INIT_CHECKPOINT
+    global IN_NOISY, IN_CLEAN, IN_LEVEL, IN_LABELS, IN_LOCAL_MASK
     global OUT_DIR, OUT_LAST, OUT_BEST, OUT_BEST_ACC, OUT_BEST_LOSS, OUT_LOG, OUT_TEST, OUT_PROBE
 
     if params.get("seed") is not None:
@@ -148,6 +155,10 @@ def configure_from_params(params: dict[str, Any]) -> None:
         USE_ORDINAL_HEAD = bool(params["ordinal_head"])
     if params.get("snr_head") is not None:
         USE_SNR_HEAD = bool(params["snr_head"])
+    if params.get("local_mask_head") is not None:
+        USE_LOCAL_MASK_HEAD = bool(params["local_mask_head"])
+    if params.get("noise_type_head") is not None:
+        USE_NOISE_TYPE_HEAD = bool(params["noise_type_head"])
     if params.get("e_cls") is not None:
         E_CLS = int(params["e_cls"])
     if params.get("e_denoise") is not None:
@@ -170,6 +181,10 @@ def configure_from_params(params: dict[str, Any]) -> None:
         LAMBDA_ORD = float(params["lambda_ord"])
     if params.get("lambda_snr") is not None:
         LAMBDA_SNR = float(params["lambda_snr"])
+    if params.get("lambda_local_mask") is not None:
+        LAMBDA_LOCAL_MASK = float(params["lambda_local_mask"])
+    if params.get("lambda_noise_type") is not None:
+        LAMBDA_NOISE_TYPE = float(params["lambda_noise_type"])
     if params.get("label_smoothing") is not None:
         LABEL_SMOOTHING = float(params["label_smoothing"])
     if params.get("class_weight_good") is not None:
@@ -194,6 +209,8 @@ def configure_from_params(params: dict[str, Any]) -> None:
         UNCERTAINTY_MODE = str(params["uncertainty_mode"])
         if UNCERTAINTY_MODE not in {"kendall", "fixed"}:
             raise ValueError("uncertainty_mode must be 'kendall' or 'fixed'")
+    if params.get("init_checkpoint") is not None:
+        INIT_CHECKPOINT = str(params["init_checkpoint"])
     VERBOSE = bool(params.get("verbose", False))
 
     art: Path | None = None
@@ -206,6 +223,7 @@ def configure_from_params(params: dict[str, Any]) -> None:
         IN_CLEAN = art / "datasets" / "synth_10s_125hz_clean.npz"
         IN_LEVEL = art / "datasets" / "synth_10s_125hz_noise_level.npz"
         IN_LABELS = art / "datasets" / "synth_10s_125hz_labels_with_level.csv"
+        IN_LOCAL_MASK = art / "datasets" / "synth_10s_125hz_local_mask.npz"
 
     experiment_name = params.get("experiment_name")
     model_dir = params.get("model_dir")
@@ -325,6 +343,8 @@ class PTBXLMTLDataset(Dataset):
         valid_rr: np.ndarray,
         y: np.ndarray,
         snr_db: np.ndarray,
+        local_mask: np.ndarray,
+        noise_type: np.ndarray,
         input_mode: str,
     ):
         self.noisy = noisy.astype(np.float32)
@@ -333,6 +353,8 @@ class PTBXLMTLDataset(Dataset):
         self.valid_rr = (valid_rr.astype(np.float32) > 0.5).astype(np.float32)
         self.y = y.astype(np.int64)
         self.snr_db = snr_db.astype(np.float32)
+        self.local_mask = local_mask.astype(np.float32)
+        self.noise_type = noise_type.astype(np.int64)
         self.input_mode = input_mode
 
     def __len__(self) -> int:
@@ -348,6 +370,8 @@ class PTBXLMTLDataset(Dataset):
             "y": torch.tensor(self.y[i], dtype=torch.long),
             "ordinal": torch.from_numpy(ordinal_target_np(int(self.y[i]))),
             "snr_norm": torch.tensor(normalize_snr_db(float(self.snr_db[i])), dtype=torch.float32),
+            "local_mask": torch.from_numpy(self.local_mask[i]),
+            "noise_type": torch.tensor(self.noise_type[i], dtype=torch.long),
         }
 
 
@@ -388,6 +412,18 @@ def normalize_snr_db(snr_db: float) -> float:
     return float((snr_db - 7.0) / 13.0)
 
 
+NOISE_TYPE_TO_INT = {"em": 0, "ma": 1, "bw": 2, "mix": 3}
+
+
+def map_noise_type(v: object) -> int:
+    s = str(v).strip().lower()
+    if s not in NOISE_TYPE_TO_INT:
+        if USE_NOISE_TYPE_HEAD:
+            raise ValueError(f"noise_type_head supports only {sorted(NOISE_TYPE_TO_INT)}, got {s!r}")
+        return 0
+    return NOISE_TYPE_TO_INT[s]
+
+
 def build_split_arrays() -> tuple[dict[str, PTBXLMTLDataset], dict[str, dict[str, Any]]]:
     X_noisy = np.load(IN_NOISY)["X_noisy"].astype(np.float32)
     X_clean = np.load(IN_CLEAN)["X_clean"].astype(np.float32)
@@ -395,6 +431,13 @@ def build_split_arrays() -> tuple[dict[str, PTBXLMTLDataset], dict[str, dict[str
     P = z["P"].astype(np.float32)
     valid_rr = z["valid_rr"].astype(np.uint8)
     df = pd.read_csv(IN_LABELS)
+    if USE_LOCAL_MASK_HEAD:
+        if not IN_LOCAL_MASK.exists():
+            raise FileNotFoundError(f"local_mask_head requested but missing: {IN_LOCAL_MASK}")
+        m_npz = np.load(IN_LOCAL_MASK)
+        M = m_npz["M"].astype(np.float32)
+    else:
+        M = np.zeros_like(P, dtype=np.float32)
 
     required = {"idx", "split", "y_class", "noise_kind", "snr_db", "seg_id", "ecg_id"}
     miss = required - set(df.columns)
@@ -402,13 +445,14 @@ def build_split_arrays() -> tuple[dict[str, PTBXLMTLDataset], dict[str, dict[str
         raise ValueError(f"Missing required columns in labels: {sorted(miss)}")
 
     n = len(df)
-    if not (X_noisy.shape[0] == X_clean.shape[0] == P.shape[0] == valid_rr.shape[0] == n):
+    if not (X_noisy.shape[0] == X_clean.shape[0] == P.shape[0] == valid_rr.shape[0] == M.shape[0] == n):
         raise ValueError("Array/CSV row count mismatch")
 
     idx = df["idx"].to_numpy(dtype=np.int64)
     if idx.min() < 0 or idx.max() >= n:
         raise ValueError("idx out of range")
     y_int = np.array([map_y_class(v) for v in df["y_class"].tolist()], dtype=np.int64)
+    noise_type_int = np.array([map_noise_type(v) for v in df["noise_kind"].tolist()], dtype=np.int64)
 
     datasets: dict[str, PTBXLMTLDataset] = {}
     split_info: dict[str, dict[str, Any]] = {}
@@ -419,6 +463,8 @@ def build_split_arrays() -> tuple[dict[str, PTBXLMTLDataset], dict[str, dict[str
         sp_idx = sp_idx[order]
         sp_y = y_int[m][order]
         sp_snr = df["snr_db"].to_numpy(dtype=np.float32)[m][order]
+        sp_mask = M[sp_idx]
+        sp_noise_type = noise_type_int[m][order]
 
         datasets[sp] = PTBXLMTLDataset(
             noisy=X_noisy[sp_idx],
@@ -427,6 +473,8 @@ def build_split_arrays() -> tuple[dict[str, PTBXLMTLDataset], dict[str, dict[str
             valid_rr=valid_rr[sp_idx],
             y=sp_y,
             snr_db=sp_snr,
+            local_mask=sp_mask,
+            noise_type=sp_noise_type,
             input_mode=INPUT_MODE,
         )
         vc = pd.Series(sp_y).value_counts().sort_index().to_dict()
@@ -468,6 +516,9 @@ def build_model(device: torch.device) -> tuple[nn.Module, UncertaintyWeights]:
         cls_pool=CLS_POOL,
         use_ordinal_head=USE_ORDINAL_HEAD,
         use_snr_head=USE_SNR_HEAD,
+        use_local_mask_head=USE_LOCAL_MASK_HEAD,
+        use_noise_type_head=USE_NOISE_TYPE_HEAD,
+        noise_type_classes=len(NOISE_TYPE_TO_INT),
     )
     model = MTLTransformerPTBXL(cfg).to(device=device, dtype=torch.float32)
     uw = UncertaintyWeights().to(device=device, dtype=torch.float32)
@@ -534,22 +585,28 @@ def compute_losses(
     logits: torch.Tensor,
     ordinal_logits: torch.Tensor | None,
     snr_hat: torch.Tensor | None,
+    local_mask_logits: torch.Tensor | None,
+    noise_type_logits: torch.Tensor | None,
     clean: torch.Tensor,
     p_target: torch.Tensor,
     valid_rr: torch.Tensor,
     y_int: torch.Tensor,
     ordinal_target: torch.Tensor,
     snr_target: torch.Tensor,
+    local_mask_target: torch.Tensor,
+    noise_type_target: torch.Tensor,
     use_cls: bool,
     use_den: bool,
     use_lvl: bool,
-) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, dict[str, float]]:
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, dict[str, float]]:
     z = torch.zeros((), device=clean.device, dtype=torch.float32)
     l_cls = z
     l_denoise = z
     l_level = z
     l_ord = z
     l_snr = z
+    l_local = z
+    l_noise_type = z
     dbg: dict[str, float] = {}
 
     if use_cls:
@@ -563,6 +620,11 @@ def compute_losses(
             l_ord = nn.BCEWithLogitsLoss()(ordinal_logits, ordinal_target)
         if USE_SNR_HEAD and snr_hat is not None:
             l_snr = nn.SmoothL1Loss(beta=0.2)(snr_hat, snr_target)
+        if USE_NOISE_TYPE_HEAD and noise_type_logits is not None:
+            l_noise_type = nn.CrossEntropyLoss()(noise_type_logits, noise_type_target)
+
+    if USE_LOCAL_MASK_HEAD and local_mask_logits is not None:
+        l_local = nn.BCEWithLogitsLoss()(local_mask_logits.squeeze(1), local_mask_target)
 
     if use_den:
         pred_d = y_denoise.squeeze(1)  # (B,T)
@@ -621,7 +683,7 @@ def compute_losses(
         per_sample_l = torch.mean((p_pred - p_target) ** 2, dim=1)
         l_level = masked_mean(per_sample_l, valid_rr.float())
 
-    return l_cls, l_denoise, l_level, l_ord, l_snr, dbg
+    return l_cls, l_denoise, l_level, l_ord, l_snr, l_local, l_noise_type, dbg
 
 
 def combine_losses(
@@ -630,6 +692,8 @@ def combine_losses(
     l_level: torch.Tensor,
     l_ord: torch.Tensor,
     l_snr: torch.Tensor,
+    l_local: torch.Tensor,
+    l_noise_type: torch.Tensor,
     phase: str,
     uw: UncertaintyWeights,
 ) -> torch.Tensor:
@@ -638,12 +702,20 @@ def combine_losses(
     l2 = l_denoise if use_den else torch.zeros_like(l_cls)
     l3 = l_level if use_lvl else torch.zeros_like(l_cls)
     if not use_uncert or UNCERTAINTY_MODE == "fixed":
-        return LAMBDA_CLS * l1 + LAMBDA_DEN * l2 + LAMBDA_LVL * l3 + LAMBDA_ORD * l_ord + LAMBDA_SNR * l_snr
+        return (
+            LAMBDA_CLS * l1 + LAMBDA_DEN * l2 + LAMBDA_LVL * l3
+            + LAMBDA_ORD * l_ord + LAMBDA_SNR * l_snr
+            + LAMBDA_LOCAL_MASK * l_local + LAMBDA_NOISE_TYPE * l_noise_type
+        )
     # [ASSUMPTION] Kendall homoscedastic uncertainty weighting.
     s1 = uw.log_sigma_cls
     s2 = uw.log_sigma_denoise
     s3 = uw.log_sigma_level
-    return torch.exp(-s1) * l1 + s1 + torch.exp(-s2) * l2 + s2 + torch.exp(-s3) * l3 + s3 + LAMBDA_ORD * l_ord + LAMBDA_SNR * l_snr
+    return (
+        torch.exp(-s1) * l1 + s1 + torch.exp(-s2) * l2 + s2 + torch.exp(-s3) * l3 + s3
+        + LAMBDA_ORD * l_ord + LAMBDA_SNR * l_snr
+        + LAMBDA_LOCAL_MASK * l_local + LAMBDA_NOISE_TYPE * l_noise_type
+    )
 
 
 # --------- Train Loop ---------
@@ -667,6 +739,8 @@ def run_epoch(
     sum_lvl = 0.0
     sum_ord = 0.0
     sum_snr = 0.0
+    sum_local = 0.0
+    sum_noise_type = 0.0
     dbg_sum: dict[str, float] = {}
     dbg_n = 0
 
@@ -684,6 +758,8 @@ def run_epoch(
         y = batch["y"].to(device=device, dtype=torch.long)
         ordinal_target = batch["ordinal"].to(device=device, dtype=torch.float32)
         snr_target = batch["snr_norm"].to(device=device, dtype=torch.float32)
+        local_mask_target = batch["local_mask"].to(device=device, dtype=torch.float32)
+        noise_type_target = batch["noise_type"].to(device=device, dtype=torch.long)
 
         with torch.set_grad_enabled(train_mode):
             out = model(x_noisy)
@@ -694,16 +770,20 @@ def run_epoch(
                 ordinal_logits = out[extra_i] if USE_ORDINAL_HEAD and len(out) > extra_i else None
                 extra_i += 1 if USE_ORDINAL_HEAD else 0
                 snr_hat = out[extra_i] if USE_SNR_HEAD and len(out) > extra_i else None
+                extra_i += 1 if USE_SNR_HEAD else 0
+                local_mask_logits = out[extra_i] if USE_LOCAL_MASK_HEAD and len(out) > extra_i else None
+                extra_i += 1 if USE_LOCAL_MASK_HEAD else 0
+                noise_type_logits = out[extra_i] if USE_NOISE_TYPE_HEAD and len(out) > extra_i else None
             else:
                 raise RuntimeError("Model output must provide y_denoise, y_level, logits")
 
             use_cls, use_den, use_lvl, _ = active_losses(phase)
-            l_cls, l_den, l_lvl, l_ord, l_snr, dbg = compute_losses(
-                y_denoise, y_level, logits, ordinal_logits, snr_hat,
-                x_clean, p_t, valid_rr, y, ordinal_target, snr_target,
+            l_cls, l_den, l_lvl, l_ord, l_snr, l_local, l_noise_type, dbg = compute_losses(
+                y_denoise, y_level, logits, ordinal_logits, snr_hat, local_mask_logits, noise_type_logits,
+                x_clean, p_t, valid_rr, y, ordinal_target, snr_target, local_mask_target, noise_type_target,
                 use_cls, use_den, use_lvl
             )
-            l_total = combine_losses(l_cls, l_den, l_lvl, l_ord, l_snr, phase, uw)
+            l_total = combine_losses(l_cls, l_den, l_lvl, l_ord, l_snr, l_local, l_noise_type, phase, uw)
 
             if train_mode:
                 optimizer.zero_grad(set_to_none=True)
@@ -721,6 +801,10 @@ def run_epoch(
                 post["O"] = f"{float(l_ord.detach().cpu()):.3f}"
             if USE_SNR_HEAD:
                 post["S"] = f"{float(l_snr.detach().cpu()):.3f}"
+            if USE_LOCAL_MASK_HEAD:
+                post["M"] = f"{float(l_local.detach().cpu()):.3f}"
+            if USE_NOISE_TYPE_HEAD:
+                post["N"] = f"{float(l_noise_type.detach().cpu()):.3f}"
             if use_den and dbg:
                 post.update({
                     "g%": f"{dbg.get('wavelet_gate_frac_good', 0.0):.2f}",
@@ -738,13 +822,18 @@ def run_epoch(
         sum_lvl += float(l_lvl.detach().cpu().item()) * bsz
         sum_ord += float(l_ord.detach().cpu().item()) * bsz
         sum_snr += float(l_snr.detach().cpu().item()) * bsz
+        sum_local += float(l_local.detach().cpu().item()) * bsz
+        sum_noise_type += float(l_noise_type.detach().cpu().item()) * bsz
         if dbg:
             dbg_n += 1
             for k, v in dbg.items():
                 dbg_sum[k] = dbg_sum.get(k, 0.0) + float(v)
 
     if n == 0:
-        out0 = {"total": 0.0, "cls": 0.0, "denoise": 0.0, "level": 0.0, "ordinal": 0.0, "snr": 0.0, "acc": 0.0}
+        out0 = {
+            "total": 0.0, "cls": 0.0, "denoise": 0.0, "level": 0.0,
+            "ordinal": 0.0, "snr": 0.0, "local_mask": 0.0, "noise_type": 0.0, "acc": 0.0,
+        }
         if dbg_n > 0:
             for k in dbg_sum:
                 dbg_sum[k] /= float(dbg_n)
@@ -762,6 +851,8 @@ def run_epoch(
         "level": sum_lvl / n,
         "ordinal": sum_ord / n,
         "snr": sum_snr / n,
+        "local_mask": sum_local / n,
+        "noise_type": sum_noise_type / n,
         "acc": float(correct) / float(n),
     }
     out.update(dbg_sum)
@@ -1204,6 +1295,8 @@ def build_probe_summary(history: list[dict[str, Any]], test_report: dict[str, An
         "input_mode": INPUT_MODE,
         "ordinal_head": USE_ORDINAL_HEAD,
         "snr_head": USE_SNR_HEAD,
+        "local_mask_head": USE_LOCAL_MASK_HEAD,
+        "noise_type_head": USE_NOISE_TYPE_HEAD,
         "e_cls": E_CLS,
         "e_denoise": E_DENOISE,
         "e_level": E_LEVEL,
@@ -1215,6 +1308,8 @@ def build_probe_summary(history: list[dict[str, Any]], test_report: dict[str, An
         "lambda_lvl": LAMBDA_LVL,
         "lambda_ord": LAMBDA_ORD,
         "lambda_snr": LAMBDA_SNR,
+        "lambda_local_mask": LAMBDA_LOCAL_MASK,
+        "lambda_noise_type": LAMBDA_NOISE_TYPE,
         "label_smoothing": LABEL_SMOOTHING,
         "class_weight_good": CLASS_WEIGHT_GOOD,
         "class_weight_medium": CLASS_WEIGHT_MEDIUM,
@@ -1227,6 +1322,7 @@ def build_probe_summary(history: list[dict[str, Any]], test_report: dict[str, An
         "early_stop": EARLYSTOP_ENABLED,
         "uncertainty_weighting": E_UNCERT > 0,
         "uncertainty_mode": UNCERTAINTY_MODE,
+        "init_checkpoint": INIT_CHECKPOINT,
     }
 
     last_val_acc = float(last.get("val_detail", {}).get("overall_acc", last["val"]["acc"]))
@@ -1264,6 +1360,21 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
     test_loader = DataLoader(datasets["test"], batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS, pin_memory=PIN_MEMORY)
 
     model, uw = build_model(device)
+    if INIT_CHECKPOINT:
+        ckpt_path = Path(INIT_CHECKPOINT)
+        if not ckpt_path.is_absolute():
+            ckpt_path = ROOT / ckpt_path
+        ckpt_init = torch.load(ckpt_path, map_location=device)
+        state = ckpt_init.get("model_state", ckpt_init)
+        missing, unexpected = model.load_state_dict(state, strict=False)
+        print(
+            f"initialized model from {ckpt_path} | "
+            f"missing={len(missing)} unexpected={len(unexpected)}"
+        )
+        if missing:
+            print(f"init missing keys: {list(missing)[:8]}")
+        if unexpected:
+            print(f"init unexpected keys: {list(unexpected)[:8]}")
 
     if dry_run:
         batch = next(iter(train_loader))
@@ -1278,12 +1389,19 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
             raise RuntimeError(f"dry-run level shape mismatch: {tuple(y_level.shape)} != {expected}")
         if tuple(logits.shape) != (x_noisy.shape[0], 3):
             raise RuntimeError(f"dry-run logits shape mismatch: {tuple(logits.shape)}")
-        if USE_ORDINAL_HEAD and tuple(out[3].shape) != (x_noisy.shape[0], 2):
-            raise RuntimeError(f"dry-run ordinal shape mismatch: {tuple(out[3].shape)}")
+        extra_i = 3
+        if USE_ORDINAL_HEAD and tuple(out[extra_i].shape) != (x_noisy.shape[0], 2):
+            raise RuntimeError(f"dry-run ordinal shape mismatch: {tuple(out[extra_i].shape)}")
+        extra_i += 1 if USE_ORDINAL_HEAD else 0
         if USE_SNR_HEAD:
-            snr_i = 4 if USE_ORDINAL_HEAD else 3
-            if tuple(out[snr_i].shape) != (x_noisy.shape[0],):
-                raise RuntimeError(f"dry-run snr shape mismatch: {tuple(out[snr_i].shape)}")
+            if tuple(out[extra_i].shape) != (x_noisy.shape[0],):
+                raise RuntimeError(f"dry-run snr shape mismatch: {tuple(out[extra_i].shape)}")
+        extra_i += 1 if USE_SNR_HEAD else 0
+        if USE_LOCAL_MASK_HEAD and tuple(out[extra_i].shape) != expected:
+            raise RuntimeError(f"dry-run local mask shape mismatch: {tuple(out[extra_i].shape)}")
+        extra_i += 1 if USE_LOCAL_MASK_HEAD else 0
+        if USE_NOISE_TYPE_HEAD and tuple(out[extra_i].shape) != (x_noisy.shape[0], len(NOISE_TYPE_TO_INT)):
+            raise RuntimeError(f"dry-run noise type shape mismatch: {tuple(out[extra_i].shape)}")
         print("[dry-run] transformer train inputs and one forward pass OK")
         return {"step": "train", "skipped": True, "dry_run": True, "outputs": []}
 
@@ -1311,6 +1429,8 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         "INPUT_MODE": INPUT_MODE,
         "USE_ORDINAL_HEAD": USE_ORDINAL_HEAD,
         "USE_SNR_HEAD": USE_SNR_HEAD,
+        "USE_LOCAL_MASK_HEAD": USE_LOCAL_MASK_HEAD,
+        "USE_NOISE_TYPE_HEAD": USE_NOISE_TYPE_HEAD,
         "E_CLS": E_CLS,
         "E_DENOISE": E_DENOISE,
         "E_LEVEL": E_LEVEL,
@@ -1326,12 +1446,15 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         "LAMBDA_LVL": LAMBDA_LVL,
         "LAMBDA_ORD": LAMBDA_ORD,
         "LAMBDA_SNR": LAMBDA_SNR,
+        "LAMBDA_LOCAL_MASK": LAMBDA_LOCAL_MASK,
+        "LAMBDA_NOISE_TYPE": LAMBDA_NOISE_TYPE,
         "LABEL_SMOOTHING": LABEL_SMOOTHING,
         "CLASS_WEIGHT_GOOD": CLASS_WEIGHT_GOOD,
         "CLASS_WEIGHT_MEDIUM": CLASS_WEIGHT_MEDIUM,
         "CLASS_WEIGHT_BAD": CLASS_WEIGHT_BAD,
         "SELECT_BEST_BY": SELECT_BEST_BY,
         "UNCERTAINTY_MODE": UNCERTAINTY_MODE,
+        "INIT_CHECKPOINT": INIT_CHECKPOINT,
     }
 
     history: list[dict[str, Any]] = []
@@ -1359,9 +1482,13 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
             f"[epoch {epoch:03d}] phase={phase} | "
             f"train acc={tr['acc']:.4f} val acc={va['acc']:.4f} | "
             f"train L={tr['total']:.4f} (cls={LAMBDA_CLS * tr['cls']:.4f}, den={LAMBDA_DEN * tr['denoise']:.4f}, "
-            f"lvl={LAMBDA_LVL * tr['level']:.4f}, ord={LAMBDA_ORD * tr['ordinal']:.4f}, snr={LAMBDA_SNR * tr['snr']:.4f}) | "
+            f"lvl={LAMBDA_LVL * tr['level']:.4f}, ord={LAMBDA_ORD * tr['ordinal']:.4f}, "
+            f"snr={LAMBDA_SNR * tr['snr']:.4f}, mask={LAMBDA_LOCAL_MASK * tr['local_mask']:.4f}, "
+            f"ntype={LAMBDA_NOISE_TYPE * tr['noise_type']:.4f}) | "
             f"val L={va['total']:.4f} (cls={LAMBDA_CLS * va['cls']:.4f}, den={LAMBDA_DEN * va['denoise']:.4f}, "
-            f"lvl={LAMBDA_LVL * va['level']:.4f}, ord={LAMBDA_ORD * va['ordinal']:.4f}, snr={LAMBDA_SNR * va['snr']:.4f})"
+            f"lvl={LAMBDA_LVL * va['level']:.4f}, ord={LAMBDA_ORD * va['ordinal']:.4f}, "
+            f"snr={LAMBDA_SNR * va['snr']:.4f}, mask={LAMBDA_LOCAL_MASK * va['local_mask']:.4f}, "
+            f"ntype={LAMBDA_NOISE_TYPE * va['noise_type']:.4f})"
         )
         cur_lr = scheduler.get_last_lr()[0]
         print(f"LR={cur_lr:.2e} | CUR_BAD_DEN_W={CUR_BAD_DEN_W:.3f}")
@@ -1534,6 +1661,9 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--input_mode", choices=("raw", "robust", "raw_robust"))
     parser.add_argument("--ordinal_head", action="store_true")
     parser.add_argument("--snr_head", action="store_true")
+    parser.add_argument("--local_mask_head", action="store_true")
+    parser.add_argument("--noise_type_head", action="store_true")
+    parser.add_argument("--init_checkpoint", default="")
     parser.add_argument("--e_cls", type=int)
     parser.add_argument("--e_denoise", type=int)
     parser.add_argument("--e_level", type=int)
@@ -1545,6 +1675,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--lambda_lvl", type=float)
     parser.add_argument("--lambda_ord", type=float)
     parser.add_argument("--lambda_snr", type=float)
+    parser.add_argument("--lambda_local_mask", type=float)
+    parser.add_argument("--lambda_noise_type", type=float)
     parser.add_argument("--label_smoothing", type=float)
     parser.add_argument("--class_weight_good", type=float)
     parser.add_argument("--class_weight_medium", type=float)
