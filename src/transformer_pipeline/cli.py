@@ -45,7 +45,10 @@ def parse_args(*, default_stage: str = "all") -> argparse.Namespace:
     parser.add_argument("--snr_head", action="store_true")
     parser.add_argument("--local_mask_head", action="store_true")
     parser.add_argument("--noise_type_head", action="store_true")
+    parser.add_argument("--teacher_distill", action="store_true")
+    parser.add_argument("--sqi_head", action="store_true")
     parser.add_argument("--init_checkpoint", default="")
+    parser.add_argument("--teacher_targets", default="")
     parser.add_argument("--e_cls", type=int)
     parser.add_argument("--e_denoise", type=int)
     parser.add_argument("--e_level", type=int)
@@ -59,6 +62,9 @@ def parse_args(*, default_stage: str = "all") -> argparse.Namespace:
     parser.add_argument("--lambda_snr", type=float)
     parser.add_argument("--lambda_local_mask", type=float)
     parser.add_argument("--lambda_noise_type", type=float)
+    parser.add_argument("--lambda_teacher", type=float)
+    parser.add_argument("--lambda_sqi", type=float)
+    parser.add_argument("--teacher_temperature", type=float)
     parser.add_argument("--label_smoothing", type=float)
     parser.add_argument("--class_weight_good", type=float)
     parser.add_argument("--class_weight_medium", type=float)
@@ -96,7 +102,10 @@ def train_overrides_from_args(args: argparse.Namespace) -> dict[str, object]:
         "snr_head",
         "local_mask_head",
         "noise_type_head",
+        "teacher_distill",
+        "sqi_head",
         "init_checkpoint",
+        "teacher_targets",
         "e_cls",
         "e_denoise",
         "e_level",
@@ -110,6 +119,9 @@ def train_overrides_from_args(args: argparse.Namespace) -> dict[str, object]:
         "lambda_snr",
         "lambda_local_mask",
         "lambda_noise_type",
+        "lambda_teacher",
+        "lambda_sqi",
+        "teacher_temperature",
         "label_smoothing",
         "class_weight_good",
         "class_weight_medium",

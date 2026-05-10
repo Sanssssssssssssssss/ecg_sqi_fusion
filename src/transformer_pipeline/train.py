@@ -50,6 +50,8 @@ USE_ORDINAL_HEAD = False
 USE_SNR_HEAD = False
 USE_LOCAL_MASK_HEAD = False
 USE_NOISE_TYPE_HEAD = False
+USE_TEACHER_DISTILL = False
+USE_SQI_HEAD = False
 
 # ---- LR scheduler ----
 LR = 6e-5
@@ -73,6 +75,9 @@ LAMBDA_ORD = 0.5
 LAMBDA_SNR = 0.3
 LAMBDA_LOCAL_MASK = 0.5
 LAMBDA_NOISE_TYPE = 0.2
+LAMBDA_TEACHER = 0.05
+LAMBDA_SQI = 0.1
+TEACHER_TEMPERATURE = 1.0
 LABEL_SMOOTHING = 0.0
 CLASS_WEIGHT_GOOD = 1.0
 CLASS_WEIGHT_MEDIUM = 1.0
@@ -91,6 +96,7 @@ EARLYSTOP_ENABLED = False
 SELECT_BEST_BY = "val_acc"
 UNCERTAINTY_MODE = "kendall"
 INIT_CHECKPOINT = ""
+TEACHER_TARGETS = ""
 
 
 # --------- Paths ---------
@@ -115,13 +121,15 @@ def configure_from_params(params: dict[str, Any]) -> None:
     global SEED, BATCH_SIZE, NUM_WORKERS, PIN_MEMORY, EPOCHS, VERBOSE
     global WEIGHT_DECAY, LR, LR_ETA_MIN, MODEL_DROPOUT, CLS_POOL, INPUT_MODE
     global USE_ORDINAL_HEAD, USE_SNR_HEAD, USE_LOCAL_MASK_HEAD, USE_NOISE_TYPE_HEAD
+    global USE_TEACHER_DISTILL, USE_SQI_HEAD
     global E_CLS, E_DENOISE, E_LEVEL, E_UNCERT
     global BAD_DEN_W_MAX, BAD_DEN_W_WARMUP_EPOCHS
     global LAMBDA_CLS, LAMBDA_DEN, LAMBDA_LVL, LAMBDA_ORD, LAMBDA_SNR
     global LAMBDA_LOCAL_MASK, LAMBDA_NOISE_TYPE
+    global LAMBDA_TEACHER, LAMBDA_SQI, TEACHER_TEMPERATURE
     global LABEL_SMOOTHING, CLASS_WEIGHT_GOOD, CLASS_WEIGHT_MEDIUM, CLASS_WEIGHT_BAD
     global EARLYSTOP_ENABLED, EARLYSTOP_PATIENCE, EARLYSTOP_MIN_DELTA, EARLYSTOP_START_EPOCH
-    global SELECT_BEST_BY, UNCERTAINTY_MODE, INIT_CHECKPOINT
+    global SELECT_BEST_BY, UNCERTAINTY_MODE, INIT_CHECKPOINT, TEACHER_TARGETS
     global IN_NOISY, IN_CLEAN, IN_LEVEL, IN_LABELS, IN_LOCAL_MASK
     global OUT_DIR, OUT_LAST, OUT_BEST, OUT_BEST_ACC, OUT_BEST_LOSS, OUT_LOG, OUT_TEST, OUT_PROBE
 
@@ -159,6 +167,10 @@ def configure_from_params(params: dict[str, Any]) -> None:
         USE_LOCAL_MASK_HEAD = bool(params["local_mask_head"])
     if params.get("noise_type_head") is not None:
         USE_NOISE_TYPE_HEAD = bool(params["noise_type_head"])
+    if params.get("teacher_distill") is not None:
+        USE_TEACHER_DISTILL = bool(params["teacher_distill"])
+    if params.get("sqi_head") is not None:
+        USE_SQI_HEAD = bool(params["sqi_head"])
     if params.get("e_cls") is not None:
         E_CLS = int(params["e_cls"])
     if params.get("e_denoise") is not None:
@@ -185,6 +197,12 @@ def configure_from_params(params: dict[str, Any]) -> None:
         LAMBDA_LOCAL_MASK = float(params["lambda_local_mask"])
     if params.get("lambda_noise_type") is not None:
         LAMBDA_NOISE_TYPE = float(params["lambda_noise_type"])
+    if params.get("lambda_teacher") is not None:
+        LAMBDA_TEACHER = float(params["lambda_teacher"])
+    if params.get("lambda_sqi") is not None:
+        LAMBDA_SQI = float(params["lambda_sqi"])
+    if params.get("teacher_temperature") is not None:
+        TEACHER_TEMPERATURE = float(params["teacher_temperature"])
     if params.get("label_smoothing") is not None:
         LABEL_SMOOTHING = float(params["label_smoothing"])
     if params.get("class_weight_good") is not None:
@@ -211,6 +229,8 @@ def configure_from_params(params: dict[str, Any]) -> None:
             raise ValueError("uncertainty_mode must be 'kendall' or 'fixed'")
     if params.get("init_checkpoint") is not None:
         INIT_CHECKPOINT = str(params["init_checkpoint"])
+    if params.get("teacher_targets") is not None:
+        TEACHER_TARGETS = str(params["teacher_targets"])
     VERBOSE = bool(params.get("verbose", False))
 
     art: Path | None = None
@@ -345,6 +365,8 @@ class PTBXLMTLDataset(Dataset):
         snr_db: np.ndarray,
         local_mask: np.ndarray,
         noise_type: np.ndarray,
+        teacher_probs: np.ndarray,
+        sqi_target: np.ndarray,
         input_mode: str,
     ):
         self.noisy = noisy.astype(np.float32)
@@ -355,6 +377,8 @@ class PTBXLMTLDataset(Dataset):
         self.snr_db = snr_db.astype(np.float32)
         self.local_mask = local_mask.astype(np.float32)
         self.noise_type = noise_type.astype(np.int64)
+        self.teacher_probs = teacher_probs.astype(np.float32)
+        self.sqi_target = sqi_target.astype(np.float32)
         self.input_mode = input_mode
 
     def __len__(self) -> int:
@@ -372,6 +396,8 @@ class PTBXLMTLDataset(Dataset):
             "snr_norm": torch.tensor(normalize_snr_db(float(self.snr_db[i])), dtype=torch.float32),
             "local_mask": torch.from_numpy(self.local_mask[i]),
             "noise_type": torch.tensor(self.noise_type[i], dtype=torch.long),
+            "teacher_probs": torch.from_numpy(self.teacher_probs[i]),
+            "sqi_target": torch.from_numpy(self.sqi_target[i]),
         }
 
 
@@ -413,6 +439,7 @@ def normalize_snr_db(snr_db: float) -> float:
 
 
 NOISE_TYPE_TO_INT = {"em": 0, "ma": 1, "bw": 2, "mix": 3}
+SQI_TARGET_COLUMNS = ("I__iSQI", "I__bSQI", "I__pSQI", "I__sSQI", "I__kSQI", "I__fSQI", "I__basSQI")
 
 
 def map_noise_type(v: object) -> int:
@@ -438,6 +465,26 @@ def build_split_arrays() -> tuple[dict[str, PTBXLMTLDataset], dict[str, dict[str
         M = m_npz["M"].astype(np.float32)
     else:
         M = np.zeros_like(P, dtype=np.float32)
+    teacher_probs = np.zeros((len(df), 3), dtype=np.float32)
+    sqi_target = np.zeros((len(df), len(SQI_TARGET_COLUMNS)), dtype=np.float32)
+    if USE_TEACHER_DISTILL or USE_SQI_HEAD:
+        if not TEACHER_TARGETS:
+            raise ValueError("teacher_distill/sqi_head requested but --teacher_targets is empty")
+        teacher_path = Path(TEACHER_TARGETS)
+        if not teacher_path.is_absolute():
+            teacher_path = ROOT / teacher_path
+        teacher = pd.read_csv(teacher_path)
+        required_teacher = {"idx", "prob_good", "prob_medium", "prob_bad", *SQI_TARGET_COLUMNS}
+        missing_teacher = required_teacher - set(teacher.columns)
+        if missing_teacher:
+            raise ValueError(f"teacher targets missing columns: {sorted(missing_teacher)}")
+        teacher = teacher.sort_values("idx").reset_index(drop=True)
+        if len(teacher) != len(df) or not np.array_equal(teacher["idx"].to_numpy(dtype=np.int64), np.arange(len(df))):
+            raise ValueError("teacher targets must contain one row per dataset idx, sorted from 0..n-1")
+        teacher_probs = teacher[["prob_good", "prob_medium", "prob_bad"]].to_numpy(dtype=np.float32)
+        teacher_probs = np.clip(teacher_probs, 1e-6, 1.0)
+        teacher_probs = teacher_probs / teacher_probs.sum(axis=1, keepdims=True)
+        sqi_target = teacher[list(SQI_TARGET_COLUMNS)].to_numpy(dtype=np.float32)
 
     required = {"idx", "split", "y_class", "noise_kind", "snr_db", "seg_id", "ecg_id"}
     miss = required - set(df.columns)
@@ -465,6 +512,8 @@ def build_split_arrays() -> tuple[dict[str, PTBXLMTLDataset], dict[str, dict[str
         sp_snr = df["snr_db"].to_numpy(dtype=np.float32)[m][order]
         sp_mask = M[sp_idx]
         sp_noise_type = noise_type_int[m][order]
+        sp_teacher = teacher_probs[sp_idx]
+        sp_sqi = sqi_target[sp_idx]
 
         datasets[sp] = PTBXLMTLDataset(
             noisy=X_noisy[sp_idx],
@@ -475,6 +524,8 @@ def build_split_arrays() -> tuple[dict[str, PTBXLMTLDataset], dict[str, dict[str
             snr_db=sp_snr,
             local_mask=sp_mask,
             noise_type=sp_noise_type,
+            teacher_probs=sp_teacher,
+            sqi_target=sp_sqi,
             input_mode=INPUT_MODE,
         )
         vc = pd.Series(sp_y).value_counts().sort_index().to_dict()
@@ -519,6 +570,8 @@ def build_model(device: torch.device) -> tuple[nn.Module, UncertaintyWeights]:
         use_local_mask_head=USE_LOCAL_MASK_HEAD,
         use_noise_type_head=USE_NOISE_TYPE_HEAD,
         noise_type_classes=len(NOISE_TYPE_TO_INT),
+        use_sqi_head=USE_SQI_HEAD,
+        sqi_dim=len(SQI_TARGET_COLUMNS),
     )
     model = MTLTransformerPTBXL(cfg).to(device=device, dtype=torch.float32)
     uw = UncertaintyWeights().to(device=device, dtype=torch.float32)
@@ -587,6 +640,7 @@ def compute_losses(
     snr_hat: torch.Tensor | None,
     local_mask_logits: torch.Tensor | None,
     noise_type_logits: torch.Tensor | None,
+    sqi_hat: torch.Tensor | None,
     clean: torch.Tensor,
     p_target: torch.Tensor,
     valid_rr: torch.Tensor,
@@ -595,10 +649,12 @@ def compute_losses(
     snr_target: torch.Tensor,
     local_mask_target: torch.Tensor,
     noise_type_target: torch.Tensor,
+    teacher_probs: torch.Tensor,
+    sqi_target: torch.Tensor,
     use_cls: bool,
     use_den: bool,
     use_lvl: bool,
-) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, dict[str, float]]:
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, dict[str, float]]:
     z = torch.zeros((), device=clean.device, dtype=torch.float32)
     l_cls = z
     l_denoise = z
@@ -607,6 +663,8 @@ def compute_losses(
     l_snr = z
     l_local = z
     l_noise_type = z
+    l_teacher = z
+    l_sqi = z
     dbg: dict[str, float] = {}
 
     if use_cls:
@@ -622,6 +680,12 @@ def compute_losses(
             l_snr = nn.SmoothL1Loss(beta=0.2)(snr_hat, snr_target)
         if USE_NOISE_TYPE_HEAD and noise_type_logits is not None:
             l_noise_type = nn.CrossEntropyLoss()(noise_type_logits, noise_type_target)
+        if USE_TEACHER_DISTILL:
+            t = max(1e-6, float(TEACHER_TEMPERATURE))
+            logp = torch.log_softmax(logits / t, dim=1)
+            l_teacher = nn.KLDivLoss(reduction="batchmean")(logp, teacher_probs) * (t * t)
+        if USE_SQI_HEAD and sqi_hat is not None:
+            l_sqi = nn.SmoothL1Loss(beta=0.1)(sqi_hat, sqi_target)
 
     if USE_LOCAL_MASK_HEAD and local_mask_logits is not None:
         l_local = nn.BCEWithLogitsLoss()(local_mask_logits.squeeze(1), local_mask_target)
@@ -683,7 +747,7 @@ def compute_losses(
         per_sample_l = torch.mean((p_pred - p_target) ** 2, dim=1)
         l_level = masked_mean(per_sample_l, valid_rr.float())
 
-    return l_cls, l_denoise, l_level, l_ord, l_snr, l_local, l_noise_type, dbg
+    return l_cls, l_denoise, l_level, l_ord, l_snr, l_local, l_noise_type, l_teacher, l_sqi, dbg
 
 
 def combine_losses(
@@ -694,6 +758,8 @@ def combine_losses(
     l_snr: torch.Tensor,
     l_local: torch.Tensor,
     l_noise_type: torch.Tensor,
+    l_teacher: torch.Tensor,
+    l_sqi: torch.Tensor,
     phase: str,
     uw: UncertaintyWeights,
 ) -> torch.Tensor:
@@ -706,6 +772,7 @@ def combine_losses(
             LAMBDA_CLS * l1 + LAMBDA_DEN * l2 + LAMBDA_LVL * l3
             + LAMBDA_ORD * l_ord + LAMBDA_SNR * l_snr
             + LAMBDA_LOCAL_MASK * l_local + LAMBDA_NOISE_TYPE * l_noise_type
+            + LAMBDA_TEACHER * l_teacher + LAMBDA_SQI * l_sqi
         )
     # [ASSUMPTION] Kendall homoscedastic uncertainty weighting.
     s1 = uw.log_sigma_cls
@@ -715,6 +782,7 @@ def combine_losses(
         torch.exp(-s1) * l1 + s1 + torch.exp(-s2) * l2 + s2 + torch.exp(-s3) * l3 + s3
         + LAMBDA_ORD * l_ord + LAMBDA_SNR * l_snr
         + LAMBDA_LOCAL_MASK * l_local + LAMBDA_NOISE_TYPE * l_noise_type
+        + LAMBDA_TEACHER * l_teacher + LAMBDA_SQI * l_sqi
     )
 
 
@@ -741,6 +809,8 @@ def run_epoch(
     sum_snr = 0.0
     sum_local = 0.0
     sum_noise_type = 0.0
+    sum_teacher = 0.0
+    sum_sqi = 0.0
     dbg_sum: dict[str, float] = {}
     dbg_n = 0
 
@@ -760,6 +830,8 @@ def run_epoch(
         snr_target = batch["snr_norm"].to(device=device, dtype=torch.float32)
         local_mask_target = batch["local_mask"].to(device=device, dtype=torch.float32)
         noise_type_target = batch["noise_type"].to(device=device, dtype=torch.long)
+        teacher_probs = batch["teacher_probs"].to(device=device, dtype=torch.float32)
+        sqi_target = batch["sqi_target"].to(device=device, dtype=torch.float32)
 
         with torch.set_grad_enabled(train_mode):
             out = model(x_noisy)
@@ -774,16 +846,19 @@ def run_epoch(
                 local_mask_logits = out[extra_i] if USE_LOCAL_MASK_HEAD and len(out) > extra_i else None
                 extra_i += 1 if USE_LOCAL_MASK_HEAD else 0
                 noise_type_logits = out[extra_i] if USE_NOISE_TYPE_HEAD and len(out) > extra_i else None
+                extra_i += 1 if USE_NOISE_TYPE_HEAD else 0
+                sqi_hat = out[extra_i] if USE_SQI_HEAD and len(out) > extra_i else None
             else:
                 raise RuntimeError("Model output must provide y_denoise, y_level, logits")
 
             use_cls, use_den, use_lvl, _ = active_losses(phase)
-            l_cls, l_den, l_lvl, l_ord, l_snr, l_local, l_noise_type, dbg = compute_losses(
-                y_denoise, y_level, logits, ordinal_logits, snr_hat, local_mask_logits, noise_type_logits,
+            l_cls, l_den, l_lvl, l_ord, l_snr, l_local, l_noise_type, l_teacher, l_sqi, dbg = compute_losses(
+                y_denoise, y_level, logits, ordinal_logits, snr_hat, local_mask_logits, noise_type_logits, sqi_hat,
                 x_clean, p_t, valid_rr, y, ordinal_target, snr_target, local_mask_target, noise_type_target,
+                teacher_probs, sqi_target,
                 use_cls, use_den, use_lvl
             )
-            l_total = combine_losses(l_cls, l_den, l_lvl, l_ord, l_snr, l_local, l_noise_type, phase, uw)
+            l_total = combine_losses(l_cls, l_den, l_lvl, l_ord, l_snr, l_local, l_noise_type, l_teacher, l_sqi, phase, uw)
 
             if train_mode:
                 optimizer.zero_grad(set_to_none=True)
@@ -805,6 +880,10 @@ def run_epoch(
                 post["M"] = f"{float(l_local.detach().cpu()):.3f}"
             if USE_NOISE_TYPE_HEAD:
                 post["N"] = f"{float(l_noise_type.detach().cpu()):.3f}"
+            if USE_TEACHER_DISTILL:
+                post["T"] = f"{float(l_teacher.detach().cpu()):.3f}"
+            if USE_SQI_HEAD:
+                post["Q"] = f"{float(l_sqi.detach().cpu()):.3f}"
             if use_den and dbg:
                 post.update({
                     "g%": f"{dbg.get('wavelet_gate_frac_good', 0.0):.2f}",
@@ -824,6 +903,8 @@ def run_epoch(
         sum_snr += float(l_snr.detach().cpu().item()) * bsz
         sum_local += float(l_local.detach().cpu().item()) * bsz
         sum_noise_type += float(l_noise_type.detach().cpu().item()) * bsz
+        sum_teacher += float(l_teacher.detach().cpu().item()) * bsz
+        sum_sqi += float(l_sqi.detach().cpu().item()) * bsz
         if dbg:
             dbg_n += 1
             for k, v in dbg.items():
@@ -832,7 +913,8 @@ def run_epoch(
     if n == 0:
         out0 = {
             "total": 0.0, "cls": 0.0, "denoise": 0.0, "level": 0.0,
-            "ordinal": 0.0, "snr": 0.0, "local_mask": 0.0, "noise_type": 0.0, "acc": 0.0,
+            "ordinal": 0.0, "snr": 0.0, "local_mask": 0.0, "noise_type": 0.0,
+            "teacher": 0.0, "sqi": 0.0, "acc": 0.0,
         }
         if dbg_n > 0:
             for k in dbg_sum:
@@ -853,6 +935,8 @@ def run_epoch(
         "snr": sum_snr / n,
         "local_mask": sum_local / n,
         "noise_type": sum_noise_type / n,
+        "teacher": sum_teacher / n,
+        "sqi": sum_sqi / n,
         "acc": float(correct) / float(n),
     }
     out.update(dbg_sum)
@@ -1297,6 +1381,8 @@ def build_probe_summary(history: list[dict[str, Any]], test_report: dict[str, An
         "snr_head": USE_SNR_HEAD,
         "local_mask_head": USE_LOCAL_MASK_HEAD,
         "noise_type_head": USE_NOISE_TYPE_HEAD,
+        "teacher_distill": USE_TEACHER_DISTILL,
+        "sqi_head": USE_SQI_HEAD,
         "e_cls": E_CLS,
         "e_denoise": E_DENOISE,
         "e_level": E_LEVEL,
@@ -1310,6 +1396,9 @@ def build_probe_summary(history: list[dict[str, Any]], test_report: dict[str, An
         "lambda_snr": LAMBDA_SNR,
         "lambda_local_mask": LAMBDA_LOCAL_MASK,
         "lambda_noise_type": LAMBDA_NOISE_TYPE,
+        "lambda_teacher": LAMBDA_TEACHER,
+        "lambda_sqi": LAMBDA_SQI,
+        "teacher_temperature": TEACHER_TEMPERATURE,
         "label_smoothing": LABEL_SMOOTHING,
         "class_weight_good": CLASS_WEIGHT_GOOD,
         "class_weight_medium": CLASS_WEIGHT_MEDIUM,
@@ -1323,6 +1412,7 @@ def build_probe_summary(history: list[dict[str, Any]], test_report: dict[str, An
         "uncertainty_weighting": E_UNCERT > 0,
         "uncertainty_mode": UNCERTAINTY_MODE,
         "init_checkpoint": INIT_CHECKPOINT,
+        "teacher_targets": TEACHER_TARGETS,
     }
 
     last_val_acc = float(last.get("val_detail", {}).get("overall_acc", last["val"]["acc"]))
@@ -1402,6 +1492,9 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         extra_i += 1 if USE_LOCAL_MASK_HEAD else 0
         if USE_NOISE_TYPE_HEAD and tuple(out[extra_i].shape) != (x_noisy.shape[0], len(NOISE_TYPE_TO_INT)):
             raise RuntimeError(f"dry-run noise type shape mismatch: {tuple(out[extra_i].shape)}")
+        extra_i += 1 if USE_NOISE_TYPE_HEAD else 0
+        if USE_SQI_HEAD and tuple(out[extra_i].shape) != (x_noisy.shape[0], len(SQI_TARGET_COLUMNS)):
+            raise RuntimeError(f"dry-run SQI shape mismatch: {tuple(out[extra_i].shape)}")
         print("[dry-run] transformer train inputs and one forward pass OK")
         return {"step": "train", "skipped": True, "dry_run": True, "outputs": []}
 
@@ -1431,6 +1524,8 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         "USE_SNR_HEAD": USE_SNR_HEAD,
         "USE_LOCAL_MASK_HEAD": USE_LOCAL_MASK_HEAD,
         "USE_NOISE_TYPE_HEAD": USE_NOISE_TYPE_HEAD,
+        "USE_TEACHER_DISTILL": USE_TEACHER_DISTILL,
+        "USE_SQI_HEAD": USE_SQI_HEAD,
         "E_CLS": E_CLS,
         "E_DENOISE": E_DENOISE,
         "E_LEVEL": E_LEVEL,
@@ -1448,6 +1543,9 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         "LAMBDA_SNR": LAMBDA_SNR,
         "LAMBDA_LOCAL_MASK": LAMBDA_LOCAL_MASK,
         "LAMBDA_NOISE_TYPE": LAMBDA_NOISE_TYPE,
+        "LAMBDA_TEACHER": LAMBDA_TEACHER,
+        "LAMBDA_SQI": LAMBDA_SQI,
+        "TEACHER_TEMPERATURE": TEACHER_TEMPERATURE,
         "LABEL_SMOOTHING": LABEL_SMOOTHING,
         "CLASS_WEIGHT_GOOD": CLASS_WEIGHT_GOOD,
         "CLASS_WEIGHT_MEDIUM": CLASS_WEIGHT_MEDIUM,
@@ -1455,6 +1553,7 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         "SELECT_BEST_BY": SELECT_BEST_BY,
         "UNCERTAINTY_MODE": UNCERTAINTY_MODE,
         "INIT_CHECKPOINT": INIT_CHECKPOINT,
+        "TEACHER_TARGETS": TEACHER_TARGETS,
     }
 
     history: list[dict[str, Any]] = []
@@ -1484,11 +1583,13 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
             f"train L={tr['total']:.4f} (cls={LAMBDA_CLS * tr['cls']:.4f}, den={LAMBDA_DEN * tr['denoise']:.4f}, "
             f"lvl={LAMBDA_LVL * tr['level']:.4f}, ord={LAMBDA_ORD * tr['ordinal']:.4f}, "
             f"snr={LAMBDA_SNR * tr['snr']:.4f}, mask={LAMBDA_LOCAL_MASK * tr['local_mask']:.4f}, "
-            f"ntype={LAMBDA_NOISE_TYPE * tr['noise_type']:.4f}) | "
+            f"ntype={LAMBDA_NOISE_TYPE * tr['noise_type']:.4f}, teach={LAMBDA_TEACHER * tr['teacher']:.4f}, "
+            f"sqi={LAMBDA_SQI * tr['sqi']:.4f}) | "
             f"val L={va['total']:.4f} (cls={LAMBDA_CLS * va['cls']:.4f}, den={LAMBDA_DEN * va['denoise']:.4f}, "
             f"lvl={LAMBDA_LVL * va['level']:.4f}, ord={LAMBDA_ORD * va['ordinal']:.4f}, "
             f"snr={LAMBDA_SNR * va['snr']:.4f}, mask={LAMBDA_LOCAL_MASK * va['local_mask']:.4f}, "
-            f"ntype={LAMBDA_NOISE_TYPE * va['noise_type']:.4f})"
+            f"ntype={LAMBDA_NOISE_TYPE * va['noise_type']:.4f}, teach={LAMBDA_TEACHER * va['teacher']:.4f}, "
+            f"sqi={LAMBDA_SQI * va['sqi']:.4f})"
         )
         cur_lr = scheduler.get_last_lr()[0]
         print(f"LR={cur_lr:.2e} | CUR_BAD_DEN_W={CUR_BAD_DEN_W:.3f}")
@@ -1663,7 +1764,10 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--snr_head", action="store_true")
     parser.add_argument("--local_mask_head", action="store_true")
     parser.add_argument("--noise_type_head", action="store_true")
+    parser.add_argument("--teacher_distill", action="store_true")
+    parser.add_argument("--sqi_head", action="store_true")
     parser.add_argument("--init_checkpoint", default="")
+    parser.add_argument("--teacher_targets", default="")
     parser.add_argument("--e_cls", type=int)
     parser.add_argument("--e_denoise", type=int)
     parser.add_argument("--e_level", type=int)
@@ -1677,6 +1781,9 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--lambda_snr", type=float)
     parser.add_argument("--lambda_local_mask", type=float)
     parser.add_argument("--lambda_noise_type", type=float)
+    parser.add_argument("--lambda_teacher", type=float)
+    parser.add_argument("--lambda_sqi", type=float)
+    parser.add_argument("--teacher_temperature", type=float)
     parser.add_argument("--label_smoothing", type=float)
     parser.add_argument("--class_weight_good", type=float)
     parser.add_argument("--class_weight_medium", type=float)

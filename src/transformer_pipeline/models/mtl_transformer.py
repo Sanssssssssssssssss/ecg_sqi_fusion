@@ -68,6 +68,8 @@ class MTLTransformerConfig:
     use_local_mask_head: bool = False
     use_noise_type_head: bool = False
     noise_type_classes: int = 4
+    use_sqi_head: bool = False
+    sqi_dim: int = 7
 
     # smooth (paper says only for denoise head)
     smooth_k: int = 5
@@ -216,6 +218,8 @@ class MTLTransformerPTBXL(nn.Module):
             self.head_local_mask = nn.Linear(cfg.dec_d_model, cfg.head_patch_out)
         if cfg.use_noise_type_head:
             self.noise_type_fc = nn.Linear(cls_in, cfg.noise_type_classes)
+        if cfg.use_sqi_head:
+            self.sqi_fc = nn.Linear(cls_in, cfg.sqi_dim)
 
     # --------- Internal: patch embedding forward ---------
     def _patch_embed(self, x: torch.Tensor) -> torch.Tensor:
@@ -292,4 +296,6 @@ class MTLTransformerPTBXL(nn.Module):
             out = out + (y3,)
         if cfg.use_noise_type_head:
             out = out + (self.noise_type_fc(g),)
+        if cfg.use_sqi_head:
+            out = out + (self.sqi_fc(g),)
         return out

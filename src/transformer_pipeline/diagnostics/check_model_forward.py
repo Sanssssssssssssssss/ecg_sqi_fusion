@@ -39,6 +39,7 @@ def run(params: dict | None = None) -> dict:
     use_snr_head = bool(params.get("snr_head", False))
     use_local_mask_head = bool(params.get("local_mask_head", False))
     use_noise_type_head = bool(params.get("noise_type_head", False))
+    use_sqi_head = bool(params.get("sqi_head", False))
 
     cfg = MTLTransformerConfig(
         fs=125,
@@ -55,6 +56,7 @@ def run(params: dict | None = None) -> dict:
         use_snr_head=use_snr_head,
         use_local_mask_head=use_local_mask_head,
         use_noise_type_head=use_noise_type_head,
+        use_sqi_head=use_sqi_head,
     )
     model = MTLTransformerPTBXL(cfg).to(device)
     model.eval()
@@ -122,6 +124,9 @@ def _print_extra_shapes(out: tuple[torch.Tensor, ...], cfg: MTLTransformerConfig
         extra_i += 1
     if cfg.use_noise_type_head:
         print(f"noise_type: {tuple(out[extra_i].shape)}     (expect (B,4))")
+        extra_i += 1
+    if cfg.use_sqi_head:
+        print(f"sqi_hat   : {tuple(out[extra_i].shape)}     (expect (B,7))")
 
 
 def main() -> None:
@@ -139,6 +144,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--snr_head", action="store_true")
     parser.add_argument("--local_mask_head", action="store_true")
     parser.add_argument("--noise_type_head", action="store_true")
+    parser.add_argument("--sqi_head", action="store_true")
     parser.add_argument("--verbose", action="store_true")
     return parser.parse_args()
 
