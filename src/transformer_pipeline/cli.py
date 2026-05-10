@@ -22,7 +22,13 @@ def parse_args(*, default_stage: str = "all") -> argparse.Namespace:
     parser.add_argument("--stage", choices=("all", "preprocess", "model"), default=default_stage)
     parser.add_argument("--only", default="", help="comma-separated step names, e.g. forward_check,train")
     parser.add_argument("--artifact_dir", default="outputs/transformer")
+    parser.add_argument("--source_artifact_dir", default="", help="read source segments/splits from this artifact dir")
+    parser.add_argument("--preserve_eval_from", default="", help="copy val/test synthetic data from this artifact dir")
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--train_aug_mode", choices=("single", "multiview", "triplet"), default=None)
+    parser.add_argument("--train_aug_k", type=int)
+    parser.add_argument("--train_noise_kinds", default="")
+    parser.add_argument("--stratify_noise_snr", action="store_true")
     parser.add_argument("--experiment_name", default="", help="model subdirectory under artifact_dir/models")
     parser.add_argument("--model_dir", default="", help="explicit model output directory")
     parser.add_argument("--epochs", type=int)
@@ -34,6 +40,9 @@ def parse_args(*, default_stage: str = "all") -> argparse.Namespace:
     parser.add_argument("--weight_decay", type=float)
     parser.add_argument("--dropout", type=float)
     parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both"), default=None)
+    parser.add_argument("--input_mode", choices=("raw", "robust", "raw_robust"), default=None)
+    parser.add_argument("--ordinal_head", action="store_true")
+    parser.add_argument("--snr_head", action="store_true")
     parser.add_argument("--e_cls", type=int)
     parser.add_argument("--e_denoise", type=int)
     parser.add_argument("--e_level", type=int)
@@ -43,6 +52,8 @@ def parse_args(*, default_stage: str = "all") -> argparse.Namespace:
     parser.add_argument("--lambda_cls", type=float)
     parser.add_argument("--lambda_den", type=float)
     parser.add_argument("--lambda_lvl", type=float)
+    parser.add_argument("--lambda_ord", type=float)
+    parser.add_argument("--lambda_snr", type=float)
     parser.add_argument("--label_smoothing", type=float)
     parser.add_argument("--class_weight_good", type=float)
     parser.add_argument("--class_weight_medium", type=float)
@@ -60,6 +71,12 @@ def train_overrides_from_args(args: argparse.Namespace) -> dict[str, object]:
     keys = (
         "experiment_name",
         "model_dir",
+        "source_artifact_dir",
+        "preserve_eval_from",
+        "train_aug_mode",
+        "train_aug_k",
+        "train_noise_kinds",
+        "stratify_noise_snr",
         "epochs",
         "batch_size",
         "num_workers",
@@ -69,6 +86,9 @@ def train_overrides_from_args(args: argparse.Namespace) -> dict[str, object]:
         "weight_decay",
         "dropout",
         "cls_pool",
+        "input_mode",
+        "ordinal_head",
+        "snr_head",
         "e_cls",
         "e_denoise",
         "e_level",
@@ -78,6 +98,8 @@ def train_overrides_from_args(args: argparse.Namespace) -> dict[str, object]:
         "lambda_cls",
         "lambda_den",
         "lambda_lvl",
+        "lambda_ord",
+        "lambda_snr",
         "label_smoothing",
         "class_weight_good",
         "class_weight_medium",

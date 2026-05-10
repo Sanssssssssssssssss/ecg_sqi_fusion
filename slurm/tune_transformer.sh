@@ -38,11 +38,14 @@ SEED="${SEED:-0}"
 EPOCHS="${EPOCHS:-20}"
 BATCH_SIZE="${BATCH_SIZE:-32}"
 SELECT_BEST_BY="${SELECT_BEST_BY:-val_acc}"
+STAGE="${STAGE:-model}"
+ONLY="${ONLY:-}"
 
 cmd=(
   python -u -m src.transformer_pipeline.run_transformer_all
   --force
   --verbose
+  --stage "$STAGE"
   --artifact_dir "$ARTIFACT_DIR"
   --seed "$SEED"
   --experiment_name "$EXPERIMENT_NAME"
@@ -51,14 +54,27 @@ cmd=(
   --select_best_by "$SELECT_BEST_BY"
 )
 
+[[ -n "$ONLY" ]] && cmd+=(--only "$ONLY")
+
 [[ -n "${DROPOUT:-}" ]] && cmd+=(--dropout "$DROPOUT")
+[[ -n "${SOURCE_ARTIFACT_DIR:-}" ]] && cmd+=(--source_artifact_dir "$SOURCE_ARTIFACT_DIR")
+[[ -n "${PRESERVE_EVAL_FROM:-}" ]] && cmd+=(--preserve_eval_from "$PRESERVE_EVAL_FROM")
+[[ -n "${TRAIN_AUG_MODE:-}" ]] && cmd+=(--train_aug_mode "$TRAIN_AUG_MODE")
+[[ -n "${TRAIN_AUG_K:-}" ]] && cmd+=(--train_aug_k "$TRAIN_AUG_K")
+[[ -n "${TRAIN_NOISE_KINDS:-}" ]] && cmd+=(--train_noise_kinds "$TRAIN_NOISE_KINDS")
+[[ "${STRATIFY_NOISE_SNR:-0}" == "1" ]] && cmd+=(--stratify_noise_snr)
 [[ -n "${LR:-}" ]] && cmd+=(--lr "$LR")
 [[ -n "${LR_ETA_MIN:-}" ]] && cmd+=(--lr_eta_min "$LR_ETA_MIN")
 [[ -n "${WEIGHT_DECAY:-}" ]] && cmd+=(--weight_decay "$WEIGHT_DECAY")
 [[ -n "${CLS_POOL:-}" ]] && cmd+=(--cls_pool "$CLS_POOL")
+[[ -n "${INPUT_MODE:-}" ]] && cmd+=(--input_mode "$INPUT_MODE")
+[[ "${ORDINAL_HEAD:-0}" == "1" ]] && cmd+=(--ordinal_head)
+[[ "${SNR_HEAD:-0}" == "1" ]] && cmd+=(--snr_head)
 [[ -n "${LAMBDA_CLS:-}" ]] && cmd+=(--lambda_cls "$LAMBDA_CLS")
 [[ -n "${LAMBDA_DEN:-}" ]] && cmd+=(--lambda_den "$LAMBDA_DEN")
 [[ -n "${LAMBDA_LVL:-}" ]] && cmd+=(--lambda_lvl "$LAMBDA_LVL")
+[[ -n "${LAMBDA_ORD:-}" ]] && cmd+=(--lambda_ord "$LAMBDA_ORD")
+[[ -n "${LAMBDA_SNR:-}" ]] && cmd+=(--lambda_snr "$LAMBDA_SNR")
 [[ -n "${LABEL_SMOOTHING:-}" ]] && cmd+=(--label_smoothing "$LABEL_SMOOTHING")
 [[ -n "${CLASS_WEIGHT_GOOD:-}" ]] && cmd+=(--class_weight_good "$CLASS_WEIGHT_GOOD")
 [[ -n "${CLASS_WEIGHT_MEDIUM:-}" ]] && cmd+=(--class_weight_medium "$CLASS_WEIGHT_MEDIUM")

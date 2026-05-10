@@ -54,6 +54,7 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
     verbose = bool(params.get("verbose", False))
     seed = int(params.get("seed", 0))
     batch_size = int(params.get("batch_size", 512))
+    splits = _parse_splits(params.get("splits"))
 
     out_dir.mkdir(parents=True, exist_ok=True)
     out_md = out_dir / "medium_error_audit.md"
@@ -63,6 +64,12 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         return {"step": "medium_error_audit", "skipped": True, "outputs": [str(out_md), str(out_json)]}
 
     labels, x_noisy, x_clean, valid_rr = _load_transformer_dataset(artifact_dir)
+    if splits:
+        mask = labels["split"].astype(str).isin(splits).to_numpy()
+        labels = labels.loc[mask].reset_index(drop=True)
+        x_noisy = x_noisy[mask]
+        x_clean = x_clean[mask]
+        valid_rr = valid_rr[mask]
     if verbose:
         print(f"loaded dataset: rows={len(labels)} X={x_noisy.shape}")
 
@@ -183,6 +190,9 @@ def _predict_transformer(
         "epochs",
         "dropout",
         "cls_pool",
+        "input_mode",
+        "ordinal_head",
+        "snr_head",
         "e_cls",
         "e_denoise",
         "e_level",
@@ -192,6 +202,8 @@ def _predict_transformer(
         "lambda_cls",
         "lambda_den",
         "lambda_lvl",
+        "lambda_ord",
+        "lambda_snr",
         "label_smoothing",
         "class_weight_good",
         "class_weight_medium",
@@ -218,7 +230,11 @@ def _predict_transformer(
             end = min(len(labels), start + batch_size)
             if verbose and start % (batch_size * 10) == 0:
                 print(f"predict transformer: {start}/{len(labels)}")
-            x = torch.from_numpy(x_noisy[start:end, None, :]).to(device=device, dtype=torch.float32)
+            x_np = np.stack(
+                [train_mod.make_input_channels(row, train_mod.INPUT_MODE) for row in x_noisy[start:end]],
+                axis=0,
+            )
+            x = torch.from_numpy(x_np).to(device=device, dtype=torch.float32)
             logits = model(x)[2]
             probs[start:end] = torch.softmax(logits, dim=1).cpu().numpy().astype(np.float32)
     return probs
@@ -238,6 +254,9 @@ def _load_model_hyperparams(model_dir: Path) -> dict[str, Any]:
             "epochs": hp.get("EPOCHS"),
             "dropout": hp.get("MODEL_DROPOUT"),
             "cls_pool": hp.get("CLS_POOL"),
+            "input_mode": hp.get("INPUT_MODE"),
+            "ordinal_head": hp.get("USE_ORDINAL_HEAD"),
+            "snr_head": hp.get("USE_SNR_HEAD"),
             "e_cls": hp.get("E_CLS"),
             "e_denoise": hp.get("E_DENOISE"),
             "e_level": hp.get("E_LEVEL"),
@@ -245,6 +264,8 @@ def _load_model_hyperparams(model_dir: Path) -> dict[str, Any]:
             "lambda_cls": hp.get("LAMBDA_CLS"),
             "lambda_den": hp.get("LAMBDA_DEN"),
             "lambda_lvl": hp.get("LAMBDA_LVL"),
+            "lambda_ord": hp.get("LAMBDA_ORD"),
+            "lambda_snr": hp.get("LAMBDA_SNR"),
         }
     return {}
 
@@ -323,6 +344,11 @@ def _noisy_feature_baselines(df: pd.DataFrame, x_noisy: np.ndarray, seed: int, v
     feature_df = _build_noisy_feature_frame(df, x_noisy)
     x = feature_df.to_numpy(dtype=np.float64)
     train_mask = split == "train"
+    if int(train_mask.sum()) == 0:
+        return {
+            "skipped": "No train rows in this audit subset.",
+            "feature_columns": list(feature_df.columns),
+        }
 
     models = {
         "logreg": make_pipeline(
@@ -473,6 +499,13 @@ def _summarize_group(group: pd.DataFrame, medium_ref: pd.DataFrame) -> dict[str,
 
 
 def _classification_summary(y_true: np.ndarray, y_pred: np.ndarray) -> dict[str, Any]:
+    if len(y_true) == 0:
+        return {
+            "n": 0,
+            "acc": 0.0,
+            "confusion_matrix_3x3": [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+            "medium": {"n": 0, "recall": 0.0, "to_good": 0, "to_medium": 0, "to_bad": 0},
+        }
     cm = confusion_matrix(y_true, y_pred, labels=[0, 1, 2])
     medium_row = cm[1].astype(int).tolist()
     return {
@@ -555,13 +588,16 @@ def _render_markdown(summary: dict[str, Any]) -> str:
     )
     lines.append("")
     baselines = summary["noisy_feature_baselines"]
-    for name in ["logreg", "hist_gradient_boosting"]:
-        item = baselines[name]
-        lines.append(
-            f"- noisy-only `{name}` acc: train={_pct(item['train']['acc'])}, "
-            f"val={_pct(item['val']['acc'])}, test={_pct(item['test']['acc'])}; "
-            f"test medium recall={_pct(item['test']['medium']['recall'])}"
-        )
+    if baselines.get("skipped"):
+        lines.append(f"- noisy-only baselines skipped: {baselines['skipped']}")
+    else:
+        for name in ["logreg", "hist_gradient_boosting"]:
+            item = baselines[name]
+            lines.append(
+                f"- noisy-only `{name}` acc: train={_pct(item['train']['acc'])}, "
+                f"val={_pct(item['val']['acc'])}, test={_pct(item['test']['acc'])}; "
+                f"test medium recall={_pct(item['test']['medium']['recall'])}"
+            )
     lines.append("")
 
     lines.append("## Transformer Accuracy")
@@ -627,19 +663,23 @@ def _auto_read(summary: dict[str, Any]) -> list[str]:
         float(summary["measured_snr_oracle"]["val"]["acc"]),
         float(summary["measured_snr_oracle"]["test"]["acc"]),
     )
-    best_noisy_test = max(
-        float(summary["noisy_feature_baselines"]["logreg"]["test"]["acc"]),
-        float(summary["noisy_feature_baselines"]["hist_gradient_boosting"]["test"]["acc"]),
-    )
+    baselines = summary["noisy_feature_baselines"]
     if oracle_acc >= 0.999:
         out.append("- measured-SNR oracle is essentially perfect, so the SNR label generation is internally consistent.")
     else:
         out.append("- measured-SNR oracle is not near-perfect; inspect generation/label thresholds before model tuning.")
 
-    if best_noisy_test >= 0.95:
-        out.append("- a noisy-only feature baseline reaches 0.95+ test accuracy, so the current transformer is missing usable explicit noise cues.")
+    if baselines.get("skipped"):
+        out.append("- noisy-only baselines were skipped for this split-only audit.")
     else:
-        out.append("- noisy-only baselines also stay below 0.95, which points to a harder medium separability limit in the current dataset.")
+        best_noisy_test = max(
+            float(baselines["logreg"]["test"]["acc"]),
+            float(baselines["hist_gradient_boosting"]["test"]["acc"]),
+        )
+        if best_noisy_test >= 0.95:
+            out.append("- a noisy-only feature baseline reaches 0.95+ test accuracy, so the current transformer is missing usable explicit noise cues.")
+        else:
+            out.append("- noisy-only baselines also stay below 0.95, which points to a harder medium separability limit in the current dataset.")
 
     for split in ["val", "test"]:
         groups = summary["medium_error_audit"][split]["groups"]
@@ -705,6 +745,12 @@ def _path(value: Any, default: Path, root: Path) -> Path:
     return p if p.is_absolute() else root / p
 
 
+def _parse_splits(value: Any) -> set[str]:
+    if value is None or str(value).strip() == "":
+        return set()
+    return {item.strip() for item in str(value).split(",") if item.strip()}
+
+
 def _display(path: Path, root: Path) -> str:
     try:
         return path.resolve().relative_to(root.resolve()).as_posix()
@@ -719,6 +765,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--out_dir", default="")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--batch_size", type=int, default=512)
+    parser.add_argument("--splits", default="", help="Optional comma-separated split subset, e.g. val,test.")
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--verbose", action="store_true")
     return parser.parse_args()

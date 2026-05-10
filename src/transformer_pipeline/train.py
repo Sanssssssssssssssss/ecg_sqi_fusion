@@ -45,6 +45,9 @@ PIN_MEMORY = False
 VERBOSE = False
 MODEL_DROPOUT = MTLTransformerConfig().dropout
 CLS_POOL = MTLTransformerConfig().cls_pool
+INPUT_MODE = "raw"
+USE_ORDINAL_HEAD = False
+USE_SNR_HEAD = False
 
 # ---- LR scheduler ----
 LR = 6e-5
@@ -64,6 +67,8 @@ ALPHA = 8.0
 LAMBDA_CLS = 10.0
 LAMBDA_DEN = 120.0
 LAMBDA_LVL = 1.0
+LAMBDA_ORD = 0.5
+LAMBDA_SNR = 0.3
 LABEL_SMOOTHING = 0.0
 CLASS_WEIGHT_GOOD = 1.0
 CLASS_WEIGHT_MEDIUM = 1.0
@@ -102,10 +107,11 @@ OUT_PROBE = OUT_DIR / "probe_summary.json"
 
 def configure_from_params(params: dict[str, Any]) -> None:
     global SEED, BATCH_SIZE, NUM_WORKERS, PIN_MEMORY, EPOCHS, VERBOSE
-    global WEIGHT_DECAY, LR, LR_ETA_MIN, MODEL_DROPOUT, CLS_POOL
+    global WEIGHT_DECAY, LR, LR_ETA_MIN, MODEL_DROPOUT, CLS_POOL, INPUT_MODE
+    global USE_ORDINAL_HEAD, USE_SNR_HEAD
     global E_CLS, E_DENOISE, E_LEVEL, E_UNCERT
     global BAD_DEN_W_MAX, BAD_DEN_W_WARMUP_EPOCHS
-    global LAMBDA_CLS, LAMBDA_DEN, LAMBDA_LVL
+    global LAMBDA_CLS, LAMBDA_DEN, LAMBDA_LVL, LAMBDA_ORD, LAMBDA_SNR
     global LABEL_SMOOTHING, CLASS_WEIGHT_GOOD, CLASS_WEIGHT_MEDIUM, CLASS_WEIGHT_BAD
     global EARLYSTOP_ENABLED, EARLYSTOP_PATIENCE, EARLYSTOP_MIN_DELTA, EARLYSTOP_START_EPOCH
     global SELECT_BEST_BY, UNCERTAINTY_MODE
@@ -134,6 +140,14 @@ def configure_from_params(params: dict[str, Any]) -> None:
         CLS_POOL = str(params["cls_pool"])
         if CLS_POOL not in {"decoder", "encoder", "both"}:
             raise ValueError("cls_pool must be 'decoder', 'encoder', or 'both'")
+    if params.get("input_mode") is not None:
+        INPUT_MODE = str(params["input_mode"])
+        if INPUT_MODE not in {"raw", "robust", "raw_robust"}:
+            raise ValueError("input_mode must be 'raw', 'robust', or 'raw_robust'")
+    if params.get("ordinal_head") is not None:
+        USE_ORDINAL_HEAD = bool(params["ordinal_head"])
+    if params.get("snr_head") is not None:
+        USE_SNR_HEAD = bool(params["snr_head"])
     if params.get("e_cls") is not None:
         E_CLS = int(params["e_cls"])
     if params.get("e_denoise") is not None:
@@ -152,6 +166,10 @@ def configure_from_params(params: dict[str, Any]) -> None:
         LAMBDA_DEN = float(params["lambda_den"])
     if params.get("lambda_lvl") is not None:
         LAMBDA_LVL = float(params["lambda_lvl"])
+    if params.get("lambda_ord") is not None:
+        LAMBDA_ORD = float(params["lambda_ord"])
+    if params.get("lambda_snr") is not None:
+        LAMBDA_SNR = float(params["lambda_snr"])
     if params.get("label_smoothing") is not None:
         LABEL_SMOOTHING = float(params["label_smoothing"])
     if params.get("class_weight_good") is not None:
@@ -299,24 +317,75 @@ def safe_state_dict(model: nn.Module) -> dict[str, Any]:
 
 # --------- Dataset / Dataloader ---------
 class PTBXLMTLDataset(Dataset):
-    def __init__(self, noisy: np.ndarray, clean: np.ndarray, p: np.ndarray, valid_rr: np.ndarray, y: np.ndarray):
+    def __init__(
+        self,
+        noisy: np.ndarray,
+        clean: np.ndarray,
+        p: np.ndarray,
+        valid_rr: np.ndarray,
+        y: np.ndarray,
+        snr_db: np.ndarray,
+        input_mode: str,
+    ):
         self.noisy = noisy.astype(np.float32)
         self.clean = clean.astype(np.float32)
         self.p = p.astype(np.float32)
         self.valid_rr = (valid_rr.astype(np.float32) > 0.5).astype(np.float32)
         self.y = y.astype(np.int64)
+        self.snr_db = snr_db.astype(np.float32)
+        self.input_mode = input_mode
 
     def __len__(self) -> int:
         return self.noisy.shape[0]
 
     def __getitem__(self, i: int) -> dict[str, torch.Tensor]:
+        x = make_input_channels(self.noisy[i], self.input_mode)
         return {
-            "x_noisy": torch.from_numpy(self.noisy[i][None, :]),   # (1,1250)
+            "x_noisy": torch.from_numpy(x),                        # (C,1250)
             "x_clean": torch.from_numpy(self.clean[i][None, :]),   # (1,1250)
             "p": torch.from_numpy(self.p[i]),                      # (1250,)
             "valid_rr": torch.tensor(self.valid_rr[i], dtype=torch.float32),
             "y": torch.tensor(self.y[i], dtype=torch.long),
+            "ordinal": torch.from_numpy(ordinal_target_np(int(self.y[i]))),
+            "snr_norm": torch.tensor(normalize_snr_db(float(self.snr_db[i])), dtype=torch.float32),
         }
+
+
+def robust_normalize_1d(x: np.ndarray) -> np.ndarray:
+    med = float(np.median(x))
+    q25, q75 = np.percentile(x, [25, 75])
+    scale = float(q75 - q25)
+    if scale < 1e-6:
+        scale = float(np.std(x)) + 1e-6
+    y = (x.astype(np.float32) - med) / scale
+    return np.clip(y, -10.0, 10.0).astype(np.float32)
+
+
+def make_input_channels(x: np.ndarray, input_mode: str) -> np.ndarray:
+    if input_mode == "raw":
+        return x.astype(np.float32, copy=False)[None, :]
+    robust = robust_normalize_1d(x)
+    if input_mode == "robust":
+        return robust[None, :]
+    return np.stack([x.astype(np.float32, copy=False), robust], axis=0)
+
+
+def raw_signal_channel(x: torch.Tensor) -> torch.Tensor:
+    if x.ndim != 3:
+        raise ValueError(f"expected input tensor shape (B,C,T), got {tuple(x.shape)}")
+    return x[:, 0, :]
+
+
+def ordinal_target_np(y_int: int) -> np.ndarray:
+    if y_int == 0:
+        return np.array([0.0, 0.0], dtype=np.float32)
+    if y_int == 1:
+        return np.array([1.0, 0.0], dtype=np.float32)
+    return np.array([1.0, 1.0], dtype=np.float32)
+
+
+def normalize_snr_db(snr_db: float) -> float:
+    return float((snr_db - 7.0) / 13.0)
 
 
 def build_split_arrays() -> tuple[dict[str, PTBXLMTLDataset], dict[str, dict[str, Any]]]:
@@ -349,6 +418,7 @@ def build_split_arrays() -> tuple[dict[str, PTBXLMTLDataset], dict[str, dict[str
         order = np.argsort(sp_idx)
         sp_idx = sp_idx[order]
         sp_y = y_int[m][order]
+        sp_snr = df["snr_db"].to_numpy(dtype=np.float32)[m][order]
 
         datasets[sp] = PTBXLMTLDataset(
             noisy=X_noisy[sp_idx],
@@ -356,6 +426,8 @@ def build_split_arrays() -> tuple[dict[str, PTBXLMTLDataset], dict[str, dict[str
             p=P[sp_idx],
             valid_rr=valid_rr[sp_idx],
             y=sp_y,
+            snr_db=sp_snr,
+            input_mode=INPUT_MODE,
         )
         vc = pd.Series(sp_y).value_counts().sort_index().to_dict()
         split_info[sp] = {
@@ -389,7 +461,14 @@ def uncertainty_weight_snapshot(uw: UncertaintyWeights) -> dict[str, float]:
 
 
 def build_model(device: torch.device) -> tuple[nn.Module, UncertaintyWeights]:
-    cfg = MTLTransformerConfig(dropout=MODEL_DROPOUT, cls_pool=CLS_POOL)
+    in_ch = 2 if INPUT_MODE == "raw_robust" else 1
+    cfg = MTLTransformerConfig(
+        in_ch=in_ch,
+        dropout=MODEL_DROPOUT,
+        cls_pool=CLS_POOL,
+        use_ordinal_head=USE_ORDINAL_HEAD,
+        use_snr_head=USE_SNR_HEAD,
+    )
     model = MTLTransformerPTBXL(cfg).to(device=device, dtype=torch.float32)
     uw = UncertaintyWeights().to(device=device, dtype=torch.float32)
     return model, uw
@@ -453,18 +532,24 @@ def compute_losses(
     y_denoise: torch.Tensor,
     y_level: torch.Tensor,
     logits: torch.Tensor,
+    ordinal_logits: torch.Tensor | None,
+    snr_hat: torch.Tensor | None,
     clean: torch.Tensor,
     p_target: torch.Tensor,
     valid_rr: torch.Tensor,
     y_int: torch.Tensor,
+    ordinal_target: torch.Tensor,
+    snr_target: torch.Tensor,
     use_cls: bool,
     use_den: bool,
     use_lvl: bool,
-) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, dict[str, float]]:
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, dict[str, float]]:
     z = torch.zeros((), device=clean.device, dtype=torch.float32)
     l_cls = z
     l_denoise = z
     l_level = z
+    l_ord = z
+    l_snr = z
     dbg: dict[str, float] = {}
 
     if use_cls:
@@ -474,6 +559,10 @@ def compute_losses(
             cls_weight = torch.tensor(weights, device=logits.device, dtype=logits.dtype)
         ce = nn.CrossEntropyLoss(weight=cls_weight, label_smoothing=LABEL_SMOOTHING)
         l_cls = ce(logits, y_int)
+        if USE_ORDINAL_HEAD and ordinal_logits is not None:
+            l_ord = nn.BCEWithLogitsLoss()(ordinal_logits, ordinal_target)
+        if USE_SNR_HEAD and snr_hat is not None:
+            l_snr = nn.SmoothL1Loss(beta=0.2)(snr_hat, snr_target)
 
     if use_den:
         pred_d = y_denoise.squeeze(1)  # (B,T)
@@ -532,13 +621,15 @@ def compute_losses(
         per_sample_l = torch.mean((p_pred - p_target) ** 2, dim=1)
         l_level = masked_mean(per_sample_l, valid_rr.float())
 
-    return l_cls, l_denoise, l_level, dbg
+    return l_cls, l_denoise, l_level, l_ord, l_snr, dbg
 
 
 def combine_losses(
     l_cls: torch.Tensor,
     l_denoise: torch.Tensor,
     l_level: torch.Tensor,
+    l_ord: torch.Tensor,
+    l_snr: torch.Tensor,
     phase: str,
     uw: UncertaintyWeights,
 ) -> torch.Tensor:
@@ -547,12 +638,12 @@ def combine_losses(
     l2 = l_denoise if use_den else torch.zeros_like(l_cls)
     l3 = l_level if use_lvl else torch.zeros_like(l_cls)
     if not use_uncert or UNCERTAINTY_MODE == "fixed":
-        return LAMBDA_CLS * l1 + LAMBDA_DEN * l2 + LAMBDA_LVL * l3
+        return LAMBDA_CLS * l1 + LAMBDA_DEN * l2 + LAMBDA_LVL * l3 + LAMBDA_ORD * l_ord + LAMBDA_SNR * l_snr
     # [ASSUMPTION] Kendall homoscedastic uncertainty weighting.
     s1 = uw.log_sigma_cls
     s2 = uw.log_sigma_denoise
     s3 = uw.log_sigma_level
-    return torch.exp(-s1) * l1 + s1 + torch.exp(-s2) * l2 + s2 + torch.exp(-s3) * l3 + s3
+    return torch.exp(-s1) * l1 + s1 + torch.exp(-s2) * l2 + s2 + torch.exp(-s3) * l3 + s3 + LAMBDA_ORD * l_ord + LAMBDA_SNR * l_snr
 
 
 # --------- Train Loop ---------
@@ -574,6 +665,8 @@ def run_epoch(
     sum_cls = 0.0
     sum_den = 0.0
     sum_lvl = 0.0
+    sum_ord = 0.0
+    sum_snr = 0.0
     dbg_sum: dict[str, float] = {}
     dbg_n = 0
 
@@ -589,20 +682,28 @@ def run_epoch(
         p_t = batch["p"].to(device=device, dtype=torch.float32)
         valid_rr = batch["valid_rr"].to(device=device, dtype=torch.float32)
         y = batch["y"].to(device=device, dtype=torch.long)
+        ordinal_target = batch["ordinal"].to(device=device, dtype=torch.float32)
+        snr_target = batch["snr_norm"].to(device=device, dtype=torch.float32)
 
         with torch.set_grad_enabled(train_mode):
             out = model(x_noisy)
             # [ASSUMPTION] adapt if model returns other container/order.
             if isinstance(out, (tuple, list)) and len(out) >= 3:
                 y_denoise, y_level, logits = out[0], out[1], out[2]
+                extra_i = 3
+                ordinal_logits = out[extra_i] if USE_ORDINAL_HEAD and len(out) > extra_i else None
+                extra_i += 1 if USE_ORDINAL_HEAD else 0
+                snr_hat = out[extra_i] if USE_SNR_HEAD and len(out) > extra_i else None
             else:
                 raise RuntimeError("Model output must provide y_denoise, y_level, logits")
 
             use_cls, use_den, use_lvl, _ = active_losses(phase)
-            l_cls, l_den, l_lvl, dbg = compute_losses(
-                y_denoise, y_level, logits, x_clean, p_t, valid_rr, y, use_cls, use_den, use_lvl
+            l_cls, l_den, l_lvl, l_ord, l_snr, dbg = compute_losses(
+                y_denoise, y_level, logits, ordinal_logits, snr_hat,
+                x_clean, p_t, valid_rr, y, ordinal_target, snr_target,
+                use_cls, use_den, use_lvl
             )
-            l_total = combine_losses(l_cls, l_den, l_lvl, phase, uw)
+            l_total = combine_losses(l_cls, l_den, l_lvl, l_ord, l_snr, phase, uw)
 
             if train_mode:
                 optimizer.zero_grad(set_to_none=True)
@@ -616,6 +717,10 @@ def run_epoch(
                 "D": f"{float(l_den.detach().cpu()):.3f}",
                 "Lv": f"{float(l_lvl.detach().cpu()):.3f}",
             }
+            if USE_ORDINAL_HEAD:
+                post["O"] = f"{float(l_ord.detach().cpu()):.3f}"
+            if USE_SNR_HEAD:
+                post["S"] = f"{float(l_snr.detach().cpu()):.3f}"
             if use_den and dbg:
                 post.update({
                     "g%": f"{dbg.get('wavelet_gate_frac_good', 0.0):.2f}",
@@ -631,13 +736,15 @@ def run_epoch(
         sum_cls += float(l_cls.detach().cpu().item()) * bsz
         sum_den += float(l_den.detach().cpu().item()) * bsz
         sum_lvl += float(l_lvl.detach().cpu().item()) * bsz
+        sum_ord += float(l_ord.detach().cpu().item()) * bsz
+        sum_snr += float(l_snr.detach().cpu().item()) * bsz
         if dbg:
             dbg_n += 1
             for k, v in dbg.items():
                 dbg_sum[k] = dbg_sum.get(k, 0.0) + float(v)
 
     if n == 0:
-        out0 = {"total": 0.0, "cls": 0.0, "denoise": 0.0, "level": 0.0, "acc": 0.0}
+        out0 = {"total": 0.0, "cls": 0.0, "denoise": 0.0, "level": 0.0, "ordinal": 0.0, "snr": 0.0, "acc": 0.0}
         if dbg_n > 0:
             for k in dbg_sum:
                 dbg_sum[k] /= float(dbg_n)
@@ -653,6 +760,8 @@ def run_epoch(
         "cls": sum_cls / n,
         "denoise": sum_den / n,
         "level": sum_lvl / n,
+        "ordinal": sum_ord / n,
+        "snr": sum_snr / n,
         "acc": float(correct) / float(n),
     }
     out.update(dbg_sum)
@@ -791,7 +900,7 @@ def denoise_metrics_by_class(
         out = model(x_noisy)
         y_denoise = out[0]  # (B,1,T)
 
-        xn = x_noisy.squeeze(1)   # (B,T)
+        xn = raw_signal_channel(x_noisy)  # (B,T)
         xc = x_clean.squeeze(1)   # (B,T)
         xp = y_denoise.squeeze(1) # (B,T)
 
@@ -868,7 +977,7 @@ def export_denoise_examples_by_class(
         probs = torch.softmax(logits, dim=1)
         pred = torch.argmax(probs, dim=1)
 
-        xn = x_noisy.squeeze(1).detach().cpu().numpy()
+        xn = raw_signal_channel(x_noisy).detach().cpu().numpy()
         xc = x_clean.squeeze(1).detach().cpu().numpy()
         xd = y_denoise.squeeze(1).detach().cpu().numpy()
         yy = y.detach().cpu().numpy()
@@ -1092,6 +1201,9 @@ def build_probe_summary(history: list[dict[str, Any]], test_report: dict[str, An
         "weight_decay": WEIGHT_DECAY,
         "dropout": MODEL_DROPOUT,
         "cls_pool": CLS_POOL,
+        "input_mode": INPUT_MODE,
+        "ordinal_head": USE_ORDINAL_HEAD,
+        "snr_head": USE_SNR_HEAD,
         "e_cls": E_CLS,
         "e_denoise": E_DENOISE,
         "e_level": E_LEVEL,
@@ -1101,6 +1213,8 @@ def build_probe_summary(history: list[dict[str, Any]], test_report: dict[str, An
         "lambda_cls": LAMBDA_CLS,
         "lambda_den": LAMBDA_DEN,
         "lambda_lvl": LAMBDA_LVL,
+        "lambda_ord": LAMBDA_ORD,
+        "lambda_snr": LAMBDA_SNR,
         "label_smoothing": LABEL_SMOOTHING,
         "class_weight_good": CLASS_WEIGHT_GOOD,
         "class_weight_medium": CLASS_WEIGHT_MEDIUM,
@@ -1155,7 +1269,8 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         batch = next(iter(train_loader))
         x_noisy = batch["x_noisy"].to(device=device, dtype=torch.float32)
         with torch.no_grad():
-            y_denoise, y_level, logits = model(x_noisy)
+            out = model(x_noisy)
+            y_denoise, y_level, logits = out[0], out[1], out[2]
         expected = (x_noisy.shape[0], 1, MTLTransformerConfig().T)
         if tuple(y_denoise.shape) != expected:
             raise RuntimeError(f"dry-run denoise shape mismatch: {tuple(y_denoise.shape)} != {expected}")
@@ -1163,6 +1278,12 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
             raise RuntimeError(f"dry-run level shape mismatch: {tuple(y_level.shape)} != {expected}")
         if tuple(logits.shape) != (x_noisy.shape[0], 3):
             raise RuntimeError(f"dry-run logits shape mismatch: {tuple(logits.shape)}")
+        if USE_ORDINAL_HEAD and tuple(out[3].shape) != (x_noisy.shape[0], 2):
+            raise RuntimeError(f"dry-run ordinal shape mismatch: {tuple(out[3].shape)}")
+        if USE_SNR_HEAD:
+            snr_i = 4 if USE_ORDINAL_HEAD else 3
+            if tuple(out[snr_i].shape) != (x_noisy.shape[0],):
+                raise RuntimeError(f"dry-run snr shape mismatch: {tuple(out[snr_i].shape)}")
         print("[dry-run] transformer train inputs and one forward pass OK")
         return {"step": "train", "skipped": True, "dry_run": True, "outputs": []}
 
@@ -1186,6 +1307,10 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         "NUM_WORKERS": NUM_WORKERS,
         "PIN_MEMORY": PIN_MEMORY,
         "MODEL_DROPOUT": MODEL_DROPOUT,
+        "CLS_POOL": CLS_POOL,
+        "INPUT_MODE": INPUT_MODE,
+        "USE_ORDINAL_HEAD": USE_ORDINAL_HEAD,
+        "USE_SNR_HEAD": USE_SNR_HEAD,
         "E_CLS": E_CLS,
         "E_DENOISE": E_DENOISE,
         "E_LEVEL": E_LEVEL,
@@ -1199,6 +1324,8 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         "LAMBDA_CLS": LAMBDA_CLS,
         "LAMBDA_DEN": LAMBDA_DEN,
         "LAMBDA_LVL": LAMBDA_LVL,
+        "LAMBDA_ORD": LAMBDA_ORD,
+        "LAMBDA_SNR": LAMBDA_SNR,
         "LABEL_SMOOTHING": LABEL_SMOOTHING,
         "CLASS_WEIGHT_GOOD": CLASS_WEIGHT_GOOD,
         "CLASS_WEIGHT_MEDIUM": CLASS_WEIGHT_MEDIUM,
@@ -1231,8 +1358,10 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         print(
             f"[epoch {epoch:03d}] phase={phase} | "
             f"train acc={tr['acc']:.4f} val acc={va['acc']:.4f} | "
-            f"train L={tr['total']:.4f} (cls={LAMBDA_CLS * tr['cls']:.4f}, den={LAMBDA_DEN * tr['denoise']:.4f}, lvl={LAMBDA_LVL * tr['level']:.4f}) | "
-            f"val L={va['total']:.4f} (cls={LAMBDA_CLS * va['cls']:.4f}, den={LAMBDA_DEN * va['denoise']:.4f}, lvl={LAMBDA_LVL * va['level']:.4f})"
+            f"train L={tr['total']:.4f} (cls={LAMBDA_CLS * tr['cls']:.4f}, den={LAMBDA_DEN * tr['denoise']:.4f}, "
+            f"lvl={LAMBDA_LVL * tr['level']:.4f}, ord={LAMBDA_ORD * tr['ordinal']:.4f}, snr={LAMBDA_SNR * tr['snr']:.4f}) | "
+            f"val L={va['total']:.4f} (cls={LAMBDA_CLS * va['cls']:.4f}, den={LAMBDA_DEN * va['denoise']:.4f}, "
+            f"lvl={LAMBDA_LVL * va['level']:.4f}, ord={LAMBDA_ORD * va['ordinal']:.4f}, snr={LAMBDA_SNR * va['snr']:.4f})"
         )
         cur_lr = scheduler.get_last_lr()[0]
         print(f"LR={cur_lr:.2e} | CUR_BAD_DEN_W={CUR_BAD_DEN_W:.3f}")
@@ -1402,6 +1531,9 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--weight_decay", type=float)
     parser.add_argument("--dropout", type=float)
     parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both"))
+    parser.add_argument("--input_mode", choices=("raw", "robust", "raw_robust"))
+    parser.add_argument("--ordinal_head", action="store_true")
+    parser.add_argument("--snr_head", action="store_true")
     parser.add_argument("--e_cls", type=int)
     parser.add_argument("--e_denoise", type=int)
     parser.add_argument("--e_level", type=int)
@@ -1411,6 +1543,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--lambda_cls", type=float)
     parser.add_argument("--lambda_den", type=float)
     parser.add_argument("--lambda_lvl", type=float)
+    parser.add_argument("--lambda_ord", type=float)
+    parser.add_argument("--lambda_snr", type=float)
     parser.add_argument("--label_smoothing", type=float)
     parser.add_argument("--class_weight_good", type=float)
     parser.add_argument("--class_weight_medium", type=float)

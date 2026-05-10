@@ -63,6 +63,8 @@ class MTLTransformerConfig:
     # [ASSUMPTION] dropout not specified -> default 0 for strict reproducible baseline.
     dropout: float = 0.1
     cls_pool: str = "decoder"
+    use_ordinal_head: bool = False
+    use_snr_head: bool = False
 
     # smooth (paper says only for denoise head)
     smooth_k: int = 5
@@ -203,6 +205,10 @@ class MTLTransformerPTBXL(nn.Module):
         # [ASSUMPTION] dropout prob not specified -> cfg.dropout.
         self.cls_drop = nn.Dropout(cfg.dropout)
         self.cls_fc = nn.Linear(cls_in, 3)
+        if cfg.use_ordinal_head:
+            self.ordinal_fc = nn.Linear(cls_in, 2)
+        if cfg.use_snr_head:
+            self.snr_fc = nn.Linear(cls_in, 1)
 
     # --------- Internal: patch embedding forward ---------
     def _patch_embed(self, x: torch.Tensor) -> torch.Tensor:
@@ -218,7 +224,7 @@ class MTLTransformerPTBXL(nn.Module):
         x = F.relu(self.ln3(x))
         return x
 
-    def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, ...]:
         """
         returns:
           y_denoise: (B, 1, T)
@@ -265,6 +271,12 @@ class MTLTransformerPTBXL(nn.Module):
             g = h.mean(dim=1)  # (B, 128)
         else:
             g = torch.cat([h.mean(dim=1), z.mean(dim=1)], dim=1)  # (B, 192)
-        logits = self.cls_fc(self.cls_drop(g))  # (B, 3)
+        g = self.cls_drop(g)
+        logits = self.cls_fc(g)  # (B, 3)
 
-        return y1, y2, logits
+        out: tuple[torch.Tensor, ...] = (y1, y2, logits)
+        if cfg.use_ordinal_head:
+            out = out + (self.ordinal_fc(g),)
+        if cfg.use_snr_head:
+            out = out + (self.snr_fc(g).squeeze(1),)
+        return out

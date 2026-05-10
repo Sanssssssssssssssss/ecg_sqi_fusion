@@ -4,78 +4,108 @@ Date: 2026-05-10
 
 ## Goal
 
-Tune the transformer pipeline with a small GPU budget, keep the paper-related wavelet denoise logic intact, and require a nonzero final training phase. Target test accuracy was 0.95+ if reachable.
+Push the transformer line past the previous `tune09` baseline by changing the training data, not just dropout/lr. The 0.95+ test target was the stretch goal; validation/test must keep the original benchmark split unchanged.
 
-## Best Run
+## Pre-Rework Backup
 
-Best single-model result:
-
-```text
-model: outputs/transformer/models/tune09_fixed_d05_cls22_den25_bad02_ls02_mw115_e26
-test_acc: 0.935619
-best_val_acc: 0.945728
-best_epoch: 18
-schedule: 0/18/4/4
-```
-
-Recommended params:
+Before the data/model changes, the runnable state was pushed and tagged:
 
 ```text
-dropout=0.05
-lr=6e-5
-weight_decay=0.03
-label_smoothing=0.02
-class_weight_medium=1.15
-lambda_cls=22
-lambda_den=25
-lambda_lvl=1
-bad_den_w_max=0.02
-bad_den_w_warmup_epochs=10
-uncertainty_mode=fixed
-cls_pool=decoder
-```
-
-Test confusion matrix:
-
-```text
-[[916, 33, 4],
- [61, 848, 44],
- [13, 29, 910]]
+branch: cleanup/transformer-pipeline
+commit: 7011e25 Add transformer diagnostic baselines
+tag: pre-transformer-data-rework-2026-05-10
 ```
 
 ## Runs Compared
 
 ```text
-tune09 fixed weights, decoder pool: test 0.9356, best_val 0.9457
-tune10 stronger smoothing/medium weight: test 0.9349, best_val 0.9478
-tune11 longer denoise/larger den weight: test 0.9248, best_val 0.9447
-tune12 encoder classification pool: test 0.9185, best_val 0.9422
-tune13 encoder+decoder classification pool: test 0.9279, best_val 0.9464
-tune14 both pool + cls warmup: test 0.9286, best_val 0.9457
+baseline tune09:
+  artifact: outputs/transformer
+  model:    outputs/transformer/models/tune09_fixed_d05_cls22_den25_bad02_ls02_mw115_e26
+  test=0.9356, best_val=0.9457, medium_test_recall=0.8898
+
+E2 train-only multiview K=3:
+  artifact: outputs/transformer_e2_multiview_k3
+  model:    outputs/transformer_e2_multiview_k3/models/e2_k3_tune09
+  test=0.9395, best_val=0.9618, medium_test_recall=0.9119
+
+E3 triplet K=1, same clean/noise with good/medium/bad SNR:
+  artifact: outputs/transformer_e3_triplet_k1
+  model:    outputs/transformer_e3_triplet_k1/models/e3_triplet_tune09
+  test=0.9405, best_val=0.9590, medium_test_recall=0.9192
+
+E4 E2 + ordinal head + SNR regression head:
+  artifact: outputs/transformer_e2_multiview_k3
+  model:    outputs/transformer_e2_multiview_k3/models/e4_e2_ord_snr
+  test=0.9363, best_val=0.9622, medium_test_recall=0.9045
+
+E5 diverse train noise + stratified bins + raw_robust + ordinal/SNR:
+  artifact: outputs/transformer_e5_multiview_k3_diverse_strat
+  model:    outputs/transformer_e5_multiview_k3_diverse_strat/models/e5_diverse_strat_ord_snr_rawrobust
+  test=0.9286, best_val=0.9503, medium_test_recall=0.9087
+```
+
+## Best Current Run
+
+Best test accuracy is E3:
+
+```text
+test_acc: 0.940518
+best_val_acc: 0.959034
+best_epoch: 18
+schedule: 0/18/4/4
+```
+
+Test confusion matrix:
+
+```text
+[[917, 34, 2],
+ [54, 876, 23],
+ [7, 50, 895]]
 ```
 
 ## Interpretation
 
-The best legal schedule is the fixed-weight final phase setup in `tune09`. Kendall uncertainty weighting hurt validation stability in earlier runs, so the final phase remains nonzero but uses explicit loss weights.
-
-Changing the classifier pooling from the original decoder feature to encoder-only or encoder+decoder did not improve test accuracy. It reduced generalization, mostly by increasing medium-class mistakes. The recommended model structure therefore remains the original decoder pooling.
-
-Current evidence suggests this dataset/model setup plateaus around 0.93-0.936 single-model test accuracy. I do not see a reliable path to 0.95 from small hyperparameter changes alone.
-
-## Debug Artifacts
-
-Useful local files:
+The useful change is data structure:
 
 ```text
-outputs/transformer/models/tune09_fixed_d05_cls22_den25_bad02_ls02_mw115_e26/probe_summary.json
-outputs/transformer/models/tune09_fixed_d05_cls22_den25_bad02_ls02_mw115_e26/test_report.json
-outputs/transformer/models/tune09_fixed_d05_cls22_den25_bad02_ls02_mw115_e26/debug/training_curves.png
-outputs/transformer/models/tune09_fixed_d05_cls22_den25_bad02_ls02_mw115_e26/debug/denoise_examples_test.png
+train-only multiview/triplet augmentation improves medium recall:
+baseline medium recall 0.8898 -> E2 0.9119 -> E3 0.9192
 ```
 
-Validation command used:
+The ordinal/SNR auxiliary heads did not help test generalization in this run. E4 reached the best validation accuracy but dropped on test, so it is not the recommended checkpoint.
+
+The broad diverse-noise run also hurt test accuracy. Adding many train-only noise types at once likely shifted training distribution too far from the fixed val/test benchmark.
+
+The 0.95 single-model test target was not reached. Current best is 0.9405, which is a real but modest improvement over tune09.
+
+## Medium Audit
+
+Best-run audit:
+
+```text
+outputs/transformer_e3_triplet_k1/medium_error_audit/e3_triplet_tune09_eval_only/medium_error_audit.md
+```
+
+Key read:
+
+```text
+measured-SNR oracle: 100% val/test
+medium->good: mostly high-side medium SNR, heavily ma noise
+medium->bad: lower-side medium SNR, also mostly ma/mix
+valid_rr/rpeak failure: not the driver
+```
+
+This says the label generation is consistent, and the remaining errors are boundary/severity errors rather than an obvious RR-detection failure.
+
+## Validation
 
 ```bash
-python -m compileall src/transformer_pipeline
-python -m src.transformer_pipeline.analyze_training --model_dir outputs/transformer/models/tune09_fixed_d05_cls22_den25_bad02_ls02_mw115_e26
+python -m src.transformer_pipeline.analyze_training \
+  --model_dir outputs/transformer/models/tune09_fixed_d05_cls22_den25_bad02_ls02_mw115_e26 \
+  --model_dir outputs/transformer_e2_multiview_k3/models/e2_k3_tune09 \
+  --model_dir outputs/transformer_e3_triplet_k1/models/e3_triplet_tune09 \
+  --model_dir outputs/transformer_e2_multiview_k3/models/e4_e2_ord_snr \
+  --model_dir outputs/transformer_e5_multiview_k3_diverse_strat/models/e5_diverse_strat_ord_snr_rawrobust \
+  --write outputs/transformer_experiments_summary.json
 ```

@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+import torch
+
 from src.utils.paths import project_root
 
 
@@ -40,12 +42,24 @@ def parse_args() -> argparse.Namespace:
 def summarize_dir(root: Path, model_dir: Path) -> dict[str, Any]:
     probe_path = model_dir / "probe_summary.json"
     test_path = model_dir / "test_report.json"
+    eval_test_path = model_dir / "eval_best" / "test_report_best.json"
+    train_log_path = model_dir / "train_log.json"
     if probe_path.exists():
         probe = json.loads(probe_path.read_text(encoding="utf-8"))
     elif test_path.exists():
         probe = {"test_acc": json.loads(test_path.read_text(encoding="utf-8")).get("acc")}
+    elif eval_test_path.exists():
+        probe = {"test_acc": json.loads(eval_test_path.read_text(encoding="utf-8")).get("acc")}
     else:
         return {}
+
+    if train_log_path.exists() and "best_val_acc_epoch" not in probe:
+        history = json.loads(train_log_path.read_text(encoding="utf-8"))
+        if history:
+            probe["best_val_acc_epoch"] = compact_best_acc(history)
+            probe["best_val_loss_epoch"] = compact_best_loss(history)
+    if "hyperparams" not in probe:
+        probe["hyperparams"] = load_ckpt_hyperparams(model_dir)
 
     hp = probe.get("hyperparams", {})
     best_acc = probe.get("best_val_acc_epoch", {})
@@ -71,6 +85,48 @@ def summarize_dir(root: Path, model_dir: Path) -> dict[str, Any]:
         "e_level": hp.get("e_level"),
         "e_uncert": hp.get("e_uncert"),
         "select_best_by": hp.get("select_best_by"),
+    }
+
+
+def compact_best_acc(history: list[dict[str, Any]]) -> dict[str, Any]:
+    row = max(history, key=lambda item: float(item.get("val_detail", {}).get("overall_acc", item["val"]["acc"])))
+    return {
+        "epoch": row.get("epoch"),
+        "val_acc": float(row.get("val_detail", {}).get("overall_acc", row["val"]["acc"])),
+        "val_loss": float(row["val"]["total"]),
+    }
+
+
+def compact_best_loss(history: list[dict[str, Any]]) -> dict[str, Any]:
+    row = min(history, key=lambda item: float(item["val"]["total"]))
+    return {
+        "epoch": row.get("epoch"),
+        "val_acc": float(row.get("val_detail", {}).get("overall_acc", row["val"]["acc"])),
+        "val_loss": float(row["val"]["total"]),
+    }
+
+
+def load_ckpt_hyperparams(model_dir: Path) -> dict[str, Any]:
+    ckpt_path = model_dir / "ckpt_best_val.pt"
+    if not ckpt_path.exists():
+        return {}
+    ckpt = torch.load(ckpt_path, map_location="cpu")
+    hp = ckpt.get("hyperparams", {})
+    return {
+        "dropout": hp.get("MODEL_DROPOUT"),
+        "lr": hp.get("LR"),
+        "weight_decay": hp.get("WEIGHT_DECAY"),
+        "cls_pool": hp.get("CLS_POOL"),
+        "lambda_den": hp.get("LAMBDA_DEN"),
+        "bad_den_w_max": hp.get("BAD_DEN_W_MAX"),
+        "label_smoothing": hp.get("LABEL_SMOOTHING"),
+        "class_weight_medium": hp.get("CLASS_WEIGHT_MEDIUM"),
+        "uncertainty_mode": hp.get("UNCERTAINTY_MODE"),
+        "e_cls": hp.get("E_CLS"),
+        "e_denoise": hp.get("E_DENOISE"),
+        "e_level": hp.get("E_LEVEL"),
+        "e_uncert": hp.get("E_UNCERT"),
+        "select_best_by": hp.get("SELECT_BEST_BY"),
     }
 
 
