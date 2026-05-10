@@ -97,11 +97,53 @@ Test recall:
 
 This passes the main E6 criterion: transformer medium recall is far above Lead-I SQI SVM on the local counterfactual benchmark.
 
+## E9 SQI Teacher Distillation
+
+Artifact root:
+
+`outputs/transformer_e6_local_counterfactual/models/e9_sqi_teacher_e3_heads`
+
+Teacher:
+
+- Lead-I 7-SQI MLP trained on the same E6 dataset
+- exported probabilities and normalized SQI targets from `outputs/transformer_e6_local_counterfactual_sqi_ml/teacher_targets/mlp_teacher_targets.csv`
+
+Student changes:
+
+- same E6 transformer setup as above
+- added SQI regression head
+- added KL distillation loss from teacher probabilities
+
+Training:
+
+- best val acc: 0.8878 at epoch 25
+- test acc: 0.8816
+
+Test confusion matrix, rows=true and cols=pred:
+
+```text
+[[ 461,  51,   13],
+ [  48, 1043, 115],
+ [   7, 145, 1317]]
+```
+
+Test recall:
+
+| class | recall |
+|---|---:|
+| good | 0.8781 |
+| medium | 0.8648 |
+| bad | 0.8965 |
+
+E9 slightly improves best validation accuracy and medium recall, but does not improve overall test accuracy. The teacher is weak on E6, so distillation is not yet a clear win.
+
 ## Interpretation
 
 E6 is the strongest evidence so far that the transformer has a real advantage over SQI summary models. On the original global-SNR dataset, SQI and transformer were not comparing the same inductive bias cleanly. On E6, the task requires local temporal information, and the Lead-I SQI SVM/MLP collapse while the transformer remains usable.
 
 The current transformer still overfits: train acc reaches 0.9937 while best val is 0.8856. The best checkpoint is early, epoch 11, before later auxiliary phases help. This suggests the next improvement should focus on representation and regularization, not just more epochs.
+
+E9 confirms that SQI teacher distillation is not the first lever to pull. The SQI teacher transfers some boundary information for medium samples, but it also inherits the teacher's blind spot: local placement is compressed away by summary SQI features.
 
 ## Recommendation
 
@@ -116,3 +158,7 @@ Most recommended route:
 Current best E6 result:
 
 `outputs/transformer_e6_local_counterfactual/models/e6_local_e3_heads`
+
+Current E9 result:
+
+`outputs/transformer_e6_local_counterfactual/models/e9_sqi_teacher_e3_heads`
