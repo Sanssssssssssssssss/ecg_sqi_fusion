@@ -229,12 +229,12 @@ def prepare_paths(cfg: RunConfig, params: dict[str, Any]) -> Paths:
     root = project_root()
 
     features_parquet = Path(
-        str(params.get("features_parquet") or (root / "artifacts" / "features" / "record84_norm.parquet"))
+        str(params.get("features_parquet") or (root / "outputs/sqi" / "features" / "record84_norm.parquet"))
     )
     split_csv = Path(
-        str(params.get("split_csv") or (root / "artifacts" / "splits" / "split_seta_seed0_balanced.csv"))
+        str(params.get("split_csv") or (root / "outputs/sqi" / "splits" / "split_seta_seed0_balanced.csv"))
     )
-    out_dir = Path(str(params.get("out_dir") or (root / "artifacts" / "models" / "lm_mlp")))
+    out_dir = Path(str(params.get("out_dir") or (root / "outputs/sqi" / "models" / "lm_mlp")))
 
     return Paths(
         root=root,

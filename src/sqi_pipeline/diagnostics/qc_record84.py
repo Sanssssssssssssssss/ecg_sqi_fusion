@@ -20,8 +20,8 @@ SQI_TYPES = ["iSQI", "bSQI", "pSQI", "sSQI", "kSQI", "fSQI", "basSQI"]
 
 def main() -> None:
     root = project_root()
-    feat_path = root / "artifacts" / "features" / "record84.parquet"
-    qc_dir = root / "artifacts" / "qc" / "features"
+    feat_path = root / "outputs/sqi" / "features" / "record84.parquet"
+    qc_dir = root / "outputs/sqi" / "qc" / "features"
     qc_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"[Task 1.5 QC] read: {feat_path}")

@@ -39,11 +39,11 @@ def pick_examples(df: pd.DataFrame, y: str, nk: str, k: int, rng: np.random.Gene
 
 def main() -> None:
     root = project_root()
-    lbl_path = root / "artifact1" / "datasets" / "synth_10s_125hz_labels.csv"
-    clean_npz = root / "artifact1" / "datasets" / "synth_10s_125hz_clean.npz"
-    noisy_npz = root / "artifact1" / "datasets" / "synth_10s_125hz_noisy.npz"
+    lbl_path = root / "outputs/transformer" / "datasets" / "synth_10s_125hz_labels.csv"
+    clean_npz = root / "outputs/transformer" / "datasets" / "synth_10s_125hz_clean.npz"
+    noisy_npz = root / "outputs/transformer" / "datasets" / "synth_10s_125hz_noisy.npz"
 
-    out_dir = root / "artifact1" / "figs_for_noise_plot"
+    out_dir = root / "outputs/transformer" / "figs_for_noise_plot"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_png = out_dir / "ptbxl_examples_by_class_noise.png"
     out_pdf = out_dir / "ptbxl_examples_by_class_noise.pdf"

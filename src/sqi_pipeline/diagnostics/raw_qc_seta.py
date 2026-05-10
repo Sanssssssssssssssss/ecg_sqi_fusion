@@ -153,11 +153,11 @@ def band_power_ratio(f: np.ndarray, pxx: np.ndarray, fmax: float) -> float:
 def main() -> None:
     root = project_root()
 
-    split_csv = root / "artifacts" / "splits" / "split_seta_seed0.csv"
+    split_csv = root / "outputs/sqi" / "splits" / "split_seta_seed0.csv"
     data_dir = root / "data" / "physionet" / "challenge-2011" / "set-a"
 
-    out_examples = root / "artifacts" / "qc" / "raw_examples"
-    out_summary = root / "artifacts" / "qc" / "raw_summary.csv"
+    out_examples = root / "outputs/sqi" / "qc" / "raw_examples"
+    out_summary = root / "outputs/sqi" / "qc" / "raw_summary.csv"
 
     print(f"[Task 1.2] Reading split: {split_csv}")
     df_split = pd.read_csv(split_csv)

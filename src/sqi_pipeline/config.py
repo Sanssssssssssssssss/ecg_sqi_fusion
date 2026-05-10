@@ -22,7 +22,7 @@ class SQIPipelineConfig:
     def build(
         cls,
         *,
-        artifacts_dir: str | Path = "artifacts",
+        artifacts_dir: str | Path = "outputs/sqi",
         seed: int = 0,
         verbose: bool = False,
         force: bool = False,

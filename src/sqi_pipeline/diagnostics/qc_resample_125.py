@@ -99,10 +99,10 @@ def plot_psd_compare(record_id: str, x500: np.ndarray, x125: np.ndarray, out_png
 def main() -> None:
     root = project_root()
 
-    split_csv = root / "artifacts" / "splits" / "split_seta_seed0.csv"
+    split_csv = root / "outputs/sqi" / "splits" / "split_seta_seed0.csv"
     data_dir = root / "data" / "physionet" / "challenge-2011" / "set-a"
-    resampled_dir = root / "artifacts" / "resampled_125"
-    out_dir = root / "artifacts" / "qc" / "resample_125"
+    resampled_dir = root / "outputs/sqi" / "resampled_125"
+    out_dir = root / "outputs/sqi" / "qc" / "resample_125"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     df = pd.read_csv(split_csv)

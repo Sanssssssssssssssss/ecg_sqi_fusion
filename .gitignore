@@ -9,6 +9,7 @@
 # ======================
 # ECG project outputs (VERY IMPORTANT)
 # ======================
+/outputs/
 /artifacts/
 /artifact1/
 /models/

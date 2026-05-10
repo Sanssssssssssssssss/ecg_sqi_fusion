@@ -217,7 +217,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     params (optional):
       - verbose: bool
       - force: bool
-      - artifacts_dir: str (default "artifacts")
+      - artifacts_dir: str (default "outputs/sqi")
       - challenge_root: str (default project_root()/data/physionet/challenge-2011)
       - nstdb_root: str (default project_root()/data/physionet/nstdb)
 
@@ -244,7 +244,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
 
     artifacts_dir = params.get("artifacts_dir")
     if not artifacts_dir:
-        artifacts_dir = root / "artifacts"
+        artifacts_dir = root / "outputs/sqi"
     else:
         artifacts_dir = Path(str(artifacts_dir))
 
@@ -284,7 +284,7 @@ def main() -> None:
     params = {
         "challenge_root": str(root / "data" / "physionet" / "challenge-2011"),
         "nstdb_root": str(root / "data" / "physionet" / "nstdb"),
-        "artifacts_dir": str(root / "artifacts"),
+        "artifacts_dir": str(root / "outputs/sqi"),
         "verbose": False,
         "force": False,
     }

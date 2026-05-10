@@ -159,17 +159,17 @@ def shade_wavelet(ax: plt.Axes, t: np.ndarray, w: np.ndarray, m: np.ndarray) -> 
 
 def main() -> None:
     root = project_root()
-    lbl = pd.read_csv(root / "artifact1" / "datasets" / "synth_10s_125hz_labels_with_level.csv")
-    Xc = np.load(root / "artifact1" / "datasets" / "synth_10s_125hz_clean.npz")["X_clean"].astype(np.float32)
-    Xn = np.load(root / "artifact1" / "datasets" / "synth_10s_125hz_noisy.npz")["X_noisy"].astype(np.float32)
-    P = np.load(root / "artifact1" / "datasets" / "synth_10s_125hz_noise_level.npz")["P"].astype(np.float32)
-    valid_rr = np.load(root / "artifact1" / "datasets" / "synth_10s_125hz_noise_level.npz")["valid_rr"].astype(np.uint8)
+    lbl = pd.read_csv(root / "outputs/transformer" / "datasets" / "synth_10s_125hz_labels_with_level.csv")
+    Xc = np.load(root / "outputs/transformer" / "datasets" / "synth_10s_125hz_clean.npz")["X_clean"].astype(np.float32)
+    Xn = np.load(root / "outputs/transformer" / "datasets" / "synth_10s_125hz_noisy.npz")["X_noisy"].astype(np.float32)
+    P = np.load(root / "outputs/transformer" / "datasets" / "synth_10s_125hz_noise_level.npz")["P"].astype(np.float32)
+    valid_rr = np.load(root / "outputs/transformer" / "datasets" / "synth_10s_125hz_noise_level.npz")["valid_rr"].astype(np.uint8)
 
     assert len(lbl) == Xc.shape[0] == Xn.shape[0] == P.shape[0]
     t = np.arange(WIN_N) / FS
     rng = np.random.default_rng(SEED)
 
-    out_dir = root / "artifact1" / "figs_for_noise_plot"
+    out_dir = root / "outputs/transformer" / "figs_for_noise_plot"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_png = out_dir / "noise_level_graph_examples.png"
 

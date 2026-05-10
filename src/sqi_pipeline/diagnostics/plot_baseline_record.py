@@ -24,8 +24,8 @@ BASELINE_CUTOFF_HZ = 1.0  # paper figure: 1 Hz low-pass, 2nd order, zero-phase
 
 # paths (fixed)
 DATA_DIR_REL = "data/physionet/challenge-2011/set-a"
-MANIFEST_REL = "artifacts/manifests/manifest_challenge2011_seta.csv"
-OUT_DIR_REL = "artifacts/report_figs"
+MANIFEST_REL = "outputs/sqi/manifests/manifest_challenge2011_seta.csv"
+OUT_DIR_REL = "outputs/sqi/report_figs"
 # =========================
 
 

@@ -55,9 +55,9 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     params (optional):
       - verbose: bool
       - force: bool
-      - split_csv: str (default artifacts/splits/split_seta_seed0_balanced.csv)
-      - resampled_dir: str (default artifacts/resampled_125)
-      - out_dir: str (default artifacts/qrs)
+      - split_csv: str (default outputs/sqi/splits/split_seta_seed0_balanced.csv)
+      - resampled_dir: str (default outputs/sqi/resampled_125)
+      - out_dir: str (default outputs/sqi/qrs)
       - beat_match_tol_ms: int (default BEAT_MATCH_TOL_MS)
 
     Returns dict with outputs list and skipped bool.
@@ -68,9 +68,9 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
 
     root = project_root()
 
-    split_csv = params.get("split_csv") or (root / "artifacts" / "splits" / "split_seta_seed0_balanced.csv")
-    resampled_dir = params.get("resampled_dir") or (root / "artifacts" / "resampled_125")
-    out_dir = params.get("out_dir") or (root / "artifacts" / "qrs")
+    split_csv = params.get("split_csv") or (root / "outputs/sqi" / "splits" / "split_seta_seed0_balanced.csv")
+    resampled_dir = params.get("resampled_dir") or (root / "outputs/sqi" / "resampled_125")
+    out_dir = params.get("out_dir") or (root / "outputs/sqi" / "qrs")
 
     split_csv = Path(str(split_csv))
     resampled_dir = Path(str(resampled_dir))
@@ -99,7 +99,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
 
     for i, rid in enumerate(record_ids, start=1):
         out_npz = out_dir / f"{rid}.npz"
-        if out_npz.exists():
+        if out_npz.exists() and not force:
             n_skip += 1
             if i <= 5 or i % 200 == 0:
                 logger.info("[skip] %s", rid)
@@ -118,7 +118,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
                 r1_list.append(run_xqrs(x, fs=FS))
                 r2_list.append(run_gqrs(x, fs=FS))
 
-            np.savez_compressed(
+            np.savez(
                 out_npz,
                 record_id=rid,
                 fs=np.array(FS, dtype=np.int32),
@@ -149,7 +149,7 @@ def main() -> None:
     params = {
         "verbose": False,
         "force": False,
-        # default balanced split + resampled_125 + artifacts/qrs
+        # default balanced split + resampled_125 + outputs/sqi/qrs
         # "beat_match_tol_ms": 150,
     }
     run(params)

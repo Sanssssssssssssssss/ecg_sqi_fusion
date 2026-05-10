@@ -98,9 +98,9 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
       - seed: int (default 0)
       - split_ratio: tuple/list of 3 floats (default (0.70,0.15,0.15))
       - artifacts_dir: str (default project_root()/artifacts)
-      - manifest_csv: str (default artifacts/manifests/manifest_challenge2011_seta.csv)
-      - out_csv: str (default artifacts/splits/split_seta_seed{seed}.csv)
-      - qc_png: str (default artifacts/report_figs/split_seta_seed{seed}_label_counts.png)
+      - manifest_csv: str (default outputs/sqi/manifests/manifest_challenge2011_seta.csv)
+      - out_csv: str (default outputs/sqi/splits/split_seta_seed{seed}.csv)
+      - qc_png: str (default outputs/sqi/report_figs/split_seta_seed{seed}_label_counts.png)
 
     Returns dict with outputs list and skipped bool.
     """
@@ -115,7 +115,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
 
     artifacts_dir = params.get("artifacts_dir")
     if not artifacts_dir:
-        artifacts_dir = root / "artifacts"
+        artifacts_dir = root / "outputs/sqi"
     else:
         artifacts_dir = Path(str(artifacts_dir))
 
@@ -212,10 +212,10 @@ def main() -> None:
     params = {
         "seed": 0,
         "split_ratio": (0.70, 0.15, 0.15),
-        "artifacts_dir": str(root / "artifacts"),
-        "manifest_csv": str(root / "artifacts" / "manifests" / "manifest_challenge2011_seta.csv"),
-        "out_csv": str(root / "artifacts" / "splits" / "split_seta_seed0.csv"),
-        "qc_png": str(root / "artifacts" / "report_figs" / "split_seta_seed0_label_counts.png"),
+        "artifacts_dir": str(root / "outputs/sqi"),
+        "manifest_csv": str(root / "outputs/sqi" / "manifests" / "manifest_challenge2011_seta.csv"),
+        "out_csv": str(root / "outputs/sqi" / "splits" / "split_seta_seed0.csv"),
+        "qc_png": str(root / "outputs/sqi" / "report_figs" / "split_seta_seed0_label_counts.png"),
         "verbose": False,
         "force": False,
     }

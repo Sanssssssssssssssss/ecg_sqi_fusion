@@ -38,13 +38,13 @@ N_SAMPLES_IN = int(FS_IN * CASE_SEC)   # 5000
 # which split csv to read (switch here only)
 # - clean only:  split_seta_seed0.csv
 # - balanced:    split_seta_seed0_balanced.csv
-SPLIT_CSV = "artifacts/splits/split_seta_seed0_balanced.csv"
+SPLIT_CSV = "outputs/sqi/splits/split_seta_seed0_balanced.csv"
 
 # 500Hz cases folder: contains both clean + noisy *.npz with key 'sig_500'
-CASES_500_DIR = "artifacts/cases_500"
+CASES_500_DIR = "outputs/sqi/cases_500"
 
 # output cache (same as your old pipeline)
-OUT_DIR = "artifacts/resampled_125"
+OUT_DIR = "outputs/sqi/resampled_125"
 
 # overwrite behavior
 OVERWRITE = True  # True => always overwrite; False => skip if exists
@@ -224,7 +224,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
             sig500 = load_case_500(rid, cases_dir)
             sig125 = resample_500_to_125(sig500)
 
-            np.savez_compressed(
+            np.savez(
                 out_path,
                 record_id=rid,
                 fs=np.int32(FS_OUT),

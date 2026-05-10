@@ -38,9 +38,9 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
       - verbose: bool
       - force: bool
       - seed: int (default SEED)
-      - split_csv: str (default artifacts/splits/split_seta_seed0_balanced.csv)
-      - in_parquet: str (default artifacts/features/record84.parquet)
-      - out_dir: str (default artifacts/features)
+      - split_csv: str (default outputs/sqi/splits/split_seta_seed0_balanced.csv)
+      - in_parquet: str (default outputs/sqi/features/record84.parquet)
+      - out_dir: str (default outputs/sqi/features)
       - out_stats: str (default {out_dir}/norm_stats_seed{seed}.json)
       - out_parquet: str (default {out_dir}/record84_norm.parquet)
       - std_eps: float (default STD_EPS)
@@ -60,9 +60,9 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     if "std_eps" in params and params["std_eps"] is not None:
         STD_EPS = float(params["std_eps"])
 
-    split_csv = params.get("split_csv") or (root / "artifacts" / "splits" / "split_seta_seed0_balanced.csv")
-    in_parquet = params.get("in_parquet") or (root / "artifacts" / "features" / "record84.parquet")
-    out_dir = params.get("out_dir") or (root / "artifacts" / "features")
+    split_csv = params.get("split_csv") or (root / "outputs/sqi" / "splits" / "split_seta_seed0_balanced.csv")
+    in_parquet = params.get("in_parquet") or (root / "outputs/sqi" / "features" / "record84.parquet")
+    out_dir = params.get("out_dir") or (root / "outputs/sqi" / "features")
 
     split_csv = Path(str(split_csv))
     in_parquet = Path(str(in_parquet))

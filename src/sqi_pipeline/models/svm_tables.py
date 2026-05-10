@@ -268,9 +268,9 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
         SEED = int(params["seed"])
 
     root = project_root()
-    features_parquet = Path(str(params.get("features_parquet") or (root / "artifacts" / "features" / "record84_norm.parquet")))
-    split_csv = Path(str(params.get("split_csv") or (root / "artifacts" / "splits" / "split_seta_seed0_balanced.csv")))
-    out_dir = Path(str(params.get("out_dir") or (root / "artifacts" / "models" / "svm")))
+    features_parquet = Path(str(params.get("features_parquet") or (root / "outputs/sqi" / "features" / "record84_norm.parquet")))
+    split_csv = Path(str(params.get("split_csv") or (root / "outputs/sqi" / "splits" / "split_seta_seed0_balanced.csv")))
+    out_dir = Path(str(params.get("out_dir") or (root / "outputs/sqi" / "models" / "svm")))
     out_dir.mkdir(parents=True, exist_ok=True)
 
     roc_dir = out_dir / "roc"; roc_dir.mkdir(parents=True, exist_ok=True)

@@ -32,7 +32,7 @@ def main() -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Validate PTB-XL transformer artifacts.")
-    parser.add_argument("--artifact_dir", default="artifact1")
+    parser.add_argument("--artifact_dir", default="outputs/transformer")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--write", default="")
     return parser.parse_args()

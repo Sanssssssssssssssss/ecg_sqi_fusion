@@ -37,11 +37,11 @@ def plot_two_hists(a: np.ndarray, b: np.ndarray, title: str, xlabel: str, out_pn
 def main() -> None:
     root = project_root()
 
-    split_csv = root / "artifacts" / "splits" / "split_seta_seed0.csv"
-    in_raw = root / "artifacts" / "features" / "record84.parquet"
-    in_norm = root / "artifacts" / "features" / "record84_norm.parquet"
+    split_csv = root / "outputs/sqi" / "splits" / "split_seta_seed0.csv"
+    in_raw = root / "outputs/sqi" / "features" / "record84.parquet"
+    in_norm = root / "outputs/sqi" / "features" / "record84_norm.parquet"
 
-    out_dir = root / "artifacts" / "qc" / "features_norm"
+    out_dir = root / "outputs/sqi" / "qc" / "features_norm"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"[QC 1.6] split_csv: {split_csv}")

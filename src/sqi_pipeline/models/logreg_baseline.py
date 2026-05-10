@@ -89,10 +89,10 @@ def _cols_for_sqis_12lead(sqis: list[str]) -> list[str]:
 def prepare_paths(cfg: RunConfig, params: dict[str, Any]) -> Paths:
     root = project_root()
 
-    features_parquet = Path(str(params.get("features_parquet") or (root / "artifacts" / "features" / "record84_norm.parquet")))
-    split_csv = Path(str(params.get("split_csv") or (root / "artifacts" / "splits" / "split_seta_seed0_balanced.csv")))
+    features_parquet = Path(str(params.get("features_parquet") or (root / "outputs/sqi" / "features" / "record84_norm.parquet")))
+    split_csv = Path(str(params.get("split_csv") or (root / "outputs/sqi" / "splits" / "split_seta_seed0_balanced.csv")))
 
-    out_dir = Path(str(params.get("out_dir") or (root / "artifacts" / "models" / "baselines" / "logreg")))
+    out_dir = Path(str(params.get("out_dir") or (root / "outputs/sqi" / "models" / "baselines" / "logreg")))
 
     return Paths(
         root=root,

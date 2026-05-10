@@ -4,11 +4,13 @@ import importlib
 import json
 import logging
 import shutil
+import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from src.transformer_pipeline.config import TransformerPipelineConfig
+from src.utils.pipeline_summary import format_summary_table
 
 logger = logging.getLogger(__name__)
 
@@ -65,10 +67,33 @@ STEPS: tuple[StepSpec, ...] = (
     ),
 )
 STEP_NAMES = tuple(step.name for step in STEPS)
+PREPROCESS_STEP_NAMES = (
+    "filter_lead_i",
+    "manifest",
+    "segments",
+    "split",
+    "synthesize_noise",
+    "noise_level",
+)
+MODEL_STEP_NAMES = (
+    "forward_check",
+    "train",
+    "evaluate",
+)
+STAGE_STEPS = {
+    "all": STEP_NAMES,
+    "preprocess": PREPROCESS_STEP_NAMES,
+    "model": MODEL_STEP_NAMES,
+}
 
 
-def fresh_artifacts(artifact_dir: Path) -> None:
-    targets = ["ptbxl", "manifests", "segments", "splits", "datasets", "models", "figs_for_noise_plot"]
+def fresh_artifacts(artifact_dir: Path, *, stage: str = "all") -> None:
+    if stage == "preprocess":
+        targets = ["ptbxl", "manifests", "segments", "splits", "datasets", "figs_for_noise_plot"]
+    elif stage == "model":
+        targets = ["models"]
+    else:
+        targets = ["ptbxl", "manifests", "segments", "splits", "datasets", "models", "figs_for_noise_plot"]
     for name in targets:
         path = artifact_dir / name
         if path.exists():
@@ -81,7 +106,15 @@ def ensure_dirs(artifact_dir: Path) -> None:
     (artifact_dir / "config").mkdir(parents=True, exist_ok=True)
 
 
-def run_pipeline(cfg: TransformerPipelineConfig, *, only: list[str] | None = None) -> dict[str, Any]:
+def run_pipeline(
+    cfg: TransformerPipelineConfig,
+    *,
+    only: list[str] | None = None,
+    stage: str = "all",
+) -> dict[str, Any]:
+    if stage not in STAGE_STEPS:
+        raise ValueError(f"unknown stage: {stage}")
+    stage_names = set(STAGE_STEPS[stage])
     allowed = set(only) if only else None
     if allowed:
         unknown = sorted(allowed - set(STEP_NAMES))
@@ -91,24 +124,34 @@ def run_pipeline(cfg: TransformerPipelineConfig, *, only: list[str] | None = Non
     summary: dict[str, Any] = {
         "seed": cfg.seed,
         "artifact_dir": _rel_path(cfg.artifact_dir, cfg.root),
+        "stage": stage,
         "dry_run": cfg.dry_run,
         "steps": [],
     }
     params = cfg.base_params()
 
     for spec in STEPS:
+        if spec.name not in stage_names:
+            continue
         if allowed is not None and spec.name not in allowed:
             continue
-        logger.info("STEP: %s", spec.name)
-        out = _run_step(spec, params)
+        _log_step(spec.name)
+        fn = load_step_callable(spec)
+        start = time.perf_counter()
+        out = fn(params)
+        duration_sec = time.perf_counter() - start
+        if not isinstance(out, dict):
+            raise TypeError(f"{spec.name}: expected dict output, got {type(out)}")
         outputs = out["outputs"] if "outputs" in out else [str(cfg.artifact_dir / rel) for rel in spec.outputs]
+        meta = {k: v for k, v in out.items() if k not in {"outputs"}}
+        meta["duration_sec"] = duration_sec
         summary["steps"].append(
             {
                 "name": spec.name,
                 "module": spec.module,
                 "skipped": bool(out.get("skipped", False)),
                 "outputs": [_rel_path(Path(str(path)), cfg.root) for path in outputs],
-                "meta": {k: v for k, v in out.items() if k not in {"outputs"}},
+                "meta": meta,
             }
         )
 
@@ -122,20 +165,19 @@ def write_run_summary(summary: dict[str, Any], cfg: TransformerPipelineConfig) -
     return out
 
 
-def _run_step(spec: StepSpec, params: dict[str, Any]) -> dict[str, Any]:
+def load_step_callable(spec: StepSpec) -> Callable[[dict[str, Any]], dict[str, Any]]:
     module = importlib.import_module(spec.module)
     fn = getattr(module, spec.func, None)
-    if callable(fn):
-        out = fn(params)
-    else:
-        main = getattr(module, "main", None)
-        if not callable(main):
-            raise AttributeError(f"{spec.module} has no callable run() or main()")
-        main()
-        out = {"step": spec.name, "skipped": False}
-    if not isinstance(out, dict):
-        raise TypeError(f"{spec.name}: expected dict output, got {type(out)}")
-    return out
+    if fn is None or not callable(fn):
+        raise AttributeError(f"{spec.module}.{spec.func} not found or not callable")
+    return fn
+
+
+def _log_step(step_name: str) -> None:
+    line = "=" * 90
+    title = f" STEP: {step_name} "
+    pad = max(0, (len(line) - len(title)) // 2)
+    logger.info("\n%s\n%s%s%s\n%s", line, "=" * pad, title, "=" * (len(line) - pad - len(title)), line)
 
 
 def _rel_path(path: Path, root: Path) -> str:

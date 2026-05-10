@@ -45,7 +45,7 @@ def main() -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Validate SQI pipeline artifacts.")
-    parser.add_argument("--artifacts_dir", default="artifacts")
+    parser.add_argument("--artifacts_dir", default="outputs/sqi")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--write", default="")
     parser.add_argument("--compare", nargs=2, metavar=("BEFORE", "AFTER"))

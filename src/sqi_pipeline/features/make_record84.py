@@ -119,10 +119,10 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     params (optional):
       - verbose: bool
       - force: bool
-      - split_csv: str (default artifacts/splits/split_seta_seed0_balanced.csv)
-      - resampled_dir: str (default artifacts/resampled_125)
-      - qrs_dir: str (default artifacts/qrs)
-      - out_dir: str (default artifacts/features)
+      - split_csv: str (default outputs/sqi/splits/split_seta_seed0_balanced.csv)
+      - resampled_dir: str (default outputs/sqi/resampled_125)
+      - qrs_dir: str (default outputs/sqi/qrs)
+      - out_dir: str (default outputs/sqi/features)
       - print_n: int (default PRINT_N)
       - print_all_leads: bool (default PRINT_ALL_LEADS)
       - isqi_use: str ("r1" or "r2", default ISQI_USE)
@@ -140,10 +140,10 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
 
     root = project_root()
 
-    split_csv = params.get("split_csv") or (root / "artifacts" / "splits" / "split_seta_seed0_balanced.csv")
-    resampled_dir = params.get("resampled_dir") or (root / "artifacts" / "resampled_125")
-    qrs_dir = params.get("qrs_dir") or (root / "artifacts" / "qrs")
-    out_dir = params.get("out_dir") or (root / "artifacts" / "features")
+    split_csv = params.get("split_csv") or (root / "outputs/sqi" / "splits" / "split_seta_seed0_balanced.csv")
+    resampled_dir = params.get("resampled_dir") or (root / "outputs/sqi" / "resampled_125")
+    qrs_dir = params.get("qrs_dir") or (root / "outputs/sqi" / "qrs")
+    out_dir = params.get("out_dir") or (root / "outputs/sqi" / "features")
 
     split_csv = Path(str(split_csv))
     resampled_dir = Path(str(resampled_dir))

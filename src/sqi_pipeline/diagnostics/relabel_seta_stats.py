@@ -257,9 +257,9 @@ def main():
 
     root = project_root()
 
-    split_csv = root / "artifacts" / "splits" / "split_seta_seed0.csv"
+    split_csv = root / "outputs/sqi" / "splits" / "split_seta_seed0.csv"
 
-    out_root = root / "artifacts" / "relabel_stats"
+    out_root = root / "outputs/sqi" / "relabel_stats"
     resampled_dir = out_root / "resampled_125"
     qrs_dir = out_root / "qrs"
     feature_dir = out_root / "features"

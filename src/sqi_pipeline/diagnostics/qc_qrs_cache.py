@@ -69,10 +69,10 @@ def plot_record(rid: str, sig12: np.ndarray, r1: list[np.ndarray], r2: list[np.n
 
 def main() -> None:
     root = project_root()
-    split_csv = root / "artifacts" / "splits" / "split_seta_seed0.csv"
-    resampled_dir = root / "artifacts" / "resampled_125"
-    qrs_dir = root / "artifacts" / "qrs"
-    out_dir = root / "artifacts" / "qc" / "qrs"
+    split_csv = root / "outputs/sqi" / "splits" / "split_seta_seed0.csv"
+    resampled_dir = root / "outputs/sqi" / "resampled_125"
+    qrs_dir = root / "outputs/sqi" / "qrs"
+    out_dir = root / "outputs/sqi" / "qc" / "qrs"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     df = pd.read_csv(split_csv)

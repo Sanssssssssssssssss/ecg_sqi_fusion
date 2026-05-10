@@ -27,7 +27,15 @@ mkdir -p logs
 # --- quick sanity ---
 echo "Host: $(hostname)"
 echo "Time: $(date)"
-python -c "import torch; print('torch', torch.__version__); print('cuda?', torch.cuda.is_available()); print('gpu', torch.cuda.get_device_name(0) if torch.cuda.is_available() else None)"
+python - <<'PY'
+import torch
 
-# --- run ---
-python -u -m src.transformer_pipeline.cli --only train --verbose
+print("torch", torch.__version__)
+print("cuda?", torch.cuda.is_available())
+print("gpu", torch.cuda.get_device_name(0) if torch.cuda.is_available() else None)
+if not torch.cuda.is_available():
+    raise SystemExit("CUDA is required for transformer training; refusing to run on CPU.")
+PY
+
+# --- run transformer stage only; preprocessing is a separate local/CPU pipeline ---
+python -u -m src.transformer_pipeline.run_transformer_all --force --verbose

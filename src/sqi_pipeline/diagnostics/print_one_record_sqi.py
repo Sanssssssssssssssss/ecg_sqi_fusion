@@ -55,7 +55,7 @@ def main() -> None:
     # =========================
     # EDIT HERE
     # =========================
-    PARQUET = Path(r"artifacts/relabel_stats/features/record84.parquet")
+    PARQUET = Path(r"outputs/sqi/relabel_stats/features/record84.parquet")
     RID = "1273536"   # <<< 改成你要看的 record_id
     RID_COL = "record_id"
     Y_COL = "y"

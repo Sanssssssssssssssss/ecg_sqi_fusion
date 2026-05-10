@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 # --------- Imports ---------
+import argparse
 import json
 import random
 import shutil
@@ -42,6 +43,8 @@ WEIGHT_DECAY = 0.03
 NUM_WORKERS = 0
 PIN_MEMORY = False
 VERBOSE = False
+MODEL_DROPOUT = MTLTransformerConfig().dropout
+CLS_POOL = MTLTransformerConfig().cls_pool
 
 # ---- LR scheduler ----
 LR = 6e-5
@@ -61,6 +64,10 @@ ALPHA = 8.0
 LAMBDA_CLS = 10.0
 LAMBDA_DEN = 120.0
 LAMBDA_LVL = 1.0
+LABEL_SMOOTHING = 0.0
+CLASS_WEIGHT_GOOD = 1.0
+CLASS_WEIGHT_MEDIUM = 1.0
+CLASS_WEIGHT_BAD = 1.0
 WAVELET = "db6"
 WAVELET_LEVEL = 4
 WAVELET_Q = 0.65
@@ -71,25 +78,39 @@ EARLYSTOP_PATIENCE = 4
 EARLYSTOP_MIN_DELTA = 5e-3
 EARLYSTOP_START_EPOCH = E_CLS + 3   # start from denoise
 EARLYSTOP_PHASES = {"B_add_denoise", "D_joint", "E_uncertainty_joint"}
+EARLYSTOP_ENABLED = False
+SELECT_BEST_BY = "val_acc"
+UNCERTAINTY_MODE = "kendall"
 
 
 # --------- Paths ---------
 ROOT = project_root()
-IN_NOISY = ROOT / "artifact1" / "datasets" / "synth_10s_125hz_noisy.npz"
-IN_CLEAN = ROOT / "artifact1" / "datasets" / "synth_10s_125hz_clean.npz"
-IN_LEVEL = ROOT / "artifact1" / "datasets" / "synth_10s_125hz_noise_level.npz"
-IN_LABELS = ROOT / "artifact1" / "datasets" / "synth_10s_125hz_labels_with_level.csv"
+IN_NOISY = ROOT / "outputs/transformer" / "datasets" / "synth_10s_125hz_noisy.npz"
+IN_CLEAN = ROOT / "outputs/transformer" / "datasets" / "synth_10s_125hz_clean.npz"
+IN_LEVEL = ROOT / "outputs/transformer" / "datasets" / "synth_10s_125hz_noise_level.npz"
+IN_LABELS = ROOT / "outputs/transformer" / "datasets" / "synth_10s_125hz_labels_with_level.csv"
 
-OUT_DIR = ROOT / "artifact1" / "models" / "mtl_transformer_seed0_step6"
+OUT_DIR = ROOT / "outputs/transformer" / "models" / "mtl_transformer_seed0_step6"
 OUT_LAST = OUT_DIR / "ckpt_last.pt"
 OUT_BEST = OUT_DIR / "ckpt_best_val.pt"
+OUT_BEST_ACC = OUT_DIR / "ckpt_best_val_acc.pt"
+OUT_BEST_LOSS = OUT_DIR / "ckpt_best_val_loss.pt"
 OUT_LOG = OUT_DIR / "train_log.json"
 OUT_TEST = OUT_DIR / "test_report.json"
+OUT_PROBE = OUT_DIR / "probe_summary.json"
 
 
 def configure_from_params(params: dict[str, Any]) -> None:
     global SEED, BATCH_SIZE, NUM_WORKERS, PIN_MEMORY, EPOCHS, VERBOSE
-    global OUT_DIR, OUT_LAST, OUT_BEST, OUT_LOG, OUT_TEST
+    global WEIGHT_DECAY, LR, LR_ETA_MIN, MODEL_DROPOUT, CLS_POOL
+    global E_CLS, E_DENOISE, E_LEVEL, E_UNCERT
+    global BAD_DEN_W_MAX, BAD_DEN_W_WARMUP_EPOCHS
+    global LAMBDA_CLS, LAMBDA_DEN, LAMBDA_LVL
+    global LABEL_SMOOTHING, CLASS_WEIGHT_GOOD, CLASS_WEIGHT_MEDIUM, CLASS_WEIGHT_BAD
+    global EARLYSTOP_ENABLED, EARLYSTOP_PATIENCE, EARLYSTOP_MIN_DELTA, EARLYSTOP_START_EPOCH
+    global SELECT_BEST_BY, UNCERTAINTY_MODE
+    global IN_NOISY, IN_CLEAN, IN_LEVEL, IN_LABELS
+    global OUT_DIR, OUT_LAST, OUT_BEST, OUT_BEST_ACC, OUT_BEST_LOSS, OUT_LOG, OUT_TEST, OUT_PROBE
 
     if params.get("seed") is not None:
         SEED = int(params["seed"])
@@ -101,23 +122,117 @@ def configure_from_params(params: dict[str, Any]) -> None:
         PIN_MEMORY = bool(params["pin_memory"])
     if params.get("epochs") is not None:
         EPOCHS = int(params["epochs"])
+    if params.get("weight_decay") is not None:
+        WEIGHT_DECAY = float(params["weight_decay"])
+    if params.get("lr") is not None:
+        LR = float(params["lr"])
+    if params.get("lr_eta_min") is not None:
+        LR_ETA_MIN = float(params["lr_eta_min"])
+    if params.get("dropout") is not None:
+        MODEL_DROPOUT = float(params["dropout"])
+    if params.get("cls_pool") is not None:
+        CLS_POOL = str(params["cls_pool"])
+        if CLS_POOL not in {"decoder", "encoder", "both"}:
+            raise ValueError("cls_pool must be 'decoder', 'encoder', or 'both'")
+    if params.get("e_cls") is not None:
+        E_CLS = int(params["e_cls"])
+    if params.get("e_denoise") is not None:
+        E_DENOISE = int(params["e_denoise"])
+    if params.get("e_level") is not None:
+        E_LEVEL = int(params["e_level"])
+    if params.get("e_uncert") is not None:
+        E_UNCERT = int(params["e_uncert"])
+    if params.get("bad_den_w_max") is not None:
+        BAD_DEN_W_MAX = float(params["bad_den_w_max"])
+    if params.get("bad_den_w_warmup_epochs") is not None:
+        BAD_DEN_W_WARMUP_EPOCHS = int(params["bad_den_w_warmup_epochs"])
+    if params.get("lambda_cls") is not None:
+        LAMBDA_CLS = float(params["lambda_cls"])
+    if params.get("lambda_den") is not None:
+        LAMBDA_DEN = float(params["lambda_den"])
+    if params.get("lambda_lvl") is not None:
+        LAMBDA_LVL = float(params["lambda_lvl"])
+    if params.get("label_smoothing") is not None:
+        LABEL_SMOOTHING = float(params["label_smoothing"])
+    if params.get("class_weight_good") is not None:
+        CLASS_WEIGHT_GOOD = float(params["class_weight_good"])
+    if params.get("class_weight_medium") is not None:
+        CLASS_WEIGHT_MEDIUM = float(params["class_weight_medium"])
+    if params.get("class_weight_bad") is not None:
+        CLASS_WEIGHT_BAD = float(params["class_weight_bad"])
+    if params.get("early_stop") is not None:
+        EARLYSTOP_ENABLED = bool(params["early_stop"])
+    if params.get("earlystop_patience") is not None:
+        EARLYSTOP_PATIENCE = int(params["earlystop_patience"])
+    if params.get("earlystop_min_delta") is not None:
+        EARLYSTOP_MIN_DELTA = float(params["earlystop_min_delta"])
+    if params.get("earlystop_start_epoch") is not None:
+        EARLYSTOP_START_EPOCH = int(params["earlystop_start_epoch"])
+    if params.get("select_best_by") is not None:
+        SELECT_BEST_BY = str(params["select_best_by"])
+        if SELECT_BEST_BY not in {"val_acc", "val_loss"}:
+            raise ValueError("select_best_by must be 'val_acc' or 'val_loss'")
+    if params.get("uncertainty_mode") is not None:
+        UNCERTAINTY_MODE = str(params["uncertainty_mode"])
+        if UNCERTAINTY_MODE not in {"kendall", "fixed"}:
+            raise ValueError("uncertainty_mode must be 'kendall' or 'fixed'")
     VERBOSE = bool(params.get("verbose", False))
 
+    art: Path | None = None
+    artifact_dir = params.get("artifact_dir")
+    if artifact_dir:
+        art = Path(str(artifact_dir))
+        if not art.is_absolute():
+            art = ROOT / art
+        IN_NOISY = art / "datasets" / "synth_10s_125hz_noisy.npz"
+        IN_CLEAN = art / "datasets" / "synth_10s_125hz_clean.npz"
+        IN_LEVEL = art / "datasets" / "synth_10s_125hz_noise_level.npz"
+        IN_LABELS = art / "datasets" / "synth_10s_125hz_labels_with_level.csv"
+
+    experiment_name = params.get("experiment_name")
     model_dir = params.get("model_dir")
     if model_dir:
         OUT_DIR = Path(str(model_dir))
+        if not OUT_DIR.is_absolute():
+            OUT_DIR = ROOT / OUT_DIR
         OUT_LAST = OUT_DIR / "ckpt_last.pt"
         OUT_BEST = OUT_DIR / "ckpt_best_val.pt"
+        OUT_BEST_ACC = OUT_DIR / "ckpt_best_val_acc.pt"
+        OUT_BEST_LOSS = OUT_DIR / "ckpt_best_val_loss.pt"
         OUT_LOG = OUT_DIR / "train_log.json"
         OUT_TEST = OUT_DIR / "test_report.json"
+        OUT_PROBE = OUT_DIR / "probe_summary.json"
+    elif art is not None and experiment_name:
+        OUT_DIR = art / "models" / str(experiment_name)
+        OUT_LAST = OUT_DIR / "ckpt_last.pt"
+        OUT_BEST = OUT_DIR / "ckpt_best_val.pt"
+        OUT_BEST_ACC = OUT_DIR / "ckpt_best_val_acc.pt"
+        OUT_BEST_LOSS = OUT_DIR / "ckpt_best_val_loss.pt"
+        OUT_LOG = OUT_DIR / "train_log.json"
+        OUT_TEST = OUT_DIR / "test_report.json"
+    elif art is not None:
+        OUT_DIR = art / "models" / f"mtl_transformer_seed{SEED}_step6"
+        OUT_LAST = OUT_DIR / "ckpt_last.pt"
+        OUT_BEST = OUT_DIR / "ckpt_best_val.pt"
+        OUT_BEST_ACC = OUT_DIR / "ckpt_best_val_acc.pt"
+        OUT_BEST_LOSS = OUT_DIR / "ckpt_best_val_loss.pt"
+        OUT_LOG = OUT_DIR / "train_log.json"
+        OUT_TEST = OUT_DIR / "test_report.json"
+        OUT_PROBE = OUT_DIR / "probe_summary.json"
+
+    OUT_PROBE = OUT_DIR / "probe_summary.json"
 
 
 def output_paths() -> list[Path]:
     return [
         OUT_LAST,
         OUT_BEST,
+        OUT_BEST_ACC,
+        OUT_BEST_LOSS,
         OUT_LOG,
         OUT_TEST,
+        OUT_PROBE,
+        OUT_DIR / "debug" / "training_curves.png",
         OUT_DIR / "debug" / "denoise_examples_test.png",
         OUT_DIR / "debug" / "denoise_examples_val.png",
     ]
@@ -264,8 +379,17 @@ class UncertaintyWeights(nn.Module):
         self.log_sigma_level = nn.Parameter(torch.zeros((), dtype=torch.float32))
 
 
+def uncertainty_weight_snapshot(uw: UncertaintyWeights) -> dict[str, float]:
+    with torch.no_grad():
+        return {
+            "cls": float(torch.exp(-uw.log_sigma_cls).detach().cpu().item()),
+            "denoise": float(torch.exp(-uw.log_sigma_denoise).detach().cpu().item()),
+            "level": float(torch.exp(-uw.log_sigma_level).detach().cpu().item()),
+        }
+
+
 def build_model(device: torch.device) -> tuple[nn.Module, UncertaintyWeights]:
-    cfg = MTLTransformerConfig()
+    cfg = MTLTransformerConfig(dropout=MODEL_DROPOUT, cls_pool=CLS_POOL)
     model = MTLTransformerPTBXL(cfg).to(device=device, dtype=torch.float32)
     uw = UncertaintyWeights().to(device=device, dtype=torch.float32)
     return model, uw
@@ -344,7 +468,11 @@ def compute_losses(
     dbg: dict[str, float] = {}
 
     if use_cls:
-        ce = nn.CrossEntropyLoss()
+        cls_weight = None
+        weights = (CLASS_WEIGHT_GOOD, CLASS_WEIGHT_MEDIUM, CLASS_WEIGHT_BAD)
+        if any(abs(float(w) - 1.0) > 1e-12 for w in weights):
+            cls_weight = torch.tensor(weights, device=logits.device, dtype=logits.dtype)
+        ce = nn.CrossEntropyLoss(weight=cls_weight, label_smoothing=LABEL_SMOOTHING)
         l_cls = ce(logits, y_int)
 
     if use_den:
@@ -418,7 +546,7 @@ def combine_losses(
     l1 = l_cls if use_cls else torch.zeros_like(l_cls)
     l2 = l_denoise if use_den else torch.zeros_like(l_cls)
     l3 = l_level if use_lvl else torch.zeros_like(l_cls)
-    if not use_uncert:
+    if not use_uncert or UNCERTAINTY_MODE == "fixed":
         return LAMBDA_CLS * l1 + LAMBDA_DEN * l2 + LAMBDA_LVL * l3
     # [ASSUMPTION] Kendall homoscedastic uncertainty weighting.
     s1 = uw.log_sigma_cls
@@ -873,6 +1001,134 @@ def export_denoise_examples_by_class(
     print(f"Saved denoise examples: {out_png}")
 
 
+def export_training_curves(history: list[dict[str, Any]], out_png: Path) -> None:
+    if not history:
+        return
+    out_png.parent.mkdir(parents=True, exist_ok=True)
+
+    epochs = [int(row["epoch"]) for row in history]
+    train_acc = [float(row["train"]["acc"]) for row in history]
+    val_acc = [float(row["val"]["acc"]) for row in history]
+    train_loss = [float(row["train"]["total"]) for row in history]
+    val_loss = [float(row["val"]["total"]) for row in history]
+
+    val_detail = [row.get("val_detail", {}).get("per_class", {}) for row in history]
+    cls_names = ["good", "medium", "bad"]
+
+    fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+    ax = axes[0, 0]
+    ax.plot(epochs, train_acc, marker="o", label="train")
+    ax.plot(epochs, val_acc, marker="o", label="val")
+    ax.set_title("Accuracy")
+    ax.set_xlabel("epoch")
+    ax.set_ylabel("acc")
+    ax.grid(True, alpha=0.2)
+    ax.legend()
+
+    ax = axes[0, 1]
+    ax.plot(epochs, train_loss, marker="o", label="train")
+    ax.plot(epochs, val_loss, marker="o", label="val")
+    ax.set_title("Total loss")
+    ax.set_xlabel("epoch")
+    ax.set_ylabel("loss")
+    ax.grid(True, alpha=0.2)
+    ax.legend()
+
+    ax = axes[1, 0]
+    for name in cls_names:
+        values = []
+        for item in val_detail:
+            values.append(float(item.get(name, {}).get("acc", np.nan)))
+        ax.plot(epochs, values, marker="o", label=name)
+    ax.set_title("Validation per-class accuracy")
+    ax.set_xlabel("epoch")
+    ax.set_ylabel("acc")
+    ax.grid(True, alpha=0.2)
+    ax.legend()
+
+    ax = axes[1, 1]
+    den = [float(row["val"].get("den_l_weighted_mean", np.nan)) for row in history]
+    lvl = [float(row["val"].get("level", np.nan)) for row in history]
+    ax.plot(epochs, den, marker="o", label="val denoise weighted mse")
+    ax.plot(epochs, lvl, marker="o", label="val level mse")
+    ax.set_title("Auxiliary probes")
+    ax.set_xlabel("epoch")
+    ax.grid(True, alpha=0.2)
+    ax.legend()
+
+    fig.tight_layout()
+    fig.savefig(out_png, dpi=180)
+    plt.close(fig)
+
+
+def build_probe_summary(history: list[dict[str, Any]], test_report: dict[str, Any]) -> dict[str, Any]:
+    if not history:
+        return {"test_report": test_report}
+
+    best_acc_row = max(history, key=lambda row: float(row.get("val_detail", {}).get("overall_acc", row["val"]["acc"])))
+    best_loss_row = min(history, key=lambda row: float(row["val"]["total"]))
+    last = history[-1]
+
+    def compact_epoch(row: dict[str, Any]) -> dict[str, Any]:
+        val_detail = row.get("val_detail", {})
+        return {
+            "epoch": int(row["epoch"]),
+            "phase": row["phase"],
+            "train_acc": float(row["train"]["acc"]),
+            "val_acc": float(val_detail.get("overall_acc", row["val"]["acc"])),
+            "val_loss": float(row["val"]["total"]),
+            "val_per_class": val_detail.get("per_class", {}),
+            "val_confusion_matrix_3x3": val_detail.get("confusion_matrix_3x3"),
+            "log_sigma": row.get("log_sigma", {}),
+            "uncert_weight": row.get("uncert_weight", {}),
+        }
+
+    hp = {
+        "seed": SEED,
+        "epochs": EPOCHS,
+        "batch_size": BATCH_SIZE,
+        "lr": LR,
+        "lr_eta_min": LR_ETA_MIN,
+        "weight_decay": WEIGHT_DECAY,
+        "dropout": MODEL_DROPOUT,
+        "cls_pool": CLS_POOL,
+        "e_cls": E_CLS,
+        "e_denoise": E_DENOISE,
+        "e_level": E_LEVEL,
+        "e_uncert": E_UNCERT,
+        "bad_den_w_max": BAD_DEN_W_MAX,
+        "bad_den_w_warmup_epochs": BAD_DEN_W_WARMUP_EPOCHS,
+        "lambda_cls": LAMBDA_CLS,
+        "lambda_den": LAMBDA_DEN,
+        "lambda_lvl": LAMBDA_LVL,
+        "label_smoothing": LABEL_SMOOTHING,
+        "class_weight_good": CLASS_WEIGHT_GOOD,
+        "class_weight_medium": CLASS_WEIGHT_MEDIUM,
+        "class_weight_bad": CLASS_WEIGHT_BAD,
+        "alpha": ALPHA,
+        "wavelet": WAVELET,
+        "wavelet_level": WAVELET_LEVEL,
+        "wavelet_q": WAVELET_Q,
+        "select_best_by": SELECT_BEST_BY,
+        "early_stop": EARLYSTOP_ENABLED,
+        "uncertainty_weighting": E_UNCERT > 0,
+        "uncertainty_mode": UNCERTAINTY_MODE,
+    }
+
+    last_val_acc = float(last.get("val_detail", {}).get("overall_acc", last["val"]["acc"]))
+    last_train_acc = float(last["train"]["acc"])
+    return {
+        "hyperparams": hp,
+        "best_val_acc_epoch": compact_epoch(best_acc_row),
+        "best_val_loss_epoch": compact_epoch(best_loss_row),
+        "last_epoch": compact_epoch(last),
+        "last_train_val_acc_gap": last_train_acc - last_val_acc,
+        "test_acc": test_report.get("acc"),
+        "test_confusion_matrix_3x3": test_report.get("confusion_matrix_3x3"),
+        "test_denoise_metrics_by_class": test_report.get("denoise_metrics_by_class", {}),
+    }
+
+
 # --------- Save Artifacts ---------
 def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
     params = params or {}
@@ -929,10 +1185,13 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         "WEIGHT_DECAY": WEIGHT_DECAY,
         "NUM_WORKERS": NUM_WORKERS,
         "PIN_MEMORY": PIN_MEMORY,
+        "MODEL_DROPOUT": MODEL_DROPOUT,
         "E_CLS": E_CLS,
         "E_DENOISE": E_DENOISE,
         "E_LEVEL": E_LEVEL,
         "E_UNCERT": E_UNCERT,
+        "BAD_DEN_W_MAX": BAD_DEN_W_MAX,
+        "BAD_DEN_W_WARMUP_EPOCHS": BAD_DEN_W_WARMUP_EPOCHS,
         "ALPHA": ALPHA,
         "WAVELET": WAVELET,
         "WAVELET_LEVEL": WAVELET_LEVEL,
@@ -940,10 +1199,21 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         "LAMBDA_CLS": LAMBDA_CLS,
         "LAMBDA_DEN": LAMBDA_DEN,
         "LAMBDA_LVL": LAMBDA_LVL,
+        "LABEL_SMOOTHING": LABEL_SMOOTHING,
+        "CLASS_WEIGHT_GOOD": CLASS_WEIGHT_GOOD,
+        "CLASS_WEIGHT_MEDIUM": CLASS_WEIGHT_MEDIUM,
+        "CLASS_WEIGHT_BAD": CLASS_WEIGHT_BAD,
+        "SELECT_BEST_BY": SELECT_BEST_BY,
+        "UNCERTAINTY_MODE": UNCERTAINTY_MODE,
     }
 
     history: list[dict[str, Any]] = []
-    best_val = float("inf")
+    best_val_loss = float("inf")
+    best_val_acc = float("-inf")
+    best_epoch_loss = -1
+    best_epoch_acc = -1
+    early_stop_best_score = float("-inf")
+    early_stop_bad_epochs = 0
 
     for epoch in range(EPOCHS):
         global CUR_BAD_DEN_W
@@ -957,19 +1227,6 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         phase = phase_name(epoch)
         tr = run_epoch(model, uw, train_loader, device, optimizer=optimizer, phase=phase)
         va = run_epoch(model, uw, val_loader, device, optimizer=None, phase=phase)
-
-        row = {
-            "epoch": epoch,
-            "phase": phase,
-            "train": tr,
-            "val": va,
-            "log_sigma": {
-                "cls": float(uw.log_sigma_cls.detach().cpu().item()),
-                "denoise": float(uw.log_sigma_denoise.detach().cpu().item()),
-                "level": float(uw.log_sigma_level.detach().cpu().item()),
-            },
-        }
-        history.append(row)
 
         print(
             f"[epoch {epoch:03d}] phase={phase} | "
@@ -987,13 +1244,20 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
                 f"baseMSE={va.get('den_l_base_mean', 0.0):.6f} | "
                 f"wMSE={va.get('den_l_weighted_mean', 0.0):.6f}"
             )
-        if phase == "E_uncertainty_joint":
+        if phase == "E_uncertainty_joint" and UNCERTAINTY_MODE == "kendall":
+            uw_eff = uncertainty_weight_snapshot(uw)
             print(
                 f"log_sigma cls/den/level="
                 f"{float(uw.log_sigma_cls.detach().cpu().item()):.4f}/"
                 f"{float(uw.log_sigma_denoise.detach().cpu().item()):.4f}/"
                 f"{float(uw.log_sigma_level.detach().cpu().item()):.4f}"
             )
+            print(
+                f"uncert_weight cls/den/level="
+                f"{uw_eff['cls']:.3f}/{uw_eff['denoise']:.3f}/{uw_eff['level']:.3f}"
+            )
+        elif phase == "E_uncertainty_joint":
+            print("uncert_weight mode=fixed explicit lambda weights")
 
         val_detail = eval_split_details(model, val_loader, device)
 
@@ -1011,6 +1275,21 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         )
         print(f"VAL good breakdown: to_good={gb[0]} to_medium={gb[1]} to_bad={gb[2]}")
 
+        row = {
+            "epoch": epoch,
+            "phase": phase,
+            "train": tr,
+            "val": va,
+            "val_detail": val_detail,
+            "log_sigma": {
+                "cls": float(uw.log_sigma_cls.detach().cpu().item()),
+                "denoise": float(uw.log_sigma_denoise.detach().cpu().item()),
+                "level": float(uw.log_sigma_level.detach().cpu().item()),
+            },
+            "uncert_weight": uncertainty_weight_snapshot(uw),
+        }
+        history.append(row)
+
         scheduler.step()
 
         ckpt = {
@@ -1023,17 +1302,46 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         }
         torch.save(ckpt, OUT_LAST)
 
-        # [ASSUMPTION] best checkpoint is only comparable in joint phases.
-        if phase in ("B_add_denoise", "D_joint", "E_uncertainty_joint"):
-            if va["total"] < best_val:
-                best_val = va["total"]
-                torch.save(ckpt, OUT_BEST)
+        val_acc = float(val_detail["overall_acc"])
+        val_loss = float(va["total"])
+        prev_best_val_loss = best_val_loss
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            best_epoch_loss = epoch
+            torch.save(ckpt, OUT_BEST_LOSS)
+        if (val_acc > best_val_acc + 1e-12) or (
+            abs(val_acc - best_val_acc) <= 1e-12 and val_loss < prev_best_val_loss
+        ):
+            best_val_acc = val_acc
+            best_epoch_acc = epoch
+            torch.save(ckpt, OUT_BEST_ACC)
+
+        if EARLYSTOP_ENABLED and epoch >= EARLYSTOP_START_EPOCH and phase in EARLYSTOP_PHASES:
+            early_score = val_acc if SELECT_BEST_BY == "val_acc" else -val_loss
+            if early_score > early_stop_best_score + EARLYSTOP_MIN_DELTA:
+                early_stop_best_score = early_score
+                early_stop_bad_epochs = 0
+            else:
+                early_stop_bad_epochs += 1
+            if early_stop_bad_epochs >= EARLYSTOP_PATIENCE:
+                print(
+                    f"Early stop: no {SELECT_BEST_BY} improvement for "
+                    f"{EARLYSTOP_PATIENCE} epochs after epoch {EARLYSTOP_START_EPOCH}."
+                )
+                break
 
     with OUT_LOG.open("w", encoding="utf-8") as f:
         json.dump(history, f, ensure_ascii=False, indent=2)
 
-    if not OUT_BEST.exists():
-        shutil.copyfile(OUT_LAST, OUT_BEST)
+    selected_best = OUT_BEST_ACC if SELECT_BEST_BY == "val_acc" else OUT_BEST_LOSS
+    if not selected_best.exists():
+        selected_best = OUT_LAST
+    shutil.copyfile(selected_best, OUT_BEST)
+    print(
+        f"best selection: {SELECT_BEST_BY} | "
+        f"best_val_acc={best_val_acc:.4f} epoch={best_epoch_acc} | "
+        f"best_val_loss={best_val_loss:.4f} epoch={best_epoch_loss}"
+    )
 
     # Evaluate/export using best validation checkpoint, not the last epoch state.
     ckpt_best = torch.load(OUT_BEST, map_location=device)
@@ -1044,6 +1352,13 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
     test_report = eval_test_report(model, uw, test_loader, device)
     with OUT_TEST.open("w", encoding="utf-8") as f:
         json.dump(test_report, f, ensure_ascii=False, indent=2)
+
+    curves_png = OUT_DIR / "debug" / "training_curves.png"
+    export_training_curves(history, curves_png)
+
+    probe_summary = build_probe_summary(history, test_report)
+    with OUT_PROBE.open("w", encoding="utf-8") as f:
+        json.dump(probe_summary, f, ensure_ascii=False, indent=2)
 
     export_denoise_examples_by_class(
         model, test_loader, device,
@@ -1058,13 +1373,57 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
 
     print(f"saved: {OUT_LAST}")
     print(f"saved: {OUT_BEST}")
+    print(f"saved: {OUT_BEST_ACC}")
+    print(f"saved: {OUT_BEST_LOSS}")
     print(f"saved: {OUT_LOG}")
     print(f"saved: {OUT_TEST}")
+    print(f"saved: {OUT_PROBE}")
+    print(f"saved: {curves_png}")
     return {"step": "train", "skipped": False, "outputs": [str(p) for p in output_paths()]}
 
 
 def main() -> None:
-    run({})
+    args = _parse_args()
+    run(vars(args))
+
+
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Train the PTB-XL multi-task transformer.")
+    parser.add_argument("--artifact_dir", default="outputs/transformer")
+    parser.add_argument("--model_dir", default="")
+    parser.add_argument("--experiment_name", default="")
+    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--epochs", type=int)
+    parser.add_argument("--batch_size", type=int)
+    parser.add_argument("--num_workers", type=int)
+    parser.add_argument("--pin_memory", action="store_true")
+    parser.add_argument("--lr", type=float)
+    parser.add_argument("--lr_eta_min", type=float)
+    parser.add_argument("--weight_decay", type=float)
+    parser.add_argument("--dropout", type=float)
+    parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both"))
+    parser.add_argument("--e_cls", type=int)
+    parser.add_argument("--e_denoise", type=int)
+    parser.add_argument("--e_level", type=int)
+    parser.add_argument("--e_uncert", type=int)
+    parser.add_argument("--bad_den_w_max", type=float)
+    parser.add_argument("--bad_den_w_warmup_epochs", type=int)
+    parser.add_argument("--lambda_cls", type=float)
+    parser.add_argument("--lambda_den", type=float)
+    parser.add_argument("--lambda_lvl", type=float)
+    parser.add_argument("--label_smoothing", type=float)
+    parser.add_argument("--class_weight_good", type=float)
+    parser.add_argument("--class_weight_medium", type=float)
+    parser.add_argument("--class_weight_bad", type=float)
+    parser.add_argument("--uncertainty_mode", choices=("kendall", "fixed"))
+    parser.add_argument("--select_best_by", choices=("val_acc", "val_loss"))
+    parser.add_argument("--early_stop", action="store_true")
+    parser.add_argument("--earlystop_patience", type=int)
+    parser.add_argument("--earlystop_min_delta", type=float)
+    parser.add_argument("--earlystop_start_epoch", type=int)
+    parser.add_argument("--dry-run", dest="dry_run", action="store_true")
+    parser.add_argument("--verbose", action="store_true")
+    return parser.parse_args()
 
 
 if __name__ == "__main__":

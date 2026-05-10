@@ -275,8 +275,8 @@ def _underline_max_in_rows(ws, start_row: int, start_col: int, nrows: int, ncols
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Make paper-aligned tables (wide) from SVM/MLP outputs")
     p.add_argument("--seed", type=int, default=0)
-    p.add_argument("--artifacts_dir", type=str, default="artifacts")
-    p.add_argument("--out_dir", type=str, default="artifacts/paper_tables")
+    p.add_argument("--artifacts_dir", type=str, default="outputs/sqi")
+    p.add_argument("--out_dir", type=str, default="outputs/sqi/paper_tables")
     p.add_argument("--nd", type=int, default=3)
     return p.parse_args()
 

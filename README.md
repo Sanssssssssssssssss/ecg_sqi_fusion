@@ -42,18 +42,18 @@ data/
       set-a/
     nstdb/
   ptb-xl/
-artifacts/
-artifact1/
+outputs/sqi/
+outputs/transformer/
 ```
 
-The SQI pipeline writes to `artifacts/`. The transformer pipeline writes to `artifact1/`.
+The SQI pipeline writes to `outputs/sqi/`. The transformer pipeline writes to `outputs/transformer/`.
 
 ## Classical SQI pipeline
 
-The default runner is:
+Run the full classical SQI line:
 
 ```bash
-python -m src.sqi_pipeline.cli --verbose
+python -m src.sqi_pipeline.run_all --verbose
 ```
 
 `src.sqi_pipeline.cli` executes:
@@ -73,15 +73,17 @@ Useful flags:
 python -m src.sqi_pipeline.cli --fresh
 python -m src.sqi_pipeline.cli --only manifest_raw,split_seta,record84
 python -m src.sqi_pipeline.cli --force
-python -m src.sqi_pipeline.validate_outputs --write artifacts/validation/current_seed0.json
+python -m src.sqi_pipeline.validate_outputs --write outputs/sqi/validation/current_seed0.json
 ```
 
 ## PTB-XL workflow
 
-The default transformer runner is:
+Transformer preprocessing and transformer training are intentionally separate.
+
+Run all preprocessing/data steps:
 
 ```bash
-python -m src.transformer_pipeline.cli --verbose
+python -m src.transformer_pipeline.run_preprocess_all --verbose
 ```
 
 It executes:
@@ -92,6 +94,15 @@ It executes:
 - split clean segments by `ecg_id`
 - synthesize balanced SNR classes with NSTDB noise
 - generate RR-level pseudo noise labels
+
+Run the transformer/model steps:
+
+```bash
+python -m src.transformer_pipeline.run_transformer_all --verbose
+```
+
+It executes:
+
 - run a model forward check
 - train the multi-task transformer
 - evaluate the best checkpoint
@@ -99,10 +110,24 @@ It executes:
 Useful commands:
 
 ```bash
-python -m src.transformer_pipeline.cli --only train --dry-run --verbose
-python -m src.transformer_pipeline.cli --only train --verbose
-python -m src.transformer_pipeline.cli --only evaluate --verbose
-python -m src.transformer_pipeline.validate_outputs --write artifact1/validation/current_seed0.json
+python -m src.transformer_pipeline.run_preprocess_all --only segments --verbose
+python -m src.transformer_pipeline.run_transformer_all --dry-run --verbose
+python -m src.transformer_pipeline.run_transformer_all --only train --verbose
+python -m src.transformer_pipeline.run_transformer_all --only evaluate --verbose
+python -m src.transformer_pipeline.validate_outputs --write outputs/transformer/validation/current_seed0.json
+```
+
+Single-step scripts can also be run directly, for example:
+
+```bash
+python -m src.transformer_pipeline.data.filter_lead_i --verbose
+python -m src.transformer_pipeline.data.make_manifest_lead_i --verbose
+python -m src.transformer_pipeline.preprocess.make_segments_10s_125hz --verbose
+python -m src.transformer_pipeline.data.make_clean_split --verbose
+python -m src.transformer_pipeline.noise.synthesize_snr_dataset --verbose
+python -m src.transformer_pipeline.noise.make_rr_noise_level --verbose
+python -m src.transformer_pipeline.train --verbose
+python -m src.transformer_pipeline.evaluate --verbose
 ```
 
 Cluster training:
@@ -111,7 +136,7 @@ Cluster training:
 sbatch slurm/run_ampere.sh
 ```
 
-The transformer train step expects prepared arrays under `artifact1/datasets/` and writes checkpoints and reports under `artifact1/models/mtl_transformer_seed0_step6/`.
+The transformer train step expects prepared arrays under `outputs/transformer/datasets/` and writes checkpoints and reports under `outputs/transformer/models/mtl_transformer_seed0_step6/`.
 
 ## Cluster usage
 

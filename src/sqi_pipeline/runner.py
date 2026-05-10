@@ -4,11 +4,13 @@ import importlib
 import json
 import logging
 import shutil
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
 from src.sqi_pipeline.config import SQIPipelineConfig
+from src.utils.pipeline_summary import format_summary_table
 
 logger = logging.getLogger(__name__)
 
@@ -165,9 +167,13 @@ def run_pipeline(cfg: SQIPipelineConfig, *, only: list[str] | None = None) -> di
 
         _log_step(spec.name)
         fn = load_step_callable(spec)
+        start = time.perf_counter()
         out = fn(step_params(cfg, spec.name))
         if not isinstance(out, dict):
             raise TypeError(f"{spec.name}: run() must return dict, got {type(out)}")
+        duration_sec = time.perf_counter() - start
+        meta = {k: v for k, v in out.items() if k not in {"outputs"}}
+        meta["duration_sec"] = duration_sec
 
         summary["steps"].append(
             {
@@ -175,7 +181,7 @@ def run_pipeline(cfg: SQIPipelineConfig, *, only: list[str] | None = None) -> di
                 "module": spec.module,
                 "skipped": bool(out.get("skipped", False)),
                 "outputs": [_rel_path(Path(str(p)), cfg.root) for p in out.get("outputs", [])],
-                "meta": {k: v for k, v in out.items() if k not in {"outputs"}},
+                "meta": meta,
             }
         )
 

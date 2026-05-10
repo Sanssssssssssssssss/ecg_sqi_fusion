@@ -17,7 +17,7 @@ ANN_EXT = "atr"           # usually "atr"
 PRINT_HEAD = 30
 
 WRITE_CSV = True
-OUT_CSV_REL = Path("artifacts/mitbih/100_atr.csv")
+OUT_CSV_REL = Path("outputs/sqi/mitbih/100_atr.csv")
 
 # dataset location relative to repo root
 MITBIH_DIR_REL = Path("data/physionet/mit-bih")  # contains 100.dat/100.hea/100.atr
@@ -164,7 +164,7 @@ def main() -> None:
 
     # optional: write a JSON snapshot of ann attributes (very handy for diff/debug)
     # you can delete this block if you don't want files.
-    ann_dump_path = root / Path("artifacts/mitbih") / f"{RECORD_ID}_{ANN_EXT}_ann_dump.json"
+    ann_dump_path = root / Path("outputs/sqi/mitbih") / f"{RECORD_ID}_{ANN_EXT}_ann_dump.json"
     ann_dump_path.parent.mkdir(parents=True, exist_ok=True)
 
     ann_dict = {}

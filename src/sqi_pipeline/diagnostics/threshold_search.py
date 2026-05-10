@@ -23,8 +23,8 @@
 # # =========================
 # PARAMS = {
 #     # input/output
-#     "in_parquet": "artifacts/relabel_stats/features/record84.parquet",
-#     "out_dir": "artifacts/relabel_stats/manual_threshold_eval/run_manual",
+#     "in_parquet": "outputs/sqi/relabel_stats/features/record84.parquet",
+#     "out_dir": "outputs/sqi/relabel_stats/manual_threshold_eval/run_manual",
 
 #     # evaluation focus
 #     "rank_note": "Target ~97% on set-a (note: depends on label noise).",
@@ -319,8 +319,8 @@ SQI_LIST = ["iSQI", "bSQI", "pSQI", "sSQI", "kSQI", "fSQI", "basSQI"]
 # PARAMS (FN-first tuning + FN waveform dump)
 # =========================
 PARAMS = {
-    "in_parquet": "artifacts/relabel_stats/features/record84.parquet",
-    "out_dir": "artifacts/relabel_stats/manual_threshold_eval/run_manual",
+    "in_parquet": "outputs/sqi/relabel_stats/features/record84.parquet",
+    "out_dir": "outputs/sqi/relabel_stats/manual_threshold_eval/run_manual",
     "rank_note": "Target ~97% on set-a (note: depends on label noise).",
 
     # HARD: any lead triggers => record unacc
@@ -381,9 +381,9 @@ PARAMS = {
         "enabled": True,
         # Set this to where your cached 12-lead signals live.
         # Examples you can use:
-        #   "artifacts/resample_125/signals"  (if you saved per record_id)
-        #   "artifacts/preprocess/resample_125" ...
-        "signal_dir": "artifacts/relabel_stats/resampled_125",
+        #   "outputs/sqi/resample_125/signals"  (if you saved per record_id)
+        #   "outputs/sqi/preprocess/resample_125" ...
+        "signal_dir": "outputs/sqi/relabel_stats/resampled_125",
 
         # file format: "npy" or "npz" or "parquet"
         "fmt": "npz",

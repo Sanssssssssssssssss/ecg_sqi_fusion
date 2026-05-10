@@ -38,16 +38,16 @@ FS_NOISE_IN = 360
 N_NOISE_LEADS = 2
 
 # input split (original set-a split)
-SPLIT_CSV = "artifacts/splits/split_seta_seed0.csv"
+SPLIT_CSV = "outputs/sqi/splits/split_seta_seed0.csv"
 
 # clean ECG source (500Hz) from PhysioNet WFDB set-a
 SET_A_DIR = "data/physionet/challenge-2011/set-a"
 
 # output unified 500Hz cases: clean_500 + noisy_500
-CASES_500_DIR = "artifacts/cases_500"
+CASES_500_DIR = "outputs/sqi/cases_500"
 
 # output new split (balanced)
-OUT_SPLIT_CSV = "artifacts/splits/split_seta_seed0_balanced.csv"
+OUT_SPLIT_CSV = "outputs/sqi/splits/split_seta_seed0_balanced.csv"
 
 # NSTDB location
 NSTDB_DIR = "data/physionet/nstdb"  # expects em.dat/em.hea, ma.dat/ma.hea
@@ -202,7 +202,7 @@ def write_case_500_npz(out_path: Path, sig500: np.ndarray, meta: dict) -> None:
     Store as npz with key 'sig_500'
     """
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    np.savez_compressed(
+    np.savez(
         out_path,
         sig_500=sig500.astype(np.float32),
         fs=np.int32(FS_ECG),

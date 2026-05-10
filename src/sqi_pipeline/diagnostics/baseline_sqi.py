@@ -358,9 +358,9 @@ def run(cfg: BaselineCfg) -> None:
 if __name__ == "__main__":
     # You can hardcode exactly your PARAMS here for now (fast iteration)
     cfg = BaselineCfg(
-        in_parquet=Path(r"artifacts/relabel_stats/features/record84.parquet"),
-        out_dir=Path(r"artifacts/relabel_stats/baseline_eval/run0"),
-        signal_dir=Path(r"artifacts/relabel_stats/resampled_125"),
+        in_parquet=Path(r"outputs/sqi/relabel_stats/features/record84.parquet"),
+        out_dir=Path(r"outputs/sqi/relabel_stats/baseline_eval/run0"),
+        signal_dir=Path(r"outputs/sqi/relabel_stats/resampled_125"),
         fmt="npz",
         pattern="{record_id}.npz",
         npz_key="sig_125",

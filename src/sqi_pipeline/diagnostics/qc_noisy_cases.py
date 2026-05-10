@@ -22,12 +22,12 @@ FS = 500
 CASE_SEC = 10.0
 N_SAMPLES = int(FS * CASE_SEC)  # 5000
 
-BALANCED_SPLIT_CSV = "artifacts/splits/split_seta_seed0_balanced.csv"
+BALANCED_SPLIT_CSV = "outputs/sqi/splits/split_seta_seed0_balanced.csv"
 
 # unified 500Hz cases folder (contains both clean + noisy)
-CASES_500_DIR = "artifacts/cases_500"
+CASES_500_DIR = "outputs/sqi/cases_500"
 
-OUT_DIR = "artifacts/qc/noise_aug_500"
+OUT_DIR = "outputs/sqi/qc/noise_aug_500"
 
 LEADS_12 = ["I", "II", "III", "aVR", "aVL", "aVF", "V1", "V2", "V3", "V4", "V5", "V6"]
 

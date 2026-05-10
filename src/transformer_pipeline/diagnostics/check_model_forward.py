@@ -1,6 +1,7 @@
 # Transformer model forward check.
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -20,8 +21,16 @@ from src.transformer_pipeline.models.mtl_transformer import MTLTransformerPTBXL,
 
 
 def run(params: dict | None = None) -> dict:
+    params = params or {}
     root = project_root()
+    artifact_dir = Path(str(params.get("artifact_dir") or (root / "outputs/transformer")))
+    if not artifact_dir.is_absolute():
+        artifact_dir = root / artifact_dir
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    dropout = float(params.get("dropout", MTLTransformerConfig().dropout))
+    cls_pool = str(params.get("cls_pool", MTLTransformerConfig().cls_pool))
+    if cls_pool not in {"decoder", "encoder", "both"}:
+        raise ValueError("cls_pool must be 'decoder', 'encoder', or 'both'")
 
     cfg = MTLTransformerConfig(
         fs=125,
@@ -31,7 +40,8 @@ def run(params: dict | None = None) -> dict:
         stride=10,
         L=124,
         conv3_padding=10,  # critical closure knob
-        dropout=0.0,
+        dropout=dropout,
+        cls_pool=cls_pool,
     )
     model = MTLTransformerPTBXL(cfg).to(device)
     model.eval()
@@ -53,7 +63,7 @@ def run(params: dict | None = None) -> dict:
     print(f"logits    : {tuple(logits.shape)}     (expect (B,3))")
 
     # ---------------- Real sample forward (optional) ----------------
-    npz_noisy = root / "artifact1" / "datasets" / "synth_10s_125hz_noisy.npz"
+    npz_noisy = artifact_dir / "datasets" / "synth_10s_125hz_noisy.npz"
     if npz_noisy.exists():
         Xn = np.load(npz_noisy)["X_noisy"].astype(np.float32)
         x0 = torch.from_numpy(Xn[0]).to(device).view(1, 1, cfg.T)
@@ -72,13 +82,23 @@ def run(params: dict | None = None) -> dict:
         assert torch.isfinite(logits0).all()
         print("finite check: OK")
     else:
-        print("\n[SKIP] No real dataset found at artifact1/datasets/synth_10s_125hz_noisy.npz")
+        print(f"\n[SKIP] No real dataset found at {npz_noisy}")
 
     return {"step": "forward_check", "skipped": False, "outputs": []}
 
 
 def main() -> None:
-    run({})
+    args = _parse_args()
+    run(vars(args))
+
+
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Run a transformer model forward sanity check.")
+    parser.add_argument("--artifact_dir", default="outputs/transformer")
+    parser.add_argument("--dropout", type=float)
+    parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both"))
+    parser.add_argument("--verbose", action="store_true")
+    return parser.parse_args()
 
 
 if __name__ == "__main__":

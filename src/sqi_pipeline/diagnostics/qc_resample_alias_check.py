@@ -136,9 +136,9 @@ def lowpass_40hz_125(x: np.ndarray, fs: float = FS_OUT, fc: float = 40.0) -> np.
 
 def main() -> None:
     root = project_root()
-    split_csv = root / "artifacts" / "splits" / "split_seta_seed0.csv"
+    split_csv = root / "outputs/sqi" / "splits" / "split_seta_seed0.csv"
     data_dir = root / "data" / "physionet" / "challenge-2011" / "set-a"
-    out_dir = root / "artifacts" / "qc" / "resample_125_alias_check"
+    out_dir = root / "outputs/sqi" / "qc" / "resample_125_alias_check"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     df = pd.read_csv(split_csv)

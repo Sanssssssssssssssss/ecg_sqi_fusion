@@ -53,10 +53,10 @@ def resample_500_to_125(sig12_500: np.ndarray) -> np.ndarray:
 def main() -> None:
     root = project_root()
 
-    # split_csv = root / "artifacts" / "splits" / "split_seta_seed0.csv"
-    split_csv = root / "artifacts" / "splits" / "split_seta_seed0_balanced.csv"
+    # split_csv = root / "outputs/sqi" / "splits" / "split_seta_seed0.csv"
+    split_csv = root / "outputs/sqi" / "splits" / "split_seta_seed0_balanced.csv"
     data_dir = root / "data" / "physionet" / "challenge-2011" / "set-a"
-    out_dir = root / "artifacts" / "resampled_125"
+    out_dir = root / "outputs/sqi" / "resampled_125"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"[Task 1.3] split_csv = {split_csv}")

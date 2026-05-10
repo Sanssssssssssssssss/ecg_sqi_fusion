@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -18,8 +19,7 @@ except ModuleNotFoundError:
 
 def run(params: dict | None = None) -> dict:
     params = params or {}
-    if params.get("model_dir"):
-        m.configure_from_params({"model_dir": params["model_dir"]})
+    m.configure_from_params(params)
 
     m.seed_all(m.SEED)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -107,7 +107,17 @@ def run(params: dict | None = None) -> dict:
 
 
 def main() -> None:
-    run({})
+    args = _parse_args()
+    run(vars(args))
+
+
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Evaluate the best PTB-XL transformer checkpoint.")
+    parser.add_argument("--artifact_dir", default="outputs/transformer")
+    parser.add_argument("--model_dir", default="")
+    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--verbose", action="store_true")
+    return parser.parse_args()
 
 
 if __name__ == "__main__":

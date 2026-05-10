@@ -62,6 +62,7 @@ class MTLTransformerConfig:
 
     # [ASSUMPTION] dropout not specified -> default 0 for strict reproducible baseline.
     dropout: float = 0.1
+    cls_pool: str = "decoder"
 
     # smooth (paper says only for denoise head)
     smooth_k: int = 5
@@ -190,9 +191,18 @@ class MTLTransformerPTBXL(nn.Module):
         self.head_level = nn.Linear(cfg.dec_d_model, cfg.head_patch_out)
 
         # Head3 classification: GAP -> FC
-        # [ASSUMPTION] dropout prob not specified -> cfg.dropout (default 0).
+        if cfg.cls_pool == "decoder":
+            cls_in = cfg.dec_d_model
+        elif cfg.cls_pool == "encoder":
+            cls_in = cfg.enc_d_model
+        elif cfg.cls_pool == "both":
+            cls_in = cfg.enc_d_model + cfg.dec_d_model
+        else:
+            raise ValueError("cls_pool must be 'decoder', 'encoder', or 'both'")
+
+        # [ASSUMPTION] dropout prob not specified -> cfg.dropout.
         self.cls_drop = nn.Dropout(cfg.dropout)
-        self.cls_fc = nn.Linear(cfg.dec_d_model, 3)
+        self.cls_fc = nn.Linear(cls_in, 3)
 
     # --------- Internal: patch embedding forward ---------
     def _patch_embed(self, x: torch.Tensor) -> torch.Tensor:
@@ -249,7 +259,12 @@ class MTLTransformerPTBXL(nn.Module):
         y2 = unpatchify_overlap_add(p2, T=cfg.T, stride=cfg.stride).unsqueeze(1)  # (B, 1, T)
 
         # --------- Head 3: Classification (GAP -> FC) ---------
-        g = z.mean(dim=1)  # (B, 64)
+        if cfg.cls_pool == "decoder":
+            g = z.mean(dim=1)  # (B, 64)
+        elif cfg.cls_pool == "encoder":
+            g = h.mean(dim=1)  # (B, 128)
+        else:
+            g = torch.cat([h.mean(dim=1), z.mean(dim=1)], dim=1)  # (B, 192)
         logits = self.cls_fc(self.cls_drop(g))  # (B, 3)
 
         return y1, y2, logits
