@@ -98,11 +98,64 @@ MLP confusion matrix, rows=true and cols=pred:
  [ 259,   15, 1468]]
 ```
 
+## Transformer Result
+
+Artifact root:
+
+`outputs/transformer_e6b_balanced_local/models/e7_masked_pretrain_e6b_ft`
+
+Setup:
+
+- initialized from E6b masked denoise pretraining
+- local mask head enabled
+- noise type head enabled
+- fixed loss weights
+- selected checkpoint by best validation accuracy
+
+Pipeline status:
+
+| step | status |
+|---|---|
+| forward_check | done |
+| train | done |
+| evaluate | done |
+
+Validation/test results:
+
+| split | acc | balanced acc | macro F1 | good recall | medium recall | bad recall |
+|---|---:|---:|---:|---:|---:|---:|
+| val | 0.7988 | 0.7896 | 0.7886 | 0.7886 | 0.6450 | 0.9354 |
+| test | 0.7906 | 0.7799 | 0.7785 | 0.7904 | 0.6108 | 0.9386 |
+
+Best validation checkpoint:
+
+- epoch: 7
+- phase: B_add_denoise
+- validation accuracy: 0.7988
+
+Transformer test confusion matrix, rows=true and cols=pred:
+
+```text
+[[1444, 287,  96],
+ [ 383, 874, 174],
+ [  34,  73, 1635]]
+```
+
+Compared with Lead-I SQI baselines on the same E6b test set:
+
+| model | test acc | balanced acc | macro F1 | medium recall |
+|---|---:|---:|---:|---:|
+| SVM-RBF SQI | 0.5824 | 0.5448 | 0.4580 | 0.0056 |
+| MLP SQI | 0.5760 | 0.5390 | 0.4539 | 0.0070 |
+| Transformer | 0.7906 | 0.7799 | 0.7785 | 0.6108 |
+
 ## Interpretation
 
 E6b removes the main critique that E6 current may be unfair because good is rare. Even with balanced class counts, balanced placements, balanced SNR profiles, and balanced noise kinds, Lead-I 7-SQI SVM/MLP still almost completely fail to recover the medium class.
 
-This strengthens the benchmark argument: the SQI summary models are not just hurt by imbalance; they are missing the local temporal information needed to separate medium from neighboring classes.
+The transformer is not yet a final 0.95-style model on E6b, but it is already much better aligned with the local benchmark. Its medium recall is 0.6108 on test, while SQI-SVM/MLP are effectively zero. This supports the central claim of E6/E6b: once label quality depends on local temporal placement rather than only global SNR or SQI summaries, raw sequence models can use information that summary-SQI models lose.
+
+The remaining weakness is still the medium boundary. Most transformer medium errors go to good, not bad, so the next useful experiment is not another SQI baseline. It should improve the transformer objective around borderline local contamination, for example with ordinal/SNR auxiliary supervision or calibrated medium thresholds on the validation set.
 
 ## Current Status
 
@@ -112,8 +165,9 @@ Completed:
 - RR noise-level generation
 - transformer dry-run forward/training input check
 - Lead-I SQI SVM/MLP baseline
+- E6b transformer pretraining, fine-tuning, and evaluation
 
 Next:
 
-- train the current best transformer route on E6b
-- compare against E6 current and E6b SQI baselines
+- tune the E6b transformer medium boundary with ordinal/SNR supervision
+- optionally calibrate validation thresholds for medium vs neighboring classes
