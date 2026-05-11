@@ -63,6 +63,9 @@ class MTLTransformerConfig:
     # [ASSUMPTION] dropout not specified -> default 0 for strict reproducible baseline.
     dropout: float = 0.1
     cls_pool: str = "decoder"
+    cls_pooling: str = "mean"
+    local_pool_topk: int = 8
+    use_positional_embedding: bool = False
     use_ordinal_head: bool = False
     use_snr_head: bool = False
     use_local_mask_head: bool = False
@@ -174,6 +177,11 @@ class MTLTransformerPTBXL(nn.Module):
         )
         self.ln3 = nn.LayerNorm(cfg.conv3_out)
 
+        if cfg.use_positional_embedding:
+            self.pos_enc = nn.Parameter(torch.zeros(1, cfg.L, cfg.enc_d_model))
+        else:
+            self.register_parameter("pos_enc", None)
+
         # --------- Encoder ---------
         self.enc = nn.ModuleList(
             [TransformerBlock(cfg.enc_d_model, cfg.enc_heads, cfg.enc_mlp_ratio, cfg.dropout) for _ in range(cfg.enc_layers)]
@@ -181,6 +189,10 @@ class MTLTransformerPTBXL(nn.Module):
 
         # --------- Decoder (linear downproj + encoder-style blocks; no cross-attn) ---------
         self.dec_in = nn.Linear(cfg.dec_in, cfg.dec_d_model)
+        if cfg.use_positional_embedding:
+            self.pos_dec = nn.Parameter(torch.zeros(1, cfg.L, cfg.dec_d_model))
+        else:
+            self.register_parameter("pos_dec", None)
         self.dec = nn.ModuleList(
             [TransformerBlock(cfg.dec_d_model, cfg.dec_heads, cfg.dec_mlp_ratio, cfg.dropout) for _ in range(cfg.dec_layers)]
         )
@@ -206,6 +218,14 @@ class MTLTransformerPTBXL(nn.Module):
             cls_in = cfg.enc_d_model + cfg.dec_d_model
         else:
             raise ValueError("cls_pool must be 'decoder', 'encoder', or 'both'")
+        if cfg.cls_pooling not in {"mean", "mean_max_topk", "local_severity"}:
+            raise ValueError("cls_pooling must be 'mean', 'mean_max_topk', or 'local_severity'")
+        if cfg.cls_pooling == "local_severity" and not cfg.use_local_mask_head:
+            raise ValueError("cls_pooling='local_severity' requires use_local_mask_head=True")
+        if cfg.local_pool_topk < 1:
+            raise ValueError("local_pool_topk must be >= 1")
+        pool_mult = {"mean": 1, "mean_max_topk": 3, "local_severity": 4}[cfg.cls_pooling]
+        cls_in = cls_in * pool_mult
 
         # [ASSUMPTION] dropout prob not specified -> cfg.dropout.
         self.cls_drop = nn.Dropout(cfg.dropout)
@@ -235,6 +255,39 @@ class MTLTransformerPTBXL(nn.Module):
         x = F.relu(self.ln3(x))
         return x
 
+    def _classification_tokens(self, h: torch.Tensor, z: torch.Tensor) -> torch.Tensor:
+        cfg = self.cfg
+        if cfg.cls_pool == "decoder":
+            return z
+        if cfg.cls_pool == "encoder":
+            return h
+        return torch.cat([h, z], dim=-1)
+
+    def _pool_class_tokens(
+        self,
+        h: torch.Tensor,
+        z: torch.Tensor,
+        local_mask_patch_logits: torch.Tensor | None,
+    ) -> torch.Tensor:
+        cfg = self.cfg
+        tokens = self._classification_tokens(h, z)
+        if cfg.cls_pooling == "mean":
+            return tokens.mean(dim=1)
+
+        z_mean = tokens.mean(dim=1)
+        z_max = tokens.max(dim=1).values
+        k = min(int(cfg.local_pool_topk), tokens.shape[1])
+        z_topk = tokens.topk(k=k, dim=1).values.mean(dim=1)
+        if cfg.cls_pooling == "mean_max_topk":
+            return torch.cat([z_mean, z_max, z_topk], dim=1)
+
+        if local_mask_patch_logits is None:
+            raise RuntimeError("local_severity pooling requires local mask patch logits")
+        token_score = local_mask_patch_logits.mean(dim=-1)
+        weights = torch.softmax(token_score, dim=1).unsqueeze(-1)
+        z_attn = torch.sum(weights * tokens, dim=1)
+        return torch.cat([z_mean, z_max, z_topk, z_attn], dim=1)
+
     def forward_features(self, x: torch.Tensor) -> dict[str, torch.Tensor]:
         """
         Return encoder/decoder token states and the pooled classification feature.
@@ -253,6 +306,8 @@ class MTLTransformerPTBXL(nn.Module):
                 f"Token length mismatch: got L={tok.shape[1]}, expect L={cfg.L}. "
                 f"Adjust conv3 padding/params to enforce L."
             )
+        if self.pos_enc is not None:
+            tok = tok + self.pos_enc
 
         # --------- Encoder ---------
         h = tok
@@ -261,6 +316,8 @@ class MTLTransformerPTBXL(nn.Module):
 
         # --------- Decoder ---------
         z = self.dec_in(h)  # (B, L, 64)
+        if self.pos_dec is not None:
+            z = z + self.pos_dec
         for blk in self.dec:
             z = blk(z)  # (B, L, 64)
 
@@ -274,15 +331,18 @@ class MTLTransformerPTBXL(nn.Module):
         p2 = self.head_level(z)  # (B, L, 20)
         y2 = unpatchify_overlap_add(p2, T=cfg.T, stride=cfg.stride).unsqueeze(1)  # (B, 1, T)
 
-        # --------- Head 3: Classification (GAP -> FC) ---------
-        if cfg.cls_pool == "decoder":
-            g = z.mean(dim=1)  # (B, 64)
-        elif cfg.cls_pool == "encoder":
-            g = h.mean(dim=1)  # (B, 128)
-        else:
-            g = torch.cat([h.mean(dim=1), z.mean(dim=1)], dim=1)  # (B, 192)
+        # --------- Head 3: Classification pooling ---------
+        local_mask_patch_logits = self.head_local_mask(z) if cfg.use_local_mask_head else None
+        g = self._pool_class_tokens(h, z, local_mask_patch_logits)
         g = self.cls_drop(g)
-        return {"encoder": h, "decoder": z, "pooled": g, "denoise": y1, "level": y2}
+        return {
+            "encoder": h,
+            "decoder": z,
+            "pooled": g,
+            "denoise": y1,
+            "level": y2,
+            "local_mask_patch_logits": local_mask_patch_logits,
+        }
 
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, ...]:
         """
@@ -305,7 +365,9 @@ class MTLTransformerPTBXL(nn.Module):
         if cfg.use_snr_head:
             out = out + (self.snr_fc(g).squeeze(1),)
         if cfg.use_local_mask_head:
-            p3 = self.head_local_mask(z)  # (B, L, 20)
+            p3 = features["local_mask_patch_logits"]
+            if p3 is None:
+                raise RuntimeError("local_mask_head enabled but no local mask logits were produced")
             y3 = unpatchify_overlap_add(p3, T=cfg.T, stride=cfg.stride).unsqueeze(1)
             out = out + (y3,)
         if cfg.use_noise_type_head:

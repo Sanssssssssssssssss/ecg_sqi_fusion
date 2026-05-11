@@ -31,6 +31,11 @@ def run(params: dict | None = None) -> dict:
     cls_pool = str(_value_or_default(params.get("cls_pool"), MTLTransformerConfig().cls_pool))
     if cls_pool not in {"decoder", "encoder", "both"}:
         raise ValueError("cls_pool must be 'decoder', 'encoder', or 'both'")
+    cls_pooling = str(_value_or_default(params.get("cls_pooling"), MTLTransformerConfig().cls_pooling))
+    if cls_pooling not in {"mean", "mean_max_topk", "local_severity"}:
+        raise ValueError("cls_pooling must be 'mean', 'mean_max_topk', or 'local_severity'")
+    local_pool_topk = int(_value_or_default(params.get("local_pool_topk"), MTLTransformerConfig().local_pool_topk))
+    use_positional_embedding = bool(params.get("positional_embedding", False))
     input_mode = str(_value_or_default(params.get("input_mode"), "raw"))
     if input_mode not in {"raw", "robust", "raw_robust"}:
         raise ValueError("input_mode must be 'raw', 'robust', or 'raw_robust'")
@@ -52,6 +57,9 @@ def run(params: dict | None = None) -> dict:
         conv3_padding=10,  # critical closure knob
         dropout=dropout,
         cls_pool=cls_pool,
+        cls_pooling=cls_pooling,
+        local_pool_topk=local_pool_topk,
+        use_positional_embedding=use_positional_embedding,
         use_ordinal_head=use_ordinal_head,
         use_snr_head=use_snr_head,
         use_local_mask_head=use_local_mask_head,
@@ -143,6 +151,9 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--artifact_dir", default="outputs/transformer")
     parser.add_argument("--dropout", type=float)
     parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both"))
+    parser.add_argument("--cls_pooling", choices=("mean", "mean_max_topk", "local_severity"))
+    parser.add_argument("--local_pool_topk", type=int)
+    parser.add_argument("--positional_embedding", action="store_true")
     parser.add_argument("--input_mode", choices=("raw", "robust", "raw_robust"))
     parser.add_argument("--ordinal_head", action="store_true")
     parser.add_argument("--snr_head", action="store_true")

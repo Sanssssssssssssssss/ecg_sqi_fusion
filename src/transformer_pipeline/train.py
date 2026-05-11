@@ -45,6 +45,9 @@ PIN_MEMORY = False
 VERBOSE = False
 MODEL_DROPOUT = MTLTransformerConfig().dropout
 CLS_POOL = MTLTransformerConfig().cls_pool
+CLS_POOLING = MTLTransformerConfig().cls_pooling
+LOCAL_POOL_TOPK = MTLTransformerConfig().local_pool_topk
+USE_POSITIONAL_EMBEDDING = MTLTransformerConfig().use_positional_embedding
 INPUT_MODE = "raw"
 USE_ORDINAL_HEAD = False
 USE_SNR_HEAD = False
@@ -119,7 +122,8 @@ OUT_PROBE = OUT_DIR / "probe_summary.json"
 
 def configure_from_params(params: dict[str, Any]) -> None:
     global SEED, BATCH_SIZE, NUM_WORKERS, PIN_MEMORY, EPOCHS, VERBOSE
-    global WEIGHT_DECAY, LR, LR_ETA_MIN, MODEL_DROPOUT, CLS_POOL, INPUT_MODE
+    global WEIGHT_DECAY, LR, LR_ETA_MIN, MODEL_DROPOUT, CLS_POOL, CLS_POOLING, LOCAL_POOL_TOPK
+    global USE_POSITIONAL_EMBEDDING, INPUT_MODE
     global USE_ORDINAL_HEAD, USE_SNR_HEAD, USE_LOCAL_MASK_HEAD, USE_NOISE_TYPE_HEAD
     global USE_TEACHER_DISTILL, USE_SQI_HEAD
     global E_CLS, E_DENOISE, E_LEVEL, E_UNCERT
@@ -155,6 +159,14 @@ def configure_from_params(params: dict[str, Any]) -> None:
         CLS_POOL = str(params["cls_pool"])
         if CLS_POOL not in {"decoder", "encoder", "both"}:
             raise ValueError("cls_pool must be 'decoder', 'encoder', or 'both'")
+    if params.get("cls_pooling") is not None:
+        CLS_POOLING = str(params["cls_pooling"])
+        if CLS_POOLING not in {"mean", "mean_max_topk", "local_severity"}:
+            raise ValueError("cls_pooling must be 'mean', 'mean_max_topk', or 'local_severity'")
+    if params.get("local_pool_topk") is not None:
+        LOCAL_POOL_TOPK = int(params["local_pool_topk"])
+    if params.get("positional_embedding") is not None:
+        USE_POSITIONAL_EMBEDDING = bool(params["positional_embedding"])
     if params.get("input_mode") is not None:
         INPUT_MODE = str(params["input_mode"])
         if INPUT_MODE not in {"raw", "robust", "raw_robust"}:
@@ -565,6 +577,9 @@ def build_model(device: torch.device) -> tuple[nn.Module, UncertaintyWeights]:
         in_ch=in_ch,
         dropout=MODEL_DROPOUT,
         cls_pool=CLS_POOL,
+        cls_pooling=CLS_POOLING,
+        local_pool_topk=LOCAL_POOL_TOPK,
+        use_positional_embedding=USE_POSITIONAL_EMBEDDING,
         use_ordinal_head=USE_ORDINAL_HEAD,
         use_snr_head=USE_SNR_HEAD,
         use_local_mask_head=USE_LOCAL_MASK_HEAD,
@@ -576,6 +591,21 @@ def build_model(device: torch.device) -> tuple[nn.Module, UncertaintyWeights]:
     model = MTLTransformerPTBXL(cfg).to(device=device, dtype=torch.float32)
     uw = UncertaintyWeights().to(device=device, dtype=torch.float32)
     return model, uw
+
+
+def load_compatible_model_state(model: nn.Module, state: dict[str, Any]) -> tuple[list[str], list[str], list[str]]:
+    current = model.state_dict()
+    compatible: dict[str, Any] = {}
+    skipped: list[str] = []
+    for key, value in state.items():
+        if key not in current:
+            continue
+        if tuple(current[key].shape) != tuple(value.shape):
+            skipped.append(key)
+            continue
+        compatible[key] = value
+    missing, unexpected = model.load_state_dict(compatible, strict=False)
+    return list(missing), list(unexpected), skipped
 
 
 # --------- Loss Functions ---------
@@ -1376,6 +1406,9 @@ def build_probe_summary(history: list[dict[str, Any]], test_report: dict[str, An
         "weight_decay": WEIGHT_DECAY,
         "dropout": MODEL_DROPOUT,
         "cls_pool": CLS_POOL,
+        "cls_pooling": CLS_POOLING,
+        "local_pool_topk": LOCAL_POOL_TOPK,
+        "positional_embedding": USE_POSITIONAL_EMBEDDING,
         "input_mode": INPUT_MODE,
         "ordinal_head": USE_ORDINAL_HEAD,
         "snr_head": USE_SNR_HEAD,
@@ -1456,15 +1489,17 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
             ckpt_path = ROOT / ckpt_path
         ckpt_init = torch.load(ckpt_path, map_location=device)
         state = ckpt_init.get("model_state", ckpt_init)
-        missing, unexpected = model.load_state_dict(state, strict=False)
+        missing, unexpected, skipped = load_compatible_model_state(model, state)
         print(
             f"initialized model from {ckpt_path} | "
-            f"missing={len(missing)} unexpected={len(unexpected)}"
+            f"missing={len(missing)} unexpected={len(unexpected)} shape_skipped={len(skipped)}"
         )
         if missing:
             print(f"init missing keys: {list(missing)[:8]}")
         if unexpected:
             print(f"init unexpected keys: {list(unexpected)[:8]}")
+        if skipped:
+            print(f"init shape-skipped keys: {list(skipped)[:8]}")
 
     if dry_run:
         batch = next(iter(train_loader))
@@ -1519,6 +1554,9 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         "PIN_MEMORY": PIN_MEMORY,
         "MODEL_DROPOUT": MODEL_DROPOUT,
         "CLS_POOL": CLS_POOL,
+        "CLS_POOLING": CLS_POOLING,
+        "LOCAL_POOL_TOPK": LOCAL_POOL_TOPK,
+        "USE_POSITIONAL_EMBEDDING": USE_POSITIONAL_EMBEDDING,
         "INPUT_MODE": INPUT_MODE,
         "USE_ORDINAL_HEAD": USE_ORDINAL_HEAD,
         "USE_SNR_HEAD": USE_SNR_HEAD,
@@ -1759,6 +1797,9 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--weight_decay", type=float)
     parser.add_argument("--dropout", type=float)
     parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both"))
+    parser.add_argument("--cls_pooling", choices=("mean", "mean_max_topk", "local_severity"))
+    parser.add_argument("--local_pool_topk", type=int)
+    parser.add_argument("--positional_embedding", action="store_true")
     parser.add_argument("--input_mode", choices=("raw", "robust", "raw_robust"))
     parser.add_argument("--ordinal_head", action="store_true")
     parser.add_argument("--snr_head", action="store_true")
