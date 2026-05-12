@@ -10,7 +10,7 @@ from typing import Any
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score, balanced_accuracy_score, confusion_matrix, f1_score
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -125,20 +125,37 @@ def build_three_class_split(*, transformer_dir: Path, out_csv: Path, seed: int, 
     df["seed"] = int(seed)
     df["source_idx"] = df["idx"].astype(int)
 
-    out = df[
-        [
-            "record_id",
-            "y",
-            "split",
-            "seed",
-            "source_idx",
-            "y_class",
-            "snr_db",
-            "noise_kind",
-            "seg_id",
-            "ecg_id",
-        ]
-    ].copy()
+    base_cols = [
+        "record_id",
+        "y",
+        "split",
+        "seed",
+        "source_idx",
+        "y_class",
+        "snr_db",
+        "noise_kind",
+        "seg_id",
+        "ecg_id",
+    ]
+    optional_cols = [
+        "snr_profile",
+        "placement",
+        "label_subtype",
+        "counterfactual_group",
+        "factorial_group",
+        "noise_window_id",
+        "global_snr_db",
+        "critical_snr_db",
+        "min_beat_critical_snr_db",
+        "qrs_snr_db",
+        "tst_snr_db",
+        "contaminated_beat_fraction",
+        "max_consecutive_contaminated_beats",
+        "noise_holdout_role",
+        "snr_holdout_role",
+    ]
+    keep_cols = base_cols + [c for c in optional_cols if c in df.columns]
+    out = df[keep_cols].copy()
     out_csv.parent.mkdir(parents=True, exist_ok=True)
     out.to_csv(out_csv, index=False)
     logger.info("three-class split: %s rows=%d", out_csv, len(out))
@@ -152,14 +169,18 @@ def load_xy_multiclass(features_parquet: Path, split_csv: Path) -> dict[str, Any
     split = pd.read_csv(split_csv)
     feat["record_id"] = feat["record_id"].astype(str)
     split["record_id"] = split["record_id"].astype(str)
-    df = feat.merge(split[["record_id", "split", "y_class"]], on="record_id", how="inner")
-    drop_cols = {"record_id", "y", "split", "y_class"}
+    split_meta_cols = [c for c in split.columns if c != "y"]
+    df = feat.merge(split[split_meta_cols], on="record_id", how="inner")
+    drop_cols = set(split_meta_cols) | {"y"}
     feat_cols = sorted(c for c in df.columns if c not in drop_cols)
     x = df[feat_cols].to_numpy(dtype=np.float64)
     y = df["y"].astype(int).to_numpy()
     split_arr = df["split"].astype(str).to_numpy()
     return {
         "feat_cols": feat_cols,
+        "X_all": x,
+        "y_all": y,
+        "meta": df.drop(columns=feat_cols, errors="ignore").copy(),
         "X_train": x[split_arr == "train"],
         "y_train": y[split_arr == "train"],
         "X_val": x[split_arr == "val"],
@@ -171,6 +192,7 @@ def load_xy_multiclass(features_parquet: Path, split_csv: Path) -> dict[str, Any
 
 def train_svm_multiclass(*, data: dict[str, Any], out_dir: Path, seed: int, force: bool) -> dict[str, Any]:
     metrics_path = out_dir / f"svm_rbf_three_class_metrics_seed{seed}.json"
+    pred_path = out_dir / f"svm_rbf_three_class_predictions_seed{seed}.csv"
     if metrics_path.exists() and not force:
         return json.loads(metrics_path.read_text(encoding="utf-8"))
 
@@ -215,6 +237,7 @@ def train_svm_multiclass(*, data: dict[str, Any], out_dir: Path, seed: int, forc
     pred_train = model.predict(data["X_train"])
     pred_val = model.predict(data["X_val"])
     pred_test = model.predict(data["X_test"])
+    pred_all = model.predict(data["X_all"])
     result = {
         "model": "RBF SVM",
         "feature_set": "all7",
@@ -231,6 +254,9 @@ def train_svm_multiclass(*, data: dict[str, Any], out_dir: Path, seed: int, forc
         "gamma": float(result["best_params"]["gamma"]),
     }
     joblib.dump({"model": model, "feature_columns": data["feat_cols"], "metrics": result}, out_dir / f"svm_rbf_three_class_seed{seed}.joblib")
+    export_predictions(data["meta"], data["y_all"], pred_all, pred_path)
+    result["predictions_csv"] = str(pred_path)
+    result["slice_metrics"] = slice_metrics_from_predictions(pd.read_csv(pred_path))
     metrics_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
     logger.info("svm three-class test_acc=%.4f", result["test"]["acc"])
     return result
@@ -238,6 +264,7 @@ def train_svm_multiclass(*, data: dict[str, Any], out_dir: Path, seed: int, forc
 
 def train_mlp_multiclass(*, data: dict[str, Any], out_dir: Path, seed: int, force: bool) -> dict[str, Any]:
     metrics_path = out_dir / f"mlp_three_class_metrics_seed{seed}.json"
+    pred_path = out_dir / f"mlp_three_class_predictions_seed{seed}.csv"
     if metrics_path.exists() and not force:
         return json.loads(metrics_path.read_text(encoding="utf-8"))
 
@@ -287,6 +314,7 @@ def train_mlp_multiclass(*, data: dict[str, Any], out_dir: Path, seed: int, forc
     pred_train = model.predict(data["X_train"])
     pred_val = model.predict(data["X_val"])
     pred_test = model.predict(data["X_test"])
+    pred_all = model.predict(data["X_all"])
     result = {
         "model": "sklearn MLPClassifier",
         "feature_set": "all7",
@@ -299,6 +327,9 @@ def train_mlp_multiclass(*, data: dict[str, Any], out_dir: Path, seed: int, forc
         "test": multiclass_metrics(data["y_test"], pred_test),
     }
     joblib.dump({"model": model, "feature_columns": data["feat_cols"], "metrics": result}, out_dir / f"mlp_three_class_seed{seed}.joblib")
+    export_predictions(data["meta"], data["y_all"], pred_all, pred_path)
+    result["predictions_csv"] = str(pred_path)
+    result["slice_metrics"] = slice_metrics_from_predictions(pd.read_csv(pred_path))
     metrics_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
     logger.info("mlp three-class test_acc=%.4f", result["test"]["acc"])
     return result
@@ -307,16 +338,50 @@ def train_mlp_multiclass(*, data: dict[str, Any], out_dir: Path, seed: int, forc
 def multiclass_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict[str, Any]:
     cm = confusion_matrix(y_true.astype(int), y_pred.astype(int), labels=LABELS)
     recalls: dict[str, float] = {}
+    present_recalls: list[float] = []
     for i, label in enumerate(LABELS):
-        denom = max(1, int(cm[i].sum()))
-        recalls[INT_TO_CLASS[label]] = float(cm[i, i] / denom)
+        raw_denom = int(cm[i].sum())
+        denom = max(1, raw_denom)
+        value = float(cm[i, i] / denom)
+        recalls[INT_TO_CLASS[label]] = value
+        if raw_denom > 0:
+            present_recalls.append(value)
     return {
         "acc": float(accuracy_score(y_true, y_pred)),
-        "balanced_acc": float(balanced_accuracy_score(y_true, y_pred)),
-        "macro_f1": float(f1_score(y_true, y_pred, labels=LABELS, average="macro")),
+        "balanced_acc": float(np.mean(present_recalls)) if present_recalls else 0.0,
+        "macro_f1": float(f1_score(y_true, y_pred, labels=LABELS, average="macro", zero_division=0)),
         "confusion_matrix_3x3": cm.astype(int).tolist(),
         "per_class_recall": recalls,
     }
+
+
+def export_predictions(meta: pd.DataFrame, y_true: np.ndarray, y_pred: np.ndarray, out_csv: Path) -> None:
+    out = meta.copy()
+    out["true_int"] = y_true.astype(int)
+    out["pred_int"] = y_pred.astype(int)
+    out["pred_class"] = [INT_TO_CLASS[int(v)] for v in y_pred]
+    out["severity_score"] = out["pred_int"].astype(float)
+    out_csv.parent.mkdir(parents=True, exist_ok=True)
+    out.to_csv(out_csv, index=False)
+
+
+def slice_metrics_from_predictions(pred: pd.DataFrame) -> dict[str, Any]:
+    test = pred[pred["split"].astype(str) == "test"]
+    out: dict[str, Any] = {"test": multiclass_metrics(test["true_int"].to_numpy(), test["pred_int"].to_numpy())}
+    for col in ("placement", "label_subtype", "noise_kind", "snr_profile"):
+        if col in test.columns:
+            out[f"test_by_{col}"] = {
+                str(k): multiclass_metrics(d["true_int"].to_numpy(), d["pred_int"].to_numpy())
+                for k, d in test.groupby(col)
+                if len(d) > 0
+            }
+    if "noise_holdout_role" in test.columns:
+        d = test[test["noise_holdout_role"].astype(str) == "test"]
+        out["test_heldout_noise"] = multiclass_metrics(d["true_int"].to_numpy(), d["pred_int"].to_numpy()) if len(d) else {"n": 0}
+    if "snr_holdout_role" in test.columns:
+        d = test[test["snr_holdout_role"].astype(str) == "test"]
+        out["test_heldout_snr"] = multiclass_metrics(d["true_int"].to_numpy(), d["pred_int"].to_numpy()) if len(d) else {"n": 0}
+    return out
 
 
 def render_console(summary: dict[str, Any]) -> str:
