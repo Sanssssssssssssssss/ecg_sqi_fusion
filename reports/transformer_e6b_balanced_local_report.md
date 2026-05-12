@@ -149,11 +149,58 @@ Compared with Lead-I SQI baselines on the same E6b test set:
 | MLP SQI | 0.5760 | 0.5390 | 0.4539 | 0.0070 |
 | Transformer | 0.7906 | 0.7799 | 0.7785 | 0.6108 |
 
+## Transformer Architecture Layer 2
+
+Artifact root:
+
+`outputs/transformer_e6b_balanced_local/models/e6b_arch2_pos_localpool`
+
+Changes:
+
+- encoder positional embedding: `tok = tok + pos_enc`
+- decoder positional embedding: `z = dec_in(h) + pos_dec`
+- classification pooling changed from mean pooling to local-aware pooling:
+  - mean over tokens
+  - max over tokens
+  - top-k token pooling, k=8
+  - local severity attention from the local mask head
+- the local mask head is now structurally coupled to classification, not only an auxiliary loss
+- old E6b checkpoint was warm-started with compatible weights; new positional embeddings and widened classifier heads were initialized fresh
+
+Validation/test results:
+
+| model | test acc | balanced acc | macro F1 | good recall | medium recall | bad recall | best val |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| E6b transformer baseline | 0.7906 | 0.7799 | 0.7785 | 0.7904 | 0.6108 | 0.9386 | 0.7988 |
+| E6b arch layer 2 | 0.7960 | 0.7863 | 0.7862 | 0.8062 | 0.6359 | 0.9168 | 0.8010 |
+
+Layer 2 test confusion matrix, rows=true and cols=pred:
+
+```text
+[[1473, 266,   88],
+ [ 402, 910,  119],
+ [  21, 124, 1597]]
+```
+
+Pipeline status:
+
+| step | status |
+|---|---|
+| forward_check | done |
+| train | done |
+| evaluate | done |
+
+Interpretation:
+
+Layer 2 gives a small but real improvement on E6b: +0.0054 test accuracy, +0.0064 balanced accuracy, +0.0076 macro F1, and +0.0252 medium recall. The tradeoff is lower bad recall, from 0.9386 to 0.9168, because the model shifts some bad samples toward medium.
+
+The learning curve also shows fast overfitting. Best validation accuracy happens at epoch 10, while later train accuracy rises above 0.98 and validation falls. This suggests the local-aware architecture is useful, but the next step should control the decision boundary rather than simply training longer.
+
 ## Interpretation
 
 E6b removes the main critique that E6 current may be unfair because good is rare. Even with balanced class counts, balanced placements, balanced SNR profiles, and balanced noise kinds, Lead-I 7-SQI SVM/MLP still almost completely fail to recover the medium class.
 
-The transformer is not yet a final 0.95-style model on E6b, but it is already much better aligned with the local benchmark. Its medium recall is 0.6108 on test, while SQI-SVM/MLP are effectively zero. This supports the central claim of E6/E6b: once label quality depends on local temporal placement rather than only global SNR or SQI summaries, raw sequence models can use information that summary-SQI models lose.
+The transformer is not yet a final 0.95-style model on E6b, but it is already much better aligned with the local benchmark. The baseline transformer medium recall is 0.6108, and the local-aware layer 2 model improves it to 0.6359, while SQI-SVM/MLP are effectively zero. This supports the central claim of E6/E6b: once label quality depends on local temporal placement rather than only global SNR or SQI summaries, raw sequence models can use information that summary-SQI models lose.
 
 The remaining weakness is still the medium boundary. Most transformer medium errors go to good, not bad, so the next useful experiment is not another SQI baseline. It should improve the transformer objective around borderline local contamination, for example with ordinal/SNR auxiliary supervision or calibrated medium thresholds on the validation set.
 
@@ -166,6 +213,7 @@ Completed:
 - transformer dry-run forward/training input check
 - Lead-I SQI SVM/MLP baseline
 - E6b transformer pretraining, fine-tuning, and evaluation
+- E6b layer 2 local-aware transformer fine-tuning and evaluation
 
 Next:
 
