@@ -29,8 +29,8 @@ def run(params: dict | None = None) -> dict:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     dropout = float(_value_or_default(params.get("dropout"), MTLTransformerConfig().dropout))
     cls_pool = str(_value_or_default(params.get("cls_pool"), MTLTransformerConfig().cls_pool))
-    if cls_pool not in {"decoder", "encoder", "both"}:
-        raise ValueError("cls_pool must be 'decoder', 'encoder', or 'both'")
+    if cls_pool not in {"decoder", "encoder", "both", "cls"}:
+        raise ValueError("cls_pool must be 'decoder', 'encoder', 'both', or 'cls'")
     input_mode = str(_value_or_default(params.get("input_mode"), "raw"))
     if input_mode not in {"raw", "robust", "raw_robust"}:
         raise ValueError("input_mode must be 'raw', 'robust', or 'raw_robust'")
@@ -84,7 +84,7 @@ def run(params: dict | None = None) -> dict:
     if npz_noisy.exists():
         Xn = np.load(npz_noisy)["X_noisy"].astype(np.float32)
         raw = torch.from_numpy(Xn[0]).to(device).view(1, 1, cfg.T)
-        if cfg.in_ch == 2:
+        if input_mode == "raw_robust":
             robust = (raw - raw.median()) / (torch.quantile(raw, 0.75) - torch.quantile(raw, 0.25) + 1e-6)
             x0 = torch.cat([raw, robust.clamp(-10.0, 10.0)], dim=1)
         else:
@@ -142,7 +142,7 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run a transformer model forward sanity check.")
     parser.add_argument("--artifact_dir", default="outputs/transformer")
     parser.add_argument("--dropout", type=float)
-    parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both"))
+    parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both", "cls"))
     parser.add_argument("--input_mode", choices=("raw", "robust", "raw_robust"))
     parser.add_argument("--ordinal_head", action="store_true")
     parser.add_argument("--snr_head", action="store_true")

@@ -77,6 +77,8 @@ LAMBDA_LOCAL_MASK = 0.5
 LAMBDA_NOISE_TYPE = 0.2
 LAMBDA_TEACHER = 0.05
 LAMBDA_SQI = 0.1
+LAMBDA_RANK = 0.0
+RANK_MARGIN = 0.15
 TEACHER_TEMPERATURE = 1.0
 LABEL_SMOOTHING = 0.0
 CLASS_WEIGHT_GOOD = 1.0
@@ -126,7 +128,7 @@ def configure_from_params(params: dict[str, Any]) -> None:
     global BAD_DEN_W_MAX, BAD_DEN_W_WARMUP_EPOCHS
     global LAMBDA_CLS, LAMBDA_DEN, LAMBDA_LVL, LAMBDA_ORD, LAMBDA_SNR
     global LAMBDA_LOCAL_MASK, LAMBDA_NOISE_TYPE
-    global LAMBDA_TEACHER, LAMBDA_SQI, TEACHER_TEMPERATURE
+    global LAMBDA_TEACHER, LAMBDA_SQI, LAMBDA_RANK, RANK_MARGIN, TEACHER_TEMPERATURE
     global LABEL_SMOOTHING, CLASS_WEIGHT_GOOD, CLASS_WEIGHT_MEDIUM, CLASS_WEIGHT_BAD
     global EARLYSTOP_ENABLED, EARLYSTOP_PATIENCE, EARLYSTOP_MIN_DELTA, EARLYSTOP_START_EPOCH
     global SELECT_BEST_BY, UNCERTAINTY_MODE, INIT_CHECKPOINT, TEACHER_TARGETS
@@ -153,8 +155,8 @@ def configure_from_params(params: dict[str, Any]) -> None:
         MODEL_DROPOUT = float(params["dropout"])
     if params.get("cls_pool") is not None:
         CLS_POOL = str(params["cls_pool"])
-        if CLS_POOL not in {"decoder", "encoder", "both"}:
-            raise ValueError("cls_pool must be 'decoder', 'encoder', or 'both'")
+        if CLS_POOL not in {"decoder", "encoder", "both", "cls"}:
+            raise ValueError("cls_pool must be 'decoder', 'encoder', 'both', or 'cls'")
     if params.get("input_mode") is not None:
         INPUT_MODE = str(params["input_mode"])
         if INPUT_MODE not in {"raw", "robust", "raw_robust"}:
@@ -201,6 +203,10 @@ def configure_from_params(params: dict[str, Any]) -> None:
         LAMBDA_TEACHER = float(params["lambda_teacher"])
     if params.get("lambda_sqi") is not None:
         LAMBDA_SQI = float(params["lambda_sqi"])
+    if params.get("lambda_rank") is not None:
+        LAMBDA_RANK = float(params["lambda_rank"])
+    if params.get("rank_margin") is not None:
+        RANK_MARGIN = float(params["rank_margin"])
     if params.get("teacher_temperature") is not None:
         TEACHER_TEMPERATURE = float(params["teacher_temperature"])
     if params.get("label_smoothing") is not None:
@@ -362,6 +368,7 @@ class PTBXLMTLDataset(Dataset):
         p: np.ndarray,
         valid_rr: np.ndarray,
         y: np.ndarray,
+        group_id: np.ndarray,
         snr_db: np.ndarray,
         local_mask: np.ndarray,
         noise_type: np.ndarray,
@@ -374,6 +381,7 @@ class PTBXLMTLDataset(Dataset):
         self.p = p.astype(np.float32)
         self.valid_rr = (valid_rr.astype(np.float32) > 0.5).astype(np.float32)
         self.y = y.astype(np.int64)
+        self.group_id = group_id.astype(np.int64)
         self.snr_db = snr_db.astype(np.float32)
         self.local_mask = local_mask.astype(np.float32)
         self.noise_type = noise_type.astype(np.int64)
@@ -392,6 +400,7 @@ class PTBXLMTLDataset(Dataset):
             "p": torch.from_numpy(self.p[i]),                      # (1250,)
             "valid_rr": torch.tensor(self.valid_rr[i], dtype=torch.float32),
             "y": torch.tensor(self.y[i], dtype=torch.long),
+            "group_id": torch.tensor(self.group_id[i], dtype=torch.long),
             "ordinal": torch.from_numpy(ordinal_target_np(int(self.y[i]))),
             "snr_norm": torch.tensor(normalize_snr_db(float(self.snr_db[i])), dtype=torch.float32),
             "local_mask": torch.from_numpy(self.local_mask[i]),
@@ -399,6 +408,45 @@ class PTBXLMTLDataset(Dataset):
             "teacher_probs": torch.from_numpy(self.teacher_probs[i]),
             "sqi_target": torch.from_numpy(self.sqi_target[i]),
         }
+
+
+class TripletGroupBatchSampler:
+    def __init__(self, group_id: np.ndarray, batch_size: int, seed: int) -> None:
+        self.group_id = np.asarray(group_id, dtype=np.int64)
+        self.batch_size = int(batch_size)
+        self.seed = int(seed)
+        self.epoch = 0
+        groups: dict[int, list[int]] = {}
+        for idx, gid in enumerate(self.group_id.tolist()):
+            groups.setdefault(int(gid), []).append(int(idx))
+        self.groups = groups
+
+    def __iter__(self):
+        rng = random.Random(self.seed + self.epoch)
+        self.epoch += 1
+        group_keys = list(self.groups)
+        rng.shuffle(group_keys)
+        batch: list[int] = []
+        for gid in group_keys:
+            indices = list(self.groups[gid])
+            rng.shuffle(indices)
+            if batch and len(batch) + len(indices) > self.batch_size:
+                yield batch
+                batch = []
+            batch.extend(indices)
+        if batch:
+            yield batch
+
+    def __len__(self) -> int:
+        n_batches = 0
+        n_current = 0
+        for indices in self.groups.values():
+            group_n = len(indices)
+            if n_current and n_current + group_n > self.batch_size:
+                n_batches += 1
+                n_current = 0
+            n_current += group_n
+        return n_batches + int(n_current > 0)
 
 
 def robust_normalize_1d(x: np.ndarray) -> np.ndarray:
@@ -436,6 +484,31 @@ def ordinal_target_np(y_int: int) -> np.ndarray:
 
 def normalize_snr_db(snr_db: float) -> float:
     return float((snr_db - 7.0) / 13.0)
+
+
+def triplet_rank_loss(logits: torch.Tensor, y_int: torch.Tensor, group_id: torch.Tensor, margin: float) -> torch.Tensor:
+    if logits.shape[0] == 0:
+        return torch.zeros((), device=logits.device, dtype=logits.dtype)
+    severity_weights = torch.tensor([0.0, 1.0, 2.0], device=logits.device, dtype=logits.dtype)
+    severity = torch.softmax(logits, dim=1).matmul(severity_weights)
+    losses: list[torch.Tensor] = []
+    for gid in torch.unique(group_id):
+        same = group_id == gid
+        has_good = torch.any(same & (y_int == 0))
+        has_medium = torch.any(same & (y_int == 1))
+        has_bad = torch.any(same & (y_int == 2))
+        if not bool((has_good & has_medium & has_bad).detach().cpu().item()):
+            continue
+        score_good = severity[same & (y_int == 0)][0]
+        score_medium = severity[same & (y_int == 1)][0]
+        score_bad = severity[same & (y_int == 2)][0]
+        losses.append(
+            torch.relu(score_good - score_medium + margin)
+            + torch.relu(score_medium - score_bad + margin)
+        )
+    if not losses:
+        return torch.zeros((), device=logits.device, dtype=logits.dtype)
+    return torch.stack(losses).mean()
 
 
 NOISE_TYPE_TO_INT = {"em": 0, "ma": 1, "bw": 2, "mix": 3}
@@ -500,6 +573,10 @@ def build_split_arrays() -> tuple[dict[str, PTBXLMTLDataset], dict[str, dict[str
         raise ValueError("idx out of range")
     y_int = np.array([map_y_class(v) for v in df["y_class"].tolist()], dtype=np.int64)
     noise_type_int = np.array([map_noise_type(v) for v in df["noise_kind"].tolist()], dtype=np.int64)
+    if "counterfactual_group" in df.columns:
+        group_id_all = df["counterfactual_group"].to_numpy(dtype=np.int64)
+    else:
+        group_id_all = np.arange(n, dtype=np.int64)
 
     datasets: dict[str, PTBXLMTLDataset] = {}
     split_info: dict[str, dict[str, Any]] = {}
@@ -509,6 +586,7 @@ def build_split_arrays() -> tuple[dict[str, PTBXLMTLDataset], dict[str, dict[str
         order = np.argsort(sp_idx)
         sp_idx = sp_idx[order]
         sp_y = y_int[m][order]
+        sp_group = group_id_all[m][order]
         sp_snr = df["snr_db"].to_numpy(dtype=np.float32)[m][order]
         sp_mask = M[sp_idx]
         sp_noise_type = noise_type_int[m][order]
@@ -521,6 +599,7 @@ def build_split_arrays() -> tuple[dict[str, PTBXLMTLDataset], dict[str, dict[str
             p=P[sp_idx],
             valid_rr=valid_rr[sp_idx],
             y=sp_y,
+            group_id=sp_group,
             snr_db=sp_snr,
             local_mask=sp_mask,
             noise_type=sp_noise_type,
@@ -811,6 +890,7 @@ def run_epoch(
     sum_noise_type = 0.0
     sum_teacher = 0.0
     sum_sqi = 0.0
+    sum_rank = 0.0
     dbg_sum: dict[str, float] = {}
     dbg_n = 0
 
@@ -826,6 +906,7 @@ def run_epoch(
         p_t = batch["p"].to(device=device, dtype=torch.float32)
         valid_rr = batch["valid_rr"].to(device=device, dtype=torch.float32)
         y = batch["y"].to(device=device, dtype=torch.long)
+        group_id = batch["group_id"].to(device=device, dtype=torch.long)
         ordinal_target = batch["ordinal"].to(device=device, dtype=torch.float32)
         snr_target = batch["snr_norm"].to(device=device, dtype=torch.float32)
         local_mask_target = batch["local_mask"].to(device=device, dtype=torch.float32)
@@ -858,7 +939,9 @@ def run_epoch(
                 teacher_probs, sqi_target,
                 use_cls, use_den, use_lvl
             )
+            l_rank = triplet_rank_loss(logits, y, group_id, RANK_MARGIN) if (use_cls and LAMBDA_RANK > 0.0) else torch.zeros_like(l_cls)
             l_total = combine_losses(l_cls, l_den, l_lvl, l_ord, l_snr, l_local, l_noise_type, l_teacher, l_sqi, phase, uw)
+            l_total = l_total + LAMBDA_RANK * l_rank
 
             if train_mode:
                 optimizer.zero_grad(set_to_none=True)
@@ -884,6 +967,8 @@ def run_epoch(
                 post["T"] = f"{float(l_teacher.detach().cpu()):.3f}"
             if USE_SQI_HEAD:
                 post["Q"] = f"{float(l_sqi.detach().cpu()):.3f}"
+            if LAMBDA_RANK > 0.0:
+                post["R"] = f"{float(l_rank.detach().cpu()):.3f}"
             if use_den and dbg:
                 post.update({
                     "g%": f"{dbg.get('wavelet_gate_frac_good', 0.0):.2f}",
@@ -905,6 +990,7 @@ def run_epoch(
         sum_noise_type += float(l_noise_type.detach().cpu().item()) * bsz
         sum_teacher += float(l_teacher.detach().cpu().item()) * bsz
         sum_sqi += float(l_sqi.detach().cpu().item()) * bsz
+        sum_rank += float(l_rank.detach().cpu().item()) * bsz
         if dbg:
             dbg_n += 1
             for k, v in dbg.items():
@@ -915,6 +1001,7 @@ def run_epoch(
             "total": 0.0, "cls": 0.0, "denoise": 0.0, "level": 0.0,
             "ordinal": 0.0, "snr": 0.0, "local_mask": 0.0, "noise_type": 0.0,
             "teacher": 0.0, "sqi": 0.0, "acc": 0.0,
+            "rank": 0.0,
         }
         if dbg_n > 0:
             for k in dbg_sum:
@@ -937,6 +1024,7 @@ def run_epoch(
         "noise_type": sum_noise_type / n,
         "teacher": sum_teacher / n,
         "sqi": sum_sqi / n,
+        "rank": sum_rank / n,
         "acc": float(correct) / float(n),
     }
     out.update(dbg_sum)
@@ -1445,7 +1533,11 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
     for sp in ["train", "val", "test"]:
         print(f"[{sp}] n={split_info[sp]['n']} y_dist={split_info[sp]['y_dist_str']}")
 
-    train_loader = DataLoader(datasets["train"], batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS, pin_memory=PIN_MEMORY)
+    if LAMBDA_RANK > 0.0:
+        train_batch_sampler = TripletGroupBatchSampler(datasets["train"].group_id, BATCH_SIZE, SEED)
+        train_loader = DataLoader(datasets["train"], batch_sampler=train_batch_sampler, num_workers=NUM_WORKERS, pin_memory=PIN_MEMORY)
+    else:
+        train_loader = DataLoader(datasets["train"], batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS, pin_memory=PIN_MEMORY)
     val_loader = DataLoader(datasets["val"], batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS, pin_memory=PIN_MEMORY)
     test_loader = DataLoader(datasets["test"], batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS, pin_memory=PIN_MEMORY)
 
@@ -1545,6 +1637,8 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         "LAMBDA_NOISE_TYPE": LAMBDA_NOISE_TYPE,
         "LAMBDA_TEACHER": LAMBDA_TEACHER,
         "LAMBDA_SQI": LAMBDA_SQI,
+        "LAMBDA_RANK": LAMBDA_RANK,
+        "RANK_MARGIN": RANK_MARGIN,
         "TEACHER_TEMPERATURE": TEACHER_TEMPERATURE,
         "LABEL_SMOOTHING": LABEL_SMOOTHING,
         "CLASS_WEIGHT_GOOD": CLASS_WEIGHT_GOOD,
@@ -1584,12 +1678,12 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
             f"lvl={LAMBDA_LVL * tr['level']:.4f}, ord={LAMBDA_ORD * tr['ordinal']:.4f}, "
             f"snr={LAMBDA_SNR * tr['snr']:.4f}, mask={LAMBDA_LOCAL_MASK * tr['local_mask']:.4f}, "
             f"ntype={LAMBDA_NOISE_TYPE * tr['noise_type']:.4f}, teach={LAMBDA_TEACHER * tr['teacher']:.4f}, "
-            f"sqi={LAMBDA_SQI * tr['sqi']:.4f}) | "
+            f"sqi={LAMBDA_SQI * tr['sqi']:.4f}, rank={LAMBDA_RANK * tr['rank']:.4f}) | "
             f"val L={va['total']:.4f} (cls={LAMBDA_CLS * va['cls']:.4f}, den={LAMBDA_DEN * va['denoise']:.4f}, "
             f"lvl={LAMBDA_LVL * va['level']:.4f}, ord={LAMBDA_ORD * va['ordinal']:.4f}, "
             f"snr={LAMBDA_SNR * va['snr']:.4f}, mask={LAMBDA_LOCAL_MASK * va['local_mask']:.4f}, "
             f"ntype={LAMBDA_NOISE_TYPE * va['noise_type']:.4f}, teach={LAMBDA_TEACHER * va['teacher']:.4f}, "
-            f"sqi={LAMBDA_SQI * va['sqi']:.4f})"
+            f"sqi={LAMBDA_SQI * va['sqi']:.4f}, rank={LAMBDA_RANK * va['rank']:.4f})"
         )
         cur_lr = scheduler.get_last_lr()[0]
         print(f"LR={cur_lr:.2e} | CUR_BAD_DEN_W={CUR_BAD_DEN_W:.3f}")
@@ -1758,7 +1852,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--lr_eta_min", type=float)
     parser.add_argument("--weight_decay", type=float)
     parser.add_argument("--dropout", type=float)
-    parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both"))
+    parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both", "cls"))
     parser.add_argument("--input_mode", choices=("raw", "robust", "raw_robust"))
     parser.add_argument("--ordinal_head", action="store_true")
     parser.add_argument("--snr_head", action="store_true")
@@ -1783,6 +1877,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--lambda_noise_type", type=float)
     parser.add_argument("--lambda_teacher", type=float)
     parser.add_argument("--lambda_sqi", type=float)
+    parser.add_argument("--lambda_rank", type=float)
+    parser.add_argument("--rank_margin", type=float)
     parser.add_argument("--teacher_temperature", type=float)
     parser.add_argument("--label_smoothing", type=float)
     parser.add_argument("--class_weight_good", type=float)

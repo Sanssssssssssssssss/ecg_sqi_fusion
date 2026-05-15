@@ -39,7 +39,7 @@ def parse_args(*, default_stage: str = "all") -> argparse.Namespace:
     parser.add_argument("--lr_eta_min", type=float)
     parser.add_argument("--weight_decay", type=float)
     parser.add_argument("--dropout", type=float)
-    parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both"), default=None)
+    parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both", "cls"), default=None)
     parser.add_argument("--input_mode", choices=("raw", "robust", "raw_robust"), default=None)
     parser.add_argument("--ordinal_head", action="store_true")
     parser.add_argument("--snr_head", action="store_true")
@@ -64,6 +64,8 @@ def parse_args(*, default_stage: str = "all") -> argparse.Namespace:
     parser.add_argument("--lambda_noise_type", type=float)
     parser.add_argument("--lambda_teacher", type=float)
     parser.add_argument("--lambda_sqi", type=float)
+    parser.add_argument("--lambda_rank", type=float)
+    parser.add_argument("--rank_margin", type=float)
     parser.add_argument("--teacher_temperature", type=float)
     parser.add_argument("--label_smoothing", type=float)
     parser.add_argument("--class_weight_good", type=float)
@@ -121,6 +123,8 @@ def train_overrides_from_args(args: argparse.Namespace) -> dict[str, object]:
         "lambda_noise_type",
         "lambda_teacher",
         "lambda_sqi",
+        "lambda_rank",
+        "rank_margin",
         "teacher_temperature",
         "label_smoothing",
         "class_weight_good",
