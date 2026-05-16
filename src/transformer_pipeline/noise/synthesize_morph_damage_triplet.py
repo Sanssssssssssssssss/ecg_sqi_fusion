@@ -60,7 +60,12 @@ logger = logging.getLogger(__name__)
 CLASS_ORDER = ("good", "medium", "bad")
 CLASS_TARGET_DAMAGE = {"good": 0.08, "medium": 0.32, "bad": 0.70}
 CLASS_TARGET_SEVERITY = {"good": 0.22, "medium": 0.68, "bad": 1.12}
-LABEL_VERSIONS = ("e35_morph_damage", "e36_critical_damage", "e37_diagnostic_damage")
+LABEL_VERSIONS = (
+    "e35_morph_damage",
+    "e36_critical_damage",
+    "e37_diagnostic_damage",
+    "e38_core_diagnostic_damage",
+)
 SNR_OFFSETS = (-0.25, 0.0, 0.25)
 
 
@@ -70,7 +75,7 @@ class Candidate:
     label_subtype: str
     noisy: np.ndarray
     envelope: np.ndarray
-    metrics: dict[str, float]
+    metrics: dict[str, float | str]
     placement: str
     target_snr_db: float
     measured_snr_db: float
@@ -215,16 +220,23 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
                         "beat_corr": cand.metrics["beat_corr"],
                         "max_beat_nprd": cand.metrics["max_beat_nprd"],
                         "damage_score": (
-                            cand.metrics["diagnostic_damage_score"]
-                            if label_version == "e37_diagnostic_damage"
+                            cand.metrics["core_diagnostic_score"]
+                            if label_version == "e38_core_diagnostic_damage"
                             else (
-                                cand.metrics["critical_damage_score"]
-                                if label_version == "e36_critical_damage"
-                                else cand.metrics["legacy_damage_score"]
+                                cand.metrics["diagnostic_damage_score"]
+                                if label_version == "e37_diagnostic_damage"
+                                else (
+                                    cand.metrics["critical_damage_score"]
+                                    if label_version == "e36_critical_damage"
+                                    else cand.metrics["legacy_damage_score"]
+                                )
                             )
                         ),
                         "critical_damage_score": cand.metrics["critical_damage_score"],
                         "diagnostic_damage_score": cand.metrics["diagnostic_damage_score"],
+                        "core_diagnostic_score": cand.metrics["core_diagnostic_score"],
+                        "beat_axis": cand.metrics["beat_axis"],
+                        "dominant_axis": cand.metrics["dominant_axis"],
                         "global_noise_score": cand.metrics["global_noise_score"],
                         "global_nprd": cand.metrics["global_nprd"],
                         "legacy_damage_score": cand.metrics["legacy_damage_score"],
@@ -358,7 +370,10 @@ def build_triplet_candidates(
 
 def pick_triplet(candidates: list[Candidate], matched_snr_db: float, *, label_version: str) -> dict[str, object] | None:
     picked: dict[str, object] = {}
-    if label_version == "e37_diagnostic_damage":
+    if label_version == "e38_core_diagnostic_damage":
+        damage_key = "core_diagnostic_score"
+        class_targets = CLASS_TARGET_SEVERITY
+    elif label_version == "e37_diagnostic_damage":
         damage_key = "diagnostic_damage_score"
         class_targets = CLASS_TARGET_SEVERITY
     elif label_version == "e36_critical_damage":
@@ -372,14 +387,27 @@ def pick_triplet(candidates: list[Candidate], matched_snr_db: float, *, label_ve
         if not pool:
             return None
         target_damage = class_targets[y_class]
-        if label_version == "e37_diagnostic_damage":
+        if label_version == "e38_core_diagnostic_damage":
+            pool_snr = [c for c in pool if abs(c.measured_snr_db - matched_snr_db) <= 0.20]
+            if not pool_snr:
+                pool_snr = [c for c in pool if abs(c.measured_snr_db - matched_snr_db) <= 0.35]
+            if not pool_snr:
+                pool_snr = pool
+            picked[y_class] = min(
+                pool_snr,
+                key=lambda c: (
+                    abs(c.measured_snr_db - matched_snr_db),
+                    abs(float(c.metrics[damage_key]) - target_damage),
+                ),
+            )
+        elif label_version == "e37_diagnostic_damage":
             pool_snr = [c for c in pool if abs(c.measured_snr_db - matched_snr_db) <= 0.50]
             if not pool_snr:
                 pool_snr = pool
             picked[y_class] = min(
                 pool_snr,
                 key=lambda c: (
-                    abs(c.metrics[damage_key] - target_damage),
+                    abs(float(c.metrics[damage_key]) - target_damage),
                     abs(c.measured_snr_db - matched_snr_db),
                 ),
             )
@@ -388,11 +416,12 @@ def pick_triplet(candidates: list[Candidate], matched_snr_db: float, *, label_ve
                 pool,
                 key=lambda c: (
                     abs(c.measured_snr_db - matched_snr_db),
-                    abs(c.metrics[damage_key] - target_damage),
+                    abs(float(c.metrics[damage_key]) - target_damage),
                 ),
             )
     snrs = [float(picked[name].measured_snr_db) for name in CLASS_ORDER]  # type: ignore[union-attr]
-    if max(snrs) - min(snrs) > 0.75:
+    max_snr_gap = 0.25 if label_version == "e38_core_diagnostic_damage" else 0.75
+    if max(snrs) - min(snrs) > max_snr_gap:
         return None
     return picked
 
@@ -403,7 +432,7 @@ def damage_metrics(
     qrs_mask: np.ndarray,
     tst_mask: np.ndarray,
     peaks: np.ndarray,
-) -> dict[str, float]:
+) -> dict[str, float | str]:
     qrs = region_nprd(clean, noisy, qrs_mask)
     tst = region_nprd(clean, noisy, tst_mask)
     beat_corr, max_beat = beat_template_corr_and_max_nprd(clean, noisy, peaks)
@@ -414,7 +443,16 @@ def damage_metrics(
     crit_axis = critical_damage / 0.55
     corr_axis = max(0.0, (0.94 - beat_corr) / (0.94 - 0.70))
     beat_axis = max_beat / 0.60
-    diagnostic_damage = max(qrs_axis, 0.85 * tst_axis, crit_axis, corr_axis, 0.75 * beat_axis)
+    diagnostic_components = {
+        "qrs": qrs_axis,
+        "tst": 0.85 * tst_axis,
+        "crit": crit_axis,
+        "corr": corr_axis,
+        "beat": 0.75 * beat_axis,
+    }
+    diagnostic_damage = max(diagnostic_components.values())
+    core_diagnostic_score = max(qrs_axis, tst_axis, crit_axis, corr_axis)
+    dominant_axis = max(diagnostic_components, key=diagnostic_components.get)
     global_nprd = region_nprd(clean, noisy, np.ones_like(clean, dtype=np.float32))
     return {
         "qrs_nprd": float(qrs),
@@ -425,21 +463,26 @@ def damage_metrics(
         "legacy_damage_score": float(legacy_damage),
         "critical_damage_score": float(critical_damage),
         "diagnostic_damage_score": float(diagnostic_damage),
+        "core_diagnostic_score": float(core_diagnostic_score),
+        "beat_axis": float(beat_axis),
+        "dominant_axis": str(dominant_axis),
         "global_noise_score": float(global_nprd),
         "global_nprd": float(global_nprd),
     }
 
 
-def assign_margin_label(metrics: dict[str, float], *, placement: str, label_version: str) -> tuple[str | None, str]:
+def assign_margin_label(metrics: dict[str, float | str], *, placement: str, label_version: str) -> tuple[str | None, str]:
     if label_version == "e36_critical_damage":
         return assign_e36_label(metrics, placement=placement)
     if label_version == "e37_diagnostic_damage":
         return assign_e37_label(metrics)
+    if label_version == "e38_core_diagnostic_damage":
+        return assign_e38_label(metrics)
     y_class = assign_e35_label(metrics)
     return y_class, f"{y_class}_legacy" if y_class is not None else "gray_zone"
 
 
-def assign_e35_label(metrics: dict[str, float]) -> str | None:
+def assign_e35_label(metrics: dict[str, float | str]) -> str | None:
     damage = float(metrics["damage_score"])
     qrs = float(metrics["qrs_nprd"])
     beat_corr = float(metrics["beat_corr"])
@@ -452,7 +495,7 @@ def assign_e35_label(metrics: dict[str, float]) -> str | None:
     return None
 
 
-def assign_e36_label(metrics: dict[str, float], *, placement: str) -> tuple[str | None, str]:
+def assign_e36_label(metrics: dict[str, float | str], *, placement: str) -> tuple[str | None, str]:
     critical = float(metrics["critical_damage_score"])
     global_noise = float(metrics["global_noise_score"])
     qrs = float(metrics["qrs_nprd"])
@@ -491,7 +534,7 @@ def assign_e36_label(metrics: dict[str, float], *, placement: str) -> tuple[str 
     return None, "gray_zone"
 
 
-def assign_e37_label(metrics: dict[str, float]) -> tuple[str | None, str]:
+def assign_e37_label(metrics: dict[str, float | str]) -> tuple[str | None, str]:
     diagnostic = float(metrics["diagnostic_damage_score"])
     qrs = float(metrics["qrs_nprd"])
     tst = float(metrics["tst_nprd"])
@@ -504,6 +547,22 @@ def assign_e37_label(metrics: dict[str, float]) -> tuple[str | None, str]:
     if diagnostic >= 1.00:
         return "bad", "bad_diagnostic_severe"
     return None, "gray_diagnostic_boundary"
+
+
+def assign_e38_label(metrics: dict[str, float | str]) -> tuple[str | None, str]:
+    core = float(metrics["core_diagnostic_score"])
+    qrs = float(metrics["qrs_nprd"])
+    tst = float(metrics["tst_nprd"])
+    beat_corr = float(metrics["beat_corr"])
+    dominant_axis = str(metrics["dominant_axis"])
+
+    if core <= 0.32 and qrs <= 0.10 and tst <= 0.12 and beat_corr >= 0.94:
+        return "good", "good_core_low"
+    if 0.45 <= core <= 0.85 and qrs < 0.35 and beat_corr >= 0.75 and dominant_axis != "beat":
+        return "medium", "medium_core_moderate"
+    if core >= 1.00:
+        return "bad", "bad_core_severe"
+    return None, "gray_core_boundary"
 
 
 def region_nprd(clean: np.ndarray, noisy: np.ndarray, mask: np.ndarray) -> float:
@@ -627,6 +686,8 @@ def build_summary(
         "damage_score",
         "critical_damage_score",
         "diagnostic_damage_score",
+        "core_diagnostic_score",
+        "beat_axis",
         "global_noise_score",
         "global_nprd",
         "legacy_damage_score",
@@ -651,6 +712,12 @@ def build_summary(
         "split_placement_counts": split_counts(labels, "placement"),
         "split_label_subtype_counts": split_counts(labels, "label_subtype"),
         "label_by_placement": nested_counts(labels, "placement", "y_class"),
+        "dominant_axis_by_class": nested_counts(labels, "y_class", "dominant_axis"),
+        "dominant_axis_by_placement_class": nested_counts(
+            labels,
+            ["y_class", "placement"],
+            "dominant_axis",
+        ),
         "label_subtype_by_class": nested_counts(labels, "y_class", "label_subtype"),
         "audit": {
             "class_metric_summary": class_summary,
