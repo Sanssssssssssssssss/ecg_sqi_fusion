@@ -67,8 +67,16 @@ LABEL_VERSIONS = (
     "e37_diagnostic_damage",
     "e38_core_diagnostic_damage",
     "e39a_smooth_morph_margin",
+    "e39a_smooth_morph_tst_guard",
+    "e39a_smooth_morph_scorefirst",
     "e39b_smooth_critical_margin",
 )
+E39A_SMOOTH_LABEL_VERSIONS = (
+    "e39a_smooth_morph_margin",
+    "e39a_smooth_morph_tst_guard",
+    "e39a_smooth_morph_scorefirst",
+)
+E39_SMOOTH_LABEL_VERSIONS = (*E39A_SMOOTH_LABEL_VERSIONS, "e39b_smooth_critical_margin")
 SNR_OFFSETS = (-0.25, 0.0, 0.25)
 
 
@@ -225,7 +233,7 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
                         "max_beat_nprd": cand.metrics["max_beat_nprd"],
                         "damage_score": (
                             cand.metrics["smooth_morph_score"]
-                            if label_version == "e39a_smooth_morph_margin"
+                            if label_version in E39A_SMOOTH_LABEL_VERSIONS
                             else (
                                 cand.metrics["smooth_critical_score"]
                                 if label_version == "e39b_smooth_critical_margin"
@@ -384,7 +392,7 @@ def build_triplet_candidates(
 
 def pick_triplet(candidates: list[Candidate], matched_snr_db: float, *, label_version: str) -> dict[str, object] | None:
     picked: dict[str, object] = {}
-    if label_version == "e39a_smooth_morph_margin":
+    if label_version in E39A_SMOOTH_LABEL_VERSIONS:
         damage_key = "smooth_morph_score"
         class_targets = CLASS_TARGET_E39_SMOOTH
     elif label_version == "e39b_smooth_critical_margin":
@@ -407,16 +415,23 @@ def pick_triplet(candidates: list[Candidate], matched_snr_db: float, *, label_ve
         if not pool:
             return None
         target_damage = class_targets[y_class]
-        if label_version in {"e39a_smooth_morph_margin", "e39b_smooth_critical_margin"}:
+        if label_version in E39_SMOOTH_LABEL_VERSIONS:
             pool_snr = [c for c in pool if abs(c.measured_snr_db - matched_snr_db) <= 0.50]
             if not pool_snr:
                 pool_snr = pool
-            picked[y_class] = min(
-                pool_snr,
-                key=lambda c: (
+            if label_version == "e39a_smooth_morph_scorefirst":
+                key = lambda c: (
+                    abs(float(c.metrics[damage_key]) - target_damage),
+                    abs(c.measured_snr_db - matched_snr_db),
+                )
+            else:
+                key = lambda c: (
                     abs(c.measured_snr_db - matched_snr_db),
                     abs(float(c.metrics[damage_key]) - target_damage),
-                ),
+                )
+            picked[y_class] = min(
+                pool_snr,
+                key=key,
             )
         elif label_version == "e38_core_diagnostic_damage":
             pool_snr = [c for c in pool if abs(c.measured_snr_db - matched_snr_db) <= 0.20]
@@ -505,8 +520,10 @@ def damage_metrics(
 
 
 def assign_margin_label(metrics: dict[str, float | str], *, placement: str, label_version: str) -> tuple[str | None, str]:
-    if label_version == "e39a_smooth_morph_margin":
+    if label_version in {"e39a_smooth_morph_margin", "e39a_smooth_morph_scorefirst"}:
         return assign_e39a_label(metrics)
+    if label_version == "e39a_smooth_morph_tst_guard":
+        return assign_e39a_tst_guard_label(metrics)
     if label_version == "e39b_smooth_critical_margin":
         return assign_e39b_label(metrics)
     if label_version == "e36_critical_damage":
@@ -614,6 +631,21 @@ def assign_e39a_label(metrics: dict[str, float | str]) -> tuple[str | None, str]
     if score >= 0.58 or qrs >= 0.45 or beat_corr <= 0.70:
         return "bad", "bad_smooth_morph_high"
     return None, "gray_smooth_morph_boundary"
+
+
+def assign_e39a_tst_guard_label(metrics: dict[str, float | str]) -> tuple[str | None, str]:
+    score = float(metrics["smooth_morph_score"])
+    qrs = float(metrics["qrs_nprd"])
+    tst = float(metrics["tst_nprd"])
+    beat_corr = float(metrics["beat_corr"])
+
+    if score <= 0.10 and qrs <= 0.10 and tst <= 0.18 and beat_corr >= 0.95:
+        return "good", "good_smooth_morph_tst_guard"
+    if 0.27 <= score <= 0.40 and qrs < 0.35 and beat_corr >= 0.80:
+        return "medium", "medium_smooth_morph_margin"
+    if score >= 0.58 or qrs >= 0.45 or beat_corr <= 0.70:
+        return "bad", "bad_smooth_morph_high"
+    return None, "gray_smooth_morph_tst_guard_boundary"
 
 
 def assign_e39b_label(metrics: dict[str, float | str]) -> tuple[str | None, str]:
