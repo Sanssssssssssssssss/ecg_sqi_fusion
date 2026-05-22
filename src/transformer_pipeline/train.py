@@ -1111,16 +1111,20 @@ def eval_test_report(model: nn.Module, uw: UncertaintyWeights, loader: DataLoade
     metrics = run_epoch(model, uw, loader, device, optimizer=None, phase=phase)
 
     cm = np.zeros((3, 3), dtype=np.int64)
+    noise_cms: dict[int, np.ndarray] = {}
     for batch in loader:
         x_noisy = batch["x_noisy"].to(device=device, dtype=torch.float32)
         y = batch["y"].to(device=device, dtype=torch.long)
+        noise_type = batch["noise_type"].detach().cpu().numpy()
         out = model(x_noisy)
         y_denoise, y_level, logits = out[0], out[1], out[2]
         pred = torch.argmax(logits, dim=1)
         yt = y.detach().cpu().numpy()
         yp = pred.detach().cpu().numpy()
-        for a, b in zip(yt.tolist(), yp.tolist()):
+        for a, b, nk in zip(yt.tolist(), yp.tolist(), noise_type.tolist()):
             cm[int(a), int(b)] += 1
+            noise_cm = noise_cms.setdefault(int(nk), np.zeros((3, 3), dtype=np.int64))
+            noise_cm[int(a), int(b)] += 1
 
     den_by_class = denoise_metrics_by_class(model, loader, device)
 
@@ -1131,8 +1135,29 @@ def eval_test_report(model: nn.Module, uw: UncertaintyWeights, loader: DataLoade
         "loss_denoise": metrics["denoise"],
         "loss_level": metrics["level"],
         "confusion_matrix_3x3": cm.tolist(),
+        "per_noise_kind": per_noise_kind_report(noise_cms),
         "denoise_metrics_by_class": den_by_class,
     }
+
+
+def per_noise_kind_report(noise_cms: dict[int, np.ndarray]) -> dict[str, Any]:
+    int_to_noise = {v: k for k, v in NOISE_TYPE_TO_INT.items()}
+    int_to_class = {0: "good", 1: "medium", 2: "bad"}
+    out: dict[str, Any] = {}
+    for noise_int, cm in sorted(noise_cms.items()):
+        total = int(cm.sum())
+        row_sums = cm.sum(axis=1)
+        per_class_recall = {
+            int_to_class[c]: float(cm[c, c] / row_sums[c]) if int(row_sums[c]) else 0.0
+            for c in range(3)
+        }
+        out[int_to_noise.get(noise_int, str(noise_int))] = {
+            "n": total,
+            "acc": float(np.trace(cm) / total) if total else 0.0,
+            "confusion_matrix_3x3": cm.tolist(),
+            "per_class_recall": per_class_recall,
+        }
+    return out
 
 
 @torch.no_grad()

@@ -61,6 +61,8 @@ CLASS_ORDER = ("good", "medium", "bad")
 CLASS_TARGET_DAMAGE = {"good": 0.08, "medium": 0.32, "bad": 0.70}
 CLASS_TARGET_SEVERITY = {"good": 0.22, "medium": 0.68, "bad": 1.12}
 CLASS_TARGET_E39_SMOOTH = {"good": 0.08, "medium": 0.32, "bad": 0.65}
+E310_LABEL_VERSION = "e310_smooth_morph_mild_snr"
+E310_CLASS_SNR_RANGES = {"good": (10.0, 12.0), "medium": (7.0, 10.0), "bad": (5.0, 8.0)}
 LABEL_VERSIONS = (
     "e35_morph_damage",
     "e36_critical_damage",
@@ -70,11 +72,13 @@ LABEL_VERSIONS = (
     "e39a_smooth_morph_tst_guard",
     "e39a_smooth_morph_scorefirst",
     "e39b_smooth_critical_margin",
+    E310_LABEL_VERSION,
 )
 E39A_SMOOTH_LABEL_VERSIONS = (
     "e39a_smooth_morph_margin",
     "e39a_smooth_morph_tst_guard",
     "e39a_smooth_morph_scorefirst",
+    E310_LABEL_VERSION,
 )
 E39_SMOOTH_LABEL_VERSIONS = (*E39A_SMOOTH_LABEL_VERSIONS, "e39b_smooth_critical_margin")
 SNR_OFFSETS = (-0.25, 0.0, 0.25)
@@ -106,14 +110,20 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
     max_train_clean = _none_or_int(params.get("max_train_clean"), 4000)
     max_val_clean = _none_or_int(params.get("max_val_clean"), 800)
     max_test_clean = _none_or_int(params.get("max_test_clean"), 800)
-    noise_kinds = parse_noise_kinds(params.get("noise_kinds", "em,ma,bw,mix"))
     snr_min = float(params.get("snr_min", 6.0))
     snr_max = float(params.get("snr_max", 12.0))
-    snr_profile = f"matched_{snr_min:g}_{snr_max:g}dB"
     group_retries = int(params.get("group_retries", 8))
     label_version = str(params.get("label_version", "e35_morph_damage"))
     if label_version not in LABEL_VERSIONS:
         raise ValueError(f"label_version must be one of: {', '.join(LABEL_VERSIONS)}")
+    noise_kinds_raw = str(params.get("noise_kinds", "") or "").strip()
+    default_noise_kinds = "em,ma,mix" if label_version == E310_LABEL_VERSION else "em,ma,bw,mix"
+    noise_kinds = parse_noise_kinds(noise_kinds_raw or default_noise_kinds)
+    snr_profile = (
+        "e310_class_mild_good10_12_medium7_10_bad5_8dB"
+        if label_version == E310_LABEL_VERSION
+        else f"matched_{snr_min:g}_{snr_max:g}dB"
+    )
 
     x_npz = source_artifact_dir / "segments" / "ptbxl_leadI_x_10s_125hz.npz"
     split_csv = source_artifact_dir / "splits" / "ptbxl_leadI_clean_10s_125hz_split.csv"
@@ -340,11 +350,16 @@ def build_triplet_candidates(
 ) -> tuple[dict[str, object] | None, list[dict[str, object]]]:
     gray_rows: list[dict[str, object]] = []
     for _ in range(group_retries):
-        matched_snr_db = float(rng.uniform(snr_min, snr_max))
+        matched_snr_db = float(e310_reference_snr() if label_version == E310_LABEL_VERSION else rng.uniform(snr_min, snr_max))
         raw_noise, noise_window_id = sample_noise_with_id(noise_kind, split_name, tracks, ranges, rng)
         candidates: list[Candidate] = []
-        for snr_offset in SNR_OFFSETS:
-            target_snr = float(np.clip(matched_snr_db + snr_offset, snr_min, snr_max))
+        for target_snr in candidate_target_snrs(
+            label_version=label_version,
+            matched_snr_db=matched_snr_db,
+            snr_min=snr_min,
+            snr_max=snr_max,
+            rng=rng,
+        ):
             for placement in PLACEMENTS:
                 envelope = placement_envelope(
                     placement=placement,
@@ -415,7 +430,20 @@ def pick_triplet(candidates: list[Candidate], matched_snr_db: float, *, label_ve
         if not pool:
             return None
         target_damage = class_targets[y_class]
-        if label_version in E39_SMOOTH_LABEL_VERSIONS:
+        if label_version == E310_LABEL_VERSION:
+            lo, hi = E310_CLASS_SNR_RANGES[y_class]
+            pool_snr = [c for c in pool if lo - 0.05 <= c.measured_snr_db <= hi + 0.05]
+            if not pool_snr:
+                return None
+            snr_target = 0.5 * (lo + hi)
+            picked[y_class] = min(
+                pool_snr,
+                key=lambda c: (
+                    abs(float(c.metrics[damage_key]) - target_damage),
+                    abs(c.measured_snr_db - snr_target),
+                ),
+            )
+        elif label_version in E39_SMOOTH_LABEL_VERSIONS:
             pool_snr = [c for c in pool if abs(c.measured_snr_db - matched_snr_db) <= 0.50]
             if not pool_snr:
                 pool_snr = pool
@@ -466,10 +494,39 @@ def pick_triplet(candidates: list[Candidate], matched_snr_db: float, *, label_ve
                 ),
             )
     snrs = [float(picked[name].measured_snr_db) for name in CLASS_ORDER]  # type: ignore[union-attr]
+    if label_version == E310_LABEL_VERSION:
+        return picked
     max_snr_gap = 0.25 if label_version == "e38_core_diagnostic_damage" else 0.75
     if max(snrs) - min(snrs) > max_snr_gap:
         return None
     return picked
+
+
+def e310_reference_snr() -> float:
+    lo = min(v[0] for v in E310_CLASS_SNR_RANGES.values())
+    hi = max(v[1] for v in E310_CLASS_SNR_RANGES.values())
+    return 0.5 * (lo + hi)
+
+
+def candidate_target_snrs(
+    *,
+    label_version: str,
+    matched_snr_db: float,
+    snr_min: float,
+    snr_max: float,
+    rng: np.random.Generator,
+) -> list[float]:
+    if label_version != E310_LABEL_VERSION:
+        return [float(np.clip(matched_snr_db + offset, snr_min, snr_max)) for offset in SNR_OFFSETS]
+
+    values: list[float] = []
+    for y_class in CLASS_ORDER:
+        lo, hi = E310_CLASS_SNR_RANGES[y_class]
+        base = float(rng.uniform(lo, hi))
+        center = 0.5 * (lo + hi)
+        for value in (base - 0.35, base, base + 0.35, center):
+            values.append(float(np.clip(value, lo, hi)))
+    return values
 
 
 def damage_metrics(
@@ -520,6 +577,8 @@ def damage_metrics(
 
 
 def assign_margin_label(metrics: dict[str, float | str], *, placement: str, label_version: str) -> tuple[str | None, str]:
+    if label_version == E310_LABEL_VERSION:
+        return assign_e310_label(metrics)
     if label_version in {"e39a_smooth_morph_margin", "e39a_smooth_morph_scorefirst"}:
         return assign_e39a_label(metrics)
     if label_version == "e39a_smooth_morph_tst_guard":
@@ -646,6 +705,24 @@ def assign_e39a_tst_guard_label(metrics: dict[str, float | str]) -> tuple[str | 
     if score >= 0.58 or qrs >= 0.45 or beat_corr <= 0.70:
         return "bad", "bad_smooth_morph_high"
     return None, "gray_smooth_morph_tst_guard_boundary"
+
+
+def assign_e310_label(metrics: dict[str, float | str]) -> tuple[str | None, str]:
+    score = float(metrics["smooth_morph_score"])
+    qrs = float(metrics["qrs_nprd"])
+    beat_corr = float(metrics["beat_corr"])
+
+    if score <= 0.10 and qrs <= 0.10 and beat_corr >= 0.95:
+        return "good", "good_smooth_morph_low_mild_snr"
+    if 0.27 <= score <= 0.40 and qrs < 0.35 and beat_corr >= 0.80:
+        return "medium", "medium_smooth_morph_margin_mild_snr"
+    if score >= 0.58:
+        return "bad", "bad_smooth_morph_high_mild_snr"
+    if qrs >= 0.45 and score >= 0.32:
+        return "bad", "bad_qrs_guarded_mild_snr"
+    if beat_corr <= 0.70 and score >= 0.32:
+        return "bad", "bad_corr_guarded_mild_snr"
+    return None, "gray_smooth_morph_mild_snr_boundary"
 
 
 def assign_e39b_label(metrics: dict[str, float | str]) -> tuple[str | None, str]:
@@ -939,7 +1016,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max_train_clean", type=int, default=4000)
     parser.add_argument("--max_val_clean", type=int, default=800)
     parser.add_argument("--max_test_clean", type=int, default=800)
-    parser.add_argument("--noise_kinds", default="em,ma,bw,mix")
+    parser.add_argument("--noise_kinds", default="")
     parser.add_argument("--snr_min", type=float, default=6.0)
     parser.add_argument("--snr_max", type=float, default=12.0)
     parser.add_argument("--group_retries", type=int, default=8)
