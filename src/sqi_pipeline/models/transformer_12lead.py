@@ -40,6 +40,9 @@ class Config:
     n_layers: int = 2
     ff_dim: int = 192
     dropout: float = 0.10
+    pooling: str = "cls"
+    label_smoothing: float = 0.0
+    select_best_by: str = "val_acc"
     patch_size: int = 25
     stride: int = 10
     threshold_fixed: float = 0.5
@@ -73,10 +76,14 @@ class TwelveLeadPatchTransformer(nn.Module):
         n_layers: int = 2,
         ff_dim: int = 192,
         dropout: float = 0.10,
+        pooling: str = "cls",
         patch_size: int = 25,
         stride: int = 10,
     ) -> None:
         super().__init__()
+        if pooling not in {"cls", "mean", "cls_mean"}:
+            raise ValueError(f"pooling must be cls, mean, or cls_mean; got {pooling}")
+        self.pooling = pooling
         self.patch = nn.Conv1d(n_leads, d_model, kernel_size=patch_size, stride=stride)
         n_tokens = 1 + ((n_samples - patch_size) // stride + 1)
         self.cls = nn.Parameter(torch.zeros(1, 1, d_model))
@@ -91,10 +98,11 @@ class TwelveLeadPatchTransformer(nn.Module):
             norm_first=True,
         )
         self.encoder = nn.TransformerEncoder(layer, num_layers=n_layers)
+        head_in = d_model * 2 if pooling == "cls_mean" else d_model
         self.head = nn.Sequential(
-            nn.LayerNorm(d_model),
+            nn.LayerNorm(head_in),
             nn.Dropout(dropout),
-            nn.Linear(d_model, 2),
+            nn.Linear(head_in, 2),
         )
         nn.init.trunc_normal_(self.cls, std=0.02)
         nn.init.trunc_normal_(self.pos, std=0.02)
@@ -106,7 +114,13 @@ class TwelveLeadPatchTransformer(nn.Module):
         h = torch.cat([cls, h], dim=1)
         h = h + self.pos[:, : h.shape[1], :]
         h = self.encoder(h)
-        return self.head(h[:, 0, :])
+        if self.pooling == "cls":
+            g = h[:, 0, :]
+        elif self.pooling == "mean":
+            g = h[:, 1:, :].mean(dim=1)
+        else:
+            g = torch.cat([h[:, 0, :], h[:, 1:, :].mean(dim=1)], dim=1)
+        return self.head(g)
 
 
 def seed_everything(seed: int) -> None:
@@ -269,13 +283,16 @@ def train_one(cfg: Config) -> dict[str, Any]:
         n_layers=cfg.n_layers,
         ff_dim=cfg.ff_dim,
         dropout=cfg.dropout,
+        pooling=cfg.pooling,
         patch_size=cfg.patch_size,
         stride=cfg.stride,
     ).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
-    loss_fn = nn.CrossEntropyLoss()
+    loss_fn = nn.CrossEntropyLoss(label_smoothing=cfg.label_smoothing)
 
-    best = {"epoch": 0, "val_acc": -math.inf, "val_auc": -math.inf, "state": None}
+    if cfg.select_best_by not in {"val_acc", "val_auc"}:
+        raise ValueError(f"select_best_by must be val_acc or val_auc; got {cfg.select_best_by}")
+    best = {"epoch": 0, "val_acc": -math.inf, "val_auc": -math.inf, "score": (-math.inf, -math.inf), "state": None}
     history: list[dict[str, Any]] = []
     t0 = time.time()
     stale = 0
@@ -307,12 +324,14 @@ def train_one(cfg: Config) -> dict[str, Any]:
         }
         history.append(row)
 
-        improved = (row["val_acc"], row["val_auc"]) > (best["val_acc"], best["val_auc"])
+        score = (row["val_auc"], row["val_acc"]) if cfg.select_best_by == "val_auc" else (row["val_acc"], row["val_auc"])
+        improved = score > best["score"]
         if improved:
             best = {
                 "epoch": epoch,
                 "val_acc": row["val_acc"],
                 "val_auc": row["val_auc"],
+                "score": score,
                 "state": {k: v.detach().cpu() for k, v in model.state_dict().items()},
             }
             stale = 0
@@ -353,6 +372,7 @@ def train_one(cfg: Config) -> dict[str, Any]:
         "label_counts": label_counts(df),
         "normalization": norm_stats,
         "best_epoch": int(best["epoch"]),
+        "select_best_by": cfg.select_best_by,
         "train_time_s": float(time.time() - t0),
         "threshold_fixed": cfg.threshold_fixed,
         "fixed_threshold_metrics": split_metrics,
@@ -479,8 +499,10 @@ def render_summary(metrics: dict[str, Any]) -> str:
         f"- best epoch: {metrics['best_epoch']}",
         f"- train time: {metrics['train_time_s']:.1f} s",
         "",
-        "Model: 12-lead Conv1d patch embedding + learnable CLS token + 2-layer",
-        "Transformer encoder + binary classifier.",
+        (
+            "Model: 12-lead Conv1d patch embedding + Transformer encoder + "
+            f"`{metrics['config']['pooling']}` pooling + binary classifier."
+        ),
         "",
         "## Result",
         "",
@@ -548,6 +570,9 @@ def parse_args() -> Config:
     p.add_argument("--n_layers", type=int, default=Config.n_layers)
     p.add_argument("--ff_dim", type=int, default=Config.ff_dim)
     p.add_argument("--dropout", type=float, default=Config.dropout)
+    p.add_argument("--pooling", choices=["cls", "mean", "cls_mean"], default=Config.pooling)
+    p.add_argument("--label_smoothing", type=float, default=Config.label_smoothing)
+    p.add_argument("--select_best_by", choices=["val_acc", "val_auc"], default=Config.select_best_by)
     p.add_argument("--patch_size", type=int, default=Config.patch_size)
     p.add_argument("--stride", type=int, default=Config.stride)
     p.add_argument("--threshold_fixed", type=float, default=Config.threshold_fixed)
