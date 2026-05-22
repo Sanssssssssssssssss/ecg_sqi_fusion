@@ -52,8 +52,9 @@ def main() -> None:
     csv_path = out_dir / f"{prefix}_selected_samples.csv"
     json_path = out_dir / f"{prefix}_visualization_summary.json"
 
-    plot_triplets(selected_triplets, clean, noisy, triplet_png, triplet_pdf)
-    plot_class_noise_grid(selected_examples, clean, noisy, grid_png, grid_pdf)
+    title_prefix = args.title or args.prefix
+    plot_triplets(selected_triplets, clean, noisy, triplet_png, triplet_pdf, title_prefix=title_prefix)
+    plot_class_noise_grid(selected_examples, clean, noisy, grid_png, grid_pdf, title_prefix=title_prefix)
     pd.concat([selected_triplets, selected_examples], ignore_index=True).drop_duplicates("idx").to_csv(csv_path, index=False)
 
     summary = {
@@ -120,7 +121,15 @@ def select_class_noise_examples(labels: pd.DataFrame, *, k: int, split: str) -> 
     return pd.concat(rows, ignore_index=True)
 
 
-def plot_triplets(df: pd.DataFrame, clean: np.ndarray, noisy: np.ndarray, out_png: Path, out_pdf: Path) -> None:
+def plot_triplets(
+    df: pd.DataFrame,
+    clean: np.ndarray,
+    noisy: np.ndarray,
+    out_png: Path,
+    out_pdf: Path,
+    *,
+    title_prefix: str,
+) -> None:
     groups = list(df.groupby("counterfactual_group", sort=False))
     t = np.arange(noisy.shape[1]) / FS
     fig, axes = plt.subplots(
@@ -149,14 +158,22 @@ def plot_triplets(df: pd.DataFrame, clean: np.ndarray, noisy: np.ndarray, out_pn
             if r == 0 and c == 0:
                 ax.legend(loc="upper right", fontsize=7)
     axes[-1, 1].set_xlabel("time (s)")
-    fig.suptitle("E3.10 representative counterfactual triplets", fontsize=12)
+    fig.suptitle(f"{title_prefix} representative counterfactual triplets", fontsize=12)
     fig.tight_layout(rect=[0, 0, 1, 0.97])
     fig.savefig(out_png, dpi=180)
     fig.savefig(out_pdf)
     plt.close(fig)
 
 
-def plot_class_noise_grid(df: pd.DataFrame, clean: np.ndarray, noisy: np.ndarray, out_png: Path, out_pdf: Path) -> None:
+def plot_class_noise_grid(
+    df: pd.DataFrame,
+    clean: np.ndarray,
+    noisy: np.ndarray,
+    out_png: Path,
+    out_pdf: Path,
+    *,
+    title_prefix: str,
+) -> None:
     t = np.arange(noisy.shape[1]) / FS
     ncols = max(1, int(df.groupby(["y_class", "noise_kind"]).size().max()))
     nrows = len(CLASS_ORDER) * len(NOISE_ORDER)
@@ -184,7 +201,7 @@ def plot_class_noise_grid(df: pd.DataFrame, clean: np.ndarray, noisy: np.ndarray
                     ax.legend(loc="upper right", fontsize=7)
             row_i += 1
     axes[-1, 0].set_xlabel("time (s)")
-    fig.suptitle("E3.10 representative samples by class and noise kind", fontsize=12)
+    fig.suptitle(f"{title_prefix} representative samples by class and noise kind", fontsize=12)
     fig.tight_layout(rect=[0, 0, 1, 0.98])
     fig.savefig(out_png, dpi=180)
     fig.savefig(out_pdf)
@@ -208,6 +225,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--artifact_dir", default="outputs/transformer_e310_smooth_morph_mild_snr")
     parser.add_argument("--out_dir", default="")
     parser.add_argument("--prefix", default="e310")
+    parser.add_argument("--title", default="")
     parser.add_argument("--split", default="test")
     parser.add_argument("--triplets", type=int, default=8)
     parser.add_argument("--examples_per_cell", type=int, default=2)
