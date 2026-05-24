@@ -28,18 +28,11 @@ TUNE_RUNS = [
     ("R1 cls-only SNR 0.10", f"{VARIANT}_r1_cls_only_snr010"),
     ("R1 delayed light denoise", f"{VARIANT}_r1_delay_denoise_light"),
     ("R1 noise-type aux", f"{VARIANT}_r1_noise_type_aux"),
-    ("R2 low-lr continue", f"{VARIANT}_r2_r1_cls_only_snr005_lr2e5"),
-    ("R2 label smoothing", f"{VARIANT}_r2_r1_cls_only_snr005_ls003"),
-    ("R2 good/medium weights", f"{VARIANT}_r2_r1_cls_only_snr005_gm_weight"),
-    ("R2 low-lr continue", f"{VARIANT}_r2_r1_cls_only_snr010_lr2e5"),
-    ("R2 label smoothing", f"{VARIANT}_r2_r1_cls_only_snr010_ls003"),
-    ("R2 good/medium weights", f"{VARIANT}_r2_r1_cls_only_snr010_gm_weight"),
-    ("R2 low-lr continue", f"{VARIANT}_r2_r1_delay_denoise_light_lr2e5"),
-    ("R2 label smoothing", f"{VARIANT}_r2_r1_delay_denoise_light_ls003"),
-    ("R2 good/medium weights", f"{VARIANT}_r2_r1_delay_denoise_light_gm_weight"),
-    ("R2 low-lr continue", f"{VARIANT}_r2_r1_noise_type_aux_lr2e5"),
-    ("R2 label smoothing", f"{VARIANT}_r2_r1_noise_type_aux_ls003"),
-    ("R2 good/medium weights", f"{VARIANT}_r2_r1_noise_type_aux_gm_weight"),
+]
+R2_SUFFIXES = [
+    ("R2 low-lr continue", "lr2e5"),
+    ("R2 label smoothing", "ls003"),
+    ("R2 good/medium weights", "gm_weight"),
 ]
 
 
@@ -98,10 +91,37 @@ def best_round1_run(model_root: Path = MODEL_ROOT) -> str | None:
 
 def best_completed_run() -> tuple[str, float] | None:
     candidates: list[tuple[str, Path]] = [(label, path) for label, path in BASE_RUNS]
-    candidates.extend((label, MODEL_ROOT / run_name / "test_report.json") for label, run_name in TUNE_RUNS)
+    candidates.extend((label, MODEL_ROOT / run_name / "test_report.json") for label, run_name in all_tune_runs())
     best: tuple[str, float] | None = None
     for label, path in candidates:
         rep = load_json(path)
+        if rep is None:
+            continue
+        acc = float(rep["acc"])
+        if best is None or acc > best[1]:
+            best = (label, acc)
+    return best
+
+
+def r2_runs_for(r1_run: str | None) -> list[tuple[str, str]]:
+    if not r1_run:
+        r1_run = f"{VARIANT}_r1_cls_only_snr005"
+    stem = r1_run.removeprefix(f"{VARIANT}_")
+    return [(label, f"{VARIANT}_r2_{stem}_{suffix}") for label, suffix in R2_SUFFIXES]
+
+
+def all_tune_runs() -> list[tuple[str, str]]:
+    runs = list(TUNE_RUNS)
+    r1_names = [run_name for _, run_name in TUNE_RUNS[:4]]
+    for r1_name in r1_names:
+        runs.extend(r2_runs_for(r1_name))
+    return runs
+
+
+def best_visual_tuning_run() -> tuple[str, float] | None:
+    best: tuple[str, float] | None = None
+    for label, run_name in all_tune_runs():
+        rep = load_json(MODEL_ROOT / run_name / "test_report.json")
         if rep is None:
             continue
         acc = float(rep["acc"])
@@ -144,10 +164,26 @@ def main() -> None:
             "| --- | ---: | ---: | ---: | ---: | --- | --- |",
         ]
     )
-    lines.extend(row(label, MODEL_ROOT / run_name / "test_report.json") for label, run_name in TUNE_RUNS[4:])
+    lines.extend(row(label, MODEL_ROOT / run_name / "test_report.json") for label, run_name in r2_runs_for(r1_best))
+    visual_best = best_visual_tuning_run()
+    if visual_best is not None:
+        lines.extend(["", f"Best E3.11f tuning result: `{visual_best[0]}` = `{visual_best[1]:.4f}`"])
     best = best_completed_run()
     if best is not None:
-        lines.extend(["", f"Best completed result: `{best[0]}` = `{best[1]:.4f}`"])
+        lines.extend([f"Best completed result including references: `{best[0]}` = `{best[1]:.4f}`"])
+    lines.extend(
+        [
+            "",
+            "## Interpretation",
+            "",
+            "- Best E3.11f visual tuning is `R1 cls-only SNR 0.05` at `0.9376`, improving the E3.11f baseline `0.9329` but not passing the `0.94` target.",
+            "- Round 2 did not improve the first-round best: low-LR continuation dropped to `0.9303`, label smoothing was nearly tied at `0.9372`, and good/medium weighting dropped to `0.9290`.",
+            "- The best E3.11f recipe is: D1 warm-start, `cls_pool=cls`, raw input, `snr_head`, `lambda_snr=0.05`, `lr=3e-5`, `epochs=24`, `dropout=0.10`, `weight_decay=0.03`, no rank/local/SQI-teacher/noise-type head, and no denoise/level losses.",
+            "- Compared with the references, E3.11f R1 is much better than the current E3.11 result (`0.9000`) but remains below E3.10 M2 (`0.9402`) and D1 (`0.9465`).",
+            "- For cls-only rows, denoise outputs are not trained; use accuracy/recall as the classification evidence and treat denoise SNR values as non-decision diagnostics.",
+            "- Recommendation: keep E3.10 M2 as the safer visual benchmark if the requirement is `>=0.94`; keep E3.11f R1 as the best E3.11-style diagnostic result.",
+        ]
+    )
     lines.extend(
         [
             "",
