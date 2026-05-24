@@ -7,6 +7,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[3]
 SWEEP_ROOT = Path(os.environ.get("ROOT_OUT", ROOT / "outputs/transformer_e311_margin_snr_sweep")).expanduser()
+CASE_ROOT = Path(os.environ.get("CASE_OUT", ROOT / "outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders")).expanduser()
+GALLERY_ROOT = Path(os.environ.get("GALLERY_OUT", ROOT / "outputs/transformer_e311_margin_snr_sweep/visual_gallery")).expanduser()
 REPORT = ROOT / "reports/transformer_e311_margin_snr_sweep_report.md"
 
 CLASS_ORDER = ("good", "medium", "bad")
@@ -162,31 +164,25 @@ def training_rows() -> list[str]:
 
 
 def figure_rows() -> list[str]:
-    case_root = SWEEP_ROOT / "real_ecg_case_folders"
     rows = [
         "Combined visual galleries:",
         "",
-        f"- Class x noise examples: `{show(SWEEP_ROOT / 'visual_gallery' / 'e311_margin_snr_class_noise_examples_gallery.png')}`",
-        f"- Counterfactual triplets: `{show(SWEEP_ROOT / 'visual_gallery' / 'e311_margin_snr_counterfactual_triplets_gallery.png')}`",
-        f"- Audit overview: `{show(SWEEP_ROOT / 'visual_gallery' / 'e311_margin_snr_audit_overview.png')}`",
+        f"- Class x noise examples: `{show(GALLERY_ROOT / 'e311_margin_snr_class_noise_examples_gallery.png')}`",
+        f"- Counterfactual triplets: `{show(GALLERY_ROOT / 'e311_margin_snr_counterfactual_triplets_gallery.png')}`",
+        f"- Audit overview: `{show(GALLERY_ROOT / 'e311_margin_snr_audit_overview.png')}`",
         "",
         "Individual real ECG case folders:",
         "",
-        f"- Folder root: `{show(case_root)}`",
-        f"- Browser index: `{show(case_root / 'index.html')}`",
-        f"- Metadata index: `{show(case_root / 'selected_cases.csv')}`",
-        f"- Layout: `{show(case_root / 'by_variant')}/<variant>/<good|medium|bad>/<em|ma|mix>/`",
+        f"- Folder root: `{show(CASE_ROOT)}`",
+        f"- Browser index: `{show(CASE_ROOT / 'index.html')}`",
+        f"- Metadata index: `{show(CASE_ROOT / 'selected_cases.csv')}`",
+        f"- Layout: `{show(CASE_ROOT / 'by_variant')}/<variant>/<good|medium|bad>/<em|ma|mix>/`",
         "",
-        "| Variant | Triplets | Class x Noise Examples |",
-        "| --- | --- | --- |",
+        "| Variant | Real ECG Case Folder |",
+        "| --- | --- |",
     ]
     for short, variant, _ in VARIANTS:
-        fig_dir = SWEEP_ROOT / variant / "figs_label_samples"
-        triplet = fig_dir / f"{variant}_counterfactual_triplets.png"
-        class_noise = fig_dir / f"{variant}_class_noise_examples.png"
-        rows.append(
-            f"| {short} | `{show(triplet)}` | `{show(class_noise)}` |"
-        )
+        rows.append(f"| {short} | `{show(CASE_ROOT / 'by_variant' / variant)}` |")
     return rows
 
 

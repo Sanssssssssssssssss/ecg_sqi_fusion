@@ -27,38 +27,38 @@ Goal: diagnose whether E3.11 is hard because the SNR gap is too wide, the morpho
 | --- | ---: | ---: | ---: | ---: | --- | --- |
 | E3.11b main | 0.8966 | 0.8869 | 0.8744 | 0.9284 |  | `[[706, 81, 9], [61, 696, 39], [13, 44, 739]]` |
 | E3.11c main | 0.8862 | 0.8950 | 0.8450 | 0.9187 |  | `[[716, 76, 8], [65, 676, 59], [8, 57, 735]]` |
-| E3.11d main | pending |  |  |  |  | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311d_snr_primary_good_guard/models/e311d_snr_primary_good_guard_m1_d1warm_snr005/test_report.json` |
-| E3.11e main | pending |  |  |  |  | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311e_snr_only_visual/models/e311e_snr_only_visual_m1_d1warm_snr005/test_report.json` |
-| E3.11f main | pending |  |  |  |  | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311f_lite_e310_morph/models/e311f_lite_e310_morph_m1_d1warm_snr005/test_report.json` |
-| E3.11g main | pending |  |  |  |  | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311g_lite_snr_primary/models/e311g_lite_snr_primary_m1_d1warm_snr005/test_report.json` |
-| E3.11b denoise-aware | pending |  |  |  |  | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311b_snr_gap_e310_morph/models/e311b_snr_gap_e310_morph_m2_d1warm_snr005_denoise/test_report.json` |
-| E3.11d denoise-aware | pending |  |  |  |  | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311d_snr_primary_good_guard/models/e311d_snr_primary_good_guard_m2_d1warm_snr005_denoise/test_report.json` |
+| E3.11d main | 0.8296 | 0.8888 | 0.7438 | 0.8562 |  | `[[711, 73, 16], [80, 595, 125], [24, 91, 685]]` |
+| E3.11e main | 0.8350 | 0.8950 | 0.7488 | 0.8612 |  | `[[716, 60, 24], [94, 599, 107], [18, 93, 689]]` |
+| E3.11f main | 0.9329 | 0.9174 | 0.9187 | 0.9626 |  | `[[711, 61, 3], [51, 712, 12], [7, 22, 746]]` |
+| E3.11g main | 0.7346 | 0.8550 | 0.6450 | 0.7037 |  | `[[684, 68, 48], [90, 516, 194], [45, 192, 563]]` |
+| E3.11b denoise-aware | 0.8957 | 0.8907 | 0.8719 | 0.9246 |  | `[[709, 82, 5], [64, 694, 38], [11, 49, 736]]` |
+| E3.11d denoise-aware | 0.8375 | 0.8988 | 0.7612 | 0.8525 |  | `[[719, 63, 18], [75, 609, 116], [23, 95, 682]]` |
 
-Best new run so far: `E3.11b main` = `0.8966`
+Best new run so far: `E3.11f main` = `0.9329`
 
 ## Figures
 
 Combined visual galleries:
 
-- Class x noise examples: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/visual_gallery/e311_margin_snr_class_noise_examples_gallery.png`
-- Counterfactual triplets: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/visual_gallery/e311_margin_snr_counterfactual_triplets_gallery.png`
-- Audit overview: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/visual_gallery/e311_margin_snr_audit_overview.png`
+- Class x noise examples: `outputs/transformer_e311_margin_snr_sweep/visual_gallery/e311_margin_snr_class_noise_examples_gallery.png`
+- Counterfactual triplets: `outputs/transformer_e311_margin_snr_sweep/visual_gallery/e311_margin_snr_counterfactual_triplets_gallery.png`
+- Audit overview: `outputs/transformer_e311_margin_snr_sweep/visual_gallery/e311_margin_snr_audit_overview.png`
 
 Individual real ECG case folders:
 
-- Folder root: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders`
-- Browser index: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/index.html`
-- Metadata index: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/selected_cases.csv`
-- Layout: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/by_variant/<variant>/<good|medium|bad>/<em|ma|mix>/`
+- Folder root: `outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders`
+- Browser index: `outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/index.html`
+- Metadata index: `outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/selected_cases.csv`
+- Layout: `outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/by_variant/<variant>/<good|medium|bad>/<em|ma|mix>/`
 
-| Variant | Triplets | Class x Noise Examples |
-| --- | --- | --- |
-| E3.11b | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311b_snr_gap_e310_morph/figs_label_samples/e311b_snr_gap_e310_morph_counterfactual_triplets.png` | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311b_snr_gap_e310_morph/figs_label_samples/e311b_snr_gap_e310_morph_class_noise_examples.png` |
-| E3.11c | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311c_snr_gap_relaxed_morph/figs_label_samples/e311c_snr_gap_relaxed_morph_counterfactual_triplets.png` | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311c_snr_gap_relaxed_morph/figs_label_samples/e311c_snr_gap_relaxed_morph_class_noise_examples.png` |
-| E3.11d | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311d_snr_primary_good_guard/figs_label_samples/e311d_snr_primary_good_guard_counterfactual_triplets.png` | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311d_snr_primary_good_guard/figs_label_samples/e311d_snr_primary_good_guard_class_noise_examples.png` |
-| E3.11e | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311e_snr_only_visual/figs_label_samples/e311e_snr_only_visual_counterfactual_triplets.png` | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311e_snr_only_visual/figs_label_samples/e311e_snr_only_visual_class_noise_examples.png` |
-| E3.11f | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311f_lite_e310_morph/figs_label_samples/e311f_lite_e310_morph_counterfactual_triplets.png` | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311f_lite_e310_morph/figs_label_samples/e311f_lite_e310_morph_class_noise_examples.png` |
-| E3.11g | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311g_lite_snr_primary/figs_label_samples/e311g_lite_snr_primary_counterfactual_triplets.png` | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311g_lite_snr_primary/figs_label_samples/e311g_lite_snr_primary_class_noise_examples.png` |
+| Variant | Real ECG Case Folder |
+| --- | --- |
+| E3.11b | `outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/by_variant/e311b_snr_gap_e310_morph` |
+| E3.11c | `outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/by_variant/e311c_snr_gap_relaxed_morph` |
+| E3.11d | `outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/by_variant/e311d_snr_primary_good_guard` |
+| E3.11e | `outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/by_variant/e311e_snr_only_visual` |
+| E3.11f | `outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/by_variant/e311f_lite_e310_morph` |
+| E3.11g | `outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/by_variant/e311g_lite_snr_primary` |
 
 ## Reading Guide
 
