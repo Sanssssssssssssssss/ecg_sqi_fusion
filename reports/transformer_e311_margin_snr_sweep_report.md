@@ -47,8 +47,7 @@ Combined visual galleries:
 Individual real ECG case folders:
 
 - Folder root: `outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders`
-- Browser index: `outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/index.html`
-- Metadata index: `outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/selected_cases.csv`
+- Content: PNG images only for visual inspection.
 - Layout: `outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/by_variant/<variant>/<good|medium|bad>/<em|ma|mix>/`
 
 | Variant | Real ECG Case Folder |
