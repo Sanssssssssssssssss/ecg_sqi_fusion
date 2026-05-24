@@ -36,6 +36,12 @@ Goal: diagnose whether E3.11 is hard because the SNR gap is too wide, the morpho
 
 ## Figures
 
+Combined visual galleries:
+
+- Class x noise examples: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/visual_gallery/e311_margin_snr_class_noise_examples_gallery.png`
+- Counterfactual triplets: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/visual_gallery/e311_margin_snr_counterfactual_triplets_gallery.png`
+- Audit overview: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/visual_gallery/e311_margin_snr_audit_overview.png`
+
 | Variant | Triplets | Class x Noise Examples |
 | --- | --- | --- |
 | E3.11b | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311b_snr_gap_e310_morph/figs_label_samples/e311b_snr_gap_e310_morph_counterfactual_triplets.png` | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311b_snr_gap_e310_morph/figs_label_samples/e311b_snr_gap_e310_morph_class_noise_examples.png` |
