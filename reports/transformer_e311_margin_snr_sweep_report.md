@@ -44,6 +44,13 @@ Combined visual galleries:
 - Counterfactual triplets: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/visual_gallery/e311_margin_snr_counterfactual_triplets_gallery.png`
 - Audit overview: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/visual_gallery/e311_margin_snr_audit_overview.png`
 
+Individual real ECG case folders:
+
+- Folder root: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders`
+- Browser index: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/index.html`
+- Metadata index: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/selected_cases.csv`
+- Layout: `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/real_ecg_case_folders/by_variant/<variant>/<good|medium|bad>/<em|ma|mix>/`
+
 | Variant | Triplets | Class x Noise Examples |
 | --- | --- | --- |
 | E3.11b | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311b_snr_gap_e310_morph/figs_label_samples/e311b_snr_gap_e310_morph_counterfactual_triplets.png` | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311b_snr_gap_e310_morph/figs_label_samples/e311b_snr_gap_e310_morph_class_noise_examples.png` |
