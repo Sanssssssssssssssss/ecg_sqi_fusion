@@ -63,8 +63,44 @@ CLASS_TARGET_SEVERITY = {"good": 0.22, "medium": 0.68, "bad": 1.12}
 CLASS_TARGET_E39_SMOOTH = {"good": 0.08, "medium": 0.32, "bad": 0.65}
 E310_LABEL_VERSION = "e310_smooth_morph_mild_snr"
 E311_LABEL_VERSION = "e311_smooth_morph_visual_gap"
+E311B_LABEL_VERSION = "e311b_snr_gap_e310_morph"
+E311C_LABEL_VERSION = "e311c_snr_gap_relaxed_morph"
+E311D_LABEL_VERSION = "e311d_snr_primary_good_guard"
+E311E_LABEL_VERSION = "e311e_snr_only_visual"
+E311F_LABEL_VERSION = "e311f_lite_e310_morph"
+E311G_LABEL_VERSION = "e311g_lite_snr_primary"
 E310_CLASS_SNR_RANGES = {"good": (10.0, 12.0), "medium": (7.0, 10.0), "bad": (5.0, 8.0)}
 E311_CLASS_SNR_RANGES = {"good": (13.0, 15.0), "medium": (7.0, 9.0), "bad": (3.0, 6.0)}
+E311_LITE_CLASS_SNR_RANGES = {"good": (11.5, 13.0), "medium": (8.5, 10.0), "bad": (6.5, 8.0)}
+SNR_PROFILE_LABEL_VERSIONS = (
+    E310_LABEL_VERSION,
+    E311_LABEL_VERSION,
+    E311B_LABEL_VERSION,
+    E311C_LABEL_VERSION,
+    E311D_LABEL_VERSION,
+    E311E_LABEL_VERSION,
+    E311F_LABEL_VERSION,
+    E311G_LABEL_VERSION,
+)
+SNR_PRIMARY_LABEL_VERSIONS = (
+    E311D_LABEL_VERSION,
+    E311E_LABEL_VERSION,
+    E311G_LABEL_VERSION,
+)
+SNR_LITE_LABEL_VERSIONS = (
+    E311F_LABEL_VERSION,
+    E311G_LABEL_VERSION,
+)
+SNR_PROFILE_NAMES = {
+    E310_LABEL_VERSION: "e310_class_mild_good10_12_medium7_10_bad5_8dB",
+    E311_LABEL_VERSION: "e311_visual_gap_good13_15_medium7_9_bad3_6dB",
+    E311B_LABEL_VERSION: "e311b_wide_snr_e310_morph_good13_15_medium7_9_bad3_6dB",
+    E311C_LABEL_VERSION: "e311c_wide_snr_relaxed_morph_good13_15_medium7_9_bad3_6dB",
+    E311D_LABEL_VERSION: "e311d_wide_snr_primary_good13_15_medium7_9_bad3_6dB",
+    E311E_LABEL_VERSION: "e311e_wide_snr_only_visual_good13_15_medium7_9_bad3_6dB",
+    E311F_LABEL_VERSION: "e311f_lite_snr_e310_morph_good11p5_13_medium8p5_10_bad6p5_8dB",
+    E311G_LABEL_VERSION: "e311g_lite_snr_primary_good11p5_13_medium8p5_10_bad6p5_8dB",
+}
 LABEL_VERSIONS = (
     "e35_morph_damage",
     "e36_critical_damage",
@@ -76,6 +112,12 @@ LABEL_VERSIONS = (
     "e39b_smooth_critical_margin",
     E310_LABEL_VERSION,
     E311_LABEL_VERSION,
+    E311B_LABEL_VERSION,
+    E311C_LABEL_VERSION,
+    E311D_LABEL_VERSION,
+    E311E_LABEL_VERSION,
+    E311F_LABEL_VERSION,
+    E311G_LABEL_VERSION,
 )
 E39A_SMOOTH_LABEL_VERSIONS = (
     "e39a_smooth_morph_margin",
@@ -83,6 +125,9 @@ E39A_SMOOTH_LABEL_VERSIONS = (
     "e39a_smooth_morph_scorefirst",
     E310_LABEL_VERSION,
     E311_LABEL_VERSION,
+    E311B_LABEL_VERSION,
+    E311C_LABEL_VERSION,
+    E311F_LABEL_VERSION,
 )
 E39_SMOOTH_LABEL_VERSIONS = (*E39A_SMOOTH_LABEL_VERSIONS, "e39b_smooth_critical_margin")
 SNR_OFFSETS = (-0.25, 0.0, 0.25)
@@ -121,14 +166,9 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
     if label_version not in LABEL_VERSIONS:
         raise ValueError(f"label_version must be one of: {', '.join(LABEL_VERSIONS)}")
     noise_kinds_raw = str(params.get("noise_kinds", "") or "").strip()
-    default_noise_kinds = "em,ma,mix" if label_version in {E310_LABEL_VERSION, E311_LABEL_VERSION} else "em,ma,bw,mix"
+    default_noise_kinds = "em,ma,mix" if label_version in SNR_PROFILE_LABEL_VERSIONS else "em,ma,bw,mix"
     noise_kinds = parse_noise_kinds(noise_kinds_raw or default_noise_kinds)
-    if label_version == E310_LABEL_VERSION:
-        snr_profile = "e310_class_mild_good10_12_medium7_10_bad5_8dB"
-    elif label_version == E311_LABEL_VERSION:
-        snr_profile = "e311_visual_gap_good13_15_medium7_9_bad3_6dB"
-    else:
-        snr_profile = f"matched_{snr_min:g}_{snr_max:g}dB"
+    snr_profile = SNR_PROFILE_NAMES.get(label_version, f"matched_{snr_min:g}_{snr_max:g}dB")
 
     x_npz = source_artifact_dir / "segments" / "ptbxl_leadI_x_10s_125hz.npz"
     split_csv = source_artifact_dir / "splits" / "ptbxl_leadI_clean_10s_125hz_split.csv"
@@ -355,7 +395,11 @@ def build_triplet_candidates(
 ) -> tuple[dict[str, object] | None, list[dict[str, object]]]:
     gray_rows: list[dict[str, object]] = []
     for _ in range(group_retries):
-        matched_snr_db = float(class_snr_reference(label_version) if label_version in {E310_LABEL_VERSION, E311_LABEL_VERSION} else rng.uniform(snr_min, snr_max))
+        matched_snr_db = float(
+            class_snr_reference(label_version)
+            if label_version in SNR_PROFILE_LABEL_VERSIONS
+            else rng.uniform(snr_min, snr_max)
+        )
         raw_noise, noise_window_id = sample_noise_with_id(noise_kind, split_name, tracks, ranges, rng)
         candidates: list[Candidate] = []
         for target_snr in candidate_target_snrs(
@@ -380,7 +424,13 @@ def build_triplet_candidates(
                 noisy = add_noise_at_snr(clean, placed_noise, target_snr)
                 metrics = damage_metrics(clean, noisy, qrs_mask, tst_mask, peaks)
                 measured_snr = measured_snr_db(clean, noisy)
-                y_class, label_subtype = assign_margin_label(metrics, placement=placement, label_version=label_version)
+                y_class, label_subtype = assign_margin_label(
+                    metrics,
+                    placement=placement,
+                    label_version=label_version,
+                    measured_snr=measured_snr,
+                    target_snr=target_snr,
+                )
                 cand = Candidate(
                     y_class=y_class,
                     label_subtype=label_subtype,
@@ -435,12 +485,15 @@ def pick_triplet(candidates: list[Candidate], matched_snr_db: float, *, label_ve
         if not pool:
             return None
         target_damage = class_targets[y_class]
-        if label_version in {E310_LABEL_VERSION, E311_LABEL_VERSION}:
+        if label_version in SNR_PROFILE_LABEL_VERSIONS:
             lo, hi = class_snr_ranges(label_version)[y_class]
             pool_snr = [c for c in pool if lo - 0.05 <= c.measured_snr_db <= hi + 0.05]
             if not pool_snr:
                 return None
-            snr_target = 0.5 * (lo + hi)
+            if label_version in SNR_PRIMARY_LABEL_VERSIONS:
+                picked[y_class] = pick_snr_primary_candidate(pool_snr, y_class=y_class, label_version=label_version)
+                continue
+            snr_target = class_pick_snr_target(label_version, y_class)
             picked[y_class] = min(
                 pool_snr,
                 key=lambda c: (
@@ -499,7 +552,7 @@ def pick_triplet(candidates: list[Candidate], matched_snr_db: float, *, label_ve
                 ),
             )
     snrs = [float(picked[name].measured_snr_db) for name in CLASS_ORDER]  # type: ignore[union-attr]
-    if label_version in {E310_LABEL_VERSION, E311_LABEL_VERSION}:
+    if label_version in SNR_PROFILE_LABEL_VERSIONS:
         return picked
     max_snr_gap = 0.25 if label_version == "e38_core_diagnostic_damage" else 0.75
     if max(snrs) - min(snrs) > max_snr_gap:
@@ -508,7 +561,60 @@ def pick_triplet(candidates: list[Candidate], matched_snr_db: float, *, label_ve
 
 
 def class_snr_ranges(label_version: str) -> dict[str, tuple[float, float]]:
-    return E311_CLASS_SNR_RANGES if label_version == E311_LABEL_VERSION else E310_CLASS_SNR_RANGES
+    if label_version in SNR_LITE_LABEL_VERSIONS:
+        return E311_LITE_CLASS_SNR_RANGES
+    if label_version in SNR_PROFILE_LABEL_VERSIONS and label_version != E310_LABEL_VERSION:
+        return E311_CLASS_SNR_RANGES
+    return E310_CLASS_SNR_RANGES
+
+
+def class_pick_snr_target(label_version: str, y_class: str) -> float:
+    lo, hi = class_snr_ranges(label_version)[y_class]
+    if y_class == "good":
+        return 0.5 * (lo + hi)
+    if y_class == "medium":
+        return 0.5 * (lo + hi)
+    return lo + 0.25 * (hi - lo)
+
+
+def snr_to_global_noise_target(snr_db: float) -> float:
+    return float(10.0 ** (-0.05 * snr_db))
+
+
+def pick_snr_primary_candidate(pool: list[Candidate], *, y_class: str, label_version: str) -> Candidate:
+    lo, hi = class_snr_ranges(label_version)[y_class]
+    if y_class == "good":
+        snr_target = hi - 0.25 * (hi - lo)
+        return min(
+            pool,
+            key=lambda c: (
+                float(c.metrics["smooth_morph_score"]),
+                float(c.metrics["qrs_nprd"]),
+                float(c.metrics["tst_nprd"]),
+                -c.measured_snr_db,
+                abs(c.measured_snr_db - snr_target),
+            ),
+        )
+    if y_class == "medium":
+        snr_target = 0.5 * (lo + hi)
+        global_target = snr_to_global_noise_target(snr_target)
+        return min(
+            pool,
+            key=lambda c: (
+                abs(c.measured_snr_db - snr_target),
+                abs(float(c.metrics["global_noise_score"]) - global_target),
+                abs(float(c.metrics["smooth_morph_score"]) - 0.28),
+            ),
+        )
+    snr_target = lo + 0.15 * (hi - lo)
+    return min(
+        pool,
+        key=lambda c: (
+            abs(c.measured_snr_db - snr_target),
+            -float(c.metrics["global_noise_score"]),
+            -float(c.metrics["smooth_morph_score"]),
+        ),
+    )
 
 
 def class_snr_reference(label_version: str) -> float:
@@ -526,7 +632,7 @@ def candidate_target_snrs(
     snr_max: float,
     rng: np.random.Generator,
 ) -> list[float]:
-    if label_version not in {E310_LABEL_VERSION, E311_LABEL_VERSION}:
+    if label_version not in SNR_PROFILE_LABEL_VERSIONS:
         return [float(np.clip(matched_snr_db + offset, snr_min, snr_max)) for offset in SNR_OFFSETS]
 
     values: list[float] = []
@@ -587,9 +693,22 @@ def damage_metrics(
     }
 
 
-def assign_margin_label(metrics: dict[str, float | str], *, placement: str, label_version: str) -> tuple[str | None, str]:
+def assign_margin_label(
+    metrics: dict[str, float | str],
+    *,
+    placement: str,
+    label_version: str,
+    measured_snr: float | None = None,
+    target_snr: float | None = None,
+) -> tuple[str | None, str]:
     if label_version == E311_LABEL_VERSION:
         return assign_e311_label(metrics)
+    if label_version in {E311B_LABEL_VERSION, E311F_LABEL_VERSION}:
+        return assign_e310_label(metrics)
+    if label_version == E311C_LABEL_VERSION:
+        return assign_e311c_label(metrics)
+    if label_version in SNR_PRIMARY_LABEL_VERSIONS:
+        return assign_snr_primary_label(metrics, label_version=label_version, measured_snr=measured_snr, target_snr=target_snr)
     if label_version == E310_LABEL_VERSION:
         return assign_e310_label(metrics)
     if label_version in {"e39a_smooth_morph_margin", "e39a_smooth_morph_scorefirst"}:
@@ -755,6 +874,60 @@ def assign_e311_label(metrics: dict[str, float | str]) -> tuple[str | None, str]
     if beat_corr <= 0.68 and score >= 0.40:
         return "bad", "bad_corr_guarded_visual_gap"
     return None, "gray_visual_gap_boundary"
+
+
+def assign_e311c_label(metrics: dict[str, float | str]) -> tuple[str | None, str]:
+    score = float(metrics["smooth_morph_score"])
+    qrs = float(metrics["qrs_nprd"])
+    tst = float(metrics["tst_nprd"])
+    beat_corr = float(metrics["beat_corr"])
+
+    if score <= 0.11 and qrs <= 0.11 and tst <= 0.20 and beat_corr >= 0.94:
+        return "good", "good_relaxed_morph_clean"
+    if 0.22 <= score <= 0.48 and qrs < 0.42 and beat_corr >= 0.72:
+        return "medium", "medium_relaxed_morph"
+    if score >= 0.52:
+        return "bad", "bad_relaxed_morph_high"
+    if qrs >= 0.40 and score >= 0.24:
+        return "bad", "bad_qrs_relaxed_guard"
+    if beat_corr <= 0.72 and score >= 0.24:
+        return "bad", "bad_corr_relaxed_guard"
+    return None, "gray_relaxed_morph_boundary"
+
+
+def assign_snr_primary_label(
+    metrics: dict[str, float | str],
+    *,
+    label_version: str,
+    measured_snr: float | None,
+    target_snr: float | None,
+) -> tuple[str | None, str]:
+    snr = float(measured_snr if measured_snr is not None else target_snr if target_snr is not None else 0.0)
+    score = float(metrics["smooth_morph_score"])
+    qrs = float(metrics["qrs_nprd"])
+    tst = float(metrics["tst_nprd"])
+    beat_corr = float(metrics["beat_corr"])
+    global_noise = float(metrics["global_noise_score"])
+    ranges = class_snr_ranges(label_version)
+
+    if in_snr_range(snr, ranges["good"]):
+        if label_version == E311E_LABEL_VERSION or (score <= 0.14 and qrs <= 0.16 and tst <= 0.25 and beat_corr >= 0.90):
+            return "good", "good_snr_primary_clean_guard"
+        return None, "gray_snr_good_morph_guard"
+    if in_snr_range(snr, ranges["medium"]):
+        if label_version == E311E_LABEL_VERSION or (qrs < 0.55 and beat_corr >= 0.62):
+            return "medium", "medium_snr_primary_visual"
+        return None, "gray_snr_medium_extreme_morph"
+    if in_snr_range(snr, ranges["bad"]):
+        if label_version == E311E_LABEL_VERSION or global_noise >= snr_to_global_noise_target(ranges["bad"][1] + 0.5):
+            return "bad", "bad_snr_primary_visual"
+        return None, "gray_snr_bad_low_global_noise"
+    return None, "gray_snr_out_of_profile"
+
+
+def in_snr_range(value: float, bounds: tuple[float, float]) -> bool:
+    lo, hi = bounds
+    return lo - 0.05 <= value <= hi + 0.05
 
 
 def assign_e39b_label(metrics: dict[str, float | str]) -> tuple[str | None, str]:
