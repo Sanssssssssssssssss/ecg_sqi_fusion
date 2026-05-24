@@ -25,14 +25,16 @@ Goal: diagnose whether E3.11 is hard because the SNR gap is too wide, the morpho
 
 | Run | Test Acc | Good Recall | Medium Recall | Bad Recall | Denoise SNR Improve | Confusion Matrix |
 | --- | ---: | ---: | ---: | ---: | --- | --- |
-| E3.11b main | pending |  |  |  |  | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311b_snr_gap_e310_morph/models/e311b_snr_gap_e310_morph_m1_d1warm_snr005/test_report.json` |
-| E3.11c main | pending |  |  |  |  | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311c_snr_gap_relaxed_morph/models/e311c_snr_gap_relaxed_morph_m1_d1warm_snr005/test_report.json` |
+| E3.11b main | 0.8966 | 0.8869 | 0.8744 | 0.9284 |  | `[[706, 81, 9], [61, 696, 39], [13, 44, 739]]` |
+| E3.11c main | 0.8862 | 0.8950 | 0.8450 | 0.9187 |  | `[[716, 76, 8], [65, 676, 59], [8, 57, 735]]` |
 | E3.11d main | pending |  |  |  |  | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311d_snr_primary_good_guard/models/e311d_snr_primary_good_guard_m1_d1warm_snr005/test_report.json` |
 | E3.11e main | pending |  |  |  |  | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311e_snr_only_visual/models/e311e_snr_only_visual_m1_d1warm_snr005/test_report.json` |
 | E3.11f main | pending |  |  |  |  | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311f_lite_e310_morph/models/e311f_lite_e310_morph_m1_d1warm_snr005/test_report.json` |
 | E3.11g main | pending |  |  |  |  | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311g_lite_snr_primary/models/e311g_lite_snr_primary_m1_d1warm_snr005/test_report.json` |
 | E3.11b denoise-aware | pending |  |  |  |  | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311b_snr_gap_e310_morph/models/e311b_snr_gap_e310_morph_m2_d1warm_snr005_denoise/test_report.json` |
 | E3.11d denoise-aware | pending |  |  |  |  | `/rds-d6/user/cx272/hpc-work/ecg_sqi_fusion_outputs/transformer_e311_margin_snr_sweep/e311d_snr_primary_good_guard/models/e311d_snr_primary_good_guard_m2_d1warm_snr005_denoise/test_report.json` |
+
+Best new run so far: `E3.11b main` = `0.8966`
 
 ## Figures
 

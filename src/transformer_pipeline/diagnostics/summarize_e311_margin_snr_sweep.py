@@ -163,6 +163,12 @@ def training_rows() -> list[str]:
 
 def figure_rows() -> list[str]:
     rows = [
+        "Combined visual galleries:",
+        "",
+        f"- Class x noise examples: `{show(SWEEP_ROOT / 'visual_gallery' / 'e311_margin_snr_class_noise_examples_gallery.png')}`",
+        f"- Counterfactual triplets: `{show(SWEEP_ROOT / 'visual_gallery' / 'e311_margin_snr_counterfactual_triplets_gallery.png')}`",
+        f"- Audit overview: `{show(SWEEP_ROOT / 'visual_gallery' / 'e311_margin_snr_audit_overview.png')}`",
+        "",
         "| Variant | Triplets | Class x Noise Examples |",
         "| --- | --- | --- |",
     ]
