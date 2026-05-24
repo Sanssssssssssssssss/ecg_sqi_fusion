@@ -29,7 +29,7 @@ if [ ! -f "$D1_CKPT" ]; then
   exit 2
 fi
 
-ROOT_OUT="outputs/transformer_e311_margin_snr_sweep"
+ROOT_OUT="${ROOT_OUT:-outputs/transformer_e311_margin_snr_sweep}"
 
 case "${SLURM_ARRAY_TASK_ID}" in
   0)

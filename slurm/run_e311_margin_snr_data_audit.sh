@@ -22,7 +22,7 @@ cd /home/cx272/final_project/ecg_sqi_fusion
 source .venv/bin/activate
 mkdir -p logs reports
 
-ROOT_OUT="outputs/transformer_e311_margin_snr_sweep"
+ROOT_OUT="${ROOT_OUT:-outputs/transformer_e311_margin_snr_sweep}"
 SOURCE_ARTIFACT_DIR="${SOURCE_ARTIFACT_DIR:-outputs/transformer}"
 
 case "${SLURM_ARRAY_TASK_ID}" in

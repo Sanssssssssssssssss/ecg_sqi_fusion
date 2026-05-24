@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[3]
-SWEEP_ROOT = ROOT / "outputs/transformer_e311_margin_snr_sweep"
+SWEEP_ROOT = Path(os.environ.get("ROOT_OUT", ROOT / "outputs/transformer_e311_margin_snr_sweep")).expanduser()
 REPORT = ROOT / "reports/transformer_e311_margin_snr_sweep_report.md"
 
 CLASS_ORDER = ("good", "medium", "bad")
@@ -53,6 +54,13 @@ def fmt(value: float | None) -> str:
     return f"{value:.4f}"
 
 
+def show(path: Path) -> str:
+    try:
+        return path.resolve().relative_to(ROOT.resolve()).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
 def split_total(summary: dict[str, Any], split: str) -> int:
     counts = summary.get("split_y_class_counts", {}).get(split, {})
     return int(sum(int(counts.get(cls, 0)) for cls in CLASS_ORDER) / 3)
@@ -90,7 +98,7 @@ def baseline_rows() -> list[str]:
     for label, path in BASELINES:
         rep = load_json(path)
         if rep is None:
-            rows.append(f"| {label} | missing |  |  |  | `{path.relative_to(ROOT)}` |")
+            rows.append(f"| {label} | missing |  |  |  | `{show(path)}` |")
             continue
         good, medium, bad = recalls(rep["confusion_matrix_3x3"])
         rows.append(
@@ -138,7 +146,7 @@ def training_rows() -> list[str]:
         path = SWEEP_ROOT / variant / "models" / run_name / "test_report.json"
         rep = load_json(path)
         if rep is None:
-            rows.append(f"| {label} | pending |  |  |  |  | `{path.relative_to(ROOT)}` |")
+            rows.append(f"| {label} | pending |  |  |  |  | `{show(path)}` |")
             continue
         good, medium, bad = recalls(rep["confusion_matrix_3x3"])
         acc = float(rep["acc"])
@@ -163,7 +171,7 @@ def figure_rows() -> list[str]:
         triplet = fig_dir / f"{variant}_counterfactual_triplets.png"
         class_noise = fig_dir / f"{variant}_class_noise_examples.png"
         rows.append(
-            f"| {short} | `{triplet.relative_to(ROOT)}` | `{class_noise.relative_to(ROOT)}` |"
+            f"| {short} | `{show(triplet)}` | `{show(class_noise)}` |"
         )
     return rows
 
