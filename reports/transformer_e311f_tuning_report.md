@@ -66,8 +66,8 @@ Round-1 best warm-start for round 2: `e311f_lite_e310_morph_r1_cls_only_snr005`
 | R5 rank 0.02 margin 0.10 | pending |  |  |  |  |  |
 | R5 ordinal + SNR | 0.9299 | 0.9239 | 0.9097 | 0.9561 | -8.479/-5.396/-4.665 | `[[716, 56, 3], [61, 705, 9], [10, 24, 741]]` |
 | R5 ordinal + rank 0.01 | pending |  |  |  |  |  |
-| R5 long early-stop | pending |  |  |  |  |  |
-| R5 tiny denoise curriculum | pending |  |  |  |  |  |
+| R5 long early-stop | 0.9376 | 0.9290 | 0.9200 | 0.9639 | -10.343/-7.056/-6.070 | `[[720, 51, 4], [51, 713, 11], [8, 20, 747]]` |
+| R5 tiny denoise curriculum | 0.9381 | 0.9277 | 0.9277 | 0.9587 | -5.628/-3.182/-1.962 | `[[719, 54, 2], [51, 719, 5], [11, 21, 743]]` |
 
 ## Round 6
 
@@ -82,12 +82,12 @@ Round-1 best warm-start for round 2: `e311f_lite_e310_morph_r1_cls_only_snr005`
 | R6 robust good/medium weight 1.03 | pending |  |  |  |  |  |
 | R6 raw medium weight 1.03 | pending |  |  |  |  |  |
 
-Best E3.11f tuning result: `R1 cls-only SNR 0.05` = `0.9376`
+Best E3.11f tuning result: `R5 tiny denoise curriculum` = `0.9381`
 Best completed result including references: `D1 reference` = `0.9465`
 
 ## Interpretation
 
-- Best E3.11f visual tuning so far is `R1 cls-only SNR 0.05` at `0.9376`.
+- Best E3.11f visual tuning so far is `R5 tiny denoise curriculum` at `0.9381`.
 - The tuning target for replacing E3.10 as the visual benchmark is `>=0.94` test accuracy.
 - Round 2 did not improve the first-round best: low-LR continuation dropped to `0.9303`, label smoothing was nearly tied at `0.9372`, and good/medium weighting dropped to `0.9290`.
 - Round 3 did not improve either: LR, dropout, weight decay, batch size, and SNR-head weight all stayed at or below `0.9376`.
