@@ -86,12 +86,12 @@ Round-1 best warm-start for round 2: `e311f_lite_e310_morph_r1_cls_only_snr005`
 
 | Run | Test Acc | Good Recall | Medium Recall | Bad Recall | Denoise SNR Improve G/M/B | Confusion Matrix |
 | --- | ---: | ---: | ---: | ---: | --- | --- |
-| R7 tiny denoise seed 1 | pending |  |  |  |  |  |
-| R7 tiny denoise seed 2 | pending |  |  |  |  |  |
-| R7 tiny denoise seed 3 | pending |  |  |  |  |  |
-| R7 tiny denoise lambda 5 bad 0.05 | pending |  |  |  |  |  |
-| R7 late denoise lambda 8 bad 0.05 | pending |  |  |  |  |  |
-| R7 tiny denoise SNR 0.02 | pending |  |  |  |  |  |
+| R7 tiny denoise seed 1 | 0.9320 | 0.9252 | 0.9110 | 0.9600 | -4.994/-2.769/-1.483 | `[[717, 54, 4], [53, 706, 16], [9, 22, 744]]` |
+| R7 tiny denoise seed 2 | 0.9355 | 0.9277 | 0.9161 | 0.9626 | -5.226/-2.924/-1.751 | `[[719, 53, 3], [56, 710, 9], [8, 21, 746]]` |
+| R7 tiny denoise seed 3 | 0.9355 | 0.9161 | 0.9200 | 0.9703 | -8.597/-5.716/-4.835 | `[[710, 59, 6], [40, 713, 22], [5, 18, 752]]` |
+| R7 tiny denoise lambda 5 bad 0.05 | 0.9381 | 0.9277 | 0.9277 | 0.9587 | -6.087/-3.505/-2.346 | `[[719, 54, 2], [51, 719, 5], [11, 21, 743]]` |
+| R7 late denoise lambda 8 bad 0.05 | 0.9376 | 0.9277 | 0.9265 | 0.9587 | -9.978/-6.767/-5.962 | `[[719, 54, 2], [52, 718, 5], [11, 21, 743]]` |
+| R7 tiny denoise SNR 0.02 | 0.9359 | 0.9329 | 0.9148 | 0.9600 | -4.931/-2.703/-1.471 | `[[723, 48, 4], [57, 709, 9], [9, 22, 744]]` |
 
 Best E3.11f tuning result: `R5 tiny denoise curriculum` = `0.9381`
 Best completed result including references: `D1 reference` = `0.9465`
