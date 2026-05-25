@@ -38,7 +38,15 @@ MODEL_RUNS = [
     ("R6 raw medium weight 1.03", f"{VARIANT}_r6_raw_med103"),
     ("R4 seed 3 best recipe", f"{VARIANT}_r4_seed3_best"),
     ("R4 good weight 1.08", f"{VARIANT}_r4_good_weight108"),
+    ("R7 tiny denoise seed 1", f"{VARIANT}_r7_tiny_denoise_seed1"),
+    ("R7 tiny denoise seed 2", f"{VARIANT}_r7_tiny_denoise_seed2"),
+    ("R7 tiny denoise seed 3", f"{VARIANT}_r7_tiny_denoise_seed3"),
+    ("R7 tiny denoise lambda 5 bad 0.05", f"{VARIANT}_r7_tiny_den5_bad005"),
+    ("R7 late denoise lambda 8 bad 0.05", f"{VARIANT}_r7_late_den8_bad005"),
+    ("R7 tiny denoise SNR 0.02", f"{VARIANT}_r7_tiny_snr002"),
 ]
+
+PRE_R7_LABELS = [label for label, _run in MODEL_RUNS[:9]]
 
 ENSEMBLES = [
     ("ensemble top3 mixed", ["R5 tiny denoise curriculum", "R5 robust input", "R5 long early-stop"]),
@@ -57,8 +65,27 @@ ENSEMBLES = [
         ["R5 robust input", "R6 robust medium weight 1.03", "R4 good weight 1.08"],
     ),
     (
-        "ensemble all selected",
-        [label for label, _ in MODEL_RUNS],
+        "ensemble pre-R7 all selected",
+        PRE_R7_LABELS,
+    ),
+    (
+        "ensemble all selected incl R7",
+        [label for label, _run in MODEL_RUNS],
+    ),
+    (
+        "ensemble R7 seeds",
+        ["R7 tiny denoise seed 1", "R7 tiny denoise seed 2", "R7 tiny denoise seed 3"],
+    ),
+    (
+        "ensemble R7 tiny family",
+        [
+            "R5 tiny denoise curriculum",
+            "R7 tiny denoise seed 1",
+            "R7 tiny denoise seed 2",
+            "R7 tiny denoise seed 3",
+            "R7 tiny denoise lambda 5 bad 0.05",
+            "R7 tiny denoise SNR 0.02",
+        ],
     ),
 ]
 
@@ -244,6 +271,7 @@ def main() -> None:
             "",
             "- Calibration is only useful if calibrated test accuracy exceeds the raw best without harming one class badly.",
             "- Ensemble is diagnostic: a large ensemble gain means model variance; little gain means the remaining errors are mostly data/label boundary.",
+            "- The pre-R7 ensemble is kept separate because adding weaker R7 seed runs can dilute the averaged probabilities.",
             "- This script does not change model structure or training code.",
         ]
     )
