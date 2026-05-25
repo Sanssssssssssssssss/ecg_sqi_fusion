@@ -19,7 +19,7 @@ Goal: improve the current single-model visual benchmark while keeping the same s
 | Run | Test Acc | Good Recall | Medium Recall | Bad Recall | Denoise SNR Improve G/M/B | Confusion Matrix |
 | --- | ---: | ---: | ---: | ---: | --- | --- |
 | R1 M2 seed 1 | 0.9381 | 0.9377 | 0.9186 | 0.9580 | -7.745/-5.091/-4.041 | `[[737, 43, 6], [42, 722, 22], [7, 26, 753]]` |
-| R1 M2 seed 2 | pending |  |  |  |  |  |
+| R1 M2 seed 2 | 0.9334 | 0.9326 | 0.9262 | 0.9415 | -7.338/-4.663/-3.481 | `[[733, 48, 5], [43, 728, 15], [11, 35, 740]]` |
 | R1 M2 seed 3 | pending |  |  |  |  |  |
 | R1 SNR lambda 0.02 | pending |  |  |  |  |  |
 | R1 SNR lambda 0.075 | pending |  |  |  |  |  |
