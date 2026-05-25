@@ -82,6 +82,17 @@ Round-1 best warm-start for round 2: `e311f_lite_e310_morph_r1_cls_only_snr005`
 | R6 robust good/medium weight 1.03 | 0.9363 | 0.9406 | 0.9084 | 0.9600 | 20.848/20.704/20.552 | `[[729, 43, 3], [57, 704, 14], [4, 27, 744]]` |
 | R6 raw medium weight 1.03 | 0.9355 | 0.9355 | 0.9123 | 0.9587 | -10.062/-6.797/-6.024 | `[[725, 47, 3], [59, 707, 9], [10, 22, 743]]` |
 
+## Round 7
+
+| Run | Test Acc | Good Recall | Medium Recall | Bad Recall | Denoise SNR Improve G/M/B | Confusion Matrix |
+| --- | ---: | ---: | ---: | ---: | --- | --- |
+| R7 tiny denoise seed 1 | pending |  |  |  |  |  |
+| R7 tiny denoise seed 2 | pending |  |  |  |  |  |
+| R7 tiny denoise seed 3 | pending |  |  |  |  |  |
+| R7 tiny denoise lambda 5 bad 0.05 | pending |  |  |  |  |  |
+| R7 late denoise lambda 8 bad 0.05 | pending |  |  |  |  |  |
+| R7 tiny denoise SNR 0.02 | pending |  |  |  |  |  |
+
 Best E3.11f tuning result: `R5 tiny denoise curriculum` = `0.9381`
 Best completed result including references: `D1 reference` = `0.9465`
 
@@ -94,6 +105,7 @@ Best completed result including references: `D1 reference` = `0.9465`
 - Round 4 also stayed below target: seeds 1/2/3 reached `0.9312/0.9342/0.9368`, and light boundary tuning moved good/medium recall around without increasing total accuracy.
 - Round 5 tests existing alternative training knobs: pooling, robust input, light rank/ordinal ordering, longer early-stop training, and tiny denoise curriculum.
 - Round 6 keeps the best simple recipe but focuses on robust input, because robust input tied the current best while improving good recall and lowering medium recall; the tested knobs are deliberately tiny medium weighting, SNR-head weight, and label smoothing.
+- Round 7 returns to the current best tiny-denoise recipe: first checking seed variance, then lowering or delaying denoise to see whether a lighter reconstruction touch can keep the classification gain without pulling the backbone off-task.
 - The current best recipe family is: D1 warm-start, `cls_pool=cls`, raw input, `snr_head`, `lambda_snr` near `0.05`, `lr` near `3e-5`, no rank/local/SQI-teacher/noise-type head, and no denoise/level losses.
 - Compared with the references, E3.11f R1 is much better than the current E3.11 result (`0.9000`) but remains below E3.10 M2 (`0.9402`) and D1 (`0.9465`).
 - For cls-only rows, denoise outputs are not trained; use accuracy/recall as the classification evidence and treat denoise SNR values as non-decision diagnostics.
