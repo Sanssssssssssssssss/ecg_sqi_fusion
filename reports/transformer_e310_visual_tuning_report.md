@@ -23,7 +23,7 @@ Goal: improve the current single-model visual benchmark while keeping the same s
 | R1 M2 seed 3 | pending |  |  |  |  |  |
 | R1 SNR lambda 0.02 | pending |  |  |  |  |  |
 | R1 SNR lambda 0.075 | pending |  |  |  |  |  |
-| R1 medium weight 1.03 | pending |  |  |  |  |  |
+| R1 medium weight 1.03 | 0.9347 | 0.9389 | 0.9084 | 0.9567 | -8.408/-5.557/-4.521 | `[[738, 43, 5], [47, 714, 25], [8, 26, 752]]` |
 | R1 medium weight 1.05 | pending |  |  |  |  |  |
 | R1 label smoothing 0.005 | pending |  |  |  |  |  |
 
