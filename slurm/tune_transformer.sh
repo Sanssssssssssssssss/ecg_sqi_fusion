@@ -67,6 +67,7 @@ cmd=(
 [[ -n "${LR_ETA_MIN:-}" ]] && cmd+=(--lr_eta_min "$LR_ETA_MIN")
 [[ -n "${WEIGHT_DECAY:-}" ]] && cmd+=(--weight_decay "$WEIGHT_DECAY")
 [[ -n "${CLS_POOL:-}" ]] && cmd+=(--cls_pool "$CLS_POOL")
+[[ "${USE_POSITIONAL_EMBEDDING:-0}" == "1" ]] && cmd+=(--use_positional_embedding)
 [[ -n "${INPUT_MODE:-}" ]] && cmd+=(--input_mode "$INPUT_MODE")
 [[ "${ORDINAL_HEAD:-0}" == "1" ]] && cmd+=(--ordinal_head)
 [[ "${SNR_HEAD:-0}" == "1" ]] && cmd+=(--snr_head)

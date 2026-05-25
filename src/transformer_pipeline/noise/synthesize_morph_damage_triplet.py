@@ -69,6 +69,8 @@ E311D_LABEL_VERSION = "e311d_snr_primary_good_guard"
 E311E_LABEL_VERSION = "e311e_snr_only_visual"
 E311F_LABEL_VERSION = "e311f_lite_e310_morph"
 E311G_LABEL_VERSION = "e311g_lite_snr_primary"
+E311H_LABEL_VERSION = "e311h_lite_relaxed_morph"
+E311I_LABEL_VERSION = "e311i_wide_relaxed_morph"
 E310_CLASS_SNR_RANGES = {"good": (10.0, 12.0), "medium": (7.0, 10.0), "bad": (5.0, 8.0)}
 E311_CLASS_SNR_RANGES = {"good": (13.0, 15.0), "medium": (7.0, 9.0), "bad": (3.0, 6.0)}
 E311_LITE_CLASS_SNR_RANGES = {"good": (11.5, 13.0), "medium": (8.5, 10.0), "bad": (6.5, 8.0)}
@@ -81,6 +83,8 @@ SNR_PROFILE_LABEL_VERSIONS = (
     E311E_LABEL_VERSION,
     E311F_LABEL_VERSION,
     E311G_LABEL_VERSION,
+    E311H_LABEL_VERSION,
+    E311I_LABEL_VERSION,
 )
 SNR_PRIMARY_LABEL_VERSIONS = (
     E311D_LABEL_VERSION,
@@ -90,6 +94,7 @@ SNR_PRIMARY_LABEL_VERSIONS = (
 SNR_LITE_LABEL_VERSIONS = (
     E311F_LABEL_VERSION,
     E311G_LABEL_VERSION,
+    E311H_LABEL_VERSION,
 )
 SNR_PROFILE_NAMES = {
     E310_LABEL_VERSION: "e310_class_mild_good10_12_medium7_10_bad5_8dB",
@@ -100,6 +105,8 @@ SNR_PROFILE_NAMES = {
     E311E_LABEL_VERSION: "e311e_wide_snr_only_visual_good13_15_medium7_9_bad3_6dB",
     E311F_LABEL_VERSION: "e311f_lite_snr_e310_morph_good11p5_13_medium8p5_10_bad6p5_8dB",
     E311G_LABEL_VERSION: "e311g_lite_snr_primary_good11p5_13_medium8p5_10_bad6p5_8dB",
+    E311H_LABEL_VERSION: "e311h_lite_snr_relaxed_morph_good11p5_13_medium8p5_10_bad6p5_8dB",
+    E311I_LABEL_VERSION: "e311i_wide_snr_relaxed_morph_good13_15_medium7_9_bad3_6dB",
 }
 LABEL_VERSIONS = (
     "e35_morph_damage",
@@ -118,6 +125,8 @@ LABEL_VERSIONS = (
     E311E_LABEL_VERSION,
     E311F_LABEL_VERSION,
     E311G_LABEL_VERSION,
+    E311H_LABEL_VERSION,
+    E311I_LABEL_VERSION,
 )
 E39A_SMOOTH_LABEL_VERSIONS = (
     "e39a_smooth_morph_margin",
@@ -128,6 +137,8 @@ E39A_SMOOTH_LABEL_VERSIONS = (
     E311B_LABEL_VERSION,
     E311C_LABEL_VERSION,
     E311F_LABEL_VERSION,
+    E311H_LABEL_VERSION,
+    E311I_LABEL_VERSION,
 )
 E39_SMOOTH_LABEL_VERSIONS = (*E39A_SMOOTH_LABEL_VERSIONS, "e39b_smooth_critical_margin")
 SNR_OFFSETS = (-0.25, 0.0, 0.25)
@@ -705,7 +716,7 @@ def assign_margin_label(
         return assign_e311_label(metrics)
     if label_version in {E311B_LABEL_VERSION, E311F_LABEL_VERSION}:
         return assign_e310_label(metrics)
-    if label_version == E311C_LABEL_VERSION:
+    if label_version in {E311C_LABEL_VERSION, E311H_LABEL_VERSION, E311I_LABEL_VERSION}:
         return assign_e311c_label(metrics)
     if label_version in SNR_PRIMARY_LABEL_VERSIONS:
         return assign_snr_primary_label(metrics, label_version=label_version, measured_snr=measured_snr, target_snr=target_snr)

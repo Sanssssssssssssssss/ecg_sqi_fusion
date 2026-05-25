@@ -29,8 +29,8 @@ def run(params: dict | None = None) -> dict:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     dropout = float(_value_or_default(params.get("dropout"), MTLTransformerConfig().dropout))
     cls_pool = str(_value_or_default(params.get("cls_pool"), MTLTransformerConfig().cls_pool))
-    if cls_pool not in {"decoder", "encoder", "both", "cls"}:
-        raise ValueError("cls_pool must be 'decoder', 'encoder', 'both', or 'cls'")
+    if cls_pool not in {"decoder", "encoder", "both", "cls", "cls_mean"}:
+        raise ValueError("cls_pool must be 'decoder', 'encoder', 'both', 'cls', or 'cls_mean'")
     input_mode = str(_value_or_default(params.get("input_mode"), "raw"))
     if input_mode not in {"raw", "robust", "raw_robust"}:
         raise ValueError("input_mode must be 'raw', 'robust', or 'raw_robust'")
@@ -40,6 +40,7 @@ def run(params: dict | None = None) -> dict:
     use_local_mask_head = bool(params.get("local_mask_head", False))
     use_noise_type_head = bool(params.get("noise_type_head", False))
     use_sqi_head = bool(params.get("sqi_head", False))
+    use_positional_embedding = bool(params.get("use_positional_embedding", False))
 
     cfg = MTLTransformerConfig(
         fs=125,
@@ -52,6 +53,7 @@ def run(params: dict | None = None) -> dict:
         conv3_padding=10,  # critical closure knob
         dropout=dropout,
         cls_pool=cls_pool,
+        use_positional_embedding=use_positional_embedding,
         use_ordinal_head=use_ordinal_head,
         use_snr_head=use_snr_head,
         use_local_mask_head=use_local_mask_head,
@@ -142,7 +144,8 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run a transformer model forward sanity check.")
     parser.add_argument("--artifact_dir", default="outputs/transformer")
     parser.add_argument("--dropout", type=float)
-    parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both", "cls"))
+    parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both", "cls", "cls_mean"))
+    parser.add_argument("--use_positional_embedding", action="store_true")
     parser.add_argument("--input_mode", choices=("raw", "robust", "raw_robust"))
     parser.add_argument("--ordinal_head", action="store_true")
     parser.add_argument("--snr_head", action="store_true")

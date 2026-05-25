@@ -63,6 +63,7 @@ class MTLTransformerConfig:
     # [ASSUMPTION] dropout not specified -> default 0 for strict reproducible baseline.
     dropout: float = 0.1
     cls_pool: str = "decoder"
+    use_positional_embedding: bool = False
     use_ordinal_head: bool = False
     use_snr_head: bool = False
     use_local_mask_head: bool = False
@@ -184,9 +185,13 @@ class MTLTransformerPTBXL(nn.Module):
         self.dec = nn.ModuleList(
             [TransformerBlock(cfg.dec_d_model, cfg.dec_heads, cfg.dec_mlp_ratio, cfg.dropout) for _ in range(cfg.dec_layers)]
         )
-        if cfg.cls_pool == "cls":
+        if cfg.cls_pool in {"cls", "cls_mean"}:
             self.cls_token = nn.Parameter(torch.zeros(1, 1, cfg.enc_d_model))
             nn.init.trunc_normal_(self.cls_token, std=0.02)
+        if cfg.use_positional_embedding:
+            token_count = cfg.L + (1 if cfg.cls_pool in {"cls", "cls_mean"} else 0)
+            self.pos_embed = nn.Parameter(torch.zeros(1, token_count, cfg.enc_d_model))
+            nn.init.trunc_normal_(self.pos_embed, std=0.02)
 
         # --------- Heads ---------
         # Head1 denoise: token -> 20 points
@@ -203,12 +208,14 @@ class MTLTransformerPTBXL(nn.Module):
         # Head3 classification: GAP -> FC
         if cfg.cls_pool in {"decoder", "cls"}:
             cls_in = cfg.dec_d_model
+        elif cfg.cls_pool == "cls_mean":
+            cls_in = cfg.dec_d_model * 2
         elif cfg.cls_pool == "encoder":
             cls_in = cfg.enc_d_model
         elif cfg.cls_pool == "both":
             cls_in = cfg.enc_d_model + cfg.dec_d_model
         else:
-            raise ValueError("cls_pool must be 'decoder', 'encoder', 'both', or 'cls'")
+            raise ValueError("cls_pool must be 'decoder', 'encoder', 'both', 'cls', or 'cls_mean'")
 
         # [ASSUMPTION] dropout prob not specified -> cfg.dropout.
         self.cls_drop = nn.Dropout(cfg.dropout)
@@ -256,9 +263,11 @@ class MTLTransformerPTBXL(nn.Module):
                 f"Token length mismatch: got L={tok.shape[1]}, expect L={cfg.L}. "
                 f"Adjust conv3 padding/params to enforce L."
             )
-        if cfg.cls_pool == "cls":
+        if cfg.cls_pool in {"cls", "cls_mean"}:
             cls = self.cls_token.expand(tok.shape[0], -1, -1)
             tok = torch.cat([cls, tok], dim=1)
+        if cfg.use_positional_embedding:
+            tok = tok + self.pos_embed[:, : tok.shape[1], :]
 
         # --------- Encoder ---------
         h = tok
@@ -271,8 +280,8 @@ class MTLTransformerPTBXL(nn.Module):
             z = blk(z)  # (B, L, 64)
 
         # --------- Head 1: Denoise (patch -> unpatchify -> smooth) ---------
-        z_patch = z[:, 1:, :] if cfg.cls_pool == "cls" else z
-        h_patch = h[:, 1:, :] if cfg.cls_pool == "cls" else h
+        z_patch = z[:, 1:, :] if cfg.cls_pool in {"cls", "cls_mean"} else z
+        h_patch = h[:, 1:, :] if cfg.cls_pool in {"cls", "cls_mean"} else h
 
         p1 = self.head_denoise(z_patch)  # (B, L, 20)
         y1 = unpatchify_overlap_add(p1, T=cfg.T, stride=cfg.stride)  # (B, T)
@@ -292,6 +301,8 @@ class MTLTransformerPTBXL(nn.Module):
             g = torch.cat([h.mean(dim=1), z.mean(dim=1)], dim=1)  # (B, 192)
         elif cfg.cls_pool == "cls":
             g = z[:, 0, :]  # (B, 64)
+        elif cfg.cls_pool == "cls_mean":
+            g = torch.cat([z[:, 0, :], z_patch.mean(dim=1)], dim=1)  # (B, 128)
         else:
             raise ValueError("unknown cls_pool")
         g = self.cls_drop(g)

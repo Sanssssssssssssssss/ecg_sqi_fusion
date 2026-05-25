@@ -39,7 +39,8 @@ def parse_args(*, default_stage: str = "all") -> argparse.Namespace:
     parser.add_argument("--lr_eta_min", type=float)
     parser.add_argument("--weight_decay", type=float)
     parser.add_argument("--dropout", type=float)
-    parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both", "cls"), default=None)
+    parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both", "cls", "cls_mean"), default=None)
+    parser.add_argument("--use_positional_embedding", action="store_true")
     parser.add_argument("--input_mode", choices=("raw", "robust", "raw_robust"), default=None)
     parser.add_argument("--ordinal_head", action="store_true")
     parser.add_argument("--snr_head", action="store_true")
@@ -99,6 +100,7 @@ def train_overrides_from_args(args: argparse.Namespace) -> dict[str, object]:
         "weight_decay",
         "dropout",
         "cls_pool",
+        "use_positional_embedding",
         "input_mode",
         "ordinal_head",
         "snr_head",

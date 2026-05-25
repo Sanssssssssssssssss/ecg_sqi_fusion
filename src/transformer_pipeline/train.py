@@ -45,6 +45,7 @@ PIN_MEMORY = False
 VERBOSE = False
 MODEL_DROPOUT = MTLTransformerConfig().dropout
 CLS_POOL = MTLTransformerConfig().cls_pool
+USE_POSITIONAL_EMBEDDING = MTLTransformerConfig().use_positional_embedding
 INPUT_MODE = "raw"
 USE_ORDINAL_HEAD = False
 USE_SNR_HEAD = False
@@ -132,6 +133,7 @@ def configure_from_params(params: dict[str, Any]) -> None:
     global LABEL_SMOOTHING, CLASS_WEIGHT_GOOD, CLASS_WEIGHT_MEDIUM, CLASS_WEIGHT_BAD
     global EARLYSTOP_ENABLED, EARLYSTOP_PATIENCE, EARLYSTOP_MIN_DELTA, EARLYSTOP_START_EPOCH
     global SELECT_BEST_BY, UNCERTAINTY_MODE, INIT_CHECKPOINT, TEACHER_TARGETS
+    global USE_POSITIONAL_EMBEDDING
     global IN_NOISY, IN_CLEAN, IN_LEVEL, IN_LABELS, IN_LOCAL_MASK
     global OUT_DIR, OUT_LAST, OUT_BEST, OUT_BEST_ACC, OUT_BEST_LOSS, OUT_LOG, OUT_TEST, OUT_PROBE
 
@@ -155,8 +157,10 @@ def configure_from_params(params: dict[str, Any]) -> None:
         MODEL_DROPOUT = float(params["dropout"])
     if params.get("cls_pool") is not None:
         CLS_POOL = str(params["cls_pool"])
-        if CLS_POOL not in {"decoder", "encoder", "both", "cls"}:
-            raise ValueError("cls_pool must be 'decoder', 'encoder', 'both', or 'cls'")
+        if CLS_POOL not in {"decoder", "encoder", "both", "cls", "cls_mean"}:
+            raise ValueError("cls_pool must be 'decoder', 'encoder', 'both', 'cls', or 'cls_mean'")
+    if params.get("use_positional_embedding") is not None:
+        USE_POSITIONAL_EMBEDDING = bool(params["use_positional_embedding"])
     if params.get("input_mode") is not None:
         INPUT_MODE = str(params["input_mode"])
         if INPUT_MODE not in {"raw", "robust", "raw_robust"}:
@@ -644,6 +648,7 @@ def build_model(device: torch.device) -> tuple[nn.Module, UncertaintyWeights]:
         in_ch=in_ch,
         dropout=MODEL_DROPOUT,
         cls_pool=CLS_POOL,
+        use_positional_embedding=USE_POSITIONAL_EMBEDDING,
         use_ordinal_head=USE_ORDINAL_HEAD,
         use_snr_head=USE_SNR_HEAD,
         use_local_mask_head=USE_LOCAL_MASK_HEAD,
@@ -1489,6 +1494,7 @@ def build_probe_summary(history: list[dict[str, Any]], test_report: dict[str, An
         "weight_decay": WEIGHT_DECAY,
         "dropout": MODEL_DROPOUT,
         "cls_pool": CLS_POOL,
+        "use_positional_embedding": USE_POSITIONAL_EMBEDDING,
         "input_mode": INPUT_MODE,
         "ordinal_head": USE_ORDINAL_HEAD,
         "snr_head": USE_SNR_HEAD,
@@ -1573,15 +1579,27 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
             ckpt_path = ROOT / ckpt_path
         ckpt_init = torch.load(ckpt_path, map_location=device)
         state = ckpt_init.get("model_state", ckpt_init)
-        missing, unexpected = model.load_state_dict(state, strict=False)
+        model_state = model.state_dict()
+        compatible = {
+            k: v for k, v in state.items()
+            if k in model_state and tuple(v.shape) == tuple(model_state[k].shape)
+        }
+        skipped_shape = [
+            k for k, v in state.items()
+            if k in model_state and tuple(v.shape) != tuple(model_state[k].shape)
+        ]
+        missing, unexpected = model.load_state_dict(compatible, strict=False)
         print(
             f"initialized model from {ckpt_path} | "
-            f"missing={len(missing)} unexpected={len(unexpected)}"
+            f"loaded={len(compatible)} missing={len(missing)} "
+            f"unexpected={len(unexpected)} skipped_shape={len(skipped_shape)}"
         )
         if missing:
             print(f"init missing keys: {list(missing)[:8]}")
         if unexpected:
             print(f"init unexpected keys: {list(unexpected)[:8]}")
+        if skipped_shape:
+            print(f"init skipped shape-mismatch keys: {skipped_shape[:8]}")
 
     if dry_run:
         batch = next(iter(train_loader))
@@ -1636,6 +1654,7 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         "PIN_MEMORY": PIN_MEMORY,
         "MODEL_DROPOUT": MODEL_DROPOUT,
         "CLS_POOL": CLS_POOL,
+        "USE_POSITIONAL_EMBEDDING": USE_POSITIONAL_EMBEDDING,
         "INPUT_MODE": INPUT_MODE,
         "USE_ORDINAL_HEAD": USE_ORDINAL_HEAD,
         "USE_SNR_HEAD": USE_SNR_HEAD,
@@ -1877,7 +1896,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--lr_eta_min", type=float)
     parser.add_argument("--weight_decay", type=float)
     parser.add_argument("--dropout", type=float)
-    parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both", "cls"))
+    parser.add_argument("--cls_pool", choices=("decoder", "encoder", "both", "cls", "cls_mean"))
+    parser.add_argument("--use_positional_embedding", action="store_true")
     parser.add_argument("--input_mode", choices=("raw", "robust", "raw_robust"))
     parser.add_argument("--ordinal_head", action="store_true")
     parser.add_argument("--snr_head", action="store_true")
