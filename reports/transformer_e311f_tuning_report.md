@@ -60,14 +60,27 @@ Round-1 best warm-start for round 2: `e311f_lite_e310_morph_r1_cls_only_snr005`
 
 | Run | Test Acc | Good Recall | Medium Recall | Bad Recall | Denoise SNR Improve G/M/B | Confusion Matrix |
 | --- | ---: | ---: | ---: | ---: | --- | --- |
-| R5 decoder pooling | pending |  |  |  |  |  |
-| R5 robust input | pending |  |  |  |  |  |
-| R5 rank 0.01 margin 0.08 | pending |  |  |  |  |  |
+| R5 decoder pooling | 0.9166 | 0.9110 | 0.8748 | 0.9639 | -14.690/-9.533/-7.982 | `[[706, 63, 6], [67, 678, 30], [4, 24, 747]]` |
+| R5 robust input | 0.9376 | 0.9406 | 0.9110 | 0.9613 | 20.840/20.723/20.563 | `[[729, 44, 2], [57, 706, 12], [4, 26, 745]]` |
+| R5 rank 0.01 margin 0.08 | 0.9333 | 0.9226 | 0.9161 | 0.9613 | -9.837/-6.771/-5.933 | `[[715, 56, 4], [53, 710, 12], [8, 22, 745]]` |
 | R5 rank 0.02 margin 0.10 | pending |  |  |  |  |  |
-| R5 ordinal + SNR | pending |  |  |  |  |  |
+| R5 ordinal + SNR | 0.9299 | 0.9239 | 0.9097 | 0.9561 | -8.479/-5.396/-4.665 | `[[716, 56, 3], [61, 705, 9], [10, 24, 741]]` |
 | R5 ordinal + rank 0.01 | pending |  |  |  |  |  |
 | R5 long early-stop | pending |  |  |  |  |  |
 | R5 tiny denoise curriculum | pending |  |  |  |  |  |
+
+## Round 6
+
+| Run | Test Acc | Good Recall | Medium Recall | Bad Recall | Denoise SNR Improve G/M/B | Confusion Matrix |
+| --- | ---: | ---: | ---: | ---: | --- | --- |
+| R6 robust SNR 0.02 | pending |  |  |  |  |  |
+| R6 robust SNR 0.075 | pending |  |  |  |  |  |
+| R6 robust medium weight 1.03 | pending |  |  |  |  |  |
+| R6 robust medium weight 1.05 | pending |  |  |  |  |  |
+| R6 robust label smoothing 0.005 | pending |  |  |  |  |  |
+| R6 robust medium 1.03 + SNR 0.02 | pending |  |  |  |  |  |
+| R6 robust good/medium weight 1.03 | pending |  |  |  |  |  |
+| R6 raw medium weight 1.03 | pending |  |  |  |  |  |
 
 Best E3.11f tuning result: `R1 cls-only SNR 0.05` = `0.9376`
 Best completed result including references: `D1 reference` = `0.9465`
@@ -80,6 +93,7 @@ Best completed result including references: `D1 reference` = `0.9465`
 - Round 3 did not improve either: LR, dropout, weight decay, batch size, and SNR-head weight all stayed at or below `0.9376`.
 - Round 4 also stayed below target: seeds 1/2/3 reached `0.9312/0.9342/0.9368`, and light boundary tuning moved good/medium recall around without increasing total accuracy.
 - Round 5 tests existing alternative training knobs: pooling, robust input, light rank/ordinal ordering, longer early-stop training, and tiny denoise curriculum.
+- Round 6 keeps the best simple recipe but focuses on robust input, because robust input tied the current best while improving good recall and lowering medium recall; the tested knobs are deliberately tiny medium weighting, SNR-head weight, and label smoothing.
 - The current best recipe family is: D1 warm-start, `cls_pool=cls`, raw input, `snr_head`, `lambda_snr` near `0.05`, `lr` near `3e-5`, no rank/local/SQI-teacher/noise-type head, and no denoise/level losses.
 - Compared with the references, E3.11f R1 is much better than the current E3.11 result (`0.9000`) but remains below E3.10 M2 (`0.9402`) and D1 (`0.9465`).
 - For cls-only rows, denoise outputs are not trained; use accuracy/recall as the classification evidence and treat denoise SNR values as non-decision diagnostics.
