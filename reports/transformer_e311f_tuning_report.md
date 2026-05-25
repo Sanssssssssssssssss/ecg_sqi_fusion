@@ -56,6 +56,19 @@ Round-1 best warm-start for round 2: `e311f_lite_e310_morph_r1_cls_only_snr005`
 | R4 medium weight 1.08 | 0.9338 | 0.9329 | 0.9097 | 0.9587 | -10.011/-6.799/-6.016 | `[[723, 47, 5], [61, 705, 9], [10, 22, 743]]` |
 | R4 select by val loss | 0.9222 | 0.9303 | 0.8916 | 0.9445 | -7.507/-4.713/-3.735 | `[[721, 50, 4], [72, 691, 12], [15, 28, 732]]` |
 
+## Round 5
+
+| Run | Test Acc | Good Recall | Medium Recall | Bad Recall | Denoise SNR Improve G/M/B | Confusion Matrix |
+| --- | ---: | ---: | ---: | ---: | --- | --- |
+| R5 decoder pooling | pending |  |  |  |  |  |
+| R5 robust input | pending |  |  |  |  |  |
+| R5 rank 0.01 margin 0.08 | pending |  |  |  |  |  |
+| R5 rank 0.02 margin 0.10 | pending |  |  |  |  |  |
+| R5 ordinal + SNR | pending |  |  |  |  |  |
+| R5 ordinal + rank 0.01 | pending |  |  |  |  |  |
+| R5 long early-stop | pending |  |  |  |  |  |
+| R5 tiny denoise curriculum | pending |  |  |  |  |  |
+
 Best E3.11f tuning result: `R1 cls-only SNR 0.05` = `0.9376`
 Best completed result including references: `D1 reference` = `0.9465`
 
@@ -66,6 +79,7 @@ Best completed result including references: `D1 reference` = `0.9465`
 - Round 2 did not improve the first-round best: low-LR continuation dropped to `0.9303`, label smoothing was nearly tied at `0.9372`, and good/medium weighting dropped to `0.9290`.
 - Round 3 did not improve either: LR, dropout, weight decay, batch size, and SNR-head weight all stayed at or below `0.9376`.
 - Round 4 also stayed below target: seeds 1/2/3 reached `0.9312/0.9342/0.9368`, and light boundary tuning moved good/medium recall around without increasing total accuracy.
+- Round 5 tests existing alternative training knobs: pooling, robust input, light rank/ordinal ordering, longer early-stop training, and tiny denoise curriculum.
 - The current best recipe family is: D1 warm-start, `cls_pool=cls`, raw input, `snr_head`, `lambda_snr` near `0.05`, `lr` near `3e-5`, no rank/local/SQI-teacher/noise-type head, and no denoise/level losses.
 - Compared with the references, E3.11f R1 is much better than the current E3.11 result (`0.9000`) but remains below E3.10 M2 (`0.9402`) and D1 (`0.9465`).
 - For cls-only rows, denoise outputs are not trained; use accuracy/recall as the classification evidence and treat denoise SNR values as non-decision diagnostics.

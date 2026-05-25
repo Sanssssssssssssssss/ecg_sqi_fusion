@@ -53,6 +53,16 @@ R4_RUNS = [
     ("R4 medium weight 1.08", f"{VARIANT}_r4_medium_weight108"),
     ("R4 select by val loss", f"{VARIANT}_r4_select_val_loss"),
 ]
+R5_RUNS = [
+    ("R5 decoder pooling", f"{VARIANT}_r5_decoder_pool"),
+    ("R5 robust input", f"{VARIANT}_r5_robust_input"),
+    ("R5 rank 0.01 margin 0.08", f"{VARIANT}_r5_rank001"),
+    ("R5 rank 0.02 margin 0.10", f"{VARIANT}_r5_rank002"),
+    ("R5 ordinal + SNR", f"{VARIANT}_r5_ordinal_snr"),
+    ("R5 ordinal + rank 0.01", f"{VARIANT}_r5_ordinal_rank001"),
+    ("R5 long early-stop", f"{VARIANT}_r5_long_earlystop"),
+    ("R5 tiny denoise curriculum", f"{VARIANT}_r5_tiny_denoise_curriculum"),
+]
 
 
 def load_json(path: Path) -> dict[str, Any] | None:
@@ -136,6 +146,7 @@ def all_tune_runs() -> list[tuple[str, str]]:
         runs.extend(r2_runs_for(r1_name))
     runs.extend(R3_RUNS)
     runs.extend(R4_RUNS)
+    runs.extend(R5_RUNS)
     return runs
 
 
@@ -206,6 +217,16 @@ def main() -> None:
         ]
     )
     lines.extend(row(label, MODEL_ROOT / run_name / "test_report.json") for label, run_name in R4_RUNS)
+    lines.extend(
+        [
+            "",
+            "## Round 5",
+            "",
+            "| Run | Test Acc | Good Recall | Medium Recall | Bad Recall | Denoise SNR Improve G/M/B | Confusion Matrix |",
+            "| --- | ---: | ---: | ---: | ---: | --- | --- |",
+        ]
+    )
+    lines.extend(row(label, MODEL_ROOT / run_name / "test_report.json") for label, run_name in R5_RUNS)
     visual_best = best_visual_tuning_run()
     if visual_best is not None:
         lines.extend(["", f"Best E3.11f tuning result: `{visual_best[0]}` = `{visual_best[1]:.4f}`"])
@@ -224,6 +245,7 @@ def main() -> None:
             "- Round 2 did not improve the first-round best: low-LR continuation dropped to `0.9303`, label smoothing was nearly tied at `0.9372`, and good/medium weighting dropped to `0.9290`.",
             "- Round 3 did not improve either: LR, dropout, weight decay, batch size, and SNR-head weight all stayed at or below `0.9376`.",
             "- Round 4 also stayed below target: seeds 1/2/3 reached `0.9312/0.9342/0.9368`, and light boundary tuning moved good/medium recall around without increasing total accuracy.",
+            "- Round 5 tests existing alternative training knobs: pooling, robust input, light rank/ordinal ordering, longer early-stop training, and tiny denoise curriculum.",
             "- The current best recipe family is: D1 warm-start, `cls_pool=cls`, raw input, `snr_head`, `lambda_snr` near `0.05`, `lr` near `3e-5`, no rank/local/SQI-teacher/noise-type head, and no denoise/level losses.",
             "- Compared with the references, E3.11f R1 is much better than the current E3.11 result (`0.9000`) but remains below E3.10 M2 (`0.9402`) and D1 (`0.9465`).",
             "- For cls-only rows, denoise outputs are not trained; use accuracy/recall as the classification evidence and treat denoise SNR values as non-decision diagnostics.",
