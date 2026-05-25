@@ -73,14 +73,14 @@ Round-1 best warm-start for round 2: `e311f_lite_e310_morph_r1_cls_only_snr005`
 
 | Run | Test Acc | Good Recall | Medium Recall | Bad Recall | Denoise SNR Improve G/M/B | Confusion Matrix |
 | --- | ---: | ---: | ---: | ---: | --- | --- |
-| R6 robust SNR 0.02 | pending |  |  |  |  |  |
-| R6 robust SNR 0.075 | pending |  |  |  |  |  |
-| R6 robust medium weight 1.03 | pending |  |  |  |  |  |
-| R6 robust medium weight 1.05 | pending |  |  |  |  |  |
-| R6 robust label smoothing 0.005 | pending |  |  |  |  |  |
-| R6 robust medium 1.03 + SNR 0.02 | pending |  |  |  |  |  |
-| R6 robust good/medium weight 1.03 | pending |  |  |  |  |  |
-| R6 raw medium weight 1.03 | pending |  |  |  |  |  |
+| R6 robust SNR 0.02 | 0.9359 | 0.9406 | 0.9084 | 0.9587 | 20.721/20.601/20.452 | `[[729, 44, 2], [57, 704, 14], [4, 28, 743]]` |
+| R6 robust SNR 0.075 | 0.9359 | 0.9394 | 0.9110 | 0.9574 | 20.908/20.793/20.636 | `[[728, 44, 3], [55, 706, 14], [5, 28, 742]]` |
+| R6 robust medium weight 1.03 | 0.9368 | 0.9381 | 0.9135 | 0.9587 | 20.810/20.685/20.520 | `[[727, 45, 3], [54, 708, 13], [5, 27, 743]]` |
+| R6 robust medium weight 1.05 | 0.9320 | 0.9200 | 0.9174 | 0.9587 | 20.977/20.853/20.653 | `[[713, 59, 3], [50, 711, 14], [5, 27, 743]]` |
+| R6 robust label smoothing 0.005 | 0.9355 | 0.9381 | 0.9071 | 0.9613 | 21.605/21.430/21.364 | `[[727, 45, 3], [56, 703, 16], [5, 25, 745]]` |
+| R6 robust medium 1.03 + SNR 0.02 | 0.9355 | 0.9394 | 0.9084 | 0.9587 | 20.760/20.630/20.444 | `[[728, 44, 3], [58, 704, 13], [5, 27, 743]]` |
+| R6 robust good/medium weight 1.03 | 0.9363 | 0.9406 | 0.9084 | 0.9600 | 20.848/20.704/20.552 | `[[729, 43, 3], [57, 704, 14], [4, 27, 744]]` |
+| R6 raw medium weight 1.03 | 0.9355 | 0.9355 | 0.9123 | 0.9587 | -10.062/-6.797/-6.024 | `[[725, 47, 3], [59, 707, 9], [10, 22, 743]]` |
 
 Best E3.11f tuning result: `R5 tiny denoise curriculum` = `0.9381`
 Best completed result including references: `D1 reference` = `0.9465`
