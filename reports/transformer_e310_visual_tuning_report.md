@@ -29,8 +29,20 @@ Goal: improve the current single-model visual benchmark while keeping the same s
 
 Best E3.10 visual result: `E3.10 M2 warm-start + SNR head` = `0.9402`
 
+## Calibration / Ensemble Diagnostic
+
+Post-hoc validation-offset calibration and probability ensembles were tested after
+Round 1. The best diagnostic result is:
+
+- `ensemble M2 seeds`: raw test acc `0.9411`, calibrated test acc `0.9419`
+
+This is a small gain over the single-model M2 anchor but still below the D1
+reference (`0.9465`), so the current E3.10 visual version has limited remaining
+seed/threshold variance to exploit.
+
 ## Interpretation
 
 - M2 is the current single-model anchor because it already reaches the 0.94 visual benchmark threshold.
 - Round 1 keeps the architecture fixed and only tests seed robustness, SNR-head weight, light label smoothing, and small medium-class weighting.
-- If Round 1 does not improve M2, the next useful step is ensemble/error audit rather than adding heads.
+- Calibration/ensemble gives only a small diagnostic gain, so further improvement
+  probably needs a cleaner data boundary rather than more heads or seed tweaks.
