@@ -25,7 +25,7 @@ Goal: improve the current single-model visual benchmark while keeping the same s
 | R1 SNR lambda 0.075 | pending |  |  |  |  |  |
 | R1 medium weight 1.03 | 0.9347 | 0.9389 | 0.9084 | 0.9567 | -8.408/-5.557/-4.521 | `[[738, 43, 5], [47, 714, 25], [8, 26, 752]]` |
 | R1 medium weight 1.05 | pending |  |  |  |  |  |
-| R1 label smoothing 0.005 | pending |  |  |  |  |  |
+| R1 label smoothing 0.005 | 0.9338 | 0.9440 | 0.9122 | 0.9453 | -7.824/-5.061/-3.977 | `[[742, 39, 5], [49, 717, 20], [10, 33, 743]]` |
 
 Best E3.10 visual result: `E3.10 M2 warm-start + SNR head` = `0.9402`
 
