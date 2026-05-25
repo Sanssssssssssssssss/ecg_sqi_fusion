@@ -34,6 +34,25 @@ R2_SUFFIXES = [
     ("R2 label smoothing", "ls003"),
     ("R2 good/medium weights", "gm_weight"),
 ]
+R3_RUNS = [
+    ("R3 lr 2.5e-5", f"{VARIANT}_r3_lr25e5"),
+    ("R3 lr 4e-5", f"{VARIANT}_r3_lr4e5"),
+    ("R3 dropout 0.15", f"{VARIANT}_r3_drop15"),
+    ("R3 weight decay 0.05", f"{VARIANT}_r3_wd05"),
+    ("R3 batch size 64", f"{VARIANT}_r3_batch64"),
+    ("R3 SNR lambda 0.02", f"{VARIANT}_r3_snr002"),
+    ("R3 SNR lambda 0.075", f"{VARIANT}_r3_snr0075"),
+]
+R4_RUNS = [
+    ("R4 seed 1 best recipe", f"{VARIANT}_r4_seed1_best"),
+    ("R4 seed 2 best recipe", f"{VARIANT}_r4_seed2_best"),
+    ("R4 seed 3 best recipe", f"{VARIANT}_r4_seed3_best"),
+    ("R4 dropout 0.05", f"{VARIANT}_r4_dropout005"),
+    ("R4 label smoothing 0.01", f"{VARIANT}_r4_label_smoothing001"),
+    ("R4 good weight 1.08", f"{VARIANT}_r4_good_weight108"),
+    ("R4 medium weight 1.08", f"{VARIANT}_r4_medium_weight108"),
+    ("R4 select by val loss", f"{VARIANT}_r4_select_val_loss"),
+]
 
 
 def load_json(path: Path) -> dict[str, Any] | None:
@@ -115,6 +134,8 @@ def all_tune_runs() -> list[tuple[str, str]]:
     r1_names = [run_name for _, run_name in TUNE_RUNS[:4]]
     for r1_name in r1_names:
         runs.extend(r2_runs_for(r1_name))
+    runs.extend(R3_RUNS)
+    runs.extend(R4_RUNS)
     return runs
 
 
@@ -165,6 +186,26 @@ def main() -> None:
         ]
     )
     lines.extend(row(label, MODEL_ROOT / run_name / "test_report.json") for label, run_name in r2_runs_for(r1_best))
+    lines.extend(
+        [
+            "",
+            "## Round 3",
+            "",
+            "| Run | Test Acc | Good Recall | Medium Recall | Bad Recall | Denoise SNR Improve G/M/B | Confusion Matrix |",
+            "| --- | ---: | ---: | ---: | ---: | --- | --- |",
+        ]
+    )
+    lines.extend(row(label, MODEL_ROOT / run_name / "test_report.json") for label, run_name in R3_RUNS)
+    lines.extend(
+        [
+            "",
+            "## Round 4",
+            "",
+            "| Run | Test Acc | Good Recall | Medium Recall | Bad Recall | Denoise SNR Improve G/M/B | Confusion Matrix |",
+            "| --- | ---: | ---: | ---: | ---: | --- | --- |",
+        ]
+    )
+    lines.extend(row(label, MODEL_ROOT / run_name / "test_report.json") for label, run_name in R4_RUNS)
     visual_best = best_visual_tuning_run()
     if visual_best is not None:
         lines.extend(["", f"Best E3.11f tuning result: `{visual_best[0]}` = `{visual_best[1]:.4f}`"])
@@ -176,12 +217,17 @@ def main() -> None:
             "",
             "## Interpretation",
             "",
-            "- Best E3.11f visual tuning is `R1 cls-only SNR 0.05` at `0.9376`, improving the E3.11f baseline `0.9329` but not passing the `0.94` target.",
+            f"- Best E3.11f visual tuning so far is `{visual_best[0] if visual_best else 'pending'}` at `{visual_best[1]:.4f}`."
+            if visual_best
+            else "- Best E3.11f visual tuning is still pending.",
+            "- The tuning target for replacing E3.10 as the visual benchmark is `>=0.94` test accuracy.",
             "- Round 2 did not improve the first-round best: low-LR continuation dropped to `0.9303`, label smoothing was nearly tied at `0.9372`, and good/medium weighting dropped to `0.9290`.",
-            "- The best E3.11f recipe is: D1 warm-start, `cls_pool=cls`, raw input, `snr_head`, `lambda_snr=0.05`, `lr=3e-5`, `epochs=24`, `dropout=0.10`, `weight_decay=0.03`, no rank/local/SQI-teacher/noise-type head, and no denoise/level losses.",
+            "- Round 3 did not improve either: LR, dropout, weight decay, batch size, and SNR-head weight all stayed at or below `0.9376`.",
+            "- Round 4 also stayed below target: seeds 1/2/3 reached `0.9312/0.9342/0.9368`, and light boundary tuning moved good/medium recall around without increasing total accuracy.",
+            "- The current best recipe family is: D1 warm-start, `cls_pool=cls`, raw input, `snr_head`, `lambda_snr` near `0.05`, `lr` near `3e-5`, no rank/local/SQI-teacher/noise-type head, and no denoise/level losses.",
             "- Compared with the references, E3.11f R1 is much better than the current E3.11 result (`0.9000`) but remains below E3.10 M2 (`0.9402`) and D1 (`0.9465`).",
             "- For cls-only rows, denoise outputs are not trained; use accuracy/recall as the classification evidence and treat denoise SNR values as non-decision diagnostics.",
-            "- Recommendation: keep E3.10 M2 as the safer visual benchmark if the requirement is `>=0.94`; keep E3.11f R1 as the best E3.11-style diagnostic result.",
+            "- Final recommendation: keep E3.10 M2 as the safer `>=0.94` visual benchmark and keep E3.11f as a diagnostic result showing the limit of this cleaner visual-label variant under simple transformer tuning.",
         ]
     )
     lines.extend(
