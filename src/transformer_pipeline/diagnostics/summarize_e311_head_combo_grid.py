@@ -37,6 +37,7 @@ def recalls(cm: list[list[int]]) -> tuple[float, float, float]:
 
 def family_for(run_name: str) -> str:
     name = run_name.lower()
+    has_mask = "mask" in name or "_hc2_m" in name
     if "no_snr" in name:
         return "no_snr_control"
     if "base" in name:
@@ -45,7 +46,9 @@ def family_for(run_name: str) -> str:
         return "level_aux"
     if "den" in name:
         return "denoise_aux"
-    bits = [bit for bit in ("ord", "noise", "mask", "rank") if bit in name]
+    bits = [bit for bit in ("ord", "noise", "rank") if bit in name]
+    if has_mask:
+        bits.insert(0, "mask")
     if len(bits) >= 2:
         return "+".join(bits)
     if bits:
@@ -55,6 +58,41 @@ def family_for(run_name: str) -> str:
     if "good" in name or "medium" in name or "ls" in name or "wd" in name:
         return "regularization"
     return "other"
+
+
+def pure_local_mask_groups(rows: list[dict[str, Any]]) -> list[tuple[str, int, float, float, float, float, str]]:
+    grouped: dict[tuple[float, float], list[dict[str, Any]]] = {}
+    for row in rows:
+        hp = row["hp"]
+        if not hp.get("local_mask_head", False):
+            continue
+        if hp.get("ordinal_head", False) or hp.get("noise_type_head", False):
+            continue
+        if abs(float(hp.get("lambda_rank", 0.0) or 0.0)) > 1e-12:
+            continue
+        if abs(float(hp.get("lambda_den", 0.0) or 0.0)) > 1e-12:
+            continue
+        mask_l = float(hp.get("lambda_local_mask", 0.0) or 0.0)
+        lr = float(hp.get("lr", 0.0) or 0.0)
+        grouped.setdefault((mask_l, lr), []).append(row)
+
+    out = []
+    for (mask_l, lr), vals in grouped.items():
+        accs = [float(v["acc"]) for v in vals]
+        best = max(vals, key=lambda v: float(v["acc"]))
+        out.append(
+            (
+                f"mask={mask_l:g}, lr={lr:g}",
+                len(vals),
+                statistics.mean(accs),
+                statistics.pstdev(accs) if len(accs) > 1 else 0.0,
+                min(accs),
+                max(accs),
+                str(best["run"]),
+            )
+        )
+    out.sort(key=lambda item: (item[5], item[2]), reverse=True)
+    return out
 
 
 def run_rows(root_out: Path) -> list[dict[str, Any]]:
@@ -187,6 +225,24 @@ def main() -> None:
     else:
         for family, n, mean, std, best_acc, best_run in fams:
             lines.append(f"| {family} | {n} | {mean:.4f} | {std:.4f} | {best_acc:.4f} | `{best_run}` |")
+
+    lines.extend(
+        [
+            "",
+            "## Pure Local-Mask Stability",
+            "",
+            "| Setting | N | Mean Acc | Std | Min | Max | Best Run |",
+            "| --- | ---: | ---: | ---: | ---: | ---: | --- |",
+        ]
+    )
+    local_groups = pure_local_mask_groups(rows)
+    if not local_groups:
+        lines.append("| pending |  |  |  |  |  |  |")
+    else:
+        for setting, n, mean, std, min_acc, max_acc, best_run in local_groups:
+            lines.append(
+                f"| {setting} | {n} | {mean:.4f} | {std:.4f} | {min_acc:.4f} | {max_acc:.4f} | `{best_run}` |"
+            )
 
     lines.extend(
         [
