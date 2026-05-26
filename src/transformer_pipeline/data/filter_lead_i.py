@@ -38,6 +38,13 @@ def has_lead_i(value: object) -> bool:
     return bool(LEAD_I_PATTERN.search(str(value).upper()))
 
 
+def has_noise_annotation(value: object) -> bool:
+    if pd.isna(value):
+        return False
+    text = str(value).strip().lower()
+    return text not in {"", "[]", "nan", "none"}
+
+
 def resolve_input_csv(root: Path, ptbxl_root: Path) -> Path:
     candidates = [
         ptbxl_root / "ptbxl_database.csv",
@@ -68,6 +75,7 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
     artifact_dir = _artifact_dir(root, params)
     ptbxl_root = _path(params.get("ptbxl_root"), root / "data" / "ptb-xl")
     force = bool(params.get("force", False))
+    lead_i_only = bool(params.get("lead_i_only", False))
 
     out_dir = artifact_dir / "ptbxl"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -84,13 +92,17 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         raise ValueError(f"Missing required columns: {missing_columns}")
 
     contains_lead_i = df[TARGET_COLUMNS].apply(lambda col: col.map(has_lead_i)).any(axis=1)
-    normal_df = df[~contains_lead_i].copy()
+    contains_any_noise = df[TARGET_COLUMNS].apply(lambda col: col.map(has_noise_annotation)).any(axis=1)
+    reject_mask = contains_lead_i if lead_i_only else contains_any_noise
+    normal_df = df[~reject_mask].copy()
     saved_csv = save_csv_with_fallback(normal_df, out_csv)
 
     logger.info("Input CSV: %s", _display(csv_path, root))
     logger.info("Total samples: %d", len(df))
     logger.info("Samples containing lead I in target columns: %d", int(contains_lead_i.sum()))
-    logger.info("Normal samples without lead I: %d", len(normal_df))
+    logger.info("Samples containing any lead noise/electrode annotation: %d", int(contains_any_noise.sum()))
+    logger.info("Filter mode: %s", "lead_i_only" if lead_i_only else "strict_any_lead")
+    logger.info("Clean samples kept: %d", len(normal_df))
     logger.info("Saved filtered CSV: %s", _display(saved_csv, root))
     return {
         "step": "filter_lead_i",
@@ -98,6 +110,9 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         "outputs": [str(saved_csv)],
         "total": int(len(df)),
         "rows": int(len(normal_df)),
+        "lead_i_noise_rows": int(contains_lead_i.sum()),
+        "any_noise_rows": int(contains_any_noise.sum()),
+        "filter_mode": "lead_i_only" if lead_i_only else "strict_any_lead",
     }
 
 
@@ -107,9 +122,10 @@ def main() -> None:
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Filter PTB-XL metadata rows with Lead I noise labels.")
+    parser = argparse.ArgumentParser(description="Filter PTB-XL metadata rows with noise/electrode annotations.")
     parser.add_argument("--artifact_dir", default="outputs/transformer")
     parser.add_argument("--ptbxl_root", default="")
+    parser.add_argument("--lead_i_only", action="store_true", help="legacy mode: reject only rows where the target columns mention lead I")
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--force", action="store_true")
     return parser.parse_args()

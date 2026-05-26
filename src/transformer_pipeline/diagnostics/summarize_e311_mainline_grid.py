@@ -112,6 +112,7 @@ def main() -> None:
         "# E3.11 Mainline Grid",
         "",
         "Mainline decision: E3.11f-style visual data replaces E3.10 as the target line.",
+        "The source clean pool uses strict PTB-XL filtering: any baseline/static/burst/electrode annotation in any lead is rejected.",
         "E3.10 remains only a historical reference, not an optimization target.",
         "",
         "Current historical references:",
@@ -207,7 +208,7 @@ def main() -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Summarize the E3.11 mainline data/model grid.")
-    parser.add_argument("--root_out", default="outputs/transformer_e311_mainline")
+    parser.add_argument("--root_out", default="outputs/transformer_e311_mainline_strict")
     return parser.parse_args()
 
 

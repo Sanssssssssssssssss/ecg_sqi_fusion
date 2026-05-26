@@ -25,8 +25,8 @@ cd /home/cx272/final_project/ecg_sqi_fusion
 source .venv/bin/activate
 mkdir -p logs
 
-ROOT_OUT="${ROOT_OUT:-outputs/transformer_e311_mainline}"
-SOURCE_ARTIFACT_DIR="${SOURCE_ARTIFACT_DIR:-outputs/transformer_source}"
+ROOT_OUT="${ROOT_OUT:-outputs/transformer_e311_mainline_strict}"
+SOURCE_ARTIFACT_DIR="${SOURCE_ARTIFACT_DIR:-outputs/transformer_source_strict_clean}"
 FORCE_DATA="${FORCE_DATA:-0}"
 GROUP_RETRIES="${GROUP_RETRIES:-24}"
 MAX_TRAIN_CLEAN="${MAX_TRAIN_CLEAN:-4000}"

@@ -37,7 +37,7 @@ if not torch.cuda.is_available():
     raise SystemExit("CUDA is required for E3.11 grid; refusing to run on CPU.")
 PY
 
-ROOT_OUT="${ROOT_OUT:-outputs/transformer_e311_mainline}"
+ROOT_OUT="${ROOT_OUT:-outputs/transformer_e311_mainline_strict}"
 INIT_CHECKPOINT="${INIT_CHECKPOINT:-outputs/transformer_e39a_smooth_morph_triplet/models/e39_d1_smooth_morph_cls_raw/ckpt_best_val.pt}"
 TASK_ID="${SLURM_ARRAY_TASK_ID:-0}"
 
