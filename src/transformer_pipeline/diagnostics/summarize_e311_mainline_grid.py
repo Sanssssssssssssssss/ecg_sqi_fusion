@@ -89,12 +89,17 @@ def run_rows(artifact_dir: Path) -> list[tuple[str, float, str]]:
         desc_bits = [
             f"acc={fmt(rep.get('acc'))}",
             f"rec={fmt(good)}/{fmt(medium)}/{fmt(bad)}",
+            f"seed={hp.get('seed', '')}",
             f"pool={hp.get('cls_pool', '')}",
             f"pos={hp.get('use_positional_embedding', False)}",
+            f"in={hp.get('input_mode', '')}",
             f"snr={hp.get('lambda_snr', '')}",
             f"ord={hp.get('ordinal_head', False)}",
             f"noise={hp.get('noise_type_head', False)}",
+            f"mask={hp.get('lambda_local_mask', '') if hp.get('local_mask_head', False) else False}",
+            f"rank={hp.get('lambda_rank', '')}",
             f"den={hp.get('lambda_den', '')}",
+            f"lvl={hp.get('lambda_lvl', '')}",
             f"lr={hp.get('lr', '')}",
             f"drop={hp.get('dropout', '')}",
         ]
