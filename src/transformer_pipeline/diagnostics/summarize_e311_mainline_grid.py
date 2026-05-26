@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import statistics
 from pathlib import Path
 from typing import Any
 
@@ -102,6 +103,35 @@ def run_rows(artifact_dir: Path) -> list[tuple[str, float, str]]:
     return rows
 
 
+def focused_stability_rows(artifact_dir: Path) -> list[tuple[float, float, int, float, float, float, float]]:
+    grouped: dict[tuple[float, float], list[float]] = {}
+    model_root = artifact_dir / "models"
+    if not model_root.exists():
+        return []
+    for report in sorted(model_root.glob("*/test_report.json")):
+        run_name = report.parent.name
+        if "_r2_" not in run_name and "_r3_" not in run_name and "_r4_" not in run_name:
+            continue
+        rep = load_json(report)
+        probe = load_json(report.parent / "probe_summary.json") or {}
+        hp = probe.get("hyperparams", {})
+        try:
+            lr = float(hp.get("lr"))
+            dropout = float(hp.get("dropout"))
+            acc = float(rep.get("acc", 0.0)) if rep else 0.0
+        except (TypeError, ValueError):
+            continue
+        grouped.setdefault((lr, dropout), []).append(acc)
+
+    rows = []
+    for (lr, dropout), vals in grouped.items():
+        if len(vals) < 2:
+            continue
+        rows.append((lr, dropout, len(vals), statistics.mean(vals), statistics.pstdev(vals), min(vals), max(vals)))
+    rows.sort(key=lambda row: (row[3], row[6]), reverse=True)
+    return rows
+
+
 def main() -> None:
     args = parse_args()
     root_out = Path(args.root_out)
@@ -188,6 +218,26 @@ def main() -> None:
         for rank, (variant, run_name, acc, desc) in enumerate(overall[:15], start=1):
             lines.append(f"| {rank} | `{variant}` | `{run_name}` | {acc:.4f} | {desc} |")
 
+    stability = focused_stability_rows(root_out / "e311f_lite_e310_morph")
+    lines.extend(
+        [
+            "",
+            "## Focused Sweep Stability",
+            "",
+            "Grouped across Round 2-4 E3.11f runs by learning rate and dropout.",
+            "",
+            "| LR | Dropout | N | Mean Acc | Std | Min | Max |",
+            "| ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        ]
+    )
+    if not stability:
+        lines.append("|  |  |  |  |  |  |  |")
+    else:
+        for lr, dropout, n, mean, std, min_acc, max_acc in stability:
+            lines.append(
+                f"| {lr:g} | {dropout:g} | {n} | {mean:.4f} | {std:.4f} | {min_acc:.4f} | {max_acc:.4f} |"
+            )
+
     lines.extend(
         [
             "",
@@ -198,9 +248,10 @@ def main() -> None:
             "- Prune `e311i_wide_relaxed_morph`: it has higher SQI baselines and early validation was clearly worse than E3.11f, so the wide-SNR branch is diagnostic only.",
             "- Round 2 crossed the target with `e311f_lite_e310_morph_r2_lr5_seed1_pos` at `0.9432`.",
             "- Round 3 improved the best single model to `0.9464` with `lr=6.25e-5`, while `lr=5.75e-5` was the most stable high-performing basin.",
+            "- Round 4 did not beat the Round 3 best; it confirmed `5.75e-5` as the most stable LR and `6.25e-5` as the highest single-run point.",
             "- Keep the simple model recipe: CLS pooling, positional embedding, raw input, D1 warm-start, SNR head with `lambda_snr=0.05`, no denoise, no local head, no rank loss.",
             "- Drop the weak branches from the next sweep: relaxed morphology, wide SNR, raw_robust input, cls_mean pooling, val-loss checkpoint selection, noise-type head, and class-weight tweaks.",
-            "- Round 4 should only probe the upper LR basin (`5.75e-5..6.75e-5`) with more seeds; `dropout=0.075` did not beat `dropout=0.10`.",
+            "- Stop broad model-grid tuning here unless the dataset changes; further gains are more likely from data/source audit or an ensemble diagnostic than from adding heads.",
             "",
             "## Pruning Rules",
             "",
