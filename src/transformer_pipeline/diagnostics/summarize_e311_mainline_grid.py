@@ -191,6 +191,13 @@ def main() -> None:
     lines.extend(
         [
             "",
+            "## Stage Decisions",
+            "",
+            "- Keep `e311f_lite_e310_morph` as the main E3.11 data line: it is the only branch close to the historical E3.10 visual result.",
+            "- Prune `e311h_lite_relaxed_morph`: the relaxed-morph screen stayed around `0.90-0.91`, far below E3.11f.",
+            "- Prune `e311i_wide_relaxed_morph`: it has higher SQI baselines and early validation was clearly worse than E3.11f, so the wide-SNR branch is diagnostic only.",
+            "- Round 2 should focus on `e311f_lite_e310_morph` with positional CLS models near `lr=3e-5..6e-5`, SNR-head weight, light class weighting, and seed robustness.",
+            "",
             "## Pruning Rules",
             "",
             "- If a variant's first 3-6 runs stay below `0.90`, stop expanding it.",
