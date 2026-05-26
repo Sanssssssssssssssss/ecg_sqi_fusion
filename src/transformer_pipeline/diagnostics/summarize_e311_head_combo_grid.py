@@ -247,6 +247,17 @@ def main() -> None:
     lines.extend(
         [
             "",
+            "## Current Interpretation",
+            "",
+            "- The only auxiliary head that exceeded the previous `0.9464` best is low-weight local mask supervision.",
+            "- Best single run: `hc22_mask010_lr625_s1`, test acc `0.9505`, recall G/M/B `0.9278/0.9496/0.9741`.",
+            "- Compared with the SNR-only baseline `hc03_base_lr625_s1`, the local-mask best reduces medium errors: confusion row for medium changes from `[35, 686, 13]` to `[27, 697, 10]`.",
+            "- The gain is not just a class-threshold shift: good recall changes only `0.9292 -> 0.9278`, and bad recall changes `0.9755 -> 0.9741`.",
+            "- Per-noise-kind, the best local-mask run improves `em` and `ma` overall accuracy, but slightly hurts `mix`; this is why multi-seed stability still matters before making it the final default.",
+            "- Multi-seed result is mixed: `mask=0.01, lr=6.25e-5` has the highest max but wide seed variance; `mask=0.01, lr=5.75e-5` is more stable but has a lower max.",
+            "- Remaining queued jobs are tasks `16-39` from `tune_e311_head_combo_round2.sh`; they cover `lr=6.4`, `mask=0.0075/0.0125/0.015`, and small `mask+rank/ordinal/noise` combinations.",
+            "- Cluster status on 2026-05-27: the whole `ampere` GPU partition is in maintenance, so remaining jobs are pending for scheduler reasons rather than code failure.",
+            "",
             "## Live Decision Rules",
             "",
             "- If SNR-only remains best, keep the model simple and spend future effort on data/source audit.",
