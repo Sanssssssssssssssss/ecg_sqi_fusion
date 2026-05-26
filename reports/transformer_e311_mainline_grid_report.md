@@ -33,18 +33,18 @@ E3.11f lite SNR + E3.10 morphology.
 
 | Rank | Run | Test Acc | Summary |
 | ---: | --- | ---: | --- |
-| 1 | `e311f_lite_e310_morph_r3_lr625_seed1` | 0.9464 | acc=0.9464, rec=0.9292/0.9346/0.9755, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=6.25e-05, drop=0.1 |
-| 2 | `e311f_lite_e310_morph_r3_lr575_seed1` | 0.9450 | acc=0.9450, rec=0.9278/0.9319/0.9755, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=5.75e-05, drop=0.1 |
-| 3 | `e311f_lite_e310_morph_r4_lr625_seed6` | 0.9450 | acc=0.9450, rec=0.9237/0.9360/0.9755, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=6.25e-05, drop=0.1 |
-| 4 | `e311f_lite_e310_morph_r4_lr65_seed1` | 0.9450 | acc=0.9450, rec=0.9251/0.9305/0.9796, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=6.5e-05, drop=0.1 |
-| 5 | `e311f_lite_e310_morph_r3_lr55_drop0075_seed1` | 0.9446 | acc=0.9446, rec=0.9278/0.9428/0.9632, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=5.5e-05, drop=0.075 |
-| 6 | `e311f_lite_e310_morph_r4_lr61_seed1` | 0.9446 | acc=0.9446, rec=0.9305/0.9305/0.9728, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=6.1e-05, drop=0.1 |
-| 7 | `e311f_lite_e310_morph_r3_lr525_seed0` | 0.9441 | acc=0.9441, rec=0.9251/0.9482/0.9591, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=5.25e-05, drop=0.1 |
-| 8 | `e311f_lite_e310_morph_r3_lr55_seed1` | 0.9437 | acc=0.9437, rec=0.9373/0.9196/0.9741, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=5.5e-05, drop=0.1 |
-| 9 | `e311f_lite_e310_morph_r4_lr575_seed5` | 0.9437 | acc=0.9437, rec=0.9292/0.9332/0.9687, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=5.75e-05, drop=0.1 |
-| 10 | `e311f_lite_e310_morph_r4_lr575_seed6` | 0.9437 | acc=0.9437, rec=0.9332/0.9264/0.9714, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=5.75e-05, drop=0.1 |
-| 11 | `e311f_lite_e310_morph_r4_lr625_seed5` | 0.9437 | acc=0.9437, rec=0.9346/0.9278/0.9687, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=6.25e-05, drop=0.1 |
-| 12 | `e311f_lite_e310_morph_r4_lr64_seed0` | 0.9437 | acc=0.9437, rec=0.9142/0.9496/0.9673, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=6.4e-05, drop=0.1 |
+| 1 | `e311f_lite_e310_morph_hc22_mask010_lr625_s1` | 0.9505 | acc=0.9505, rec=0.9278/0.9496/0.9741, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=0.01, rank=, den=0.0, lvl=0.0, lr=6.25e-05, drop=0.1 |
+| 2 | `e311f_lite_e310_morph_hc19_mask010_lr575_s1` | 0.9491 | acc=0.9491, rec=0.9305/0.9387/0.9782, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=0.01, rank=, den=0.0, lvl=0.0, lr=5.75e-05, drop=0.1 |
+| 3 | `e311f_lite_e310_morph_hc03_base_lr625_s1` | 0.9464 | acc=0.9464, rec=0.9292/0.9346/0.9755, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=6.25e-05, drop=0.1 |
+| 4 | `e311f_lite_e310_morph_r3_lr625_seed1` | 0.9464 | acc=0.9464, rec=0.9292/0.9346/0.9755, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=6.25e-05, drop=0.1 |
+| 5 | `e311f_lite_e310_morph_hc12_ord005_lr575_s6` | 0.9455 | acc=0.9455, rec=0.9373/0.9278/0.9714, seed=6, pool=cls, pos=True, in=raw, snr=0.05, ord=True, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=5.75e-05, drop=0.1 |
+| 6 | `e311f_lite_e310_morph_hc18_mask005_lr575_s1` | 0.9455 | acc=0.9455, rec=0.9278/0.9455/0.9632, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=0.005, rank=, den=0.0, lvl=0.0, lr=5.75e-05, drop=0.1 |
+| 7 | `e311f_lite_e310_morph_hc01_base_lr575_s1` | 0.9450 | acc=0.9450, rec=0.9278/0.9319/0.9755, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=5.75e-05, drop=0.1 |
+| 8 | `e311f_lite_e310_morph_hc04_base_lr625_s6` | 0.9450 | acc=0.9450, rec=0.9237/0.9360/0.9755, seed=6, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=6.25e-05, drop=0.1 |
+| 9 | `e311f_lite_e310_morph_hc14_noise005_lr575_s1` | 0.9450 | acc=0.9450, rec=0.9305/0.9292/0.9755, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=True, mask=False, rank=, den=0.0, lvl=0.0, lr=5.75e-05, drop=0.1 |
+| 10 | `e311f_lite_e310_morph_r3_lr575_seed1` | 0.9450 | acc=0.9450, rec=0.9278/0.9319/0.9755, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=5.75e-05, drop=0.1 |
+| 11 | `e311f_lite_e310_morph_r4_lr625_seed6` | 0.9450 | acc=0.9450, rec=0.9237/0.9360/0.9755, seed=6, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=6.25e-05, drop=0.1 |
+| 12 | `e311f_lite_e310_morph_r4_lr65_seed1` | 0.9450 | acc=0.9450, rec=0.9251/0.9305/0.9796, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=6.5e-05, drop=0.1 |
 
 ### e311h_lite_relaxed_morph
 
@@ -52,12 +52,12 @@ E3.11h lite SNR + relaxed morphology.
 
 | Rank | Run | Test Acc | Summary |
 | ---: | --- | ---: | --- |
-| 1 | `e311h_lite_relaxed_morph_h03_snr010_pos` | 0.9103 | acc=0.9103, rec=0.9287/0.8711/0.9312, pool=cls, pos=True, snr=0.1, ord=False, noise=False, den=0.0, lr=3e-05, drop=0.1 |
-| 2 | `e311h_lite_relaxed_morph_h01_pos` | 0.9095 | acc=0.9095, rec=0.9337/0.8536/0.9412, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=3e-05, drop=0.1 |
-| 3 | `e311h_lite_relaxed_morph_h00_anchor` | 0.9070 | acc=0.9070, rec=0.9124/0.8836/0.9249, pool=cls, pos=False, snr=0.05, ord=False, noise=False, den=0.0, lr=3e-05, drop=0.1 |
-| 4 | `e311h_lite_relaxed_morph_h05_lateden_pos` | 0.9053 | acc=0.9053, rec=0.9249/0.8611/0.9299, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=40.0, lr=3e-05, drop=0.1 |
-| 5 | `e311h_lite_relaxed_morph_h04_ord_pos` | 0.9045 | acc=0.9045, rec=0.9262/0.8423/0.9449, pool=cls, pos=True, snr=0.05, ord=True, noise=False, den=0.0, lr=3e-05, drop=0.1 |
-| 6 | `e311h_lite_relaxed_morph_h02_clsmean_pos` | 0.9028 | acc=0.9028, rec=0.9174/0.8523/0.9387, pool=cls_mean, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=3e-05, drop=0.1 |
+| 1 | `e311h_lite_relaxed_morph_h03_snr010_pos` | 0.9103 | acc=0.9103, rec=0.9287/0.8711/0.9312, seed=0, pool=cls, pos=True, in=raw, snr=0.1, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=3e-05, drop=0.1 |
+| 2 | `e311h_lite_relaxed_morph_h01_pos` | 0.9095 | acc=0.9095, rec=0.9337/0.8536/0.9412, seed=0, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=3e-05, drop=0.1 |
+| 3 | `e311h_lite_relaxed_morph_h00_anchor` | 0.9070 | acc=0.9070, rec=0.9124/0.8836/0.9249, seed=0, pool=cls, pos=False, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=3e-05, drop=0.1 |
+| 4 | `e311h_lite_relaxed_morph_h05_lateden_pos` | 0.9053 | acc=0.9053, rec=0.9249/0.8611/0.9299, seed=0, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=40.0, lvl=1.0, lr=3e-05, drop=0.1 |
+| 5 | `e311h_lite_relaxed_morph_h04_ord_pos` | 0.9045 | acc=0.9045, rec=0.9262/0.8423/0.9449, seed=0, pool=cls, pos=True, in=raw, snr=0.05, ord=True, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=3e-05, drop=0.1 |
+| 6 | `e311h_lite_relaxed_morph_h02_clsmean_pos` | 0.9028 | acc=0.9028, rec=0.9174/0.8523/0.9387, seed=0, pool=cls_mean, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=3e-05, drop=0.1 |
 
 ### e311i_wide_relaxed_morph
 
@@ -71,21 +71,21 @@ E3.11i wide SNR + relaxed morphology.
 
 | Rank | Variant | Run | Test Acc | Summary |
 | ---: | --- | --- | ---: | --- |
-| 1 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r3_lr625_seed1` | 0.9464 | acc=0.9464, rec=0.9292/0.9346/0.9755, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=6.25e-05, drop=0.1 |
-| 2 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r3_lr575_seed1` | 0.9450 | acc=0.9450, rec=0.9278/0.9319/0.9755, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=5.75e-05, drop=0.1 |
-| 3 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r4_lr625_seed6` | 0.9450 | acc=0.9450, rec=0.9237/0.9360/0.9755, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=6.25e-05, drop=0.1 |
-| 4 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r4_lr65_seed1` | 0.9450 | acc=0.9450, rec=0.9251/0.9305/0.9796, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=6.5e-05, drop=0.1 |
-| 5 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r3_lr55_drop0075_seed1` | 0.9446 | acc=0.9446, rec=0.9278/0.9428/0.9632, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=5.5e-05, drop=0.075 |
-| 6 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r4_lr61_seed1` | 0.9446 | acc=0.9446, rec=0.9305/0.9305/0.9728, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=6.1e-05, drop=0.1 |
-| 7 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r3_lr525_seed0` | 0.9441 | acc=0.9441, rec=0.9251/0.9482/0.9591, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=5.25e-05, drop=0.1 |
-| 8 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r3_lr55_seed1` | 0.9437 | acc=0.9437, rec=0.9373/0.9196/0.9741, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=5.5e-05, drop=0.1 |
-| 9 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r4_lr575_seed5` | 0.9437 | acc=0.9437, rec=0.9292/0.9332/0.9687, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=5.75e-05, drop=0.1 |
-| 10 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r4_lr575_seed6` | 0.9437 | acc=0.9437, rec=0.9332/0.9264/0.9714, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=5.75e-05, drop=0.1 |
-| 11 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r4_lr625_seed5` | 0.9437 | acc=0.9437, rec=0.9346/0.9278/0.9687, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=6.25e-05, drop=0.1 |
-| 12 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r4_lr64_seed0` | 0.9437 | acc=0.9437, rec=0.9142/0.9496/0.9673, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=6.4e-05, drop=0.1 |
-| 13 | `e311h_lite_relaxed_morph` | `e311h_lite_relaxed_morph_h03_snr010_pos` | 0.9103 | acc=0.9103, rec=0.9287/0.8711/0.9312, pool=cls, pos=True, snr=0.1, ord=False, noise=False, den=0.0, lr=3e-05, drop=0.1 |
-| 14 | `e311h_lite_relaxed_morph` | `e311h_lite_relaxed_morph_h01_pos` | 0.9095 | acc=0.9095, rec=0.9337/0.8536/0.9412, pool=cls, pos=True, snr=0.05, ord=False, noise=False, den=0.0, lr=3e-05, drop=0.1 |
-| 15 | `e311h_lite_relaxed_morph` | `e311h_lite_relaxed_morph_h00_anchor` | 0.9070 | acc=0.9070, rec=0.9124/0.8836/0.9249, pool=cls, pos=False, snr=0.05, ord=False, noise=False, den=0.0, lr=3e-05, drop=0.1 |
+| 1 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_hc22_mask010_lr625_s1` | 0.9505 | acc=0.9505, rec=0.9278/0.9496/0.9741, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=0.01, rank=, den=0.0, lvl=0.0, lr=6.25e-05, drop=0.1 |
+| 2 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_hc19_mask010_lr575_s1` | 0.9491 | acc=0.9491, rec=0.9305/0.9387/0.9782, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=0.01, rank=, den=0.0, lvl=0.0, lr=5.75e-05, drop=0.1 |
+| 3 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_hc03_base_lr625_s1` | 0.9464 | acc=0.9464, rec=0.9292/0.9346/0.9755, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=6.25e-05, drop=0.1 |
+| 4 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r3_lr625_seed1` | 0.9464 | acc=0.9464, rec=0.9292/0.9346/0.9755, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=6.25e-05, drop=0.1 |
+| 5 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_hc12_ord005_lr575_s6` | 0.9455 | acc=0.9455, rec=0.9373/0.9278/0.9714, seed=6, pool=cls, pos=True, in=raw, snr=0.05, ord=True, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=5.75e-05, drop=0.1 |
+| 6 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_hc18_mask005_lr575_s1` | 0.9455 | acc=0.9455, rec=0.9278/0.9455/0.9632, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=0.005, rank=, den=0.0, lvl=0.0, lr=5.75e-05, drop=0.1 |
+| 7 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_hc01_base_lr575_s1` | 0.9450 | acc=0.9450, rec=0.9278/0.9319/0.9755, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=5.75e-05, drop=0.1 |
+| 8 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_hc04_base_lr625_s6` | 0.9450 | acc=0.9450, rec=0.9237/0.9360/0.9755, seed=6, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=6.25e-05, drop=0.1 |
+| 9 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_hc14_noise005_lr575_s1` | 0.9450 | acc=0.9450, rec=0.9305/0.9292/0.9755, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=True, mask=False, rank=, den=0.0, lvl=0.0, lr=5.75e-05, drop=0.1 |
+| 10 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r3_lr575_seed1` | 0.9450 | acc=0.9450, rec=0.9278/0.9319/0.9755, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=5.75e-05, drop=0.1 |
+| 11 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r4_lr625_seed6` | 0.9450 | acc=0.9450, rec=0.9237/0.9360/0.9755, seed=6, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=6.25e-05, drop=0.1 |
+| 12 | `e311f_lite_e310_morph` | `e311f_lite_e310_morph_r4_lr65_seed1` | 0.9450 | acc=0.9450, rec=0.9251/0.9305/0.9796, seed=1, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=6.5e-05, drop=0.1 |
+| 13 | `e311h_lite_relaxed_morph` | `e311h_lite_relaxed_morph_h03_snr010_pos` | 0.9103 | acc=0.9103, rec=0.9287/0.8711/0.9312, seed=0, pool=cls, pos=True, in=raw, snr=0.1, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=3e-05, drop=0.1 |
+| 14 | `e311h_lite_relaxed_morph` | `e311h_lite_relaxed_morph_h01_pos` | 0.9095 | acc=0.9095, rec=0.9337/0.8536/0.9412, seed=0, pool=cls, pos=True, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=3e-05, drop=0.1 |
+| 15 | `e311h_lite_relaxed_morph` | `e311h_lite_relaxed_morph_h00_anchor` | 0.9070 | acc=0.9070, rec=0.9124/0.8836/0.9249, seed=0, pool=cls, pos=False, in=raw, snr=0.05, ord=False, noise=False, mask=False, rank=, den=0.0, lvl=0.0, lr=3e-05, drop=0.1 |
 
 ## Focused Sweep Stability
 
