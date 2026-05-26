@@ -39,3 +39,28 @@ After regenerating the E3.11 mainline data with strict+manual filtering, the syn
 | `e311i_wide_relaxed_morph` | 5597 | 0 | 0 |
 
 Note: these numbers may still appear in fields such as `seg_id`, `source_npz_index`, or `counterfactual_group`; those are synthetic/internal identifiers and are not PTB-XL `ecg_id`.
+
+## Active Source Artifact Check
+
+- The legacy source artifact `outputs/transformer_source` still contains `5428` and `5484` because it was built before the manual visual exclusions.
+- The active E3.11 source artifact is `outputs/transformer_source_strict_clean`; it contains none of `5428`, `5447`, or `5484`.
+- Current E3.11 labels should therefore be interpreted by the `ecg_id` column only. Internal fields such as `seg_id`, `source_npz_index`, and `counterfactual_group` can numerically match PTB-XL IDs by coincidence.
+
+## Remaining Non-Noise Metadata
+
+The strict filter removes PTB-XL records with any annotation in:
+
+- `baseline_drift`
+- `static_noise`
+- `burst_noise`
+- `electrodes_problems`
+
+It does not currently remove rhythm/morphology metadata such as `extra_beats`, `pacemaker`, or unvalidated report flags. In the active strict source pool:
+
+| metadata condition | records in strict source | records used by E3.11f |
+| --- | ---: | ---: |
+| `extra_beats` non-empty | 1405 | 446 |
+| `pacemaker` non-empty | 231 | 71 |
+| `validated_by_human = False` | 4023 | 1262 |
+
+These are not lead-noise annotations, but they can explain some visually awkward clean-source examples. If the next visual pass still finds unacceptable clean morphologies, the smallest follow-up data patch should be a stricter source pool that excludes `pacemaker` first, and only then considers excluding `extra_beats`.
