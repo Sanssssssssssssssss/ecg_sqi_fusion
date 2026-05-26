@@ -1,0 +1,5 @@
+# Manually excluded from the synthetic clean-source pool after visual audit.
+# These records have no PTB-XL noise/electrode metadata annotation, so they are
+# not removed by the strict any-lead metadata filter.
+5428
+5484

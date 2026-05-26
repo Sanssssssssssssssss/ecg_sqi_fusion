@@ -27,6 +27,7 @@ TARGET_COLUMNS = [
     "burst_noise",
     "electrodes_problems",
 ]
+DEFAULT_EXCLUDE_IDS = Path("config/ptbxl_clean_source_exclude_ecg_ids.txt")
 
 # Match lead I as an independent token, avoiding II/III/aVL-like words.
 LEAD_I_PATTERN = re.compile(r"(?<![A-Z])I(?![A-Z])")
@@ -76,6 +77,7 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
     ptbxl_root = _path(params.get("ptbxl_root"), root / "data" / "ptb-xl")
     force = bool(params.get("force", False))
     lead_i_only = bool(params.get("lead_i_only", False))
+    exclude_ecg_ids_file = _path(params.get("exclude_ecg_ids_file"), root / DEFAULT_EXCLUDE_IDS)
 
     out_dir = artifact_dir / "ptbxl"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -93,7 +95,10 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
 
     contains_lead_i = df[TARGET_COLUMNS].apply(lambda col: col.map(has_lead_i)).any(axis=1)
     contains_any_noise = df[TARGET_COLUMNS].apply(lambda col: col.map(has_noise_annotation)).any(axis=1)
+    manual_exclude_ids = _read_ecg_id_list(exclude_ecg_ids_file)
+    manual_exclude = df["ecg_id"].isin(manual_exclude_ids) if manual_exclude_ids else pd.Series(False, index=df.index)
     reject_mask = contains_lead_i if lead_i_only else contains_any_noise
+    reject_mask = reject_mask | manual_exclude
     normal_df = df[~reject_mask].copy()
     saved_csv = save_csv_with_fallback(normal_df, out_csv)
 
@@ -101,6 +106,9 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
     logger.info("Total samples: %d", len(df))
     logger.info("Samples containing lead I in target columns: %d", int(contains_lead_i.sum()))
     logger.info("Samples containing any lead noise/electrode annotation: %d", int(contains_any_noise.sum()))
+    logger.info("Manual clean-source exclusions: %d", int(manual_exclude.sum()))
+    if manual_exclude_ids:
+        logger.info("Manual exclusion file: %s", _display(exclude_ecg_ids_file, root))
     logger.info("Filter mode: %s", "lead_i_only" if lead_i_only else "strict_any_lead")
     logger.info("Clean samples kept: %d", len(normal_df))
     logger.info("Saved filtered CSV: %s", _display(saved_csv, root))
@@ -112,6 +120,8 @@ def run(params: dict[str, Any] | None = None) -> dict[str, Any]:
         "rows": int(len(normal_df)),
         "lead_i_noise_rows": int(contains_lead_i.sum()),
         "any_noise_rows": int(contains_any_noise.sum()),
+        "manual_exclude_rows": int(manual_exclude.sum()),
+        "manual_exclude_file": str(exclude_ecg_ids_file) if manual_exclude_ids else "",
         "filter_mode": "lead_i_only" if lead_i_only else "strict_any_lead",
     }
 
@@ -125,6 +135,7 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Filter PTB-XL metadata rows with noise/electrode annotations.")
     parser.add_argument("--artifact_dir", default="outputs/transformer")
     parser.add_argument("--ptbxl_root", default="")
+    parser.add_argument("--exclude_ecg_ids_file", default="", help="optional newline/comma separated ECG IDs to exclude from the clean source pool")
     parser.add_argument("--lead_i_only", action="store_true", help="legacy mode: reject only rows where the target columns mention lead I")
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--force", action="store_true")
@@ -147,6 +158,19 @@ def _artifact_dir(root: Path, params: dict[str, Any]) -> Path:
 def _path(value: object, default: Path) -> Path:
     path = Path(str(value)) if value else default
     return path if path.is_absolute() else project_root() / path
+
+
+def _read_ecg_id_list(path: Path) -> set[int]:
+    if not path.exists():
+        return set()
+    ids: set[int] = set()
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.split("#", 1)[0].strip()
+        if not line:
+            continue
+        for token in line.replace(",", " ").split():
+            ids.add(int(token))
+    return ids
 
 
 def _display(path: Path, root: Path) -> str:

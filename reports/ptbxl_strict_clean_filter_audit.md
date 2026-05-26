@@ -10,6 +10,8 @@ Purpose: verify whether the transformer clean-source pool was polluted by PTB-XL
 - records rejected by strict any-lead filter: `5010`
 - records kept by strict any-lead filter: `16789`
 - extra records previously kept but rejected by strict filter: `2255`
+- manual visual clean-source exclusions: `2`
+- strict + manual records kept: `16787`
 
 ## Probe Records
 
@@ -23,4 +25,5 @@ Purpose: verify whether the transformer clean-source pool was polluted by PTB-XL
 
 - `5447` has `static_noise = , I-AVF,`, so it is rejected by both the old Lead-I-only filter and the new strict any-lead filter.
 - `5428` and `5484` have no annotation in `baseline_drift/static_noise/burst_noise/electrodes_problems`; strict metadata filtering alone will still keep them.
-- Therefore strict any-lead filtering fixes the known non-Lead-I annotation leakage, but visually bad unannotated records need a second visual/proxy-clean guard if they remain unacceptable.
+- `5428` and `5484` are now listed in `config/ptbxl_clean_source_exclude_ecg_ids.txt` so they are removed from the synthetic clean-source pool despite missing PTB-XL noise metadata.
+- Therefore strict any-lead filtering fixes the known non-Lead-I annotation leakage, and the manual exclusion list covers visually unacceptable unannotated records found during audit.
