@@ -31,6 +31,7 @@ BASE: dict[str, Any] = {
     "uncertainty_start_epoch": 6,
     "level_target_mode": "noisy_rr",
     "denoise_gate": "none",
+    "local_weight": 0.05,
     "description": "baseline clone: CLS+pos+D1 warm-start+SNR head",
 }
 
@@ -141,6 +142,60 @@ RECIPES: dict[str, list[dict[str, Any]]] = {
             level_weight=1.0,
             denoise_gate="level_weight",
             description="denoise weighted where level target says local quality is poor",
+        ),
+    ],
+
+    "focused_tuning": [
+        recipe(
+            "ft_local_l0025_nodense",
+            "focused_tuning",
+            head_type="local_quality_v2",
+            denoise_weight=0.0,
+            level_weight=0.0,
+            local_weight=0.0025,
+            description="local-quality head with very light synthetic local supervision",
+        ),
+        recipe(
+            "ft_local_l005_nodense",
+            "focused_tuning",
+            head_type="local_quality_v2",
+            denoise_weight=0.0,
+            level_weight=0.0,
+            local_weight=0.005,
+            description="local-quality head with light synthetic local supervision",
+        ),
+        recipe(
+            "ft_local_l0075_nodense",
+            "focused_tuning",
+            head_type="local_quality_v2",
+            denoise_weight=0.0,
+            level_weight=0.0,
+            local_weight=0.0075,
+            description="local-quality head aligned with the best mainline local-mask scale",
+        ),
+        recipe(
+            "ft_cleanrr_l025",
+            "focused_tuning",
+            level_weight=0.25,
+            level_target_mode="clean_rr",
+            description="baseline head with low-weight clean-RR level supervision",
+        ),
+        recipe(
+            "ft_badfallback_l025",
+            "focused_tuning",
+            level_weight=0.25,
+            level_target_mode="clean_rr_bad_fallback",
+            description="baseline head with low-weight clean-RR bad fallback supervision",
+        ),
+        recipe(
+            "ft_local_cleanrr_l005_l025",
+            "focused_tuning",
+            head_type="local_quality_v2",
+            denoise_weight=0.0,
+            level_weight=0.25,
+            local_weight=0.005,
+            level_target_mode="clean_rr",
+            description="light local-quality head plus low-weight clean-RR level supervision",
         ),
     ],
     "generalization_loss": [

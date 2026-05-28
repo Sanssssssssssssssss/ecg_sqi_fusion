@@ -229,7 +229,7 @@ def total_loss(
         loss = cls + den + lvl
     loss = loss + float(recipe["snr_weight"]) * comps["snr"]
     loss = loss + float(recipe["ordinal_weight"]) * comps["ordinal"]
-    loss = loss + 0.05 * comps["local"]
+    loss = loss + float(recipe.get("local_weight", 0.05)) * comps["local"]
     return loss
 
 

@@ -5,7 +5,7 @@ This report is generated from the isolated package `src/experiment/e311_sqi_rese
 ## Fixed References
 
 - Strong baseline clone target: `0.9464`.
-- Current highest candidate: local-mask result `0.9505`.
+- Current highest candidate: mainline local-mask+rank result `0.9519`.
 - Dataset: `outputs/transformer_e311_mainline_strict/e311f_lite_e310_morph`.
 - Warm-start: D1 CLS checkpoint.
 
@@ -23,8 +23,8 @@ Submitted on 2026-05-28:
 
 A recipe can move into the mainline sweep only when it:
 
-- Beats the current candidate (`0.9505` test acc), or
-- Improves medium recall by at least `0.01` while keeping bad recall within `0.005` of `0.9741`, or
+- Beats the current candidate (`0.9519` test acc), or
+- Improves medium recall by at least `0.01` while keeping bad recall within `0.005` of `0.9809`, or
 - Stays near the strong baseline (`>= 0.9464`) and clearly reduces multi-task gradient conflict, in which case it must be rerun with seeds `0/1/2/3` before promotion.
 
 Do not promote recipes that only improve auxiliary denoise/level metrics while lowering classification accuracy.
@@ -47,7 +47,7 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | group | run | status | acc | good | medium | bad | best epoch | decision |
 |---|---:|---|---:|---:|---:|---:|---:|---|
 | loss_conflict | lc_ce_only | done | 0.9360 | 0.9183 | 0.9223 | 0.9673 | 12 | stop unless curve/grad norms explain a useful failure |
-| loss_conflict | lc_ce_level | pending |  |  |  |  |  |  |
+| loss_conflict | lc_ce_level | done | 0.9405 | 0.9278 | 0.9346 | 0.9591 | 22 | stop unless curve/grad norms explain a useful failure |
 | loss_conflict | lc_ce_denoise | pending |  |  |  |  |  |  |
 | loss_conflict | lc_fixed_multitask | pending |  |  |  |  |  |  |
 | loss_conflict | lc_uncert_multitask | pending |  |  |  |  |  |  |
@@ -57,13 +57,19 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | head_reimpl | hr_sqi_local_combo | pending |  |  |  |  |  |  |
 | head_reimpl | hr_multiscale_10_20_40 | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_clean_rr_level | done | 0.9437 | 0.9319 | 0.9387 | 0.9605 | 15 | stop unless curve/grad norms explain a useful failure |
-| target_gate_reimpl | tg_bad_fallback_level | pending |  |  |  |  |  |  |
+| target_gate_reimpl | tg_bad_fallback_level | done | 0.9373 | 0.9237 | 0.9251 | 0.9632 | 13 | stop unless curve/grad norms explain a useful failure |
 | target_gate_reimpl | tg_patch_residual_level | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_abs_topq_gate | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_qrs_gate | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_level_weight_gate | pending |  |  |  |  |  |  |
+| focused_tuning | ft_local_l0025_nodense | pending |  |  |  |  |  |  |
+| focused_tuning | ft_local_l005_nodense | pending |  |  |  |  |  |  |
+| focused_tuning | ft_local_l0075_nodense | pending |  |  |  |  |  |  |
+| focused_tuning | ft_cleanrr_l025 | pending |  |  |  |  |  |  |
+| focused_tuning | ft_badfallback_l025 | pending |  |  |  |  |  |  |
+| focused_tuning | ft_local_cleanrr_l005_l025 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_label_smooth_005 | done | 0.9382 | 0.9373 | 0.9196 | 0.9578 | 20 | stop unless curve/grad norms explain a useful failure |
-| generalization_loss | gl_label_smooth_020 | pending |  |  |  |  |  |  |
+| generalization_loss | gl_label_smooth_020 | done | 0.9437 | 0.9510 | 0.9128 | 0.9673 | 14 | stop unless curve/grad norms explain a useful failure |
 | generalization_loss | gl_focal_15 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_focal_20 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_ordinal_ce | pending |  |  |  |  |  |  |
@@ -75,11 +81,14 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | group | run | cls | denoise | level |
 |---|---:|---:|---:|---:|
 | loss_conflict | lc_ce_only | 0.4180 | 0.0000 | 0.0000 |
+| loss_conflict | lc_ce_level | 1.1720 | 0.0000 | 0.1474 |
 | head_reimpl | hr_baseline_clone | 1.7354 | 0.0000 | 0.0000 |
 | head_reimpl | hr_sqi_interpretable | 4.5580 | 0.4490 | 0.0446 |
 | head_reimpl | hr_local_quality_v2 | 36.1580 | 0.4825 | 0.0908 |
 | target_gate_reimpl | tg_clean_rr_level | 2.2559 | 0.0000 | 0.2389 |
+| target_gate_reimpl | tg_bad_fallback_level | 20.9474 | 0.0000 | 6.9458 |
 | generalization_loss | gl_label_smooth_005 | 5.2081 | 0.0000 | 0.0000 |
+| generalization_loss | gl_label_smooth_020 | 9.4445 | 0.0000 | 0.0000 |
 
 ## Reading Guide
 
@@ -87,5 +96,6 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 - `head_reimpl` tests whether classification improves when it sees local residual/level summaries instead of a token alone.
 - `target_gate_reimpl` checks whether RR targets and denoise gates cover bad samples more reliably.
 - `generalization_loss` checks whether boundary-friendly losses improve medium without sacrificing bad.
+- `focused_tuning` follows up on early results by lowering local/level supervision weights instead of changing data or the mainline model.
 
-Runs only become candidates for seed expansion if they beat `0.9505`, improve medium recall with minimal bad loss, or match the strong baseline while reducing task-conflict evidence.
+Runs only become candidates for seed expansion if they beat the current mainline best, improve medium recall with minimal bad loss, or match the strong baseline while reducing task-conflict evidence.
