@@ -128,6 +128,13 @@ def render(rows: list[dict[str, Any]]) -> str:
     lines.append("")
     lines.append("Do not promote recipes that only improve auxiliary denoise/level metrics while lowering classification accuracy.")
     lines.append("")
+    lines.append("## Implementation Audit Notes")
+    lines.append("")
+    lines.append("- `lc_uncert_multitask` now follows Kendall-style uncertainty weighting more closely: after warmup it learns from raw CE/denoise/level losses instead of pre-scaled fixed weights.")
+    lines.append("- `tg_patch_residual_level` now uses squared residual with a dataset-level p99 scale, so the target keeps absolute severity and no longer inverts bad-vs-medium supervision.")
+    lines.append("- `sqi_interpretable` and `sqi_local` now include an estimated SNR-style feature from signal/residual power instead of a duplicated residual mean.")
+    lines.append("- `multiscale_sqi_transformer` now uses PatchTST-style `unfold -> Linear(patch)` tokenizers for extra scales instead of padded Conv1d tokenizers.")
+    lines.append("")
     if best:
         lines.append("## Current Best")
         lines.append("")

@@ -29,6 +29,13 @@ A recipe can move into the mainline sweep only when it:
 
 Do not promote recipes that only improve auxiliary denoise/level metrics while lowering classification accuracy.
 
+## Implementation Audit Notes
+
+- `lc_uncert_multitask` now follows Kendall-style uncertainty weighting more closely: after warmup it learns from raw CE/denoise/level losses instead of pre-scaled fixed weights.
+- `tg_patch_residual_level` now uses squared residual with a dataset-level p99 scale, so the target keeps absolute severity and no longer inverts bad-vs-medium supervision.
+- `sqi_interpretable` and `sqi_local` now include an estimated SNR-style feature from signal/residual power instead of a duplicated residual mean.
+- `multiscale_sqi_transformer` now uses PatchTST-style `unfold -> Linear(patch)` tokenizers for extra scales instead of padded Conv1d tokenizers.
+
 ## Current Best
 
 - `target_gate_reimpl/tg_clean_rr_level`: acc `0.9437`, recall good/medium/bad `0.9319/0.9387/0.9605`.
