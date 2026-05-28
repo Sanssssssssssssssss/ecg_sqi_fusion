@@ -7,8 +7,8 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=40G
 #SBATCH --gres=gpu:1
-#SBATCH --time=02:00:00
-#SBATCH --array=0-5%4
+#SBATCH --time=01:00:00
+#SBATCH --array=0-5%1
 #SBATCH --output=outputs/experiment/e311_sqi_research/logs/%x_%A_%a.out
 #SBATCH --error=outputs/experiment/e311_sqi_research/logs/%x_%A_%a.err
 #SBATCH --mail-type=NONE
