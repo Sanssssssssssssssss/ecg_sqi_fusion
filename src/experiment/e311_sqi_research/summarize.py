@@ -119,7 +119,7 @@ def render(rows: list[dict[str, Any]]) -> str:
     lines.append("| `29754081` | `sqi_head_tuning` | `0-15%2` | projected deterministic/predicted SQI stats injected into the classifier head |")
     lines.append("| `29756103` | `sqi_head_mlp_tuning` | `0-11%2` | SQI-injected head plus a tiny one-hidden-layer classifier MLP |")
     lines.append("| `29767663` | `sqi_residual_tuning` | `0-9%2` | submitted then canceled before start to prioritize direct MIL SQI MLP tuning |")
-    lines.append("| `29770007` | `sqi_mil_mlp_refined` | `0-15%2` | refined tuning around the best MIL SQI + small MLP head |")
+    lines.append("| `29770007` | `sqi_mil_mlp_refined` | `0-15%2` | first six completed below `0.941`; remaining low-value variants canceled to unblock grouped-LR follow-up |")
     lines.append("| `29777633` | `sqi_mil_mlp_lrgroup` | `0-7%2` | grouped-LR follow-up: slower warm-started backbone, faster new SQI/MLP head |")
     lines.append("| `29752152` | `loss_conflict` | `0-4%1` | CE-only and multi-task weighting conflict screen |")
     lines.append("| `29752153` | `target_gate_reimpl` | `0-5%1` | clean-RR targets, bad fallback target, denoise gates |")
