@@ -17,6 +17,7 @@ Submitted on 2026-05-28 after the loss-scale fix:
 |---:|---|---|---|
 | `29751790` | `focused_tuning` | `0-5%1` | low-weight local/level follow-up around the strongest mainline signal |
 | `29751791` | `head_reimpl` | `0-4%1` | baseline, interpretable SQI head, local quality v2, combo head, multiscale |
+| `29754081` | `sqi_head_tuning` | `0-15%2` | projected deterministic/predicted SQI stats injected into the classifier head |
 | `29752152` | `loss_conflict` | `0-4%1` | CE-only and multi-task weighting conflict screen |
 | `29752153` | `target_gate_reimpl` | `0-5%1` | clean-RR targets, bad fallback target, denoise gates |
 | `29752154` | `generalization_loss` | `0-6%1` | label smoothing, focal, ordinal, R-Drop, SAM |
@@ -37,6 +38,7 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 - `sqi_interpretable` and `sqi_local` now include an estimated SNR-style feature from signal/residual power instead of a duplicated residual mean.
 - `multiscale_sqi_transformer` now uses PatchTST-style `unfold -> Linear(patch)` tokenizers for extra scales instead of padded Conv1d tokenizers.
 - `gl_sam` now freezes BatchNorm running-stat updates during the second SAM forward pass, matching common SAM practice for models with BatchNorm layers.
+- `sqi_head_tuning` keeps the model simple: it projects a small deterministic/predicted SQI-stat vector with one `LayerNorm -> Linear(32) -> GELU` block, then concatenates it with the CLS token.
 
 ## Results
 
@@ -64,6 +66,22 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | focused_tuning | ft_cleanrr_l025 | pending |  |  |  |  |  |  |
 | focused_tuning | ft_badfallback_l025 | pending |  |  |  |  |  |  |
 | focused_tuning | ft_local_cleanrr_l005_l025 | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_input_cls | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_input_attn | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_input_cls_drop005 | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_input_cls_snr010 | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_pred_nodense | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_pred_den5 | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_pred_den10_lvl025 | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_pred_detach_den10_lvl025 | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_pred_detach_cleanrr_l025 | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_mil_nodense | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_mil_den5 | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_mil_detach_den10_lvl025 | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_mil_detach_cleanrr_l025 | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_mil_detach_cleanrr_l05 | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_mil_detach_patchres_l025 | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_mil_detach_ls005 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_label_smooth_005 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_label_smooth_020 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_focal_15 | pending |  |  |  |  |  |  |
@@ -81,6 +99,7 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 
 - `loss_conflict` tests whether auxiliary dense losses help or fight classification.
 - `head_reimpl` tests whether classification improves when it sees local residual/level summaries instead of a token alone.
+- `sqi_head_tuning` is the focused version of that idea: deterministic input SQI stats, predicted residual/level stats, detached variants, and top-k patch MIL summaries.
 - `target_gate_reimpl` checks whether RR targets and denoise gates cover bad samples more reliably.
 - `generalization_loss` checks whether boundary-friendly losses improve medium without sacrificing bad.
 - `focused_tuning` follows up on early results by lowering local/level supervision weights instead of changing data or the mainline model.

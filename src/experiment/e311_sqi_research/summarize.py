@@ -116,6 +116,7 @@ def render(rows: list[dict[str, Any]]) -> str:
     lines.append("|---:|---|---|---|")
     lines.append("| `29751790` | `focused_tuning` | `0-5%1` | low-weight local/level follow-up around the strongest mainline signal |")
     lines.append("| `29751791` | `head_reimpl` | `0-4%1` | baseline, interpretable SQI head, local quality v2, combo head, multiscale |")
+    lines.append("| `29754081` | `sqi_head_tuning` | `0-15%2` | projected deterministic/predicted SQI stats injected into the classifier head |")
     lines.append("| `29752152` | `loss_conflict` | `0-4%1` | CE-only and multi-task weighting conflict screen |")
     lines.append("| `29752153` | `target_gate_reimpl` | `0-5%1` | clean-RR targets, bad fallback target, denoise gates |")
     lines.append("| `29752154` | `generalization_loss` | `0-6%1` | label smoothing, focal, ordinal, R-Drop, SAM |")
@@ -136,6 +137,7 @@ def render(rows: list[dict[str, Any]]) -> str:
     lines.append("- `sqi_interpretable` and `sqi_local` now include an estimated SNR-style feature from signal/residual power instead of a duplicated residual mean.")
     lines.append("- `multiscale_sqi_transformer` now uses PatchTST-style `unfold -> Linear(patch)` tokenizers for extra scales instead of padded Conv1d tokenizers.")
     lines.append("- `gl_sam` now freezes BatchNorm running-stat updates during the second SAM forward pass, matching common SAM practice for models with BatchNorm layers.")
+    lines.append("- `sqi_head_tuning` keeps the model simple: it projects a small deterministic/predicted SQI-stat vector with one `LayerNorm -> Linear(32) -> GELU` block, then concatenates it with the CLS token.")
     lines.append("")
     if best:
         lines.append("## Current Best")
@@ -171,6 +173,7 @@ def render(rows: list[dict[str, Any]]) -> str:
     lines.append("")
     lines.append("- `loss_conflict` tests whether auxiliary dense losses help or fight classification.")
     lines.append("- `head_reimpl` tests whether classification improves when it sees local residual/level summaries instead of a token alone.")
+    lines.append("- `sqi_head_tuning` is the focused version of that idea: deterministic input SQI stats, predicted residual/level stats, detached variants, and top-k patch MIL summaries.")
     lines.append("- `target_gate_reimpl` checks whether RR targets and denoise gates cover bad samples more reliably.")
     lines.append("- `generalization_loss` checks whether boundary-friendly losses improve medium without sacrificing bad.")
     lines.append("- `focused_tuning` follows up on early results by lowering local/level supervision weights instead of changing data or the mainline model.")
