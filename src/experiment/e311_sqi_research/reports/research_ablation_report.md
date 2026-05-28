@@ -72,8 +72,8 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | focused_tuning | ft_cleanrr_l025 | pending |  |  |  |  |  |  |
 | focused_tuning | ft_badfallback_l025 | pending |  |  |  |  |  |  |
 | focused_tuning | ft_local_cleanrr_l005_l025 | pending |  |  |  |  |  |  |
-| sqi_head_tuning | sqi_input_cls | pending |  |  |  |  |  |  |
-| sqi_head_tuning | sqi_input_attn | pending |  |  |  |  |  |  |
+| sqi_head_tuning | sqi_input_cls | done | 0.9355 | 0.9428 | 0.9074 | 0.9564 | 17 | stop unless curve/grad norms explain a useful failure |
+| sqi_head_tuning | sqi_input_attn | done | 0.9373 | 0.9292 | 0.9128 | 0.9700 | 24 | stop unless curve/grad norms explain a useful failure |
 | sqi_head_tuning | sqi_input_cls_drop005 | pending |  |  |  |  |  |  |
 | sqi_head_tuning | sqi_input_cls_snr010 | pending |  |  |  |  |  |  |
 | sqi_head_tuning | sqi_pred_nodense | pending |  |  |  |  |  |  |
@@ -116,6 +116,8 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | head_reimpl | hr_baseline_clone | 38.5965 | 0.0000 | 0.0000 |
 | target_gate_reimpl | tg_clean_rr_level | 24.9120 | 0.0000 | 0.8119 |
 | focused_tuning | ft_local_l0025_nodense | 29.0549 | 0.0000 | 0.0000 |
+| sqi_head_tuning | sqi_input_cls | 27.0821 | 0.0000 | 0.0000 |
+| sqi_head_tuning | sqi_input_attn | 79.1725 | 0.0000 | 0.0000 |
 | generalization_loss | gl_label_smooth_005 | 0.2286 | 0.0000 | 0.0000 |
 
 ## Reading Guide
