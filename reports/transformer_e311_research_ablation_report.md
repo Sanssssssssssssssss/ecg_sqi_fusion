@@ -40,27 +40,32 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 - `gl_sam` now freezes BatchNorm running-stat updates during the second SAM forward pass, matching common SAM practice for models with BatchNorm layers.
 - `sqi_head_tuning` keeps the model simple: it projects a small deterministic/predicted SQI-stat vector with one `LayerNorm -> Linear(32) -> GELU` block, then concatenates it with the CLS token.
 
+## Current Best
+
+- `target_gate_reimpl/tg_clean_rr_level`: acc `0.9432`, recall good/medium/bad `0.9319/0.9251/0.9728`.
+- Decision: stop unless curve/grad norms explain a useful failure.
+
 ## Results
 
 | group | run | status | acc | good | medium | bad | best epoch | decision |
 |---|---:|---|---:|---:|---:|---:|---:|---|
-| loss_conflict | lc_ce_only | pending |  |  |  |  |  |  |
+| loss_conflict | lc_ce_only | done | 0.9391 | 0.9264 | 0.9210 | 0.9700 | 21 | stop unless curve/grad norms explain a useful failure |
 | loss_conflict | lc_ce_level | pending |  |  |  |  |  |  |
 | loss_conflict | lc_ce_denoise | pending |  |  |  |  |  |  |
 | loss_conflict | lc_fixed_multitask | pending |  |  |  |  |  |  |
 | loss_conflict | lc_uncert_multitask | pending |  |  |  |  |  |  |
-| head_reimpl | hr_baseline_clone | pending |  |  |  |  |  |  |
+| head_reimpl | hr_baseline_clone | done | 0.9391 | 0.9346 | 0.9142 | 0.9687 | 22 | stop unless curve/grad norms explain a useful failure |
 | head_reimpl | hr_sqi_interpretable | pending |  |  |  |  |  |  |
 | head_reimpl | hr_local_quality_v2 | pending |  |  |  |  |  |  |
 | head_reimpl | hr_sqi_local_combo | pending |  |  |  |  |  |  |
 | head_reimpl | hr_multiscale_10_20_40 | pending |  |  |  |  |  |  |
-| target_gate_reimpl | tg_clean_rr_level | pending |  |  |  |  |  |  |
+| target_gate_reimpl | tg_clean_rr_level | done | 0.9432 | 0.9319 | 0.9251 | 0.9728 | 24 | stop unless curve/grad norms explain a useful failure |
 | target_gate_reimpl | tg_bad_fallback_level | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_patch_residual_level | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_abs_topq_gate | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_qrs_gate | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_level_weight_gate | pending |  |  |  |  |  |  |
-| focused_tuning | ft_local_l0025_nodense | pending |  |  |  |  |  |  |
+| focused_tuning | ft_local_l0025_nodense | done | 0.9369 | 0.9033 | 0.9360 | 0.9714 | 20 | stop unless curve/grad norms explain a useful failure |
 | focused_tuning | ft_local_l005_nodense | pending |  |  |  |  |  |  |
 | focused_tuning | ft_local_l0075_nodense | pending |  |  |  |  |  |  |
 | focused_tuning | ft_cleanrr_l025 | pending |  |  |  |  |  |  |
@@ -94,6 +99,10 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 
 | group | run | cls | denoise | level |
 |---|---:|---:|---:|---:|
+| loss_conflict | lc_ce_only | 0.0573 | 0.0000 | 0.0000 |
+| head_reimpl | hr_baseline_clone | 38.5965 | 0.0000 | 0.0000 |
+| target_gate_reimpl | tg_clean_rr_level | 24.9120 | 0.0000 | 0.8119 |
+| focused_tuning | ft_local_l0025_nodense | 29.0549 | 0.0000 | 0.0000 |
 
 ## Reading Guide
 
