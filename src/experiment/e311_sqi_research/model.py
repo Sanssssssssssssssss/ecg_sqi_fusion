@@ -75,6 +75,12 @@ class ScaleTokenizer(nn.Module):
         return F.relu(self.ln(self.proj(patches)))
 
 
+INPUT_SQI_STAT_DIM = 23
+PRED_SQI_STAT_DIM = 7
+LOCAL_SQI_STAT_DIM = 10
+SQI_STAT_PROJ_DIM = 32
+
+
 @dataclass(frozen=True)
 class ResearchConfig:
     in_ch: int = 1
@@ -176,12 +182,32 @@ class ResearchSQITransformer(nn.Module):
         self.enc_pool = AttentionPool(cfg.enc_d_model)
         self.dec_pool = AttentionPool(cfg.dec_d_model)
         self.cls_drop = nn.Dropout(cfg.dropout)
+        self.sqi_stat_dim = self._sqi_stat_dim()
+        self.sqi_stat_proj = (
+            nn.Sequential(
+                nn.LayerNorm(self.sqi_stat_dim),
+                nn.Linear(self.sqi_stat_dim, SQI_STAT_PROJ_DIM),
+                nn.GELU(),
+                nn.Dropout(cfg.dropout),
+            )
+            if self.sqi_stat_dim > 0
+            else None
+        )
         cls_in = self._classification_dim()
         self.cls_fc = nn.Linear(cls_in, 3)
         if cfg.use_snr_head:
             self.snr_fc = nn.Linear(cls_in, 1)
         if cfg.use_ordinal_head:
             self.ordinal_fc = nn.Linear(cls_in, 2)
+
+    def _sqi_stat_dim(self) -> int:
+        if self.cfg.head_type in {"sqi_input", "sqi_input_attn"}:
+            return INPUT_SQI_STAT_DIM
+        if self.cfg.head_type in {"sqi_pred", "sqi_pred_detach"}:
+            return INPUT_SQI_STAT_DIM + PRED_SQI_STAT_DIM
+        if self.cfg.head_type in {"sqi_mil", "sqi_mil_detach"}:
+            return INPUT_SQI_STAT_DIM + PRED_SQI_STAT_DIM + LOCAL_SQI_STAT_DIM
+        return 0
 
     def _classification_dim(self) -> int:
         if self.cfg.head_type == "baseline":
@@ -192,6 +218,12 @@ class ResearchSQITransformer(nn.Module):
             return self.cfg.dec_d_model + 10
         if self.cfg.head_type == "sqi_local":
             return self.cfg.enc_d_model + self.cfg.dec_d_model + 20
+        if self.cfg.head_type == "sqi_input":
+            return self.cfg.dec_d_model + SQI_STAT_PROJ_DIM
+        if self.cfg.head_type == "sqi_input_attn":
+            return self.cfg.enc_d_model + self.cfg.dec_d_model + SQI_STAT_PROJ_DIM
+        if self.cfg.head_type in {"sqi_pred", "sqi_pred_detach", "sqi_mil", "sqi_mil_detach"}:
+            return self.cfg.dec_d_model + SQI_STAT_PROJ_DIM
         raise ValueError(f"unknown head_type={self.cfg.head_type!r}")
 
     def _patch_embed(self, x: torch.Tensor) -> torch.Tensor:
@@ -253,6 +285,66 @@ class ResearchSQITransformer(nn.Module):
         flat = x.flatten(1)
         return torch.cat([flat.mean(1, keepdim=True), flat.std(1, keepdim=True), flat.amax(1, keepdim=True)], dim=1)
 
+    def _abs_summary_stats(self, x: torch.Tensor) -> torch.Tensor:
+        flat = x.flatten(1)
+        return torch.cat(
+            [
+                flat.mean(1, keepdim=True),
+                flat.std(1, unbiased=False, keepdim=True),
+                flat.abs().amax(1, keepdim=True),
+            ],
+            dim=1,
+        )
+
+    def _patch_stats(self, x: torch.Tensor) -> torch.Tensor:
+        patch = min(self.cfg.patch_size, int(x.shape[-1]))
+        stride = min(self.cfg.stride, patch)
+        p = x.abs().unfold(-1, patch, stride).mean(dim=-1).squeeze(1)
+        k = min(8, p.shape[1])
+        return torch.cat(
+            [
+                p.mean(1, keepdim=True),
+                p.std(1, unbiased=False, keepdim=True),
+                p.amax(1, keepdim=True),
+                p.topk(k, dim=1).values.mean(1, keepdim=True),
+            ],
+            dim=1,
+        )
+
+    def _input_sqi_stats(self, x: torch.Tensor) -> torch.Tensor:
+        x0 = x[:, :1, :]
+        dx = x0[:, :, 1:] - x0[:, :, :-1]
+        ddx = dx[:, :, 1:] - dx[:, :, :-1]
+        trend = F.avg_pool1d(F.pad(x0, (31, 31), mode="replicate"), kernel_size=63, stride=1)
+        hf = x0 - trend
+        return torch.cat(
+            [
+                self._abs_summary_stats(x0),
+                self._abs_summary_stats(dx),
+                self._abs_summary_stats(ddx),
+                self._abs_summary_stats(trend),
+                self._abs_summary_stats(hf),
+                self._patch_stats(x0),
+                self._patch_stats(dx),
+            ],
+            dim=1,
+        )
+
+    def _pred_sqi_stats(self, x: torch.Tensor, residual: torch.Tensor, level_prob: torch.Tensor) -> torch.Tensor:
+        return torch.cat(
+            [
+                self._abs_summary_stats(residual),
+                self._abs_summary_stats(level_prob),
+                self._estimated_snr_feature(x, residual),
+            ],
+            dim=1,
+        )
+
+    def _project_sqi_stats(self, stats: torch.Tensor) -> torch.Tensor:
+        if self.sqi_stat_proj is None:
+            raise RuntimeError(f"head_type={self.cfg.head_type!r} has no SQI stat projection")
+        return self.sqi_stat_proj(stats)
+
     def _estimated_snr_feature(self, x: torch.Tensor, residual: torch.Tensor) -> torch.Tensor:
         signal_power = x[:, :1, :].pow(2).mean(dim=(1, 2), keepdim=True)
         residual_power = residual.pow(2).mean(dim=(1, 2), keepdim=True)
@@ -312,6 +404,19 @@ class ResearchSQITransformer(nn.Module):
                 [self.enc_pool(f["encoder_all"]), self.dec_pool(f["decoder"]), stats, self._local_stats(residual, level_prob)],
                 dim=1,
             )
+        elif self.cfg.head_type in {"sqi_input", "sqi_input_attn", "sqi_pred", "sqi_pred_detach", "sqi_mil", "sqi_mil_detach"}:
+            stat_parts = [self._input_sqi_stats(x)]
+            r = residual.detach() if self.cfg.head_type.endswith("_detach") else residual
+            l = level_prob.detach() if self.cfg.head_type.endswith("_detach") else level_prob
+            if self.cfg.head_type in {"sqi_pred", "sqi_pred_detach", "sqi_mil", "sqi_mil_detach"}:
+                stat_parts.append(self._pred_sqi_stats(x, r, l))
+            if self.cfg.head_type in {"sqi_mil", "sqi_mil_detach"}:
+                stat_parts.append(self._local_stats(r, l))
+            sqi_feat = self._project_sqi_stats(torch.cat(stat_parts, dim=1))
+            if self.cfg.head_type == "sqi_input_attn":
+                g = torch.cat([self.enc_pool(f["encoder_all"]), f["decoder_cls"], sqi_feat], dim=1)
+            else:
+                g = torch.cat([f["decoder_cls"], sqi_feat], dim=1)
         else:
             raise ValueError(f"unknown head_type={self.cfg.head_type!r}")
         return self.cls_drop(g)
