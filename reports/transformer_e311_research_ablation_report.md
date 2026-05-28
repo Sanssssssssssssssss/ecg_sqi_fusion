@@ -31,14 +31,14 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 
 ## Current Best
 
-- `head_reimpl/hr_baseline_clone`: acc `0.9382`, recall good/medium/bad `0.9183/0.9183/0.9782`.
+- `target_gate_reimpl/tg_clean_rr_level`: acc `0.9437`, recall good/medium/bad `0.9319/0.9387/0.9605`.
 - Decision: stop unless curve/grad norms explain a useful failure.
 
 ## Results
 
 | group | run | status | acc | good | medium | bad | best epoch | decision |
 |---|---:|---|---:|---:|---:|---:|---:|---|
-| loss_conflict | lc_ce_only | pending |  |  |  |  |  |  |
+| loss_conflict | lc_ce_only | done | 0.9360 | 0.9183 | 0.9223 | 0.9673 | 12 | stop unless curve/grad norms explain a useful failure |
 | loss_conflict | lc_ce_level | pending |  |  |  |  |  |  |
 | loss_conflict | lc_ce_denoise | pending |  |  |  |  |  |  |
 | loss_conflict | lc_fixed_multitask | pending |  |  |  |  |  |  |
@@ -48,13 +48,13 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | head_reimpl | hr_local_quality_v2 | pending |  |  |  |  |  |  |
 | head_reimpl | hr_sqi_local_combo | pending |  |  |  |  |  |  |
 | head_reimpl | hr_multiscale_10_20_40 | pending |  |  |  |  |  |  |
-| target_gate_reimpl | tg_clean_rr_level | pending |  |  |  |  |  |  |
+| target_gate_reimpl | tg_clean_rr_level | done | 0.9437 | 0.9319 | 0.9387 | 0.9605 | 15 | stop unless curve/grad norms explain a useful failure |
 | target_gate_reimpl | tg_bad_fallback_level | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_patch_residual_level | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_abs_topq_gate | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_qrs_gate | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_level_weight_gate | pending |  |  |  |  |  |  |
-| generalization_loss | gl_label_smooth_005 | pending |  |  |  |  |  |  |
+| generalization_loss | gl_label_smooth_005 | done | 0.9382 | 0.9373 | 0.9196 | 0.9578 | 20 | stop unless curve/grad norms explain a useful failure |
 | generalization_loss | gl_label_smooth_020 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_focal_15 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_focal_20 | pending |  |  |  |  |  |  |
@@ -66,7 +66,10 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 
 | group | run | cls | denoise | level |
 |---|---:|---:|---:|---:|
+| loss_conflict | lc_ce_only | 0.4180 | 0.0000 | 0.0000 |
 | head_reimpl | hr_baseline_clone | 1.7354 | 0.0000 | 0.0000 |
+| target_gate_reimpl | tg_clean_rr_level | 2.2559 | 0.0000 | 0.2389 |
+| generalization_loss | gl_label_smooth_005 | 5.2081 | 0.0000 | 0.0000 |
 
 ## Reading Guide
 
