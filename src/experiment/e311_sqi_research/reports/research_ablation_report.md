@@ -21,8 +21,8 @@ Submitted on 2026-05-28 after the loss-scale fix:
 | `29756103` | `sqi_head_mlp_tuning` | `0-11%2` | SQI-injected head plus a tiny one-hidden-layer classifier MLP |
 | `29767663` | `sqi_residual_tuning` | `0-9%2` | submitted then canceled before start to prioritize direct MIL SQI MLP tuning |
 | `29770007` | `sqi_mil_mlp_refined` | `0-15%2` | first six completed below `0.941`; remaining low-value variants canceled to unblock grouped-LR follow-up |
-| `29777633` | `sqi_mil_mlp_lrgroup` | `0-7%2` | grouped-LR follow-up: slower warm-started backbone, faster new SQI/MLP head |
-| pending | `sqi_residual_refined` | `0-7%2` | conservative zero-init SQI residual correction on top of loaded D1 classifier logits |
+| `29777633` | `sqi_mil_mlp_lrgroup` | `0-7%2` | first two completed below `0.936`; remaining low-value variants canceled |
+| `29780940` | `sqi_residual_refined` | `0-7%2` | conservative zero-init SQI residual correction on top of loaded D1 classifier logits |
 | `29752152` | `loss_conflict` | `0-4%1` | CE-only and multi-task weighting conflict screen |
 | `29752153` | `target_gate_reimpl` | `0-5%1` | clean-RR targets, bad fallback target, denoise gates |
 | `29752154` | `generalization_loss` | `0-6%1` | label smoothing, focal, ordinal, R-Drop, SAM |
