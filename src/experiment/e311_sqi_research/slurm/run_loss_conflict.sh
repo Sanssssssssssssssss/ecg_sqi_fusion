@@ -1,6 +1,6 @@
 #!/bin/bash
 # Isolated E3.11 SQI research: multi-task loss conflict screen.
-#SBATCH -J e311r_loss
+#SBATCH -J e311r2_loss
 #SBATCH -A MPHIL-DIS-SL2-GPU
 #SBATCH -p ampere
 #SBATCH --nodes=1

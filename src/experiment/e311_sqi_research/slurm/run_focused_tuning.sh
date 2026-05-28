@@ -1,6 +1,6 @@
 #!/bin/bash
 # Isolated E3.11 SQI research: focused second-pass tuning screen.
-#SBATCH -J e311r_focus
+#SBATCH -J e311r2_focus
 #SBATCH -A MPHIL-DIS-SL2-GPU
 #SBATCH -p ampere
 #SBATCH --nodes=1

@@ -31,33 +31,29 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 
 ## Implementation Audit Notes
 
+- `baseline_clone` and all fixed-weight recipes now match the mainline loss scale (`cls_weight=10`) and cosine LR schedule; earlier pre-fix research jobs over-weighted SNR/level/local auxiliaries relative to classification.
 - `lc_uncert_multitask` now follows Kendall-style uncertainty weighting more closely: after warmup it learns from raw CE/denoise/level losses instead of pre-scaled fixed weights.
 - `tg_patch_residual_level` now uses squared residual with a dataset-level p99 scale, so the target keeps absolute severity and no longer inverts bad-vs-medium supervision.
 - `sqi_interpretable` and `sqi_local` now include an estimated SNR-style feature from signal/residual power instead of a duplicated residual mean.
 - `multiscale_sqi_transformer` now uses PatchTST-style `unfold -> Linear(patch)` tokenizers for extra scales instead of padded Conv1d tokenizers.
 - `gl_sam` now freezes BatchNorm running-stat updates during the second SAM forward pass, matching common SAM practice for models with BatchNorm layers.
 
-## Current Best
-
-- `head_reimpl/hr_local_quality_v2`: acc `0.9441`, recall good/medium/bad `0.9455/0.9128/0.9741`.
-- Decision: stop unless curve/grad norms explain a useful failure.
-
 ## Results
 
 | group | run | status | acc | good | medium | bad | best epoch | decision |
 |---|---:|---|---:|---:|---:|---:|---:|---|
-| loss_conflict | lc_ce_only | done | 0.9360 | 0.9183 | 0.9223 | 0.9673 | 12 | stop unless curve/grad norms explain a useful failure |
-| loss_conflict | lc_ce_level | done | 0.9405 | 0.9278 | 0.9346 | 0.9591 | 22 | stop unless curve/grad norms explain a useful failure |
+| loss_conflict | lc_ce_only | pending |  |  |  |  |  |  |
+| loss_conflict | lc_ce_level | pending |  |  |  |  |  |  |
 | loss_conflict | lc_ce_denoise | pending |  |  |  |  |  |  |
 | loss_conflict | lc_fixed_multitask | pending |  |  |  |  |  |  |
 | loss_conflict | lc_uncert_multitask | pending |  |  |  |  |  |  |
-| head_reimpl | hr_baseline_clone | done | 0.9382 | 0.9183 | 0.9183 | 0.9782 | 21 | stop unless curve/grad norms explain a useful failure |
-| head_reimpl | hr_sqi_interpretable | done | 0.9346 | 0.9128 | 0.9169 | 0.9741 | 18 | stop unless curve/grad norms explain a useful failure |
-| head_reimpl | hr_local_quality_v2 | done | 0.9441 | 0.9455 | 0.9128 | 0.9741 | 24 | stop unless curve/grad norms explain a useful failure |
+| head_reimpl | hr_baseline_clone | pending |  |  |  |  |  |  |
+| head_reimpl | hr_sqi_interpretable | pending |  |  |  |  |  |  |
+| head_reimpl | hr_local_quality_v2 | pending |  |  |  |  |  |  |
 | head_reimpl | hr_sqi_local_combo | pending |  |  |  |  |  |  |
 | head_reimpl | hr_multiscale_10_20_40 | pending |  |  |  |  |  |  |
-| target_gate_reimpl | tg_clean_rr_level | done | 0.9437 | 0.9319 | 0.9387 | 0.9605 | 15 | stop unless curve/grad norms explain a useful failure |
-| target_gate_reimpl | tg_bad_fallback_level | done | 0.9373 | 0.9237 | 0.9251 | 0.9632 | 13 | stop unless curve/grad norms explain a useful failure |
+| target_gate_reimpl | tg_clean_rr_level | pending |  |  |  |  |  |  |
+| target_gate_reimpl | tg_bad_fallback_level | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_patch_residual_level | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_abs_topq_gate | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_qrs_gate | pending |  |  |  |  |  |  |
@@ -68,8 +64,8 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | focused_tuning | ft_cleanrr_l025 | pending |  |  |  |  |  |  |
 | focused_tuning | ft_badfallback_l025 | pending |  |  |  |  |  |  |
 | focused_tuning | ft_local_cleanrr_l005_l025 | pending |  |  |  |  |  |  |
-| generalization_loss | gl_label_smooth_005 | done | 0.9382 | 0.9373 | 0.9196 | 0.9578 | 20 | stop unless curve/grad norms explain a useful failure |
-| generalization_loss | gl_label_smooth_020 | done | 0.9437 | 0.9510 | 0.9128 | 0.9673 | 14 | stop unless curve/grad norms explain a useful failure |
+| generalization_loss | gl_label_smooth_005 | pending |  |  |  |  |  |  |
+| generalization_loss | gl_label_smooth_020 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_focal_15 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_focal_20 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_ordinal_ce | pending |  |  |  |  |  |  |
@@ -80,15 +76,6 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 
 | group | run | cls | denoise | level |
 |---|---:|---:|---:|---:|
-| loss_conflict | lc_ce_only | 0.4180 | 0.0000 | 0.0000 |
-| loss_conflict | lc_ce_level | 1.1720 | 0.0000 | 0.1474 |
-| head_reimpl | hr_baseline_clone | 1.7354 | 0.0000 | 0.0000 |
-| head_reimpl | hr_sqi_interpretable | 4.5580 | 0.4490 | 0.0446 |
-| head_reimpl | hr_local_quality_v2 | 36.1580 | 0.4825 | 0.0908 |
-| target_gate_reimpl | tg_clean_rr_level | 2.2559 | 0.0000 | 0.2389 |
-| target_gate_reimpl | tg_bad_fallback_level | 20.9474 | 0.0000 | 6.9458 |
-| generalization_loss | gl_label_smooth_005 | 5.2081 | 0.0000 | 0.0000 |
-| generalization_loss | gl_label_smooth_020 | 9.4445 | 0.0000 | 0.0000 |
 
 ## Reading Guide
 

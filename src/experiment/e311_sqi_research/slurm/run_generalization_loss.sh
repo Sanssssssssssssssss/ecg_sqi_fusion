@@ -1,6 +1,6 @@
 #!/bin/bash
 # Isolated E3.11 SQI research: boundary/generalization loss screen.
-#SBATCH -J e311r_gloss
+#SBATCH -J e311r2_gloss
 #SBATCH -A MPHIL-DIS-SL2-GPU
 #SBATCH -p ampere
 #SBATCH --nodes=1

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Isolated E3.11 SQI research: level target and denoise gate screen.
-#SBATCH -J e311r_tgate
+#SBATCH -J e311r2_tgate
 #SBATCH -A MPHIL-DIS-SL2-GPU
 #SBATCH -p ampere
 #SBATCH --nodes=1

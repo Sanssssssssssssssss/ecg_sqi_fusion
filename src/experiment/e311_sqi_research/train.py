@@ -222,9 +222,9 @@ def total_loss(
     lvl = float(recipe["level_weight"]) * comps["level"]
     if uw is not None and bool(recipe["uncertainty"]) and epoch >= int(recipe.get("uncertainty_start_epoch", 6)):
         # Let uncertainty weighting learn the relative task scale from the raw
-        # task losses. Applying the fixed denoise/level multipliers here would
-        # make this ablation a manually biased weighting scheme again.
-        loss = uw(float(recipe["cls_weight"]) * comps["cls"], comps["denoise"], comps["level"])
+        # task losses. Applying the fixed cls/denoise/level multipliers here
+        # would make this ablation a manually biased weighting scheme again.
+        loss = uw(comps["cls"], comps["denoise"], comps["level"])
     else:
         loss = cls + den + lvl
     loss = loss + float(recipe["snr_weight"]) * comps["snr"]
@@ -423,6 +423,11 @@ def train_recipe(args: argparse.Namespace, recipe: dict[str, Any]) -> dict[str, 
     uw = UncertaintyWeights().to(device) if bool(recipe["uncertainty"]) else None
     params = list(model.parameters()) + (list(uw.parameters()) if uw is not None else [])
     opt = torch.optim.AdamW(params, lr=float(recipe["lr"]), weight_decay=float(recipe["weight_decay"]))
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+        opt,
+        T_max=max(1, int(recipe["epochs"])),
+        eta_min=float(recipe.get("lr_eta_min", 0.0)),
+    )
     sam = SAM(list(model.parameters()), opt, float(recipe["sam_rho"])) if float(recipe["sam_rho"]) > 0.0 else None
 
     config = {"recipe": recipe, "artifact_dir": str(args.artifact_dir), "init_checkpoint": str(args.init_checkpoint), "device": str(device)}
@@ -491,6 +496,9 @@ def train_recipe(args: argparse.Namespace, recipe: dict[str, Any]) -> dict[str, 
         if va["acc"] > best_val:
             best_val = float(va["acc"])
             torch.save({"model_state": model.state_dict(), "recipe": recipe, "epoch": epoch, "val": va}, best_path)
+        scheduler.step()
+        row["lr"] = float(scheduler.get_last_lr()[0])
+        write_json(out_dir / "train_log.json", history)
         print(
             f"[{recipe['name']}] epoch {epoch:02d} train_acc={tr['acc']:.4f} "
             f"val_acc={va['acc']:.4f} val_loss={va['loss']:.4f}",

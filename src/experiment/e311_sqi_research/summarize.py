@@ -130,6 +130,7 @@ def render(rows: list[dict[str, Any]]) -> str:
     lines.append("")
     lines.append("## Implementation Audit Notes")
     lines.append("")
+    lines.append("- `baseline_clone` and all fixed-weight recipes now match the mainline loss scale (`cls_weight=10`) and cosine LR schedule; earlier pre-fix research jobs over-weighted SNR/level/local auxiliaries relative to classification.")
     lines.append("- `lc_uncert_multitask` now follows Kendall-style uncertainty weighting more closely: after warmup it learns from raw CE/denoise/level losses instead of pre-scaled fixed weights.")
     lines.append("- `tg_patch_residual_level` now uses squared residual with a dataset-level p99 scale, so the target keeps absolute severity and no longer inverts bad-vs-medium supervision.")
     lines.append("- `sqi_interpretable` and `sqi_local` now include an estimated SNR-style feature from signal/residual power instead of a duplicated residual mean.")
