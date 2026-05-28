@@ -146,16 +146,32 @@ def ordinal_target(y: torch.Tensor) -> torch.Tensor:
     return torch.stack([(y > 0).float(), (y > 1).float()], dim=1)
 
 
-def focal_loss(logits: torch.Tensor, y: torch.Tensor, gamma: float) -> torch.Tensor:
-    ce = F.cross_entropy(logits, y, reduction="none")
+def class_weights(recipe: dict[str, Any], device: torch.device) -> torch.Tensor | None:
+    weights = torch.tensor(
+        [
+            float(recipe.get("class_weight_good", 1.0)),
+            float(recipe.get("class_weight_medium", 1.0)),
+            float(recipe.get("class_weight_bad", 1.0)),
+        ],
+        device=device,
+        dtype=torch.float32,
+    )
+    if torch.allclose(weights, torch.ones_like(weights)):
+        return None
+    return weights
+
+
+def focal_loss(logits: torch.Tensor, y: torch.Tensor, gamma: float, weight: torch.Tensor | None) -> torch.Tensor:
+    ce = F.cross_entropy(logits, y, weight=weight, reduction="none")
     pt = torch.exp(-ce)
     return ((1.0 - pt) ** gamma * ce).mean()
 
 
 def class_loss(logits: torch.Tensor, y: torch.Tensor, recipe: dict[str, Any]) -> torch.Tensor:
+    weight = class_weights(recipe, logits.device)
     if recipe["loss_type"] == "focal":
-        return focal_loss(logits, y, float(recipe["focal_gamma"]))
-    return F.cross_entropy(logits, y, label_smoothing=float(recipe["label_smoothing"]))
+        return focal_loss(logits, y, float(recipe["focal_gamma"]), weight)
+    return F.cross_entropy(logits, y, weight=weight, label_smoothing=float(recipe["label_smoothing"]))
 
 
 def symmetric_kl(logits_a: torch.Tensor, logits_b: torch.Tensor) -> torch.Tensor:

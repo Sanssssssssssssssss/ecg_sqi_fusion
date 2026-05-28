@@ -19,7 +19,8 @@ Submitted on 2026-05-28 after the loss-scale fix:
 | `29751791` | `head_reimpl` | `0-4%1` | baseline, interpretable SQI head, local quality v2, combo head, multiscale |
 | `29754081` | `sqi_head_tuning` | `0-15%2` | projected deterministic/predicted SQI stats injected into the classifier head |
 | `29756103` | `sqi_head_mlp_tuning` | `0-11%2` | SQI-injected head plus a tiny one-hidden-layer classifier MLP |
-| `29767663` | `sqi_residual_tuning` | `0-9%2` | zero-init SQI residual correction on top of the warm-started CLS logits |
+| `29767663` | `sqi_residual_tuning` | `0-9%2` | submitted then canceled before start to prioritize direct MIL SQI MLP tuning |
+| `29770007` | `sqi_mil_mlp_refined` | `0-15%2` | refined tuning around the best MIL SQI + small MLP head |
 | `29752152` | `loss_conflict` | `0-4%1` | CE-only and multi-task weighting conflict screen |
 | `29752153` | `target_gate_reimpl` | `0-5%1` | clean-RR targets, bad fallback target, denoise gates |
 | `29752154` | `generalization_loss` | `0-6%1` | label smoothing, focal, ordinal, R-Drop, SAM |
@@ -101,6 +102,22 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | sqi_head_mlp_tuning | sqi_mil_detach_mlp64_den5 | done | 0.9378 | 0.9114 | 0.9332 | 0.9687 | 15 | stop unless curve/grad norms explain a useful failure |
 | sqi_head_mlp_tuning | sqi_mil_detach_mlp64_cleanrr_l025 | done | 0.9414 | 0.9332 | 0.9237 | 0.9673 | 21 | stop unless curve/grad norms explain a useful failure |
 | sqi_head_mlp_tuning | sqi_mil_detach_mlp64_ls005 | done | 0.9414 | 0.9292 | 0.9237 | 0.9714 | 22 | stop unless curve/grad norms explain a useful failure |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_mw110 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_mw115 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_mw125 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_cleanrr_l015_mw115 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_cleanrr_l035_mw115 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_nodense_mw115 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_den5_mw115 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_ls002_mw115 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_ls005_mw115 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_ls010_mw115 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_drop005_mw115 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_drop015_mw115 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_h32_mw115 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_h96_mw115 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_lr4e5_mw115 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_snr010_mw115 | pending |  |  |  |  |  |  |
 | sqi_residual_tuning | sqi_resid_input | pending |  |  |  |  |  |  |
 | sqi_residual_tuning | sqi_resid_input_drop005 | pending |  |  |  |  |  |  |
 | sqi_residual_tuning | sqi_resid_input_snr010 | pending |  |  |  |  |  |  |
