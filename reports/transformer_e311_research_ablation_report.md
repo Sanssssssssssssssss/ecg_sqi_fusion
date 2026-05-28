@@ -23,6 +23,7 @@ Submitted on 2026-05-28 after the loss-scale fix:
 | `29770007` | `sqi_mil_mlp_refined` | `0-15%2` | first six completed below `0.941`; remaining low-value variants canceled to unblock grouped-LR follow-up |
 | `29777633` | `sqi_mil_mlp_lrgroup` | `0-7%2` | first two completed below `0.936`; remaining low-value variants canceled |
 | `29780940` | `sqi_residual_refined` | `0-7%2` | conservative zero-init SQI residual correction on top of loaded D1 classifier logits |
+| pending | `sqi_residual_freeze` | `0-5%2` | freeze shared warm-started model and train only SQI residual/head parameters |
 | `29752152` | `loss_conflict` | `0-4%1` | CE-only and multi-task weighting conflict screen |
 | `29752153` | `target_gate_reimpl` | `0-5%1` | clean-RR targets, bad fallback target, denoise gates |
 | `29752154` | `generalization_loss` | `0-6%1` | label smoothing, focal, ordinal, R-Drop, SAM |
@@ -146,6 +147,12 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | sqi_residual_refined | resid_mil_ls005_scale050 | done | 0.9337 | 0.9210 | 0.9169 | 0.9632 | 22 | stop unless curve/grad norms explain a useful failure |
 | sqi_residual_refined | resid_input_scale050 | done | 0.9369 | 0.9196 | 0.9223 | 0.9687 | 23 | stop unless curve/grad norms explain a useful failure |
 | sqi_residual_refined | resid_pred_scale050 | done | 0.9351 | 0.9183 | 0.9210 | 0.9659 | 23 | stop unless curve/grad norms explain a useful failure |
+| sqi_residual_freeze | freeze_mil_scale025_lr1e3 | pending |  |  |  |  |  |  |
+| sqi_residual_freeze | freeze_mil_scale050_lr1e3 | pending |  |  |  |  |  |  |
+| sqi_residual_freeze | freeze_mil_scale100_lr1e3 | pending |  |  |  |  |  |  |
+| sqi_residual_freeze | freeze_input_scale050_lr1e3 | pending |  |  |  |  |  |  |
+| sqi_residual_freeze | freeze_pred_scale050_lr1e3 | pending |  |  |  |  |  |  |
+| sqi_residual_freeze | headonly_mil_scale050_lr2e4 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_label_smooth_005 | done | 0.9387 | 0.9264 | 0.9441 | 0.9455 | 15 | stop unless curve/grad norms explain a useful failure |
 | generalization_loss | gl_label_smooth_020 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_focal_15 | pending |  |  |  |  |  |  |
@@ -201,6 +208,7 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 - `sqi_head_tuning` is the focused version of that idea: deterministic input SQI stats, predicted residual/level stats, detached variants, and top-k patch MIL summaries.
 - `sqi_mil_mlp_lrgroup` tests whether the direct SQI+MLP head failed because the randomly initialized head and warm-started backbone were optimized at the same learning rate.
 - `sqi_residual_refined` preserves the loaded D1 `cls_fc` and adds only a zero-init SQI residual delta, so useful SQI information can correct logits without replacing the main classifier.
+- `sqi_residual_freeze` checks whether SQI residual features help only when they are prevented from moving the warm-started encoder/decoder and classifier too far.
 - `target_gate_reimpl` checks whether RR targets and denoise gates cover bad samples more reliably.
 - `generalization_loss` checks whether boundary-friendly losses improve medium without sacrificing bad.
 - `focused_tuning` follows up on early results by lowering local/level supervision weights instead of changing data or the mainline model.

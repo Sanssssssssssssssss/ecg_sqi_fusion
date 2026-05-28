@@ -253,6 +253,8 @@ def total_loss(
 
 def shared_grad_norms(model: ResearchSQITransformer, comps: dict[str, torch.Tensor], recipe: dict[str, Any]) -> dict[str, float]:
     params = model.shared_parameters()
+    if not params:
+        return {"grad_cls": 0.0, "grad_denoise": 0.0, "grad_level": 0.0}
     out: dict[str, float] = {}
     keys = {
         "grad_cls": comps["cls"],
@@ -461,6 +463,26 @@ def optimizer_param_groups(
     return groups
 
 
+def apply_train_scope(model: ResearchSQITransformer, recipe: dict[str, Any]) -> None:
+    scope = str(recipe.get("train_scope", "all"))
+    if scope == "all":
+        return
+    if scope not in {"head_only", "residual_only"}:
+        raise ValueError(f"unknown train_scope={scope!r}")
+
+    for param in model.parameters():
+        param.requires_grad = False
+
+    prefixes = (
+        ("cls_fc", "cls_mlp", "sqi_stat_proj", "sqi_delta", "snr_fc", "ordinal_fc", "enc_pool", "dec_pool")
+        if scope == "head_only"
+        else ("sqi_stat_proj", "sqi_delta", "snr_fc")
+    )
+    for name, param in model.named_parameters():
+        if name.startswith(prefixes):
+            param.requires_grad = True
+
+
 def train_recipe(args: argparse.Namespace, recipe: dict[str, Any]) -> dict[str, Any]:
     out_dir = Path(args.out_root) / recipe["group"] / recipe["name"]
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -479,6 +501,7 @@ def train_recipe(args: argparse.Namespace, recipe: dict[str, Any]) -> dict[str, 
     sample = bundle.datasets["train"][0]
     model = make_model(recipe, sample).to(device)
     warm = partial_load(model, Path(args.init_checkpoint))
+    apply_train_scope(model, recipe)
 
     uw = UncertaintyWeights().to(device) if bool(recipe["uncertainty"]) else None
     opt = torch.optim.AdamW(optimizer_param_groups(model, uw, recipe))

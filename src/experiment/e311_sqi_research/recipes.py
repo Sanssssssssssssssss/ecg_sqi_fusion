@@ -12,6 +12,7 @@ BASE: dict[str, Any] = {
     "lr_eta_min": 4e-6,
     "head_lr_mult": 1.0,
     "sqi_delta_scale": 1.0,
+    "train_scope": "all",
     "weight_decay": 0.03,
     "dropout": 0.10,
     "input_mode": "raw",
@@ -286,6 +287,14 @@ RECIPES: dict[str, list[dict[str, Any]]] = {
         recipe("resid_mil_ls005_scale050", "sqi_residual_refined", head_type="sqi_resid_mil_detach", lr=3.0e-5, head_lr_mult=5.0, sqi_delta_scale=0.50, label_smoothing=0.005, description="MIL SQI residual with light label smoothing"),
         recipe("resid_input_scale050", "sqi_residual_refined", head_type="sqi_resid_input", lr=3.0e-5, head_lr_mult=5.0, sqi_delta_scale=0.50, description="input-only SQI residual correction"),
         recipe("resid_pred_scale050", "sqi_residual_refined", head_type="sqi_resid_pred_detach", lr=3.0e-5, head_lr_mult=5.0, sqi_delta_scale=0.50, description="predicted residual/level SQI correction without top-k MIL stats"),
+    ],
+    "sqi_residual_freeze": [
+        recipe("freeze_mil_scale025_lr1e3", "sqi_residual_freeze", head_type="sqi_resid_mil_detach", train_scope="residual_only", lr=1.0e-3, weight_decay=0.0, sqi_delta_scale=0.25, description="freeze loaded backbone/classifier; train conservative MIL SQI residual only"),
+        recipe("freeze_mil_scale050_lr1e3", "sqi_residual_freeze", head_type="sqi_resid_mil_detach", train_scope="residual_only", lr=1.0e-3, weight_decay=0.0, sqi_delta_scale=0.50, description="freeze loaded backbone/classifier; train moderate MIL SQI residual only"),
+        recipe("freeze_mil_scale100_lr1e3", "sqi_residual_freeze", head_type="sqi_resid_mil_detach", train_scope="residual_only", lr=1.0e-3, weight_decay=0.0, sqi_delta_scale=1.00, description="freeze loaded backbone/classifier; train full-scale MIL SQI residual only"),
+        recipe("freeze_input_scale050_lr1e3", "sqi_residual_freeze", head_type="sqi_resid_input", train_scope="residual_only", lr=1.0e-3, weight_decay=0.0, sqi_delta_scale=0.50, description="freeze loaded model; train input-SQI residual only"),
+        recipe("freeze_pred_scale050_lr1e3", "sqi_residual_freeze", head_type="sqi_resid_pred_detach", train_scope="residual_only", lr=1.0e-3, weight_decay=0.0, sqi_delta_scale=0.50, description="freeze loaded model; train predicted-SQI residual only"),
+        recipe("headonly_mil_scale050_lr2e4", "sqi_residual_freeze", head_type="sqi_resid_mil_detach", train_scope="head_only", lr=2.0e-4, weight_decay=0.005, sqi_delta_scale=0.50, description="freeze shared encoder/decoder but allow classifier/SQI/SNR heads to adapt"),
     ],
     "generalization_loss": [
         recipe("gl_label_smooth_005", "generalization_loss", label_smoothing=0.005, description="CE with light label smoothing"),
