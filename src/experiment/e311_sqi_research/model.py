@@ -114,6 +114,7 @@ class ResearchConfig:
     multiscale: str = "none"
     use_snr_head: bool = True
     use_ordinal_head: bool = False
+    cls_hidden: int = 0
 
 
 class ResearchSQITransformer(nn.Module):
@@ -195,6 +196,17 @@ class ResearchSQITransformer(nn.Module):
         )
         cls_in = self._classification_dim()
         self.cls_fc = nn.Linear(cls_in, 3)
+        self.cls_mlp = (
+            nn.Sequential(
+                nn.LayerNorm(cls_in),
+                nn.Linear(cls_in, cfg.cls_hidden),
+                nn.GELU(),
+                nn.Dropout(cfg.dropout),
+                nn.Linear(cfg.cls_hidden, 3),
+            )
+            if cfg.cls_hidden > 0
+            else None
+        )
         if cfg.use_snr_head:
             self.snr_fc = nn.Linear(cls_in, 1)
         if cfg.use_ordinal_head:
@@ -427,7 +439,7 @@ class ResearchSQITransformer(nn.Module):
         out = {
             "denoise": f["denoise"],
             "level": f["level"],
-            "logits": self.cls_fc(g),
+            "logits": self.cls_mlp(g) if self.cls_mlp is not None else self.cls_fc(g),
         }
         if self.cfg.use_snr_head:
             out["snr_hat"] = self.snr_fc(g).squeeze(1)

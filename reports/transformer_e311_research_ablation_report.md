@@ -87,7 +87,19 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | sqi_head_tuning | sqi_mil_detach_cleanrr_l05 | pending |  |  |  |  |  |  |
 | sqi_head_tuning | sqi_mil_detach_patchres_l025 | pending |  |  |  |  |  |  |
 | sqi_head_tuning | sqi_mil_detach_ls005 | pending |  |  |  |  |  |  |
-| generalization_loss | gl_label_smooth_005 | pending |  |  |  |  |  |  |
+| sqi_head_mlp_tuning | sqi_input_mlp64 | pending |  |  |  |  |  |  |
+| sqi_head_mlp_tuning | sqi_input_mlp128 | pending |  |  |  |  |  |  |
+| sqi_head_mlp_tuning | sqi_input_attn_mlp64 | pending |  |  |  |  |  |  |
+| sqi_head_mlp_tuning | sqi_input_mlp64_drop005 | pending |  |  |  |  |  |  |
+| sqi_head_mlp_tuning | sqi_input_mlp64_snr010 | pending |  |  |  |  |  |  |
+| sqi_head_mlp_tuning | sqi_pred_detach_mlp64_nodense | pending |  |  |  |  |  |  |
+| sqi_head_mlp_tuning | sqi_pred_detach_mlp64_den5 | pending |  |  |  |  |  |  |
+| sqi_head_mlp_tuning | sqi_pred_detach_mlp64_den10_l025 | pending |  |  |  |  |  |  |
+| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_nodense | pending |  |  |  |  |  |  |
+| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_den5 | pending |  |  |  |  |  |  |
+| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_cleanrr_l025 | pending |  |  |  |  |  |  |
+| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_ls005 | pending |  |  |  |  |  |  |
+| generalization_loss | gl_label_smooth_005 | done | 0.9387 | 0.9264 | 0.9441 | 0.9455 | 15 | stop unless curve/grad norms explain a useful failure |
 | generalization_loss | gl_label_smooth_020 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_focal_15 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_focal_20 | pending |  |  |  |  |  |  |
@@ -103,6 +115,7 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | head_reimpl | hr_baseline_clone | 38.5965 | 0.0000 | 0.0000 |
 | target_gate_reimpl | tg_clean_rr_level | 24.9120 | 0.0000 | 0.8119 |
 | focused_tuning | ft_local_l0025_nodense | 29.0549 | 0.0000 | 0.0000 |
+| generalization_loss | gl_label_smooth_005 | 0.2286 | 0.0000 | 0.0000 |
 
 ## Reading Guide
 

@@ -111,6 +111,7 @@ def make_model(recipe: dict[str, Any], sample: dict[str, torch.Tensor]) -> Resea
         multiscale=str(recipe["multiscale"]),
         use_snr_head=bool(recipe["use_snr_head"]),
         use_ordinal_head=bool(recipe["use_ordinal_head"]),
+        cls_hidden=int(recipe.get("cls_hidden", 0)),
     )
     return ResearchSQITransformer(cfg)
 
