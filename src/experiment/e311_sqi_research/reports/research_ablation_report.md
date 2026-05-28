@@ -102,10 +102,10 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | sqi_head_mlp_tuning | sqi_mil_detach_mlp64_den5 | done | 0.9378 | 0.9114 | 0.9332 | 0.9687 | 15 | stop unless curve/grad norms explain a useful failure |
 | sqi_head_mlp_tuning | sqi_mil_detach_mlp64_cleanrr_l025 | done | 0.9414 | 0.9332 | 0.9237 | 0.9673 | 21 | stop unless curve/grad norms explain a useful failure |
 | sqi_head_mlp_tuning | sqi_mil_detach_mlp64_ls005 | done | 0.9414 | 0.9292 | 0.9237 | 0.9714 | 22 | stop unless curve/grad norms explain a useful failure |
-| sqi_mil_mlp_refined | mil_cleanrr_l025_mw110 | pending |  |  |  |  |  |  |
-| sqi_mil_mlp_refined | mil_cleanrr_l025_mw115 | pending |  |  |  |  |  |  |
-| sqi_mil_mlp_refined | mil_cleanrr_l025_mw125 | pending |  |  |  |  |  |  |
-| sqi_mil_mlp_refined | mil_cleanrr_l015_mw115 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_mw110 | done | 0.9401 | 0.9332 | 0.9237 | 0.9632 | 23 | stop unless curve/grad norms explain a useful failure |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_mw115 | done | 0.9396 | 0.9155 | 0.9332 | 0.9700 | 21 | stop unless curve/grad norms explain a useful failure |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_mw125 | done | 0.9405 | 0.9387 | 0.9183 | 0.9646 | 23 | stop unless curve/grad norms explain a useful failure |
+| sqi_mil_mlp_refined | mil_cleanrr_l015_mw115 | done | 0.9346 | 0.9292 | 0.9019 | 0.9728 | 18 | stop unless curve/grad norms explain a useful failure |
 | sqi_mil_mlp_refined | mil_cleanrr_l035_mw115 | pending |  |  |  |  |  |  |
 | sqi_mil_mlp_refined | mil_nodense_mw115 | pending |  |  |  |  |  |  |
 | sqi_mil_mlp_refined | mil_den5_mw115 | pending |  |  |  |  |  |  |
@@ -158,6 +158,10 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | sqi_head_mlp_tuning | sqi_mil_detach_mlp64_den5 | 0.0201 | 0.2827 | 0.0000 |
 | sqi_head_mlp_tuning | sqi_mil_detach_mlp64_cleanrr_l025 | 14.0799 | 0.6189 | 0.0887 |
 | sqi_head_mlp_tuning | sqi_mil_detach_mlp64_ls005 | 5.0719 | 0.5661 | 0.1074 |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_mw110 | 36.0315 | 0.6286 | 0.0910 |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_mw115 | 22.8044 | 0.6096 | 0.0945 |
+| sqi_mil_mlp_refined | mil_cleanrr_l025_mw125 | 0.9453 | 0.5641 | 0.0919 |
+| sqi_mil_mlp_refined | mil_cleanrr_l015_mw115 | 0.0226 | 0.5754 | 0.0450 |
 | generalization_loss | gl_label_smooth_005 | 0.2286 | 0.0000 | 0.0000 |
 
 ## Reading Guide
