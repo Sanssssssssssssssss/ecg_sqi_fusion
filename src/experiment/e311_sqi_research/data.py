@@ -161,7 +161,8 @@ def level_targets(
         return base_level.astype(np.float32), base_valid.astype(np.uint8)
     cache_dir = out_root / "cache"
     cache_dir.mkdir(parents=True, exist_ok=True)
-    cache_path = cache_dir / f"level_targets_{mode}.npz"
+    cache_key = "patch_residual_v2" if mode == "patch_residual" else mode
+    cache_path = cache_dir / f"level_targets_{cache_key}.npz"
     if cache_path.exists() and not force:
         z = np.load(cache_path)
         return z["P"].astype(np.float32), z["valid_rr"].astype(np.uint8)
@@ -176,9 +177,12 @@ def level_targets(
             P[bad_or_invalid] = 1.0
             valid[bad_or_invalid] = 1
     elif mode == "patch_residual":
-        residual = np.abs(noisy - clean).astype(np.float32)
-        scale = np.percentile(residual, 90, axis=1, keepdims=True).astype(np.float32) + 1e-6
-        P = np.clip(residual / scale, 0.0, 1.0).astype(np.float32)
+        # Use a dataset-level power scale so this target keeps absolute noise
+        # severity. Per-record normalization made widespread bad examples look
+        # artificially mild and inverted the intended bad-vs-medium ordering.
+        residual_power = ((noisy - clean) ** 2).astype(np.float32)
+        scale = np.float32(np.percentile(residual_power, 99.0) + 1e-8)
+        P = np.clip(residual_power / scale, 0.0, 1.0).astype(np.float32)
         valid = np.ones_like(base_valid, dtype=np.uint8)
     else:
         raise ValueError(f"unknown level_target_mode={mode!r}")

@@ -207,7 +207,10 @@ def total_loss(
     den = float(recipe["denoise_weight"]) * comps["denoise"]
     lvl = float(recipe["level_weight"]) * comps["level"]
     if uw is not None and bool(recipe["uncertainty"]) and epoch >= int(recipe.get("uncertainty_start_epoch", 6)):
-        loss = uw(cls, den, lvl)
+        # Let uncertainty weighting learn the relative task scale from the raw
+        # task losses. Applying the fixed denoise/level multipliers here would
+        # make this ablation a manually biased weighting scheme again.
+        loss = uw(float(recipe["cls_weight"]) * comps["cls"], comps["denoise"], comps["level"])
     else:
         loss = cls + den + lvl
     loss = loss + float(recipe["snr_weight"]) * comps["snr"]
