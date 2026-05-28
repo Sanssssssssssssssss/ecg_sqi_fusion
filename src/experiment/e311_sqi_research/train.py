@@ -75,6 +75,20 @@ class SAM:
         self.base_optimizer.zero_grad(set_to_none=True)
 
 
+def disable_batchnorm_running_stats(model: nn.Module) -> None:
+    for module in model.modules():
+        if isinstance(module, nn.modules.batchnorm._BatchNorm):
+            module._sam_backup_momentum = module.momentum
+            module.momentum = 0.0
+
+
+def enable_batchnorm_running_stats(model: nn.Module) -> None:
+    for module in model.modules():
+        if isinstance(module, nn.modules.batchnorm._BatchNorm) and hasattr(module, "_sam_backup_momentum"):
+            module.momentum = module._sam_backup_momentum
+            delattr(module, "_sam_backup_momentum")
+
+
 def set_seed(seed: int) -> None:
     random.seed(seed)
     np.random.seed(seed)
@@ -287,8 +301,10 @@ def run_one_epoch(
             loss.backward()
             if sam is not None:
                 sam.first_step()
+                disable_batchnorm_running_stats(model)
                 loss2, _, _ = forward_loss()
                 loss2.backward()
+                enable_batchnorm_running_stats(model)
                 sam.second_step()
             else:
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 3.0)
