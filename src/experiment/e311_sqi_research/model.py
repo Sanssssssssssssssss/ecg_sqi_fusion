@@ -248,6 +248,11 @@ class ResearchSQITransformer(nn.Module):
         flat = x.flatten(1)
         return torch.cat([flat.mean(1, keepdim=True), flat.std(1, keepdim=True), flat.amax(1, keepdim=True)], dim=1)
 
+    def _estimated_snr_feature(self, x: torch.Tensor, residual: torch.Tensor) -> torch.Tensor:
+        signal_power = x[:, :1, :].pow(2).mean(dim=(1, 2), keepdim=True)
+        residual_power = residual.pow(2).mean(dim=(1, 2), keepdim=True)
+        return torch.log10((signal_power + 1e-6) / (residual_power + 1e-6)).view(-1, 1)
+
     def _local_stats(self, residual: torch.Tensor, level_prob: torch.Tensor) -> torch.Tensor:
         r_patch = residual.unfold(-1, self.cfg.patch_size, self.cfg.stride).mean(dim=-1).squeeze(1)
         l_patch = level_prob.unfold(-1, self.cfg.patch_size, self.cfg.stride).mean(dim=-1).squeeze(1)
@@ -281,7 +286,7 @@ class ResearchSQITransformer(nn.Module):
                     self._summary_stats(residual),
                     self._summary_stats(level_prob),
                     self._summary_stats(x[:, :1, :]),
-                    residual.mean(dim=(1, 2), keepdim=False).unsqueeze(1),
+                    self._estimated_snr_feature(x, residual),
                 ],
                 dim=1,
             )
@@ -294,7 +299,7 @@ class ResearchSQITransformer(nn.Module):
                     self._summary_stats(residual),
                     self._summary_stats(level_prob),
                     self._summary_stats(x[:, :1, :]),
-                    residual.mean(dim=(1, 2), keepdim=False).unsqueeze(1),
+                    self._estimated_snr_feature(x, residual),
                 ],
                 dim=1,
             )
