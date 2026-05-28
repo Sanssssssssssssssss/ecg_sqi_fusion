@@ -115,6 +115,7 @@ class ResearchConfig:
     use_snr_head: bool = True
     use_ordinal_head: bool = False
     cls_hidden: int = 0
+    sqi_delta_scale: float = 1.0
 
 
 class ResearchSQITransformer(nn.Module):
@@ -465,7 +466,7 @@ class ResearchSQITransformer(nn.Module):
         if self.sqi_delta is not None:
             residual = torch.abs(x[:, :1, :] - f["denoise"])
             level_prob = torch.sigmoid(f["level"])
-            logits = logits + self.sqi_delta(self._sqi_stat_parts(x, residual, level_prob))
+            logits = logits + float(self.cfg.sqi_delta_scale) * self.sqi_delta(self._sqi_stat_parts(x, residual, level_prob))
         out = {
             "denoise": f["denoise"],
             "level": f["level"],

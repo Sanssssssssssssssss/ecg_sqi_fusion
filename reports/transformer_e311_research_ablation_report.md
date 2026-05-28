@@ -22,6 +22,7 @@ Submitted on 2026-05-28 after the loss-scale fix:
 | `29767663` | `sqi_residual_tuning` | `0-9%2` | submitted then canceled before start to prioritize direct MIL SQI MLP tuning |
 | `29770007` | `sqi_mil_mlp_refined` | `0-15%2` | first six completed below `0.941`; remaining low-value variants canceled to unblock grouped-LR follow-up |
 | `29777633` | `sqi_mil_mlp_lrgroup` | `0-7%2` | grouped-LR follow-up: slower warm-started backbone, faster new SQI/MLP head |
+| pending | `sqi_residual_refined` | `0-7%2` | conservative zero-init SQI residual correction on top of loaded D1 classifier logits |
 | `29752152` | `loss_conflict` | `0-4%1` | CE-only and multi-task weighting conflict screen |
 | `29752153` | `target_gate_reimpl` | `0-5%1` | clean-RR targets, bad fallback target, denoise gates |
 | `29752154` | `generalization_loss` | `0-6%1` | label smoothing, focal, ordinal, R-Drop, SAM |
@@ -119,8 +120,8 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | sqi_mil_mlp_refined | mil_cleanrr_l025_h96_mw115 | pending |  |  |  |  |  |  |
 | sqi_mil_mlp_refined | mil_cleanrr_l025_lr4e5_mw115 | pending |  |  |  |  |  |  |
 | sqi_mil_mlp_refined | mil_cleanrr_l025_snr010_mw115 | pending |  |  |  |  |  |  |
-| sqi_mil_mlp_lrgroup | mil_l025_lr3e5_head3 | pending |  |  |  |  |  |  |
-| sqi_mil_mlp_lrgroup | mil_l025_lr2e5_head5 | pending |  |  |  |  |  |  |
+| sqi_mil_mlp_lrgroup | mil_l025_lr3e5_head3 | done | 0.9360 | 0.9305 | 0.9074 | 0.9700 | 24 | stop unless curve/grad norms explain a useful failure |
+| sqi_mil_mlp_lrgroup | mil_l025_lr2e5_head5 | done | 0.9305 | 0.9223 | 0.8992 | 0.9700 | 23 | stop unless curve/grad norms explain a useful failure |
 | sqi_mil_mlp_lrgroup | mil_l025_lr4e5_head3 | pending |  |  |  |  |  |  |
 | sqi_mil_mlp_lrgroup | mil_l035_lr3e5_head3 | pending |  |  |  |  |  |  |
 | sqi_mil_mlp_lrgroup | mil_nodense_lr3e5_head3 | pending |  |  |  |  |  |  |
@@ -137,6 +138,14 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | sqi_residual_tuning | sqi_resid_mil_detach_den5 | pending |  |  |  |  |  |  |
 | sqi_residual_tuning | sqi_resid_mil_detach_cleanrr_l025 | pending |  |  |  |  |  |  |
 | sqi_residual_tuning | sqi_resid_mil_detach_ls005 | pending |  |  |  |  |  |  |
+| sqi_residual_refined | resid_mil_scale025_nodense | pending |  |  |  |  |  |  |
+| sqi_residual_refined | resid_mil_scale050_nodense | pending |  |  |  |  |  |  |
+| sqi_residual_refined | resid_mil_scale100_nodense | pending |  |  |  |  |  |  |
+| sqi_residual_refined | resid_mil_cleanrr_l025_scale050 | pending |  |  |  |  |  |  |
+| sqi_residual_refined | resid_mil_den5_scale050 | pending |  |  |  |  |  |  |
+| sqi_residual_refined | resid_mil_ls005_scale050 | pending |  |  |  |  |  |  |
+| sqi_residual_refined | resid_input_scale050 | pending |  |  |  |  |  |  |
+| sqi_residual_refined | resid_pred_scale050 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_label_smooth_005 | done | 0.9387 | 0.9264 | 0.9441 | 0.9455 | 15 | stop unless curve/grad norms explain a useful failure |
 | generalization_loss | gl_label_smooth_020 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_focal_15 | pending |  |  |  |  |  |  |
@@ -173,6 +182,8 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | sqi_mil_mlp_refined | mil_cleanrr_l015_mw115 | 0.0226 | 0.5754 | 0.0450 |
 | sqi_mil_mlp_refined | mil_cleanrr_l035_mw115 | 0.1803 | 0.5654 | 0.1670 |
 | sqi_mil_mlp_refined | mil_nodense_mw115 | 2.5285 | 0.0000 | 0.0000 |
+| sqi_mil_mlp_lrgroup | mil_l025_lr3e5_head3 | 16.3828 | 0.5010 | 0.0971 |
+| sqi_mil_mlp_lrgroup | mil_l025_lr2e5_head5 | 15.9092 | 0.4122 | 0.1146 |
 | generalization_loss | gl_label_smooth_005 | 0.2286 | 0.0000 | 0.0000 |
 
 ## Reading Guide
@@ -181,6 +192,7 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 - `head_reimpl` tests whether classification improves when it sees local residual/level summaries instead of a token alone.
 - `sqi_head_tuning` is the focused version of that idea: deterministic input SQI stats, predicted residual/level stats, detached variants, and top-k patch MIL summaries.
 - `sqi_mil_mlp_lrgroup` tests whether the direct SQI+MLP head failed because the randomly initialized head and warm-started backbone were optimized at the same learning rate.
+- `sqi_residual_refined` preserves the loaded D1 `cls_fc` and adds only a zero-init SQI residual delta, so useful SQI information can correct logits without replacing the main classifier.
 - `target_gate_reimpl` checks whether RR targets and denoise gates cover bad samples more reliably.
 - `generalization_loss` checks whether boundary-friendly losses improve medium without sacrificing bad.
 - `focused_tuning` follows up on early results by lowering local/level supervision weights instead of changing data or the mainline model.
