@@ -19,6 +19,7 @@ Submitted on 2026-05-28 after the loss-scale fix:
 | `29751791` | `head_reimpl` | `0-4%1` | baseline, interpretable SQI head, local quality v2, combo head, multiscale |
 | `29754081` | `sqi_head_tuning` | `0-15%2` | projected deterministic/predicted SQI stats injected into the classifier head |
 | `29756103` | `sqi_head_mlp_tuning` | `0-11%2` | SQI-injected head plus a tiny one-hidden-layer classifier MLP |
+| `29767663` | `sqi_residual_tuning` | `0-9%2` | zero-init SQI residual correction on top of the warm-started CLS logits |
 | `29752152` | `loss_conflict` | `0-4%1` | CE-only and multi-task weighting conflict screen |
 | `29752153` | `target_gate_reimpl` | `0-5%1` | clean-RR targets, bad fallback target, denoise gates |
 | `29752154` | `generalization_loss` | `0-6%1` | label smoothing, focal, ordinal, R-Drop, SAM |
@@ -100,6 +101,16 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | sqi_head_mlp_tuning | sqi_mil_detach_mlp64_den5 | done | 0.9378 | 0.9114 | 0.9332 | 0.9687 | 15 | stop unless curve/grad norms explain a useful failure |
 | sqi_head_mlp_tuning | sqi_mil_detach_mlp64_cleanrr_l025 | done | 0.9414 | 0.9332 | 0.9237 | 0.9673 | 21 | stop unless curve/grad norms explain a useful failure |
 | sqi_head_mlp_tuning | sqi_mil_detach_mlp64_ls005 | done | 0.9414 | 0.9292 | 0.9237 | 0.9714 | 22 | stop unless curve/grad norms explain a useful failure |
+| sqi_residual_tuning | sqi_resid_input | pending |  |  |  |  |  |  |
+| sqi_residual_tuning | sqi_resid_input_drop005 | pending |  |  |  |  |  |  |
+| sqi_residual_tuning | sqi_resid_input_snr010 | pending |  |  |  |  |  |  |
+| sqi_residual_tuning | sqi_resid_pred_detach_nodense | pending |  |  |  |  |  |  |
+| sqi_residual_tuning | sqi_resid_pred_detach_den5 | pending |  |  |  |  |  |  |
+| sqi_residual_tuning | sqi_resid_pred_detach_den10_l025 | pending |  |  |  |  |  |  |
+| sqi_residual_tuning | sqi_resid_mil_detach_nodense | pending |  |  |  |  |  |  |
+| sqi_residual_tuning | sqi_resid_mil_detach_den5 | pending |  |  |  |  |  |  |
+| sqi_residual_tuning | sqi_resid_mil_detach_cleanrr_l025 | pending |  |  |  |  |  |  |
+| sqi_residual_tuning | sqi_resid_mil_detach_ls005 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_label_smooth_005 | done | 0.9387 | 0.9264 | 0.9441 | 0.9455 | 15 | stop unless curve/grad norms explain a useful failure |
 | generalization_loss | gl_label_smooth_020 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_focal_15 | pending |  |  |  |  |  |  |

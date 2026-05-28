@@ -118,6 +118,7 @@ def render(rows: list[dict[str, Any]]) -> str:
     lines.append("| `29751791` | `head_reimpl` | `0-4%1` | baseline, interpretable SQI head, local quality v2, combo head, multiscale |")
     lines.append("| `29754081` | `sqi_head_tuning` | `0-15%2` | projected deterministic/predicted SQI stats injected into the classifier head |")
     lines.append("| `29756103` | `sqi_head_mlp_tuning` | `0-11%2` | SQI-injected head plus a tiny one-hidden-layer classifier MLP |")
+    lines.append("| `29767663` | `sqi_residual_tuning` | `0-9%2` | zero-init SQI residual correction on top of the warm-started CLS logits |")
     lines.append("| `29752152` | `loss_conflict` | `0-4%1` | CE-only and multi-task weighting conflict screen |")
     lines.append("| `29752153` | `target_gate_reimpl` | `0-5%1` | clean-RR targets, bad fallback target, denoise gates |")
     lines.append("| `29752154` | `generalization_loss` | `0-6%1` | label smoothing, focal, ordinal, R-Drop, SAM |")
