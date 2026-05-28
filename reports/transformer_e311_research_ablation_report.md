@@ -138,14 +138,14 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | sqi_residual_tuning | sqi_resid_mil_detach_den5 | pending |  |  |  |  |  |  |
 | sqi_residual_tuning | sqi_resid_mil_detach_cleanrr_l025 | pending |  |  |  |  |  |  |
 | sqi_residual_tuning | sqi_resid_mil_detach_ls005 | pending |  |  |  |  |  |  |
-| sqi_residual_refined | resid_mil_scale025_nodense | pending |  |  |  |  |  |  |
-| sqi_residual_refined | resid_mil_scale050_nodense | pending |  |  |  |  |  |  |
-| sqi_residual_refined | resid_mil_scale100_nodense | pending |  |  |  |  |  |  |
-| sqi_residual_refined | resid_mil_cleanrr_l025_scale050 | pending |  |  |  |  |  |  |
-| sqi_residual_refined | resid_mil_den5_scale050 | pending |  |  |  |  |  |  |
-| sqi_residual_refined | resid_mil_ls005_scale050 | pending |  |  |  |  |  |  |
-| sqi_residual_refined | resid_input_scale050 | pending |  |  |  |  |  |  |
-| sqi_residual_refined | resid_pred_scale050 | pending |  |  |  |  |  |  |
+| sqi_residual_refined | resid_mil_scale025_nodense | done | 0.9364 | 0.9210 | 0.9196 | 0.9687 | 22 | stop unless curve/grad norms explain a useful failure |
+| sqi_residual_refined | resid_mil_scale050_nodense | done | 0.9382 | 0.9183 | 0.9278 | 0.9687 | 23 | stop unless curve/grad norms explain a useful failure |
+| sqi_residual_refined | resid_mil_scale100_nodense | done | 0.9351 | 0.9278 | 0.9101 | 0.9673 | 15 | stop unless curve/grad norms explain a useful failure |
+| sqi_residual_refined | resid_mil_cleanrr_l025_scale050 | done | 0.9351 | 0.9155 | 0.9237 | 0.9659 | 22 | stop unless curve/grad norms explain a useful failure |
+| sqi_residual_refined | resid_mil_den5_scale050 | done | 0.9369 | 0.9210 | 0.9237 | 0.9659 | 23 | stop unless curve/grad norms explain a useful failure |
+| sqi_residual_refined | resid_mil_ls005_scale050 | done | 0.9337 | 0.9210 | 0.9169 | 0.9632 | 22 | stop unless curve/grad norms explain a useful failure |
+| sqi_residual_refined | resid_input_scale050 | done | 0.9369 | 0.9196 | 0.9223 | 0.9687 | 23 | stop unless curve/grad norms explain a useful failure |
+| sqi_residual_refined | resid_pred_scale050 | done | 0.9351 | 0.9183 | 0.9210 | 0.9659 | 23 | stop unless curve/grad norms explain a useful failure |
 | generalization_loss | gl_label_smooth_005 | done | 0.9387 | 0.9264 | 0.9441 | 0.9455 | 15 | stop unless curve/grad norms explain a useful failure |
 | generalization_loss | gl_label_smooth_020 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_focal_15 | pending |  |  |  |  |  |  |
@@ -184,6 +184,14 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | sqi_mil_mlp_refined | mil_nodense_mw115 | 2.5285 | 0.0000 | 0.0000 |
 | sqi_mil_mlp_lrgroup | mil_l025_lr3e5_head3 | 16.3828 | 0.5010 | 0.0971 |
 | sqi_mil_mlp_lrgroup | mil_l025_lr2e5_head5 | 15.9092 | 0.4122 | 0.1146 |
+| sqi_residual_refined | resid_mil_scale025_nodense | 45.8756 | 0.0000 | 0.0000 |
+| sqi_residual_refined | resid_mil_scale050_nodense | 40.5170 | 0.0000 | 0.0000 |
+| sqi_residual_refined | resid_mil_scale100_nodense | 43.7648 | 0.0000 | 0.0000 |
+| sqi_residual_refined | resid_mil_cleanrr_l025_scale050 | 31.5172 | 0.3317 | 0.0864 |
+| sqi_residual_refined | resid_mil_den5_scale050 | 37.9308 | 0.1704 | 0.0000 |
+| sqi_residual_refined | resid_mil_ls005_scale050 | 34.9587 | 0.0000 | 0.0000 |
+| sqi_residual_refined | resid_input_scale050 | 46.1446 | 0.0000 | 0.0000 |
+| sqi_residual_refined | resid_pred_scale050 | 45.8981 | 0.0000 | 0.0000 |
 | generalization_loss | gl_label_smooth_005 | 0.2286 | 0.0000 | 0.0000 |
 
 ## Reading Guide
