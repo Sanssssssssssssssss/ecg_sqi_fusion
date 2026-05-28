@@ -88,18 +88,18 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | sqi_head_tuning | sqi_mil_detach_cleanrr_l05 | pending |  |  |  |  |  |  |
 | sqi_head_tuning | sqi_mil_detach_patchres_l025 | pending |  |  |  |  |  |  |
 | sqi_head_tuning | sqi_mil_detach_ls005 | pending |  |  |  |  |  |  |
-| sqi_head_mlp_tuning | sqi_input_mlp64 | pending |  |  |  |  |  |  |
-| sqi_head_mlp_tuning | sqi_input_mlp128 | pending |  |  |  |  |  |  |
-| sqi_head_mlp_tuning | sqi_input_attn_mlp64 | pending |  |  |  |  |  |  |
-| sqi_head_mlp_tuning | sqi_input_mlp64_drop005 | pending |  |  |  |  |  |  |
-| sqi_head_mlp_tuning | sqi_input_mlp64_snr010 | pending |  |  |  |  |  |  |
-| sqi_head_mlp_tuning | sqi_pred_detach_mlp64_nodense | pending |  |  |  |  |  |  |
-| sqi_head_mlp_tuning | sqi_pred_detach_mlp64_den5 | pending |  |  |  |  |  |  |
-| sqi_head_mlp_tuning | sqi_pred_detach_mlp64_den10_l025 | pending |  |  |  |  |  |  |
-| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_nodense | pending |  |  |  |  |  |  |
-| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_den5 | pending |  |  |  |  |  |  |
-| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_cleanrr_l025 | pending |  |  |  |  |  |  |
-| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_ls005 | pending |  |  |  |  |  |  |
+| sqi_head_mlp_tuning | sqi_input_mlp64 | done | 0.9342 | 0.9210 | 0.9128 | 0.9687 | 18 | stop unless curve/grad norms explain a useful failure |
+| sqi_head_mlp_tuning | sqi_input_mlp128 | done | 0.9378 | 0.9346 | 0.9128 | 0.9659 | 23 | stop unless curve/grad norms explain a useful failure |
+| sqi_head_mlp_tuning | sqi_input_attn_mlp64 | done | 0.9401 | 0.9360 | 0.9251 | 0.9591 | 23 | stop unless curve/grad norms explain a useful failure |
+| sqi_head_mlp_tuning | sqi_input_mlp64_drop005 | done | 0.9405 | 0.9319 | 0.9196 | 0.9700 | 19 | stop unless curve/grad norms explain a useful failure |
+| sqi_head_mlp_tuning | sqi_input_mlp64_snr010 | done | 0.9382 | 0.9087 | 0.9305 | 0.9755 | 21 | stop unless curve/grad norms explain a useful failure |
+| sqi_head_mlp_tuning | sqi_pred_detach_mlp64_nodense | done | 0.9360 | 0.9469 | 0.8992 | 0.9619 | 13 | stop unless curve/grad norms explain a useful failure |
+| sqi_head_mlp_tuning | sqi_pred_detach_mlp64_den5 | done | 0.9391 | 0.9278 | 0.9210 | 0.9687 | 22 | stop unless curve/grad norms explain a useful failure |
+| sqi_head_mlp_tuning | sqi_pred_detach_mlp64_den10_l025 | done | 0.9332 | 0.9196 | 0.9128 | 0.9673 | 20 | stop unless curve/grad norms explain a useful failure |
+| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_nodense | done | 0.9410 | 0.9346 | 0.9210 | 0.9673 | 22 | stop unless curve/grad norms explain a useful failure |
+| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_den5 | done | 0.9378 | 0.9114 | 0.9332 | 0.9687 | 15 | stop unless curve/grad norms explain a useful failure |
+| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_cleanrr_l025 | done | 0.9414 | 0.9332 | 0.9237 | 0.9673 | 21 | stop unless curve/grad norms explain a useful failure |
+| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_ls005 | done | 0.9414 | 0.9292 | 0.9237 | 0.9714 | 22 | stop unless curve/grad norms explain a useful failure |
 | generalization_loss | gl_label_smooth_005 | done | 0.9387 | 0.9264 | 0.9441 | 0.9455 | 15 | stop unless curve/grad norms explain a useful failure |
 | generalization_loss | gl_label_smooth_020 | pending |  |  |  |  |  |  |
 | generalization_loss | gl_focal_15 | pending |  |  |  |  |  |  |
@@ -118,6 +118,18 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | focused_tuning | ft_local_l0025_nodense | 29.0549 | 0.0000 | 0.0000 |
 | sqi_head_tuning | sqi_input_cls | 27.0821 | 0.0000 | 0.0000 |
 | sqi_head_tuning | sqi_input_attn | 79.1725 | 0.0000 | 0.0000 |
+| sqi_head_mlp_tuning | sqi_input_mlp64 | 0.0580 | 0.0000 | 0.0000 |
+| sqi_head_mlp_tuning | sqi_input_mlp128 | 8.3363 | 0.0000 | 0.0000 |
+| sqi_head_mlp_tuning | sqi_input_attn_mlp64 | 1.3306 | 0.0000 | 0.0000 |
+| sqi_head_mlp_tuning | sqi_input_mlp64_drop005 | 107.3120 | 0.0000 | 0.0000 |
+| sqi_head_mlp_tuning | sqi_input_mlp64_snr010 | 1.5186 | 0.0000 | 0.0000 |
+| sqi_head_mlp_tuning | sqi_pred_detach_mlp64_nodense | 35.2848 | 0.0000 | 0.0000 |
+| sqi_head_mlp_tuning | sqi_pred_detach_mlp64_den5 | 17.8370 | 0.2493 | 0.0000 |
+| sqi_head_mlp_tuning | sqi_pred_detach_mlp64_den10_l025 | 18.9009 | 0.5423 | 0.1114 |
+| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_nodense | 0.1349 | 0.0000 | 0.0000 |
+| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_den5 | 0.0201 | 0.2827 | 0.0000 |
+| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_cleanrr_l025 | 14.0799 | 0.6189 | 0.0887 |
+| sqi_head_mlp_tuning | sqi_mil_detach_mlp64_ls005 | 5.0719 | 0.5661 | 0.1074 |
 | generalization_loss | gl_label_smooth_005 | 0.2286 | 0.0000 | 0.0000 |
 
 ## Reading Guide

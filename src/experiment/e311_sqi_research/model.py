@@ -207,17 +207,35 @@ class ResearchSQITransformer(nn.Module):
             if cfg.cls_hidden > 0
             else None
         )
+        self.sqi_delta = None
+        if self._is_sqi_residual_head():
+            self.sqi_delta = nn.Sequential(
+                nn.LayerNorm(self.sqi_stat_dim),
+                nn.Linear(self.sqi_stat_dim, 32),
+                nn.GELU(),
+                nn.Dropout(cfg.dropout),
+                nn.Linear(32, 3),
+            )
+            nn.init.zeros_(self.sqi_delta[-1].weight)
+            nn.init.zeros_(self.sqi_delta[-1].bias)
         if cfg.use_snr_head:
             self.snr_fc = nn.Linear(cls_in, 1)
         if cfg.use_ordinal_head:
             self.ordinal_fc = nn.Linear(cls_in, 2)
 
+    def _is_sqi_residual_head(self) -> bool:
+        return self.cfg.head_type in {
+            "sqi_resid_input",
+            "sqi_resid_pred_detach",
+            "sqi_resid_mil_detach",
+        }
+
     def _sqi_stat_dim(self) -> int:
-        if self.cfg.head_type in {"sqi_input", "sqi_input_attn"}:
+        if self.cfg.head_type in {"sqi_input", "sqi_input_attn", "sqi_resid_input"}:
             return INPUT_SQI_STAT_DIM
-        if self.cfg.head_type in {"sqi_pred", "sqi_pred_detach"}:
+        if self.cfg.head_type in {"sqi_pred", "sqi_pred_detach", "sqi_resid_pred_detach"}:
             return INPUT_SQI_STAT_DIM + PRED_SQI_STAT_DIM
-        if self.cfg.head_type in {"sqi_mil", "sqi_mil_detach"}:
+        if self.cfg.head_type in {"sqi_mil", "sqi_mil_detach", "sqi_resid_mil_detach"}:
             return INPUT_SQI_STAT_DIM + PRED_SQI_STAT_DIM + LOCAL_SQI_STAT_DIM
         return 0
 
@@ -236,6 +254,8 @@ class ResearchSQITransformer(nn.Module):
             return self.cfg.enc_d_model + self.cfg.dec_d_model + SQI_STAT_PROJ_DIM
         if self.cfg.head_type in {"sqi_pred", "sqi_pred_detach", "sqi_mil", "sqi_mil_detach"}:
             return self.cfg.dec_d_model + SQI_STAT_PROJ_DIM
+        if self._is_sqi_residual_head():
+            return self.cfg.dec_d_model
         raise ValueError(f"unknown head_type={self.cfg.head_type!r}")
 
     def _patch_embed(self, x: torch.Tensor) -> torch.Tensor:
@@ -384,6 +404,16 @@ class ResearchSQITransformer(nn.Module):
             dim=1,
         )
 
+    def _sqi_stat_parts(self, x: torch.Tensor, residual: torch.Tensor, level_prob: torch.Tensor) -> torch.Tensor:
+        stat_parts = [self._input_sqi_stats(x)]
+        r = residual.detach() if "detach" in self.cfg.head_type else residual
+        l = level_prob.detach() if "detach" in self.cfg.head_type else level_prob
+        if self.cfg.head_type in {"sqi_pred", "sqi_pred_detach", "sqi_mil", "sqi_mil_detach", "sqi_resid_pred_detach", "sqi_resid_mil_detach"}:
+            stat_parts.append(self._pred_sqi_stats(x, r, l))
+        if self.cfg.head_type in {"sqi_mil", "sqi_mil_detach", "sqi_resid_mil_detach"}:
+            stat_parts.append(self._local_stats(r, l))
+        return torch.cat(stat_parts, dim=1)
+
     def classification_feature(self, x: torch.Tensor, f: dict[str, torch.Tensor]) -> torch.Tensor:
         residual = torch.abs(x[:, :1, :] - f["denoise"])
         level_prob = torch.sigmoid(f["level"])
@@ -417,18 +447,13 @@ class ResearchSQITransformer(nn.Module):
                 dim=1,
             )
         elif self.cfg.head_type in {"sqi_input", "sqi_input_attn", "sqi_pred", "sqi_pred_detach", "sqi_mil", "sqi_mil_detach"}:
-            stat_parts = [self._input_sqi_stats(x)]
-            r = residual.detach() if self.cfg.head_type.endswith("_detach") else residual
-            l = level_prob.detach() if self.cfg.head_type.endswith("_detach") else level_prob
-            if self.cfg.head_type in {"sqi_pred", "sqi_pred_detach", "sqi_mil", "sqi_mil_detach"}:
-                stat_parts.append(self._pred_sqi_stats(x, r, l))
-            if self.cfg.head_type in {"sqi_mil", "sqi_mil_detach"}:
-                stat_parts.append(self._local_stats(r, l))
-            sqi_feat = self._project_sqi_stats(torch.cat(stat_parts, dim=1))
+            sqi_feat = self._project_sqi_stats(self._sqi_stat_parts(x, residual, level_prob))
             if self.cfg.head_type == "sqi_input_attn":
                 g = torch.cat([self.enc_pool(f["encoder_all"]), f["decoder_cls"], sqi_feat], dim=1)
             else:
                 g = torch.cat([f["decoder_cls"], sqi_feat], dim=1)
+        elif self._is_sqi_residual_head():
+            g = f["decoder_cls"]
         else:
             raise ValueError(f"unknown head_type={self.cfg.head_type!r}")
         return self.cls_drop(g)
@@ -436,10 +461,15 @@ class ResearchSQITransformer(nn.Module):
     def forward(self, x: torch.Tensor) -> dict[str, torch.Tensor]:
         f = self.forward_features(x)
         g = self.classification_feature(x, f)
+        logits = self.cls_mlp(g) if self.cls_mlp is not None else self.cls_fc(g)
+        if self.sqi_delta is not None:
+            residual = torch.abs(x[:, :1, :] - f["denoise"])
+            level_prob = torch.sigmoid(f["level"])
+            logits = logits + self.sqi_delta(self._sqi_stat_parts(x, residual, level_prob))
         out = {
             "denoise": f["denoise"],
             "level": f["level"],
-            "logits": self.cls_mlp(g) if self.cls_mlp is not None else self.cls_fc(g),
+            "logits": logits,
         }
         if self.cfg.use_snr_head:
             out["snr_hat"] = self.snr_fc(g).squeeze(1)

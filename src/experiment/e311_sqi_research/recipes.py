@@ -232,6 +232,18 @@ RECIPES: dict[str, list[dict[str, Any]]] = {
         recipe("sqi_mil_detach_mlp64_cleanrr_l025", "sqi_head_mlp_tuning", head_type="sqi_mil_detach", cls_hidden=64, denoise_weight=10.0, level_weight=0.25, level_target_mode="clean_rr", description="detached top-k local SQI stats with clean-RR level target"),
         recipe("sqi_mil_detach_mlp64_ls005", "sqi_head_mlp_tuning", head_type="sqi_mil_detach", cls_hidden=64, denoise_weight=10.0, level_weight=0.25, label_smoothing=0.005, description="detached top-k local SQI stats plus light label smoothing"),
     ],
+    "sqi_residual_tuning": [
+        recipe("sqi_resid_input", "sqi_residual_tuning", head_type="sqi_resid_input", description="pretrained CLS logits plus zero-init SQI input residual correction"),
+        recipe("sqi_resid_input_drop005", "sqi_residual_tuning", head_type="sqi_resid_input", dropout=0.05, description="SQI residual correction with lower dropout"),
+        recipe("sqi_resid_input_snr010", "sqi_residual_tuning", head_type="sqi_resid_input", snr_weight=0.10, description="SQI residual correction with stronger SNR auxiliary"),
+        recipe("sqi_resid_pred_detach_nodense", "sqi_residual_tuning", head_type="sqi_resid_pred_detach", description="zero-init correction from detached predicted residual/level stats"),
+        recipe("sqi_resid_pred_detach_den5", "sqi_residual_tuning", head_type="sqi_resid_pred_detach", denoise_weight=5.0, description="detached predicted SQI residual correction with light denoise"),
+        recipe("sqi_resid_pred_detach_den10_l025", "sqi_residual_tuning", head_type="sqi_resid_pred_detach", denoise_weight=10.0, level_weight=0.25, description="detached predicted SQI correction with light dense supervision"),
+        recipe("sqi_resid_mil_detach_nodense", "sqi_residual_tuning", head_type="sqi_resid_mil_detach", description="zero-init correction from detached top-k local SQI stats"),
+        recipe("sqi_resid_mil_detach_den5", "sqi_residual_tuning", head_type="sqi_resid_mil_detach", denoise_weight=5.0, description="top-k local SQI residual correction with light denoise"),
+        recipe("sqi_resid_mil_detach_cleanrr_l025", "sqi_residual_tuning", head_type="sqi_resid_mil_detach", denoise_weight=10.0, level_weight=0.25, level_target_mode="clean_rr", description="top-k local SQI correction plus clean-RR target"),
+        recipe("sqi_resid_mil_detach_ls005", "sqi_residual_tuning", head_type="sqi_resid_mil_detach", denoise_weight=10.0, level_weight=0.25, label_smoothing=0.005, description="top-k local SQI correction plus light label smoothing"),
+    ],
     "generalization_loss": [
         recipe("gl_label_smooth_005", "generalization_loss", label_smoothing=0.005, description="CE with light label smoothing"),
         recipe("gl_label_smooth_020", "generalization_loss", label_smoothing=0.020, description="CE with stronger label smoothing"),
