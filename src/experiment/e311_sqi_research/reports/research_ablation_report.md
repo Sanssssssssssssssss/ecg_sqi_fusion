@@ -11,15 +11,15 @@ This report is generated from the isolated package `src/experiment/e311_sqi_rese
 
 ## Queue And Promotion Plan
 
-Submitted on 2026-05-28:
+Submitted on 2026-05-28 after the loss-scale fix:
 
 | job id | group | array | purpose |
 |---:|---|---|---|
-| `29750889` | `head_reimpl` | `0` | baseline clone sanity run |
-| `29751043` | `head_reimpl` | `1-4%1` | interpretable SQI head, local quality v2, combo head, multiscale |
-| `29751044` | `loss_conflict` | `0-4%1` | CE-only and multi-task weighting conflict screen |
-| `29751045` | `target_gate_reimpl` | `0-5%1` | clean-RR targets, bad fallback target, denoise gates |
-| `29751046` | `generalization_loss` | `0-6%1` | label smoothing, focal, ordinal, R-Drop, SAM |
+| `29751790` | `focused_tuning` | `0-5%1` | low-weight local/level follow-up around the strongest mainline signal |
+| `29751791` | `head_reimpl` | `0-4%1` | baseline, interpretable SQI head, local quality v2, combo head, multiscale |
+| `29752152` | `loss_conflict` | `0-4%1` | CE-only and multi-task weighting conflict screen |
+| `29752153` | `target_gate_reimpl` | `0-5%1` | clean-RR targets, bad fallback target, denoise gates |
+| `29752154` | `generalization_loss` | `0-6%1` | label smoothing, focal, ordinal, R-Drop, SAM |
 
 A recipe can move into the mainline sweep only when it:
 
