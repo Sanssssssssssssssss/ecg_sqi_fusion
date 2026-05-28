@@ -62,12 +62,17 @@ class AttentionPool(nn.Module):
 class ScaleTokenizer(nn.Module):
     def __init__(self, in_ch: int, d_model: int, patch: int, stride: int) -> None:
         super().__init__()
-        self.conv = nn.Conv1d(in_ch, d_model, kernel_size=patch, stride=stride, padding=patch // 2)
+        self.patch = int(patch)
+        self.stride = int(stride)
+        self.proj = nn.Linear(in_ch * patch, d_model)
         self.ln = nn.LayerNorm(d_model)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        tok = self.conv(x).transpose(1, 2)
-        return F.relu(self.ln(tok))
+        if x.shape[-1] < self.patch:
+            raise RuntimeError(f"sequence too short for patch={self.patch}")
+        patches = x.unfold(-1, self.patch, self.stride)  # B, C, N, patch
+        patches = patches.permute(0, 2, 1, 3).flatten(2)
+        return F.relu(self.ln(self.proj(patches)))
 
 
 @dataclass(frozen=True)
