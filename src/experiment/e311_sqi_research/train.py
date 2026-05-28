@@ -418,6 +418,48 @@ def make_loaders(bundle: Any, batch_size: int, seed: int) -> dict[str, DataLoade
     }
 
 
+def optimizer_param_groups(
+    model: ResearchSQITransformer,
+    uw: UncertaintyWeights | None,
+    recipe: dict[str, Any],
+) -> list[dict[str, Any]]:
+    base_lr = float(recipe["lr"])
+    head_lr_mult = float(recipe.get("head_lr_mult", 1.0))
+    weight_decay = float(recipe["weight_decay"])
+    if abs(head_lr_mult - 1.0) < 1e-8:
+        params = list(model.parameters()) + (list(uw.parameters()) if uw is not None else [])
+        return [{"params": params, "lr": base_lr, "weight_decay": weight_decay}]
+
+    head_prefixes = (
+        "cls_fc",
+        "cls_mlp",
+        "sqi_stat_proj",
+        "sqi_delta",
+        "snr_fc",
+        "ordinal_fc",
+        "enc_pool",
+        "dec_pool",
+    )
+    base_params: list[nn.Parameter] = []
+    head_params: list[nn.Parameter] = []
+    for name, param in model.named_parameters():
+        if not param.requires_grad:
+            continue
+        if name.startswith(head_prefixes):
+            head_params.append(param)
+        else:
+            base_params.append(param)
+
+    groups: list[dict[str, Any]] = []
+    if base_params:
+        groups.append({"params": base_params, "lr": base_lr, "weight_decay": weight_decay})
+    if head_params:
+        groups.append({"params": head_params, "lr": base_lr * head_lr_mult, "weight_decay": weight_decay})
+    if uw is not None:
+        groups.append({"params": list(uw.parameters()), "lr": base_lr, "weight_decay": 0.0})
+    return groups
+
+
 def train_recipe(args: argparse.Namespace, recipe: dict[str, Any]) -> dict[str, Any]:
     out_dir = Path(args.out_root) / recipe["group"] / recipe["name"]
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -438,8 +480,7 @@ def train_recipe(args: argparse.Namespace, recipe: dict[str, Any]) -> dict[str, 
     warm = partial_load(model, Path(args.init_checkpoint))
 
     uw = UncertaintyWeights().to(device) if bool(recipe["uncertainty"]) else None
-    params = list(model.parameters()) + (list(uw.parameters()) if uw is not None else [])
-    opt = torch.optim.AdamW(params, lr=float(recipe["lr"]), weight_decay=float(recipe["weight_decay"]))
+    opt = torch.optim.AdamW(optimizer_param_groups(model, uw, recipe))
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         opt,
         T_max=max(1, int(recipe["epochs"])),
