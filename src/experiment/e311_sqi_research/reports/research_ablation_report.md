@@ -39,7 +39,7 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 
 ## Current Best
 
-- `target_gate_reimpl/tg_clean_rr_level`: acc `0.9437`, recall good/medium/bad `0.9319/0.9387/0.9605`.
+- `head_reimpl/hr_local_quality_v2`: acc `0.9441`, recall good/medium/bad `0.9455/0.9128/0.9741`.
 - Decision: stop unless curve/grad norms explain a useful failure.
 
 ## Results
@@ -52,8 +52,8 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 | loss_conflict | lc_fixed_multitask | pending |  |  |  |  |  |  |
 | loss_conflict | lc_uncert_multitask | pending |  |  |  |  |  |  |
 | head_reimpl | hr_baseline_clone | done | 0.9382 | 0.9183 | 0.9183 | 0.9782 | 21 | stop unless curve/grad norms explain a useful failure |
-| head_reimpl | hr_sqi_interpretable | pending |  |  |  |  |  |  |
-| head_reimpl | hr_local_quality_v2 | pending |  |  |  |  |  |  |
+| head_reimpl | hr_sqi_interpretable | done | 0.9346 | 0.9128 | 0.9169 | 0.9741 | 18 | stop unless curve/grad norms explain a useful failure |
+| head_reimpl | hr_local_quality_v2 | done | 0.9441 | 0.9455 | 0.9128 | 0.9741 | 24 | stop unless curve/grad norms explain a useful failure |
 | head_reimpl | hr_sqi_local_combo | pending |  |  |  |  |  |  |
 | head_reimpl | hr_multiscale_10_20_40 | pending |  |  |  |  |  |  |
 | target_gate_reimpl | tg_clean_rr_level | done | 0.9437 | 0.9319 | 0.9387 | 0.9605 | 15 | stop unless curve/grad norms explain a useful failure |
@@ -76,6 +76,8 @@ Do not promote recipes that only improve auxiliary denoise/level metrics while l
 |---|---:|---:|---:|---:|
 | loss_conflict | lc_ce_only | 0.4180 | 0.0000 | 0.0000 |
 | head_reimpl | hr_baseline_clone | 1.7354 | 0.0000 | 0.0000 |
+| head_reimpl | hr_sqi_interpretable | 4.5580 | 0.4490 | 0.0446 |
+| head_reimpl | hr_local_quality_v2 | 36.1580 | 0.4825 | 0.0908 |
 | target_gate_reimpl | tg_clean_rr_level | 2.2559 | 0.0000 | 0.2389 |
 | generalization_loss | gl_label_smooth_005 | 5.2081 | 0.0000 | 0.0000 |
 
