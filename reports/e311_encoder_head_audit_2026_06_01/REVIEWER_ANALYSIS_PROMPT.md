@@ -2,6 +2,8 @@
 
 Please analyze this experiment package as an external reviewer. The goal is not to blindly select the highest accuracy run, but to decide whether the newly observed warm-start denoiser-encoder classification framework is scientifically valid enough to become the next mainline direction.
 
+Important update: the user will not accept a U-Net-only final model. Treat the U-Net encoder-head results as oracle/teacher/mechanism evidence. The next mainline must restore a Transformer classifier, ideally with the warm denoiser latent entering through a controlled SQI token/adapter rather than replacing the Transformer.
+
 ## Repository Context
 
 Branch:
@@ -15,6 +17,10 @@ Primary report package:
 Main summary:
 
 `reports/e311_encoder_head_audit_2026_06_01/README.md`
+
+Transformer re-entry plan package:
+
+`reports/e311_transformer_reentry_2026_06_01/README.md`
 
 Important copied reports:
 
@@ -102,6 +108,10 @@ Question:
 
 Is this a valid framework, or is it mainly evidence that the denoiser encoder has learned a near-direct representation of the synthetic label-generation rule?
 
+Current decision constraint:
+
+Do not recommend promoting this exact U-Net encoder-head as mainline. Use it to decide what information the Transformer must receive.
+
 ### 2. Highest accuracy waveform joint run is not a true denoiser
 
 Run:
@@ -182,6 +192,14 @@ Question:
 
 Why is this weaker than encoder-head-only? Does the waveform classifier drift or collapse when the denoiser keeps changing? Is the encoder delta repairing an unstable base classifier rather than providing a clean SQI correction?
 
+Follow-up implementation now being tested:
+
+- `transformer_film_sqi`: denoised ECG goes through `MTLTransformerPTBXL`; warm denoiser latent applies zero-init FiLM-style residual modulation to the Transformer pooled feature.
+- `transformer_cross_sqi`: denoised ECG goes through `MTLTransformerPTBXL`; Transformer CLS pooled feature performs small cross-attention over the warm denoiser latent.
+- `transformer_sqi_token_prefix`: warm denoiser latent is projected as an SQI token prepended after CLS before Transformer encoder blocks.
+
+All three are experiment-only and keep final logits on the Transformer path.
+
 ### 5. PCGrad/cap controlled conflicts but did not solve the architecture
 
 Best PCGrad/cap run:
@@ -202,23 +220,24 @@ Does PCGrad/cap prove that loss conflict is real and controllable, even if warm 
 
 ## Candidate Mainline Direction
 
-The user is considering this as the new mainline:
+The user rejected a U-Net-only mainline. The candidate mainline must be reframed as:
 
 1. Train a morphology-aware denoiser first.
-2. Use the denoiser encoder latent as an SQI-aware classification representation.
-3. Attach a small MLP or residual SQI head for classification.
+2. Feed denoised ECG into a Transformer classifier.
+3. Inject denoiser-derived SQI/morphology latent into the Transformer through a small controlled adapter.
 4. Keep waveform denoise output as a first-class output.
 5. Avoid letting CE destroy denoise morphology.
 
 Please evaluate whether this is a publishable framing:
 
-`pretrain denoiser -> use learned quality/morphology encoder -> classify quality`
+`pretrain denoiser -> provide denoised waveform + SQI latent -> Transformer classifies quality`
 
 This may be more principled than simultaneous CE + denoise training because it turns warm-start into a curriculum / task-conflict solution.
 
 ## What Not To Confuse
 
 - The `encoder_head_only` run is warm-started, not scratch.
+- The `encoder_head_only` run is not Transformer-based and must not be treated as final mainline.
 - The `dual_branch` run uses a warm Transformer classifier, but still trains full split.
 - `classifier_shared` in older PCGrad reports means the Transformer classifier encoder parameter group, not the denoiser encoder head architecture.
 - The `0.988193` run has the highest accuracy but weak denoise fidelity; do not recommend it as mainline without caveats.
@@ -228,12 +247,13 @@ This may be more principled than simultaneous CE + denoise training because it t
 
 Please answer:
 
-1. Is warm denoiser encoder-head currently the strongest balanced framework?
-2. Is it valid to promote this direction as mainline after more audits?
+1. Is warm denoiser encoder-head currently the strongest balanced oracle/teacher framework?
+2. Which Transformer re-entry method is most scientifically defensible: SQI token prefix, FiLM adapter, cross-attention adapter, or residual logit delta?
 3. Why does warm start solve the multi-task conflict better than scratch or PCGrad-only training?
 4. Why is non-warm/scratch denoise so poor while classification remains high?
 5. Is the high bad recall a sign of robust quality understanding or an artifact of SNR/morphology label construction?
 6. Which final audits are mandatory before promotion?
+7. Can a fully Transformer denoiser/classifier path plausibly replace the U-Net warm denoiser, or should U-Net remain as a teacher/denoiser while Transformer owns classification?
 
 Recommended mandatory audits:
 
