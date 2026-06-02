@@ -1,0 +1,29 @@
+{
+  "status": "spec_ready_waiting_for_external_results",
+  "note": "Generated after real-data preprocessing. These specs must not overwrite the current PTB mainline artifact.",
+  "variants": [
+    {
+      "name": "but_like_3class",
+      "goal": "Match BUT QDB good/medium/bad external distributions using relaxed morphology plus stronger real-world drift/HF coverage.",
+      "source_artifact_dir": "outputs/transformer",
+      "recommended_generator": "synthesize_morph_damage_triplet",
+      "recommended_label_version": "e311h_lite_relaxed_morph",
+      "output_artifact": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_realdata_2026_06_02\\synthetic_adaptation\\but_like_3class"
+    },
+    {
+      "name": "cinc_like_binary_bad",
+      "goal": "Increase unusable/noisy rejection coverage with burst/high-frequency/baseline windows and binary noisy analysis.",
+      "source_artifact_dir": "outputs/transformer",
+      "recommended_generator": "synthesize_local_counterfactual_balanced",
+      "recommended_noise_kinds": "em,ma,bw,mix,burst,hp,ampmod",
+      "output_artifact": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_realdata_2026_06_02\\synthetic_adaptation\\cinc_like_binary_bad"
+    },
+    {
+      "name": "mixed_external_like",
+      "goal": "Joint external-style synthetic profile for BUT three-class and CinC noisy rejection.",
+      "source_artifact_dir": "outputs/transformer",
+      "recommended_generator": "two_stage_mix",
+      "output_artifact": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_realdata_2026_06_02\\synthetic_adaptation\\mixed_external_like"
+    }
+  ]
+}

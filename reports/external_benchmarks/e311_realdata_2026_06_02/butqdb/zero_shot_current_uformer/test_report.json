@@ -1,0 +1,200 @@
+{
+  "dataset": "butqdb",
+  "task": "three_class_good_medium_bad",
+  "raw_all_windows": {
+    "acc": 0.4905024881660396,
+    "balanced_acc": 0.5645625616466421,
+    "macro_f1": 0.5485801730009924,
+    "recall_good_medium_bad": [
+      0.25048406970603765,
+      0.7989273616861121,
+      0.6442762535477767
+    ],
+    "precision_good_medium_bad": [
+      0.6650568624396324,
+      0.3681016170286557,
+      0.9812680115273775
+    ],
+    "f1_good_medium_bad": [
+      0.3639075952604211,
+      0.503991690161745,
+      0.7778412335808109
+    ],
+    "support_good_medium_bad": [
+      17043,
+      10628,
+      5285
+    ],
+    "confusion_3x3": [
+      [
+        4269,
+        12774,
+        0
+      ],
+      [
+        2072,
+        8491,
+        65
+      ],
+      [
+        78,
+        1802,
+        3405
+      ]
+    ]
+  },
+  "raw_test": {
+    "acc": 0.5742597617081515,
+    "balanced_acc": 0.46380643986331677,
+    "macro_f1": 0.4936623754753673,
+    "recall_good_medium_bad": [
+      0.3989010989010989,
+      0.7492092182557614,
+      0.24330900243309003
+    ],
+    "precision_good_medium_bad": [
+      0.5597532767925983,
+      0.5773985721748215,
+      0.7142857142857143
+    ],
+    "f1_good_medium_bad": [
+      0.465832531280077,
+      0.6521781886124496,
+      0.3629764065335753
+    ],
+    "support_good_medium_bad": [
+      3640,
+      4426,
+      411
+    ],
+    "confusion_3x3": [
+      [
+        1452,
+        2188,
+        0
+      ],
+      [
+        1070,
+        3316,
+        40
+      ],
+      [
+        72,
+        239,
+        100
+      ]
+    ]
+  },
+  "calibrated_test": {
+    "acc": 0.6373717116904565,
+    "balanced_acc": 0.5604717843871189,
+    "macro_f1": 0.5912165716192996,
+    "recall_good_medium_bad": [
+      0.6552197802197802,
+      0.6466335291459557,
+      0.3795620437956204
+    ],
+    "precision_good_medium_bad": [
+      0.5913711877014629,
+      0.6785206258890469,
+      0.6902654867256637
+    ],
+    "f1_good_medium_bad": [
+      0.6216603675224814,
+      0.6621934289680703,
+      0.4897959183673469
+    ],
+    "support_good_medium_bad": [
+      3640,
+      4426,
+      411
+    ],
+    "confusion_3x3": [
+      [
+        2385,
+        1252,
+        3
+      ],
+      [
+        1497,
+        2862,
+        67
+      ],
+      [
+        151,
+        104,
+        156
+      ]
+    ]
+  },
+  "threshold_calibration": {
+    "t_bad": 0.05,
+    "t_good": 0.05,
+    "key": [
+      0.6328207213026701,
+      0.891566265060241,
+      0.7355395339281348
+    ],
+    "val_report": {
+      "acc": 0.5963699222126189,
+      "balanced_acc": 0.7355395339281348,
+      "macro_f1": 0.6328207213026701,
+      "recall_good_medium_bad": [
+        0.5531475748194015,
+        0.7619047619047619,
+        0.891566265060241
+      ],
+      "precision_good_medium_bad": [
+        0.9537366548042705,
+        0.15355086372360843,
+        1.0
+      ],
+      "f1_good_medium_bad": [
+        0.7001959503592423,
+        0.25559105431309903,
+        0.9426751592356688
+      ],
+      "support_good_medium_bad": [
+        969,
+        105,
+        83
+      ],
+      "confusion_3x3": [
+        [
+          536,
+          433,
+          0
+        ],
+        [
+          25,
+          80,
+          0
+        ],
+        [
+          1,
+          8,
+          74
+        ]
+      ]
+    }
+  },
+  "runtime_hardware": {
+    "platform": "Windows-10-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 170 Stepping 4, GenuineIntel",
+    "python": "3.10.0",
+    "torch": "2.5.1+cu121",
+    "cuda_available": true,
+    "device": "cuda",
+    "cuda_device_name": "NVIDIA GeForce RTX 4070 Laptop GPU",
+    "checkpoint": "E:\\GPTProject2\\ecg\\outputs\\mainline\\e311_uformer_full_tokens_detach_seed0\\ckpt_best.pt",
+    "checkpoint_size_bytes": 7524730,
+    "parameter_count": 1865916,
+    "dataset": "butqdb",
+    "n_windows": 32956,
+    "batch_size": 128,
+    "elapsed_sec": 17.008469000000332,
+    "throughput_windows_per_sec": 1937.622957127967,
+    "latency_ms_per_window": 0.516096279888346,
+    "peak_cuda_memory_bytes": 268412416
+  }
+}
