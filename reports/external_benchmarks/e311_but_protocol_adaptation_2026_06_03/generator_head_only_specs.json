@@ -1,0 +1,47 @@
+{
+  "status": "planned_protocol_first",
+  "note": "Stage 2 starts only after protocol_sweep_summary and failure_taxonomy are reviewed.",
+  "source_artifact": "E:\\GPTProject2\\ecg\\outputs\\experiment\\e311_morph_denoise_gap5_7_grid\\data\\med6p25_badgap7_badcm0p75",
+  "specs": [
+    {
+      "name": "g0_current_generator_baseline",
+      "purpose": "Baseline PTB synthetic generator; no BUT-style protocol changes.",
+      "expected_value": "Separates protocol effects from generator effects."
+    },
+    {
+      "name": "g1_but_snr_table1",
+      "purpose": "Good 16-18dB, medium 5-14dB, bad <= -3dB using BUT-like severity bands.",
+      "expected_value": "Tests whether logit mismatch is mostly SNR calibration."
+    },
+    {
+      "name": "g2_good_lenient",
+      "purpose": "Good can include mild noise if P/QRS/T remain clear.",
+      "expected_value": "Reduces over-rejection of BUT good under real wearable noise."
+    },
+    {
+      "name": "g3_medium_partial_local",
+      "purpose": "QRS detectable but P/T/ST local details unreliable.",
+      "expected_value": "Targets BUT class-2 expert definition instead of middle SNR only."
+    },
+    {
+      "name": "g4_bad_qrs_unreliable",
+      "purpose": "Bad has unreliable QRS: missing/spurious peaks, attenuation, broadening.",
+      "expected_value": "Directly attacks current bad false negatives."
+    },
+    {
+      "name": "g5_bad_contact_loss",
+      "purpose": "Adds flatline, clipping, contact loss, baseline step and dropout.",
+      "expected_value": "Models BUT free-living wearable failures absent in PTB synthetic."
+    },
+    {
+      "name": "g6_cinc_noisy_bad",
+      "purpose": "Adds burst/HF/motion unusable noisy patterns.",
+      "expected_value": "Keeps CinC-style too-noisy rejection aligned with BUT bad."
+    },
+    {
+      "name": "g7_mixed_but_style",
+      "purpose": "Mixture of G2-G6 with PTB balanced split preserved.",
+      "expected_value": "Candidate for full Uformer training after head-only validation."
+    }
+  ]
+}
