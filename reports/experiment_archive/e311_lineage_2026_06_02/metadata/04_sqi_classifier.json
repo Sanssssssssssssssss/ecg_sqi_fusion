@@ -1,0 +1,11 @@
+{
+  "tag": "04_sqi_classifier",
+  "status": "archived_context",
+  "method": "Full-joint denoise-before-classifier plus explicit SQI residual/gated heads",
+  "key_result": "Full Transformer paths reached roughly 0.962-0.973 depending on warm-start and conflict controls; explicit SQI was not stable enough alone.",
+  "value": "Showed denoise-before-classifier is useful but CE can damage denoise when coupled too tightly.",
+  "artifacts": [
+    "outputs/experiment/e311_sqi_denoise_classifier_grid/adaptive_10h_summary.jsonl"
+  ],
+  "recommendation": "Explicit SQI remains ablation/analysis; mainline uses denoiser-derived SQI representation."
+}

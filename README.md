@@ -1,23 +1,98 @@
 # ECG SQI Fusion
 
-Research code for ECG signal-quality assessment and noise-robust modelling. The repository currently contains two related workflows:
+Research code for ECG signal-quality assessment, noise-aware ECG denoising, and Transformer-based SQI classification.
 
-1. A classical SQI pipeline built around PhysioNet Challenge 2011 `set-a` and NSTDB.
-2. A PTB-XL pipeline for noisy Lead I segment generation, multi-task transformer training, and evaluation.
+The repository now has two deliberately separated lines:
 
-## Repository layout
+1. `src/sqi_pipeline/`: classical SQI baselines. This line is preserved as-is.
+2. `src/transformer_pipeline/`: PTB-XL Lead I Transformer/Uformer research and the current E3.11f mainline.
+
+## Current Mainline
+
+The thesis/mainline method is E3.11f `a_repr_detach_full_tokens`:
+
+```text
+noisy ECG
+  -> Conv1D local stem
+  -> hierarchical Uformer/Transformer encoder
+  -> U-shaped decoder
+  -> noise_hat
+  -> denoise = noisy - 0.9 * noise_hat
+
+multi-scale Uformer tokens + bottleneck + noisy/denoised/residual summaries
+  -> detached feature vector
+  -> small MLP SQI/classifier head
+  -> good / medium / bad
+```
+
+Why detach: previous loss-conflict audits showed CE can keep classification high while damaging denoise. The classifier therefore reads the mature denoising representation, while denoiser updates are governed by denoise loss or very small continuation loss.
+
+Mainline command:
+
+```bash
+python -m src.transformer_pipeline.train_uformer_mainline --stage all
+```
+
+Useful checks:
+
+```bash
+python -m compileall src/transformer_pipeline
+python -m src.transformer_pipeline.train_uformer_mainline --stage dry_run
+python -m src.transformer_pipeline.train_uformer_mainline --stage split_audit
+```
+
+Default output:
+
+```text
+outputs/mainline/e311_uformer_full_tokens_detach_seed0/
+  ckpt_best.pt
+  test_report.json
+  train_log.json
+  split_audit.json
+  denoise_eval/
+    denoise_metrics.json
+    test_denoise_outputs.npz
+  visuals/
+    balanced_gallery.png
+    hard_bad_gallery.png
+    good_safety_gallery.png
+    worst_residual_gallery.png
+    qrs_tst_focus_gallery.png
+    same_sample_stage1_stage2_gallery.png
+    train_curves.png
+```
+
+## Mainline Rerun Snapshot
+
+Clean source rerun, seed `0`, full split `10935 / 2184 / 2202`:
+
+- Test acc: `0.98819`
+- Good/medium/bad recall: `0.98910 / 0.97956 / 0.99591`
+- Denoise score: `4.293`
+- SNR gain: `12.386 dB`
+- MSE ratio: `0.0445`
+
+The earlier Uformer ablation winner that selected this architecture reached acc `0.99001`, bad recall `0.99591`, denoise score `4.282`.
+
+## Repository Layout
 
 `src/sqi_pipeline/`
-Classical SQI/ML pipeline package and command line entrypoint.
+Classical SQI/ML pipeline and baseline command line entrypoint. Do not modify this when working on the Uformer mainline.
 
-`src/transformer_pipeline/`
-PTB-XL Lead I transformer data, training, evaluation, and diagnostics pipeline.
+`src/transformer_pipeline/models/mtl_transformer.py`
+Legacy E3.11 multi-task Transformer baseline, retained for comparison.
 
-`src/utils/`
-Shared project-root helpers.
+`src/transformer_pipeline/models/uformer1d.py`
+Current Uformer1D residual denoiser and detached SQI classifier head.
 
-`slurm/run_ampere.sh`
-Example SLURM job for training on Cambridge CSD3 Ampere GPUs.
+`src/transformer_pipeline/train_uformer_mainline.py`
+Two-stage E3.11f mainline trainer.
+
+`reports/experiment_archive/e311_lineage_2026_06_02/`
+GitHub-readable experiment lineage archive: registry, metadata snapshots, selected figures, and reference experiment scripts.
+
+`outputs/experiment_archive/e311_lineage_2026_06_02/`
+Local mirror of archive metadata and pointers to full raw outputs. Large checkpoints and NPZ files stay outside git.
 
 ## Environment
 
@@ -25,47 +100,19 @@ Use Python 3.11 if possible.
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate
+.\.venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-If you are installing PyTorch separately for a cluster or CUDA-specific setup, `req.txt` is a lighter dependency list without `torch`.
+If PyTorch is installed separately for CUDA or a cluster, `req.txt` is a lighter dependency list without `torch`.
 
-## Data layout
-
-The code assumes the project root can see the following folders:
-
-```text
-data/
-  physionet/
-    challenge-2011/
-      set-a/
-    nstdb/
-  ptb-xl/
-outputs/sqi/
-outputs/transformer/
-```
-
-The SQI pipeline writes to `outputs/sqi/`. The transformer pipeline writes to `outputs/transformer/`.
-
-## Classical SQI pipeline
+## Classical SQI Pipeline
 
 Run the full classical SQI line:
 
 ```bash
 python -m src.sqi_pipeline.run_all --verbose
 ```
-
-`src.sqi_pipeline.cli` executes:
-
-- raw manifest creation
-- set-a split generation
-- balanced noise synthesis
-- resampling to 125 Hz
-- QRS cache generation
-- 84-feature extraction
-- feature normalisation
-- baseline model training
 
 Useful flags:
 
@@ -76,79 +123,13 @@ python -m src.sqi_pipeline.cli --force
 python -m src.sqi_pipeline.validate_outputs --write outputs/sqi/validation/current_seed0.json
 ```
 
-## PTB-XL workflow
+## Legacy PTB-XL Transformer Workflow
 
-Transformer preprocessing and transformer training are intentionally separate.
-
-Run all preprocessing/data steps:
+The old preprocessing and legacy MTL Transformer workflow are retained for reproduction and ablation context:
 
 ```bash
 python -m src.transformer_pipeline.run_preprocess_all --verbose
-```
-
-It executes:
-
-- filter PTB-XL metadata to exclude Lead I noise labels
-- build the Lead I manifest
-- make 10 s, 125 Hz Lead I segments
-- split clean segments by `ecg_id`
-- synthesize balanced SNR classes with NSTDB noise
-- generate RR-level pseudo noise labels
-
-Run the transformer/model steps:
-
-```bash
 python -m src.transformer_pipeline.run_transformer_all --verbose
 ```
 
-It executes:
-
-- run a model forward check
-- train the multi-task transformer
-- evaluate the best checkpoint
-
-Useful commands:
-
-```bash
-python -m src.transformer_pipeline.run_preprocess_all --only segments --verbose
-python -m src.transformer_pipeline.run_transformer_all --dry-run --verbose
-python -m src.transformer_pipeline.run_transformer_all --only train --verbose
-python -m src.transformer_pipeline.run_transformer_all --only evaluate --verbose
-python -m src.transformer_pipeline.validate_outputs --write outputs/transformer/validation/current_seed0.json
-```
-
-Single-step scripts can also be run directly, for example:
-
-```bash
-python -m src.transformer_pipeline.data.filter_lead_i --verbose
-python -m src.transformer_pipeline.data.make_manifest_lead_i --verbose
-python -m src.transformer_pipeline.preprocess.make_segments_10s_125hz --verbose
-python -m src.transformer_pipeline.data.make_clean_split --verbose
-python -m src.transformer_pipeline.noise.synthesize_snr_dataset --verbose
-python -m src.transformer_pipeline.noise.make_rr_noise_level --verbose
-python -m src.transformer_pipeline.train --verbose
-python -m src.transformer_pipeline.evaluate --verbose
-```
-
-Cluster training:
-
-```bash
-sbatch slurm/run_ampere.sh
-```
-
-The transformer train step expects prepared arrays under `outputs/transformer/datasets/` and writes checkpoints and reports under `outputs/transformer/models/mtl_transformer_seed0_step6/`.
-
-## Cluster usage
-
-For CSD3 Ampere:
-
-```bash
-sbatch slurm/run_ampere.sh
-```
-
-The SLURM script assumes the repository lives at `/home/cx272/final_project/ecg_sqi_fusion` and that a local virtual environment already exists at `.venv/`.
-
-## Notes
-
-- This is research code with fixed model hyperparameters inside the training module.
-- `src/utils/paths.py` resolves the project root automatically from `.git` or `pyproject.toml`.
+The old train step writes under `outputs/transformer/`; the current Uformer mainline writes under `outputs/mainline/`.

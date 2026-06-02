@@ -1,0 +1,13 @@
+{
+  "tag": "09_uformer_king_ablation",
+  "status": "mainline_decision",
+  "method": "Mechanism ablations around Uformer full-token detached representation",
+  "key_result": "Chosen a_repr_detach_full_tokens: acc 0.99001, good/medium/bad 0.98501/0.98910/0.99591, denoise_score 4.282. Highest backup c_repr: acc 0.99046. CE-backprop control kept acc but denoise collapsed to -3.12.",
+  "value": "Explains why each mechanism is necessary: full tokens, Transformer blocks, U-shaped skips, local conv stem, and CE detach.",
+  "artifacts": [
+    "metrics/uformer_king_ablation_summary_snapshot.jsonl",
+    "figures/uformer_mechanism_grid.png",
+    "code/uformer_king_ablation_experiment_reference.py"
+  ],
+  "recommendation": "Use a_repr_detach_full_tokens as thesis/mainline core; keep c_repr as backup and controls as proof."
+}

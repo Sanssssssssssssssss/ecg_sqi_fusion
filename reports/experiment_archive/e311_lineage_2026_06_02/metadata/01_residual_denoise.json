@@ -1,0 +1,12 @@
+{
+  "tag": "01_residual_denoise",
+  "status": "archived_context",
+  "method": "Predict residual/noise_hat instead of direct clean ECG",
+  "key_result": "Best residual line reached strong classification, but early visual denoise was still too weak/light.",
+  "value": "Locked in the residual prediction design: denoise = noisy - scale * noise_hat.",
+  "artifacts": [
+    "outputs/experiment/e311_residual_denoise_grid",
+    "outputs/experiment/e311_denoise_strong_grid"
+  ],
+  "recommendation": "Design principle retained in mainline."
+}

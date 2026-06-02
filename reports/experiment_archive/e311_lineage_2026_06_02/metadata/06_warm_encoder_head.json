@@ -1,0 +1,12 @@
+{
+  "tag": "06_warm_encoder_head",
+  "status": "archived_context",
+  "method": "Warm denoiser encoder-head audit: freeze/detach/scratch/probe ablations",
+  "key_result": "Warm denoiser latent was dramatically stronger than scratch and residual-summary-only controls.",
+  "value": "Proved that the useful signal is not just residual energy; it is structured denoiser representation.",
+  "artifacts": [
+    "legacy_reports/e311_encoder_head_audit_2026_06_01",
+    "outputs/experiment/e311_sqi_denoise_classifier_grid/mechanism_audit_summary.jsonl"
+  ],
+  "recommendation": "Mechanism retained; U-Net latent treated as oracle."
+}

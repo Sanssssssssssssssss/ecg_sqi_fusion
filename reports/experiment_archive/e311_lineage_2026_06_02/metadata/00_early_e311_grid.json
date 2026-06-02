@@ -1,0 +1,12 @@
+{
+  "tag": "00_early_e311_grid",
+  "status": "archived_context",
+  "method": "Legacy E3.11 Transformer/SQI grid before residual denoise pivot",
+  "key_result": "Acc anchors around 0.9519 with bad recall about 0.9823; preferred balanced run around 0.9505 / bad recall 0.9837",
+  "value": "Established the first classification guardrails and showed that accuracy alone was insufficient for waveform quality.",
+  "artifacts": [
+    "legacy_reports/transformer_e311_mainline_grid_report.md",
+    "legacy_reports/transformer_e311_head_combo_grid_report.md"
+  ],
+  "recommendation": "Keep as historical baseline only."
+}

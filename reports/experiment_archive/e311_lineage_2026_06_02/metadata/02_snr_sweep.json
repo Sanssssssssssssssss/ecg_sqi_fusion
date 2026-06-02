@@ -1,0 +1,12 @@
+{
+  "tag": "02_snr_sweep",
+  "status": "archived_context",
+  "method": "Bad/medium SNR separation sweep over med/bad gap families",
+  "key_result": "Gap 5-7 dB families made denoise visually inspectable while keeping classification feasible.",
+  "value": "Selected med6.25/badgap7/badcm0.75 as the current mechanism dataset.",
+  "artifacts": [
+    "outputs/experiment/e311_snr_sweep_grid",
+    "outputs/experiment/e311_morph_denoise_gap5_7_grid/data/med6p25_badgap7_badcm0p75"
+  ],
+  "recommendation": "Use as current E3.11f artifact; do not regenerate for mainline."
+}

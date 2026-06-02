@@ -1,0 +1,12 @@
+{
+  "tag": "08_transunet_uformer",
+  "status": "mainline_parent",
+  "method": "1D TransUNet/Uformer/Conformer denoiser pretrain then detached SQI head",
+  "key_result": "Uformer hierarchy reached acc 0.98955, bad recall 0.99728, denoise_score 4.303, SNR gain 12.406 in audit.",
+  "value": "Brought Transformer back into the denoiser itself while retaining U-shaped local fidelity.",
+  "artifacts": [
+    "metrics/transunet1d_summary_snapshot.jsonl",
+    "code/transunet1d_audit_experiment_reference.py"
+  ],
+  "recommendation": "Promote Uformer variant into clean mainline."
+}
