@@ -2,7 +2,7 @@
 
 Date: 2026-06-02
 
-This report is a snapshot of the Transformer-denoiser audit while the runner is still active (`transunet1d_state: 31/49` at the time of capture). It is meant to preserve the important control groups and the mechanistic interpretation, not to declare the final promoted mainline yet.
+This report began as a snapshot of the Transformer-denoiser audit and has now been extended with the completed Uformer king ablation audit. The ablation-specific results are in [ABLATION_RESULTS.md](ABLATION_RESULTS.md). It is meant to preserve the important control groups and the mechanistic interpretation, not to declare the final promoted mainline yet.
 
 ## Executive Takeaway
 
@@ -31,6 +31,8 @@ Current best snapshot:
 | `r2_freeze_full_tokens_r1_uformer1d_hier_ns0p9_morph_soft_guard` | Uformer1D denoiser + SQI head | full Transformer tokens + summaries | freeze | 0.98819 | 0.98774 | 0.97956 | 0.99728 | 3.998 | 11.45 dB |
 
 This is the first line that looks like a credible "new king" for the user goal: Transformer-based denoising, visually strong residual noise prediction, and SQI/classification using the denoiser representation.
+
+Completed ablation update: `c_repr_detach_full_tokens_morph_soft_identity` reached acc `0.99046` with recalls `0.9864/0.9864/0.9986`, while `a_repr_detach_full_tokens` reached acc `0.99001` with stronger denoise score `4.282`. The CE-backprop negative control kept acc `0.98592` but collapsed denoise to score `-3.121`, strongly supporting detached/frozen denoiser features as a mechanism rather than an implementation convenience.
 
 ## Why The Architecture Is Reasonable
 
