@@ -1,0 +1,36 @@
+{
+  "protocol": "p6_two_5s_crops_ensemble",
+  "kind": "ensemble_5s",
+  "description": "Two 5s crops from each 10s window; features/probabilities are averaged at the original-window level.",
+  "purity_threshold": 0.9,
+  "note": "Purity is inherited from existing BUT consensus segments; this stage tests crop/window protocol before regenerating raw BUT windows.",
+  "signals_npz": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_protocol_adaptation_2026_06_03\\protocols\\p6_two_5s_crops_ensemble\\signals.npz",
+  "n": 32956,
+  "split_counts": {
+    "test": 8477,
+    "train": 23322,
+    "val": 1157
+  },
+  "class_counts": {
+    "bad": 5285,
+    "good": 17043,
+    "medium": 10628
+  },
+  "split_class_counts": {
+    "test": {
+      "bad": 411,
+      "good": 3640,
+      "medium": 4426
+    },
+    "train": {
+      "bad": 4791,
+      "good": 12434,
+      "medium": 6097
+    },
+    "val": {
+      "bad": 83,
+      "good": 969,
+      "medium": 105
+    }
+  }
+}
