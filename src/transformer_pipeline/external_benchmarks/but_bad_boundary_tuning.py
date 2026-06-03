@@ -207,8 +207,8 @@ def apply_bad_spec(ptb: dict[str, Any], spec: dict[str, Any], out_dir: Path, see
                 n_peaks = int(rng.integers(1, 5))
                 for _ in range(n_peaks):
                     if rng.random() < float(spec["spurious_peak_bad"]):
-                        center = int(rng.integers(10, N_TARGET - 10))
                         width = int(rng.integers(3, 14))
+                        center = int(rng.integers(width + 1, N_TARGET - width - 1))
                         pulse = np.hanning(width * 2 + 1).astype(np.float32)
                         amp = float(rng.normal(0.0, 0.65)) * float(std[i, 0])
                         xb[i, center - width : center + width + 1] += amp * pulse
