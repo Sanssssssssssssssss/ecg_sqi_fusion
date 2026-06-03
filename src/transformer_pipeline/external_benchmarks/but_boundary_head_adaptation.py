@@ -56,7 +56,7 @@ def now_iso() -> str:
 
 
 def read_json(path: Path) -> Any:
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
 def append_jsonl(path: Path, row: dict[str, Any]) -> None:
@@ -232,7 +232,36 @@ def write_report(args: argparse.Namespace, rows: list[dict[str, Any]]) -> None:
         ]
     )
     (report_root / "boundary_head_adaptation_summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
-    write_json(report_root / "boundary_head_adaptation_summary.json", {"rows": rows, "ranked": ranked})
+    # Full per-run details live in boundary_head_summary.jsonl.  Keep the report
+    # JSON compact so repeated refreshes do not fail on Windows with large writes.
+    compact_ranked = [
+        {
+            "rank": i,
+            "checkpoint_id": row["checkpoint_id"],
+            "feature_combo": row["feature_combo"],
+            "model": row["model"],
+            "calibration_policy": row["calibration_policy"],
+            "test_report": row["test_report"],
+        }
+        for i, row in enumerate(ranked[:80], start=1)
+    ]
+    write_json(report_root / "boundary_head_adaptation_summary.json", {"n_rows": len(rows), "ranked": compact_ranked})
+
+
+def load_existing_rows(path: Path) -> tuple[list[dict[str, Any]], set[tuple[str, str, str, str]]]:
+    if not path.exists():
+        return [], set()
+    rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    seen = {
+        (
+            str(row.get("checkpoint_id")),
+            str(row.get("feature_combo")),
+            str(row.get("model")),
+            str(row.get("calibration_policy")),
+        )
+        for row in rows
+    }
+    return rows, seen
 
 
 def run(args: argparse.Namespace) -> None:
@@ -260,7 +289,10 @@ def run(args: argparse.Namespace) -> None:
         "full_plus_summary": ["full_tokens", "summary_only"],
     }
     models = [m.strip() for m in args.models.split(",") if m.strip()]
-    rows: list[dict[str, Any]] = []
+    summary_path = out_root / "boundary_head_summary.jsonl"
+    rows, seen = load_existing_rows(summary_path)
+    if rows:
+        write_report(args, rows)
     for ckpt_entry in checkpoint_entries():
         checkpoint = Path(ckpt_entry["checkpoint"])
         if not checkpoint.exists():
@@ -274,6 +306,9 @@ def run(args: argparse.Namespace) -> None:
                 probs_val, logits_val = classifier_scores(clf, feats[val])
                 probs_test, logits_test = classifier_scores(clf, feats[test])
                 for cal in calibrations(probs_val, logits_val, y[val]):
+                    run_key = (ckpt_entry["id"], combo_name, model_name, cal["policy"])
+                    if run_key in seen:
+                        continue
                     if cal["policy"] == "raw_argmax":
                         pred = probs_test.argmax(axis=1)
                     else:
@@ -291,7 +326,8 @@ def run(args: argparse.Namespace) -> None:
                         "test_report": rep,
                     }
                     rows.append(row)
-                    append_jsonl(out_root / "boundary_head_summary.jsonl", row)
+                    seen.add(run_key)
+                    append_jsonl(summary_path, row)
                     write_report(args, rows)
     ranked = sorted(rows, key=score, reverse=True)
     if ranked:
