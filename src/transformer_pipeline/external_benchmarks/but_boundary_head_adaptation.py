@@ -245,7 +245,13 @@ def write_report(args: argparse.Namespace, rows: list[dict[str, Any]]) -> None:
         }
         for i, row in enumerate(ranked[:80], start=1)
     ]
-    write_json(report_root / "boundary_head_adaptation_summary.json", {"n_rows": len(rows), "ranked": compact_ranked})
+    try:
+        write_json(report_root / "boundary_head_adaptation_summary.json", {"n_rows": len(rows), "ranked": compact_ranked})
+    except OSError as exc:
+        # Some Windows runs intermittently fail while repeatedly replacing this
+        # report file.  The markdown report and output JSONL are authoritative;
+        # do not stop the experiment for a refresh-only artifact.
+        (report_root / "boundary_head_adaptation_summary_json_write_error.txt").write_text(str(exc), encoding="utf-8")
 
 
 def load_existing_rows(path: Path) -> tuple[list[dict[str, Any]], set[tuple[str, str, str, str]]]:

@@ -1,0 +1,50 @@
+[
+  {
+    "x": "overall_but_like_score",
+    "y": "macro_f1",
+    "spearman": -0.28011478189875366,
+    "n": 99
+  },
+  {
+    "x": "overall_but_like_score",
+    "y": "balanced_acc",
+    "spearman": -0.19792452598330268,
+    "n": 99
+  },
+  {
+    "x": "qrs_distance",
+    "y": "bad_recall",
+    "spearman": 0.04762832469778631,
+    "n": 99
+  },
+  {
+    "x": "ptst_distance",
+    "y": "medium_recall",
+    "spearman": -0.3028327762210939,
+    "n": 99
+  },
+  {
+    "x": "contact_motion_distance",
+    "y": "bad_recall",
+    "spearman": 0.11192439839707036,
+    "n": 99
+  },
+  {
+    "x": "distance_good",
+    "y": "good_recall",
+    "spearman": -0.09276650383217426,
+    "n": 99
+  },
+  {
+    "x": "distance_medium",
+    "y": "medium_recall",
+    "spearman": -0.25722116536987866,
+    "n": 99
+  },
+  {
+    "x": "distance_bad",
+    "y": "bad_recall",
+    "spearman": 0.06287230904734228,
+    "n": 99
+  }
+]

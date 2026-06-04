@@ -1,0 +1,142 @@
+{
+  "dataset": "butqdb",
+  "signals_shape": [
+    32956,
+    1,
+    1250
+  ],
+  "source": "PhysioNet BUT QDB v1.0.0 expert consensus annotations",
+  "dropped": {
+    "boundary_or_short": 4468,
+    "read_error": 0
+  },
+  "subject_split": {
+    "118": "train",
+    "124": "train",
+    "115": "train",
+    "113": "train",
+    "105": "train",
+    "123": "train",
+    "121": "train",
+    "100": "train",
+    "104": "train",
+    "103": "val",
+    "126": "val",
+    "114": "val",
+    "111": "test",
+    "125": "test",
+    "122": "test"
+  },
+  "subject_split_strategy": {
+    "attempt": 843,
+    "split_subjects": {
+      "train": [
+        "100",
+        "104",
+        "105",
+        "113",
+        "115",
+        "118",
+        "121",
+        "123",
+        "124"
+      ],
+      "val": [
+        "103",
+        "114",
+        "126"
+      ],
+      "test": [
+        "111",
+        "122",
+        "125"
+      ]
+    },
+    "split_label_counts": {
+      "train": {
+        "good": 12434,
+        "medium": 6097,
+        "bad": 4791
+      },
+      "val": {
+        "good": 969,
+        "medium": 105,
+        "bad": 83
+      },
+      "test": {
+        "good": 3640,
+        "medium": 4426,
+        "bad": 411
+      }
+    },
+    "score": 1.332237685224257,
+    "missing_class_penalty": 0.0
+  },
+  "split_counts": {
+    "test": 8477,
+    "train": 23322,
+    "val": 1157
+  },
+  "label_counts": {
+    "bad": 5285,
+    "good": 17043,
+    "medium": 10628
+  },
+  "split_label_counts": {
+    "test": {
+      "bad": 411,
+      "good": 3640,
+      "medium": 4426
+    },
+    "train": {
+      "bad": 4791,
+      "good": 12434,
+      "medium": 6097
+    },
+    "val": {
+      "bad": 83,
+      "good": 969,
+      "medium": 105
+    }
+  },
+  "raw_rms_by_class": {
+    "bad": {
+      "n": 5285,
+      "mean": 116.78185944547221,
+      "std": 651.7871815055498,
+      "p10": 25.57349761322301,
+      "p50": 26.25129035599333,
+      "p90": 27.18408158763836
+    },
+    "good": {
+      "n": 17043,
+      "mean": 332.1993817531223,
+      "std": 152.94584112360505,
+      "p10": 236.84239863443815,
+      "p50": 303.313498285873,
+      "p90": 440.97530469554
+    },
+    "medium": {
+      "n": 10628,
+      "mean": 484.3880378952144,
+      "std": 365.74502529421903,
+      "p10": 263.1262932587113,
+      "p50": 384.5842014712643,
+      "p90": 737.713527491121
+    }
+  },
+  "metadata_shape": [
+    32956,
+    19
+  ],
+  "metadata_class_counts": {
+    "good": 17043,
+    "medium": 10628,
+    "bad": 5285
+  },
+  "metadata_split_counts": {
+    "train": 23322,
+    "test": 8477,
+    "val": 1157
+  }
+}

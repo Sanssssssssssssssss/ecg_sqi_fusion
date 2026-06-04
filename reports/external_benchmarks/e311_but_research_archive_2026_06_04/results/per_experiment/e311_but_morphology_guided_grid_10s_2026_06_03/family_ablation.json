@@ -1,0 +1,37 @@
+{
+  "h_medium_rescue": {
+    "n": 6,
+    "best_macro_f1": 0.6740497099926307,
+    "best_balanced_acc": 0.7289074860196566,
+    "best_min_medium_bad": 0.5829191143244464,
+    "best_feature_target_score": 0.7647354242824792
+  },
+  "h_bad_rescue": {
+    "n": 6,
+    "best_macro_f1": 0.7453532151604952,
+    "best_balanced_acc": 0.8177034517785587,
+    "best_min_medium_bad": 0.7733845458653411,
+    "best_feature_target_score": 0.7668573723986959
+  },
+  "h_coexistence": {
+    "n": 8,
+    "best_macro_f1": 0.6977547109121064,
+    "best_balanced_acc": 0.8309782018936781,
+    "best_min_medium_bad": 0.6211025756891098,
+    "best_feature_target_score": 0.766243171445669
+  },
+  "h_negative_control": {
+    "n": 4,
+    "best_macro_f1": 0.6942490278131667,
+    "best_balanced_acc": 0.7610941969492636,
+    "best_min_medium_bad": 0.6235878897424311,
+    "best_feature_target_score": 0.7673675014552838
+  },
+  "guided_morphology_large": {
+    "n": 6,
+    "best_macro_f1": 0.6685668038803385,
+    "best_balanced_acc": 0.7840927093769455,
+    "best_min_medium_bad": 0.5802078626299142,
+    "best_feature_target_score": 0.765363090743922
+  }
+}
