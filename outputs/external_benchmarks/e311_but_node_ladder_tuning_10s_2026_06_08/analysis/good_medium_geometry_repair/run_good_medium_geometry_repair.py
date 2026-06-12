@@ -42,6 +42,7 @@ N7125_BOUNDARY_BLOCK_PROMOTED_VARIANT = "nl_n7125_gm_trim_bad_boundaryblocks_mic
 N7150_HIGHGOOD_VARIANT = "nl_n7150_gm_trim_bad_geom_addedring_n7100base_g006_m020_g_e319672f8889"
 N7150_BOUNDARY_BLOCK_PROMOTED_VARIANT = "nl_n7150_gm_trim_bad_boundaryblocks_micro_bad_probe_n7125_84064417a3c4"
 N7155_BOUNDARY_BLOCK_PROMOTED_VARIANT = "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a"
+N7160_BOUNDARY_BLOCK_PROMOTED_VARIANT = "nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_mediumgu_35ddcfe3c52a"
 N7000_GEOMETRY_SOURCE_VARIANTS = (
     "nl_n7000_gm_trim_bad_geom_pc1flat_g018_m026_g122_m170_b15_5d375e2f0ace",
     "nl_n7000_gm_trim_bad_geom_pc1flat_g024_m032_g124_m170_b15_902479e72a11",
@@ -1397,6 +1398,158 @@ def _boundary_block_breakthrough_configs(base_variant_id: str, label: str, seed_
     )
 
 
+def _boundary_block_breakthrough_balance_configs(
+    base_variant_id: str, label: str, seed_base: int
+) -> tuple[dict[str, Any], ...]:
+    """Midpoint probes after N7165 split into medium-heavy and good-heavy endpoints."""
+    return (
+        _boundary_block_cfg(
+            f"boundaryblocks_balance_midguard_{label}_g0006_m0030_q0020_b0005",
+            seed=seed_base + 1,
+            base_variant_id=base_variant_id,
+            class_weight="1.215,1.78,1.50",
+            blocks=(
+                {
+                    "block": "gm_good_rescue_pc1flat_qrsvisible",
+                    "class_name": "good",
+                    "picker": "good_rescue_pc1flat_qrsvisible",
+                    "frac": 0.0006,
+                    "weight": 1.001,
+                },
+                {
+                    "block": "gm_visible_qrs_medium_detail",
+                    "class_name": "medium",
+                    "picker": "medium_visible_qrs_detail",
+                    "frac": 0.0030,
+                    "weight": 1.012,
+                },
+                {
+                    "block": "gm_medium_qrslow_hardneg",
+                    "class_name": "medium",
+                    "picker": "medium_qrslow_hardneg",
+                    "frac": 0.0020,
+                    "weight": 1.009,
+                },
+                {
+                    "block": "bad_controlled_outlier",
+                    "class_name": "bad",
+                    "picker": "bad_controlled_outlier",
+                    "frac": 0.0005,
+                    "weight": 1.002,
+                },
+            ),
+        ),
+        _boundary_block_cfg(
+            f"boundaryblocks_balance_softlift_{label}_g00075_m0030_q0020_b00075",
+            seed=seed_base + 2,
+            base_variant_id=base_variant_id,
+            class_weight="1.22,1.78,1.50",
+            blocks=(
+                {
+                    "block": "gm_good_rescue_pc1flat_qrsvisible",
+                    "class_name": "good",
+                    "picker": "good_rescue_pc1flat_qrsvisible",
+                    "frac": 0.00075,
+                    "weight": 1.002,
+                },
+                {
+                    "block": "gm_visible_qrs_medium_detail",
+                    "class_name": "medium",
+                    "picker": "medium_visible_qrs_detail",
+                    "frac": 0.0030,
+                    "weight": 1.012,
+                },
+                {
+                    "block": "gm_medium_qrslow_hardneg",
+                    "class_name": "medium",
+                    "picker": "medium_qrslow_hardneg",
+                    "frac": 0.0020,
+                    "weight": 1.009,
+                },
+                {
+                    "block": "bad_controlled_outlier",
+                    "class_name": "bad",
+                    "picker": "bad_controlled_outlier",
+                    "frac": 0.00075,
+                    "weight": 1.002,
+                },
+            ),
+        ),
+        _boundary_block_cfg(
+            f"boundaryblocks_balance_goodprotect_{label}_g0010_m0032_q0018_b0005",
+            seed=seed_base + 3,
+            base_variant_id=base_variant_id,
+            class_weight="1.235,1.78,1.50",
+            blocks=(
+                {
+                    "block": "gm_good_rescue_pc1flat_qrsvisible",
+                    "class_name": "good",
+                    "picker": "good_rescue_pc1flat_qrsvisible",
+                    "frac": 0.0010,
+                    "weight": 1.002,
+                },
+                {
+                    "block": "gm_visible_qrs_medium_detail",
+                    "class_name": "medium",
+                    "picker": "medium_visible_qrs_detail",
+                    "frac": 0.0032,
+                    "weight": 1.012,
+                },
+                {
+                    "block": "gm_medium_qrslow_hardneg",
+                    "class_name": "medium",
+                    "picker": "medium_qrslow_hardneg",
+                    "frac": 0.0018,
+                    "weight": 1.008,
+                },
+                {
+                    "block": "bad_controlled_outlier",
+                    "class_name": "bad",
+                    "picker": "bad_controlled_outlier",
+                    "frac": 0.0005,
+                    "weight": 1.002,
+                },
+            ),
+        ),
+        _boundary_block_cfg(
+            f"boundaryblocks_balance_tinybad_{label}_g0008_m0032_q0022_b00025",
+            seed=seed_base + 4,
+            base_variant_id=base_variant_id,
+            class_weight="1.225,1.785,1.50",
+            blocks=(
+                {
+                    "block": "gm_good_rescue_pc1flat_qrsvisible",
+                    "class_name": "good",
+                    "picker": "good_rescue_pc1flat_qrsvisible",
+                    "frac": 0.0008,
+                    "weight": 1.002,
+                },
+                {
+                    "block": "gm_visible_qrs_medium_detail",
+                    "class_name": "medium",
+                    "picker": "medium_visible_qrs_detail",
+                    "frac": 0.0032,
+                    "weight": 1.012,
+                },
+                {
+                    "block": "gm_medium_qrslow_hardneg",
+                    "class_name": "medium",
+                    "picker": "medium_qrslow_hardneg",
+                    "frac": 0.0022,
+                    "weight": 1.009,
+                },
+                {
+                    "block": "bad_controlled_outlier",
+                    "class_name": "bad",
+                    "picker": "bad_controlled_outlier",
+                    "frac": 0.00025,
+                    "weight": 1.001,
+                },
+            ),
+        ),
+    )
+
+
 GATE_FEATURES = (
     "pc1",
     "flatline_ratio",
@@ -1488,9 +1641,13 @@ def boundary_block_configs_for_level(level: int) -> tuple[dict[str, Any], ...]:
         return _boundary_block_breakthrough_configs(N7150_BOUNDARY_BLOCK_PROMOTED_VARIANT, "n7150bb_to7155", 20261400)
     if level == 7160:
         return _boundary_block_breakthrough_configs(N7155_BOUNDARY_BLOCK_PROMOTED_VARIANT, "n7155bb_to7160", 20261420)
+    if level == 7165:
+        return _boundary_block_breakthrough_balance_configs(
+            N7160_BOUNDARY_BLOCK_PROMOTED_VARIANT, "n7160bb_to7165", 20261460
+        )
     if level >= 7175:
-        return _boundary_block_micro_configs(N7150_BOUNDARY_BLOCK_PROMOTED_VARIANT, "n7150bbbest", 20261360)
-    raise ValueError(f"Boundary block generator is configured for N7110/N7125/N7150/N7155/N7160+, got N{int(level)}.")
+        return _boundary_block_micro_configs(N7160_BOUNDARY_BLOCK_PROMOTED_VARIANT, "n7160bbbest", 20261360)
+    raise ValueError(f"Boundary block generator is configured for N7110/N7125/N7150/N7155/N7160/N7165+, got N{int(level)}.")
 
 
 def _load_runner():

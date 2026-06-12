@@ -26,7 +26,7 @@
       "updated_at": "2026-06-09T01:50:08",
       "promoted": true,
       "promotion_reason": "Node meets promotion gates.",
-      "promotion_updated_at": "2026-06-12T02:28:19"
+      "promotion_updated_at": "2026-06-12T03:53:33"
     },
     {
       "node_id": "N4200_bridge",
@@ -51,7 +51,7 @@
       "updated_at": "2026-06-09T01:50:11",
       "promoted": true,
       "promotion_reason": "Node meets promotion gates.",
-      "promotion_updated_at": "2026-06-12T02:28:19"
+      "promotion_updated_at": "2026-06-12T03:53:33"
     },
     {
       "node_id": "N4800_wide",
@@ -76,7 +76,7 @@
       "updated_at": "2026-06-09T01:50:13",
       "promoted": false,
       "promotion_reason": "Do not widen yet; refine this node generator/loss first.",
-      "promotion_updated_at": "2026-06-12T02:28:19"
+      "promotion_updated_at": "2026-06-12T03:53:33"
     },
     {
       "node_id": "N5200_stress",
@@ -101,7 +101,7 @@
       "updated_at": "2026-06-09T01:50:16",
       "promoted": false,
       "promotion_reason": "Do not widen yet; refine this node generator/loss first.",
-      "promotion_updated_at": "2026-06-12T02:28:19"
+      "promotion_updated_at": "2026-06-12T03:53:33"
     },
     {
       "node_id": "N5600_probe",
@@ -126,7 +126,7 @@
       "updated_at": "2026-06-09T01:50:19",
       "promoted": false,
       "promotion_reason": "No trained or existing diagnostic metrics available.",
-      "promotion_updated_at": "2026-06-12T02:28:19"
+      "promotion_updated_at": "2026-06-12T03:53:33"
     },
     {
       "node_id": "N6000_probe",
@@ -151,7 +151,7 @@
       "updated_at": "2026-06-09T01:50:22",
       "promoted": false,
       "promotion_reason": "Do not widen yet; refine this node generator/loss first.",
-      "promotion_updated_at": "2026-06-12T02:28:20"
+      "promotion_updated_at": "2026-06-12T03:53:33"
     },
     {
       "node_id": "N6000_goodcover_retry",
@@ -176,7 +176,7 @@
       "updated_at": "2026-06-09T01:50:25",
       "promoted": true,
       "promotion_reason": "Node meets promotion gates.",
-      "promotion_updated_at": "2026-06-12T02:28:20"
+      "promotion_updated_at": "2026-06-12T03:53:33"
     },
     {
       "node_id": "N6400_gm_probe",
@@ -201,7 +201,7 @@
       "updated_at": "2026-06-09T01:50:28",
       "promoted": false,
       "promotion_reason": "No trained or existing diagnostic metrics available.",
-      "promotion_updated_at": "2026-06-12T02:28:20"
+      "promotion_updated_at": "2026-06-12T03:53:33"
     },
     {
       "node_id": "N6800_gm_probe",
@@ -226,21 +226,21 @@
       "updated_at": "2026-06-09T01:50:31",
       "promoted": false,
       "promotion_reason": "Do not widen yet; refine this node generator/loss first.",
-      "promotion_updated_at": "2026-06-12T02:28:20"
+      "promotion_updated_at": "2026-06-12T03:53:33"
     },
     {
-      "node_id": "N7160_gm_probe",
-      "level": 7160,
+      "node_id": "N7165_gm_probe",
+      "level": 7165,
       "role": "gm_geometry_repair_probe",
       "target_acc": 0.95,
       "target_good": 0.92,
       "target_medium": 0.9,
       "target_bad": 0.9,
       "train_default": false,
-      "reason": "N7160 geometry repair probe before any wider expansion.",
+      "reason": "N7165 geometry repair probe before any wider expansion.",
       "status": "no_metrics",
-      "node_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\nodes\\N7160_gm_probe",
-      "report_dir": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\nodes\\N7160_gm_probe",
+      "node_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\nodes\\N7165_gm_probe",
+      "report_dir": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\nodes\\N7165_gm_probe",
       "existing_best_variant": null,
       "existing_acc": null,
       "existing_macro_f1": null,
@@ -248,24 +248,24 @@
       "existing_medium_recall": null,
       "existing_bad_recall": null,
       "existing_original_but_macro_f1": null,
-      "updated_at": "2026-06-12T01:52:21",
+      "updated_at": "2026-06-12T03:16:03",
       "promoted": false,
       "promotion_reason": "No trained or existing diagnostic metrics available.",
-      "promotion_updated_at": "2026-06-12T02:28:20"
+      "promotion_updated_at": "2026-06-12T03:53:33"
     },
     {
-      "node_id": "N7160_gm_trim_bad",
-      "level": 7160,
+      "node_id": "N7165_gm_trim_bad",
+      "level": 7165,
       "role": "gm_geometry_repair_trim_bad",
       "target_acc": 0.95,
       "target_good": 0.92,
       "target_medium": 0.9,
       "target_bad": 0.9,
       "train_default": false,
-      "reason": "N7160 good/medium geometry repair with bad outlier_low_confidence trimmed to core/right-island guardrail.",
-      "status": "promoted",
-      "node_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\nodes\\N7160_gm_trim_bad",
-      "report_dir": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\nodes\\N7160_gm_trim_bad",
+      "reason": "N7165 good/medium geometry repair with bad outlier_low_confidence trimmed to core/right-island guardrail.",
+      "status": "needs_generator_refine",
+      "node_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\nodes\\N7165_gm_trim_bad",
+      "report_dir": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\nodes\\N7165_gm_trim_bad",
       "existing_best_variant": null,
       "existing_acc": null,
       "existing_macro_f1": null,
@@ -273,10 +273,10 @@
       "existing_medium_recall": null,
       "existing_bad_recall": null,
       "existing_original_but_macro_f1": null,
-      "updated_at": "2026-06-12T01:52:21",
-      "promoted": true,
-      "promotion_reason": "Node meets promotion gates.",
-      "promotion_updated_at": "2026-06-12T02:28:20"
+      "updated_at": "2026-06-12T03:16:03",
+      "promoted": false,
+      "promotion_reason": "Do not widen yet; refine this node generator/loss first.",
+      "promotion_updated_at": "2026-06-12T03:53:33"
     }
   ],
   "note": "Prediction-free node targets. Original BUT test is report-only and is not used for node or generator selection."

@@ -1,77 +1,77 @@
 {
-  "created_at": "2026-06-12T01:52:02",
+  "created_at": "2026-06-12T03:15:43",
   "variants": [
     {
-      "level": 7160,
-      "spec_id": "nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_stabilit_4a251ec11c37",
-      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_stabilit_4a251ec11c37",
-      "rows": 16052,
+      "level": 7165,
+      "spec_id": "nl_n7165_gm_trim_bad_boundaryblocks_balance_midguard_n716_7220d2580c00",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7165_gm_trim_bad_boundaryblocks_balance_midguard_n716_7220d2580c00",
+      "rows": 16120,
       "class_counts": {
-        "bad": 5125,
-        "good": 5330,
-        "medium": 5597
+        "bad": 5129,
+        "good": 5334,
+        "medium": 5657
       },
       "split_counts": {
-        "test": 2309,
-        "train": 11453,
-        "val": 2290
+        "test": 2318,
+        "train": 11503,
+        "val": 2299
       },
-      "pca_path": null,
-      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7160_4a251ec11c37_waveforms.png"
+      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_7220d2580c00_pca.png",
+      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_7220d2580c00_waveforms.png"
     },
     {
-      "level": 7160,
-      "spec_id": "nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_mediumgu_35ddcfe3c52a",
-      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_mediumgu_35ddcfe3c52a",
-      "rows": 16088,
+      "level": 7165,
+      "spec_id": "nl_n7165_gm_trim_bad_boundaryblocks_balance_softlift_n716_a79e875898ed",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7165_gm_trim_bad_boundaryblocks_balance_softlift_n716_a79e875898ed",
+      "rows": 16126,
       "class_counts": {
-        "bad": 5127,
-        "good": 5332,
-        "medium": 5629
+        "bad": 5132,
+        "good": 5337,
+        "medium": 5657
       },
       "split_counts": {
-        "test": 2314,
-        "train": 11479,
-        "val": 2295
+        "test": 2320,
+        "train": 11505,
+        "val": 2301
       },
-      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7160_35ddcfe3c52a_pca.png",
-      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7160_35ddcfe3c52a_waveforms.png"
+      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_a79e875898ed_pca.png",
+      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_a79e875898ed_waveforms.png"
     },
     {
-      "level": 7160,
-      "spec_id": "nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_nogood_m_becc3b4b414c",
-      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_nogood_m_becc3b4b414c",
-      "rows": 16088,
+      "level": 7165,
+      "spec_id": "nl_n7165_gm_trim_bad_boundaryblocks_balance_goodprotect_n_bb93f422c517",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7165_gm_trim_bad_boundaryblocks_balance_goodprotect_n_bb93f422c517",
+      "rows": 16124,
       "class_counts": {
-        "bad": 5131,
-        "good": 5330,
-        "medium": 5627
+        "bad": 5129,
+        "good": 5338,
+        "medium": 5657
       },
       "split_counts": {
-        "test": 2314,
-        "train": 11479,
-        "val": 2295
+        "test": 2319,
+        "train": 11505,
+        "val": 2300
       },
-      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7160_becc3b4b414c_pca.png",
-      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7160_becc3b4b414c_waveforms.png"
+      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_bb93f422c517_pca.png",
+      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_bb93f422c517_waveforms.png"
     },
     {
-      "level": 7160,
-      "spec_id": "nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_softbala_70cdb2525f82",
-      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_softbala_70cdb2525f82",
-      "rows": 16085,
+      "level": 7165,
+      "spec_id": "nl_n7165_gm_trim_bad_boundaryblocks_balance_tinybad_n7160_c22ec761bb78",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7165_gm_trim_bad_boundaryblocks_balance_tinybad_n7160_c22ec761bb78",
+      "rows": 16126,
       "class_counts": {
-        "bad": 5131,
-        "good": 5335,
-        "medium": 5619
+        "bad": 5128,
+        "good": 5337,
+        "medium": 5661
       },
       "split_counts": {
-        "test": 2314,
-        "train": 11476,
-        "val": 2295
+        "test": 2320,
+        "train": 11505,
+        "val": 2301
       },
-      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7160_70cdb2525f82_pca.png",
-      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7160_70cdb2525f82_waveforms.png"
+      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_c22ec761bb78_pca.png",
+      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_c22ec761bb78_waveforms.png"
     }
   ]
 }
