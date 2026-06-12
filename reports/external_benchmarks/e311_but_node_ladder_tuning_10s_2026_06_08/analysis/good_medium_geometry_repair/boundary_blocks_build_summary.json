@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-06-12T03:15:43",
+  "created_at": "2026-06-12T04:52:03",
   "variants": [
     {
       "level": 7165,
@@ -72,6 +72,150 @@
       },
       "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_c22ec761bb78_pca.png",
       "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_c22ec761bb78_waveforms.png"
+    },
+    {
+      "level": 7165,
+      "spec_id": "nl_n7165_gm_trim_bad_boundaryblocks_widefocus_pair_n7160b_a2ade44cd927",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7165_gm_trim_bad_boundaryblocks_widefocus_pair_n7160b_a2ade44cd927",
+      "rows": 16147,
+      "class_counts": {
+        "bad": 5128,
+        "good": 5344,
+        "medium": 5675
+      },
+      "split_counts": {
+        "test": 2322,
+        "train": 11522,
+        "val": 2303
+      },
+      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_a2ade44cd927_pca.png",
+      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_a2ade44cd927_waveforms.png"
+    },
+    {
+      "level": 7165,
+      "spec_id": "nl_n7165_gm_trim_bad_boundaryblocks_widefocus_mediumdetai_62cbf75dbb2b",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7165_gm_trim_bad_boundaryblocks_widefocus_mediumdetai_62cbf75dbb2b",
+      "rows": 16158,
+      "class_counts": {
+        "bad": 5127,
+        "good": 5340,
+        "medium": 5691
+      },
+      "split_counts": {
+        "test": 2324,
+        "train": 11529,
+        "val": 2305
+      },
+      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_62cbf75dbb2b_pca.png",
+      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_62cbf75dbb2b_waveforms.png"
+    },
+    {
+      "level": 7165,
+      "spec_id": "nl_n7165_gm_trim_bad_boundaryblocks_widefocus_goodanchor__9eb5b5340e0a",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7165_gm_trim_bad_boundaryblocks_widefocus_goodanchor__9eb5b5340e0a",
+      "rows": 16152,
+      "class_counts": {
+        "bad": 5128,
+        "good": 5351,
+        "medium": 5673
+      },
+      "split_counts": {
+        "test": 2323,
+        "train": 11525,
+        "val": 2304
+      },
+      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_9eb5b5340e0a_pca.png",
+      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_9eb5b5340e0a_waveforms.png"
+    },
+    {
+      "level": 7165,
+      "spec_id": "nl_n7165_gm_trim_bad_boundaryblocks_widefocus_dualanchor__5dc086854c74",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7165_gm_trim_bad_boundaryblocks_widefocus_dualanchor__5dc086854c74",
+      "rows": 16170,
+      "class_counts": {
+        "bad": 5129,
+        "good": 5346,
+        "medium": 5695
+      },
+      "split_counts": {
+        "test": 2325,
+        "train": 11539,
+        "val": 2306
+      },
+      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_5dc086854c74_pca.png",
+      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_5dc086854c74_waveforms.png"
+    },
+    {
+      "level": 7165,
+      "spec_id": "nl_n7165_gm_trim_bad_boundaryblocks_gatefocus_flatpair_n7_9acbd74e028e",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7165_gm_trim_bad_boundaryblocks_gatefocus_flatpair_n7_9acbd74e028e",
+      "rows": 16124,
+      "class_counts": {
+        "bad": 5128,
+        "good": 5339,
+        "medium": 5657
+      },
+      "split_counts": {
+        "test": 2319,
+        "train": 11505,
+        "val": 2300
+      },
+      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_9acbd74e028e_pca.png",
+      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_9acbd74e028e_waveforms.png"
+    },
+    {
+      "level": 7165,
+      "spec_id": "nl_n7165_gm_trim_bad_boundaryblocks_gatefocus_goodlean_n7_506ea8f2a9a4",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7165_gm_trim_bad_boundaryblocks_gatefocus_goodlean_n7_506ea8f2a9a4",
+      "rows": 16124,
+      "class_counts": {
+        "bad": 5128,
+        "good": 5341,
+        "medium": 5655
+      },
+      "split_counts": {
+        "test": 2319,
+        "train": 11505,
+        "val": 2300
+      },
+      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_506ea8f2a9a4_pca.png",
+      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_506ea8f2a9a4_waveforms.png"
+    },
+    {
+      "level": 7165,
+      "spec_id": "nl_n7165_gm_trim_bad_boundaryblocks_gatefocus_mediumguard_e5df24c4f8a9",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7165_gm_trim_bad_boundaryblocks_gatefocus_mediumguard_e5df24c4f8a9",
+      "rows": 16134,
+      "class_counts": {
+        "bad": 5128,
+        "good": 5338,
+        "medium": 5668
+      },
+      "split_counts": {
+        "test": 2321,
+        "train": 11511,
+        "val": 2302
+      },
+      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_e5df24c4f8a9_pca.png",
+      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_e5df24c4f8a9_waveforms.png"
+    },
+    {
+      "level": 7165,
+      "spec_id": "nl_n7165_gm_trim_bad_boundaryblocks_gatefocus_wideflat_n7_787894253fc1",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7165_gm_trim_bad_boundaryblocks_gatefocus_wideflat_n7_787894253fc1",
+      "rows": 16144,
+      "class_counts": {
+        "bad": 5129,
+        "good": 5344,
+        "medium": 5671
+      },
+      "split_counts": {
+        "test": 2322,
+        "train": 11519,
+        "val": 2303
+      },
+      "pca_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_787894253fc1_pca.png",
+      "waveform_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\boundary_blocks_n7165_787894253fc1_waveforms.png"
     }
   ]
 }

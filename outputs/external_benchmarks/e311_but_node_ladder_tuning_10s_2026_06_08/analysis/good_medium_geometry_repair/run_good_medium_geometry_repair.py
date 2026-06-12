@@ -1550,6 +1550,316 @@ def _boundary_block_breakthrough_balance_configs(
     )
 
 
+def _boundary_block_wide_focus_configs(
+    base_variant_id: str, label: str, seed_base: int
+) -> tuple[dict[str, Any], ...]:
+    """Wider local probes for the N7160->N7165 overlap shell.
+
+    The first N7165 retries did not fail by one class collapsing; both
+    good->medium and medium->good increased relative to N7160. These configs
+    enlarge only the good/medium boundary blocks around that shell, keep the
+    N7160 promoted body as anchor, and leave bad as a tiny controlled guardrail.
+    """
+    return (
+        _boundary_block_cfg(
+            f"boundaryblocks_widefocus_pair_{label}_g0020_m0055_q0030_b00025",
+            seed=seed_base + 1,
+            base_variant_id=base_variant_id,
+            class_weight="1.24,1.79,1.50",
+            blocks=(
+                {
+                    "block": "gm_good_rescue_pc1flat_qrsvisible",
+                    "class_name": "good",
+                    "picker": "good_rescue_pc1flat_qrsvisible",
+                    "frac": 0.0020,
+                    "weight": 1.004,
+                },
+                {
+                    "block": "gm_visible_qrs_medium_detail",
+                    "class_name": "medium",
+                    "picker": "medium_visible_qrs_detail",
+                    "frac": 0.0055,
+                    "weight": 1.018,
+                },
+                {
+                    "block": "gm_medium_qrslow_hardneg",
+                    "class_name": "medium",
+                    "picker": "medium_qrslow_hardneg",
+                    "frac": 0.0030,
+                    "weight": 1.012,
+                },
+                {
+                    "block": "bad_controlled_outlier",
+                    "class_name": "bad",
+                    "picker": "bad_controlled_outlier",
+                    "frac": 0.00025,
+                    "weight": 1.001,
+                },
+            ),
+        ),
+        _boundary_block_cfg(
+            f"boundaryblocks_widefocus_mediumdetail_{label}_g0015_m0075_q0035_b000",
+            seed=seed_base + 2,
+            base_variant_id=base_variant_id,
+            class_weight="1.225,1.805,1.50",
+            blocks=(
+                {
+                    "block": "gm_good_rescue_pc1flat_qrsvisible",
+                    "class_name": "good",
+                    "picker": "good_rescue_pc1flat_qrsvisible",
+                    "frac": 0.0015,
+                    "weight": 1.003,
+                },
+                {
+                    "block": "gm_visible_qrs_medium_detail",
+                    "class_name": "medium",
+                    "picker": "medium_visible_qrs_detail",
+                    "frac": 0.0075,
+                    "weight": 1.024,
+                },
+                {
+                    "block": "gm_medium_qrslow_hardneg",
+                    "class_name": "medium",
+                    "picker": "medium_qrslow_hardneg",
+                    "frac": 0.0035,
+                    "weight": 1.014,
+                },
+            ),
+        ),
+        _boundary_block_cfg(
+            f"boundaryblocks_widefocus_goodanchor_{label}_g0035_m0055_q0025_b00025",
+            seed=seed_base + 3,
+            base_variant_id=base_variant_id,
+            class_weight="1.255,1.785,1.50",
+            blocks=(
+                {
+                    "block": "gm_good_rescue_pc1flat_qrsvisible",
+                    "class_name": "good",
+                    "picker": "good_rescue_pc1flat_qrsvisible",
+                    "frac": 0.0035,
+                    "weight": 1.008,
+                },
+                {
+                    "block": "gm_visible_qrs_medium_detail",
+                    "class_name": "medium",
+                    "picker": "medium_visible_qrs_detail",
+                    "frac": 0.0055,
+                    "weight": 1.018,
+                },
+                {
+                    "block": "gm_medium_qrslow_hardneg",
+                    "class_name": "medium",
+                    "picker": "medium_qrslow_hardneg",
+                    "frac": 0.0025,
+                    "weight": 1.010,
+                },
+                {
+                    "block": "bad_controlled_outlier",
+                    "class_name": "bad",
+                    "picker": "bad_controlled_outlier",
+                    "frac": 0.00025,
+                    "weight": 1.001,
+                },
+            ),
+        ),
+        _boundary_block_cfg(
+            f"boundaryblocks_widefocus_dualanchor_{label}_g0025_m0080_q0040_b0005",
+            seed=seed_base + 4,
+            base_variant_id=base_variant_id,
+            class_weight="1.245,1.805,1.50",
+            blocks=(
+                {
+                    "block": "gm_good_rescue_pc1flat_qrsvisible",
+                    "class_name": "good",
+                    "picker": "good_rescue_pc1flat_qrsvisible",
+                    "frac": 0.0025,
+                    "weight": 1.005,
+                },
+                {
+                    "block": "gm_visible_qrs_medium_detail",
+                    "class_name": "medium",
+                    "picker": "medium_visible_qrs_detail",
+                    "frac": 0.0080,
+                    "weight": 1.024,
+                },
+                {
+                    "block": "gm_medium_qrslow_hardneg",
+                    "class_name": "medium",
+                    "picker": "medium_qrslow_hardneg",
+                    "frac": 0.0040,
+                    "weight": 1.015,
+                },
+                {
+                    "block": "bad_controlled_outlier",
+                    "class_name": "bad",
+                    "picker": "bad_controlled_outlier",
+                    "frac": 0.0005,
+                    "weight": 1.002,
+                },
+            ),
+        ),
+    )
+
+
+def _boundary_block_gate_focus_configs(
+    base_variant_id: str, label: str, seed_base: int
+) -> tuple[dict[str, Any], ...]:
+    """Directly target the N7165 endpoint-disagreement high-flatline shell.
+
+    Endpoint-gate analysis found that the best conditional repair switches to a
+    good-heavy endpoint only inside a high-flatline disagreement band. These
+    probes widen that band in the generator, but pair every good-rescue row with
+    medium guard rows from the same shell so a single checkpoint is less likely
+    to collapse into the endpoint behavior.
+    """
+    return (
+        _boundary_block_cfg(
+            f"boundaryblocks_gatefocus_flatpair_{label}_g0012_fm0035_q0015_b00025",
+            seed=seed_base + 1,
+            base_variant_id=base_variant_id,
+            class_weight="1.225,1.775,1.50",
+            blocks=(
+                {
+                    "block": "gm_gatefocus_highflat_good_rescue",
+                    "class_name": "good",
+                    "picker": "good_flatline_overlap",
+                    "frac": 0.0012,
+                    "weight": 1.004,
+                },
+                {
+                    "block": "gm_gatefocus_highflat_medium_guard",
+                    "class_name": "medium",
+                    "picker": "medium_flatline_overlap",
+                    "frac": 0.0035,
+                    "weight": 1.014,
+                },
+                {
+                    "block": "gm_medium_qrslow_hardneg",
+                    "class_name": "medium",
+                    "picker": "medium_qrslow_hardneg",
+                    "frac": 0.0015,
+                    "weight": 1.008,
+                },
+                {
+                    "block": "bad_controlled_outlier",
+                    "class_name": "bad",
+                    "picker": "bad_controlled_outlier",
+                    "frac": 0.00025,
+                    "weight": 1.001,
+                },
+            ),
+        ),
+        _boundary_block_cfg(
+            f"boundaryblocks_gatefocus_goodlean_{label}_g0018_fm0032_q0012_b00025",
+            seed=seed_base + 2,
+            base_variant_id=base_variant_id,
+            class_weight="1.235,1.770,1.50",
+            blocks=(
+                {
+                    "block": "gm_gatefocus_highflat_good_rescue",
+                    "class_name": "good",
+                    "picker": "good_flatline_overlap",
+                    "frac": 0.0018,
+                    "weight": 1.006,
+                },
+                {
+                    "block": "gm_gatefocus_highflat_medium_guard",
+                    "class_name": "medium",
+                    "picker": "medium_flatline_overlap",
+                    "frac": 0.0032,
+                    "weight": 1.012,
+                },
+                {
+                    "block": "gm_medium_qrslow_hardneg",
+                    "class_name": "medium",
+                    "picker": "medium_qrslow_hardneg",
+                    "frac": 0.0012,
+                    "weight": 1.006,
+                },
+                {
+                    "block": "bad_controlled_outlier",
+                    "class_name": "bad",
+                    "picker": "bad_controlled_outlier",
+                    "frac": 0.00025,
+                    "weight": 1.001,
+                },
+            ),
+        ),
+        _boundary_block_cfg(
+            f"boundaryblocks_gatefocus_mediumguard_{label}_g0010_fm0048_q0020_b00025",
+            seed=seed_base + 3,
+            base_variant_id=base_variant_id,
+            class_weight="1.215,1.790,1.50",
+            blocks=(
+                {
+                    "block": "gm_gatefocus_highflat_good_rescue",
+                    "class_name": "good",
+                    "picker": "good_flatline_overlap",
+                    "frac": 0.0010,
+                    "weight": 1.003,
+                },
+                {
+                    "block": "gm_gatefocus_highflat_medium_guard",
+                    "class_name": "medium",
+                    "picker": "medium_flatline_overlap",
+                    "frac": 0.0048,
+                    "weight": 1.018,
+                },
+                {
+                    "block": "gm_medium_qrslow_hardneg",
+                    "class_name": "medium",
+                    "picker": "medium_qrslow_hardneg",
+                    "frac": 0.0020,
+                    "weight": 1.010,
+                },
+                {
+                    "block": "bad_controlled_outlier",
+                    "class_name": "bad",
+                    "picker": "bad_controlled_outlier",
+                    "frac": 0.00025,
+                    "weight": 1.001,
+                },
+            ),
+        ),
+        _boundary_block_cfg(
+            f"boundaryblocks_gatefocus_wideflat_{label}_g0022_fm0055_q0020_b0005",
+            seed=seed_base + 4,
+            base_variant_id=base_variant_id,
+            class_weight="1.225,1.785,1.50",
+            blocks=(
+                {
+                    "block": "gm_gatefocus_highflat_good_rescue",
+                    "class_name": "good",
+                    "picker": "good_flatline_overlap",
+                    "frac": 0.0022,
+                    "weight": 1.007,
+                },
+                {
+                    "block": "gm_gatefocus_highflat_medium_guard",
+                    "class_name": "medium",
+                    "picker": "medium_flatline_overlap",
+                    "frac": 0.0055,
+                    "weight": 1.018,
+                },
+                {
+                    "block": "gm_medium_qrslow_hardneg",
+                    "class_name": "medium",
+                    "picker": "medium_qrslow_hardneg",
+                    "frac": 0.0020,
+                    "weight": 1.010,
+                },
+                {
+                    "block": "bad_controlled_outlier",
+                    "class_name": "bad",
+                    "picker": "bad_controlled_outlier",
+                    "frac": 0.0005,
+                    "weight": 1.002,
+                },
+            ),
+        ),
+    )
+
+
 GATE_FEATURES = (
     "pc1",
     "flatline_ratio",
@@ -1644,6 +1954,10 @@ def boundary_block_configs_for_level(level: int) -> tuple[dict[str, Any], ...]:
     if level == 7165:
         return _boundary_block_breakthrough_balance_configs(
             N7160_BOUNDARY_BLOCK_PROMOTED_VARIANT, "n7160bb_to7165", 20261460
+        ) + _boundary_block_wide_focus_configs(
+            N7160_BOUNDARY_BLOCK_PROMOTED_VARIANT, "n7160bb_to7165", 20261480
+        ) + _boundary_block_gate_focus_configs(
+            N7160_BOUNDARY_BLOCK_PROMOTED_VARIANT, "n7160bb_to7165", 20261500
         )
     if level >= 7175:
         return _boundary_block_micro_configs(N7160_BOUNDARY_BLOCK_PROMOTED_VARIANT, "n7160bbbest", 20261360)
@@ -2132,6 +2446,91 @@ def _n7200_tri_medium_hard_negative_indices(
     return chosen["row_pos"].to_numpy(dtype=int), chosen.copy()
 
 
+def _n7165_flatline_overlap_indices(
+    artifact: dict[str, Any],
+    class_name: str,
+    split: str,
+    n: int,
+    seed: int,
+    cfg: dict[str, Any],
+) -> tuple[np.ndarray, pd.DataFrame]:
+    merged = _add_n7200_pca_proxy(_feature_merge(artifact, class_name, split))
+    if n <= 0 or merged.empty:
+        return np.array([], dtype=int), pd.DataFrame()
+    gate_cfg = dict(cfg.get("gatefocus_flatline_gate", {}))
+    score = pd.Series(0.0, index=merged.index, dtype=float)
+    if class_name == "good":
+        weights = (
+            ("flatline_ratio", 0.66, 1.0),
+            ("non_qrs_diff_p95", 0.42, -1.0),
+            ("pc1", 0.28, -1.0),
+            ("pc3", 0.24, -1.0),
+            ("qrs_visibility", 0.20, 1.0),
+            ("template_corr", 0.12, 1.0),
+            ("fatal_or_score", 0.20, -1.0),
+            ("contact_loss_win_ratio", 0.14, -1.0),
+        )
+    else:
+        weights = (
+            ("flatline_ratio", 0.54, 1.0),
+            ("non_qrs_diff_p95", 0.46, 1.0),
+            ("diff_abs_p95", 0.28, 1.0),
+            ("pc3", 0.24, 1.0),
+            ("qrs_visibility", 0.24, -1.0),
+            ("qrs_band_ratio", 0.10, 1.0),
+            ("fatal_or_score", 0.22, -1.0),
+            ("contact_loss_win_ratio", 0.16, -1.0),
+        )
+    for col, weight, direction in weights:
+        if col in merged.columns:
+            score = score + direction * float(weight) * _robust_z(merged[col])
+    score_col = f"n7165_flatline_overlap_{class_name}_score"
+    merged[score_col] = score
+    gate = pd.Series(True, index=merged.index)
+    if "flatline_ratio" in merged.columns:
+        gate &= pd.to_numeric(merged["flatline_ratio"], errors="coerce") >= float(
+            gate_cfg.get(f"{class_name}_flatline_min", gate_cfg.get("flatline_min", 0.120))
+        )
+    if "fatal_or_score" in merged.columns:
+        gate &= pd.to_numeric(merged["fatal_or_score"], errors="coerce").fillna(0.0) < float(
+            gate_cfg.get("fatal_max", 1.20)
+        )
+    if "contact_loss_win_ratio" in merged.columns:
+        gate &= pd.to_numeric(merged["contact_loss_win_ratio"], errors="coerce").fillna(0.0) < float(
+            gate_cfg.get("contact_loss_max", 0.08)
+        )
+    if class_name == "good":
+        if "non_qrs_diff_p95" in merged.columns:
+            gate &= pd.to_numeric(merged["non_qrs_diff_p95"], errors="coerce") <= float(
+                gate_cfg.get("good_non_qrs_diff_max", 0.090)
+            )
+        if "qrs_visibility" in merged.columns:
+            gate &= pd.to_numeric(merged["qrs_visibility"], errors="coerce") >= float(
+                gate_cfg.get("good_qrs_visibility_min", 0.40)
+            )
+    else:
+        if "non_qrs_diff_p95" in merged.columns:
+            gate &= pd.to_numeric(merged["non_qrs_diff_p95"], errors="coerce") >= float(
+                gate_cfg.get("medium_non_qrs_diff_min", 0.050)
+            )
+        if "qrs_visibility" in merged.columns:
+            qrs = pd.to_numeric(merged["qrs_visibility"], errors="coerce")
+            gate &= qrs.between(
+                float(gate_cfg.get("medium_qrs_visibility_min", 0.02)),
+                float(gate_cfg.get("medium_qrs_visibility_max", 0.62)),
+            )
+    chosen = merged.loc[gate].sort_values(score_col, ascending=False).head(int(n))
+    if len(chosen) < int(n):
+        extra = merged.drop(chosen.index, errors="ignore").sort_values(score_col, ascending=False).head(
+            int(n) - len(chosen)
+        )
+        chosen = pd.concat([chosen, extra], ignore_index=False)
+    if len(chosen) < int(n):
+        extra = merged.sample(n=int(n) - len(chosen), replace=True, random_state=seed)
+        chosen = pd.concat([chosen, extra], ignore_index=False)
+    return chosen["row_pos"].to_numpy(dtype=int), chosen.copy()
+
+
 def _n7200_bad_stress_indices(
     artifact: dict[str, Any], split: str, n: int, seed: int, cfg: dict[str, Any]
 ) -> tuple[np.ndarray, pd.DataFrame]:
@@ -2447,6 +2846,14 @@ def _write_geometry_artifact(level: int, cfg: dict[str, Any]) -> tuple[str, Path
         elif profile == "boundary_blocks" and picker_name == "medium_visible_qrs_detail":
             picker = lambda artifact, split, n, run_seed: _n7200_tri_medium_hard_negative_indices(
                 artifact, split, n, run_seed, cfg
+            )
+        elif profile == "boundary_blocks" and picker_name == "good_flatline_overlap":
+            picker = lambda artifact, split, n, run_seed: _n7165_flatline_overlap_indices(
+                artifact, "good", split, n, run_seed, cfg
+            )
+        elif profile == "boundary_blocks" and picker_name == "medium_flatline_overlap":
+            picker = lambda artifact, split, n, run_seed: _n7165_flatline_overlap_indices(
+                artifact, "medium", split, n, run_seed, cfg
             )
         elif profile == "boundary_blocks" and picker_name == "bad_controlled_outlier":
             picker = lambda artifact, split, n, run_seed: _n7200_bad_stress_indices(
