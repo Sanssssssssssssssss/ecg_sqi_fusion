@@ -1,0 +1,5448 @@
+{
+  "created_at": "2026-06-12T02:25:24",
+  "trained": [
+    {
+      "spec": {
+        "id": "nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_stabilit_4a251ec11c37",
+        "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+        "node_id": "N7160_gm_trim_bad",
+        "node_role": "boundary_block_generator_trim_bad",
+        "class_weight": "1.235,1.735,1.50",
+        "cls_loss_variant": "soft_sample_weighted_ce",
+        "geometry_gate_config": {
+          "name": "boundaryblocks_breakthrough_stability_n7155bb_to7160_g000_m000_q000_b000",
+          "geometry_profile": "boundary_blocks",
+          "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+          "source_variant_ids": [
+            "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+          ],
+          "boundary_blocks": [],
+          "seed": 20261421,
+          "epochs": [
+            5,
+            5
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.55,
+            "flatline_min": 0.18,
+            "pc3_max": 0.55,
+            "qrs_visibility_min": 0.42,
+            "non_qrs_diff_max": 0.095
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.3,
+            "flatline_max": 0.16,
+            "pc3_min": 1.25,
+            "non_qrs_diff_min": 0.075,
+            "qrs_visibility_min": 0.16,
+            "qrs_visibility_max": 0.62
+          },
+          "qrslow_medium_gate": {
+            "qrs_visibility_max": 0.042,
+            "pc1_min": -1.7,
+            "pc3_min": 1.15,
+            "flatline_max": 0.26,
+            "non_qrs_diff_min": 0.04,
+            "fatal_max": 1.2,
+            "contact_loss_max": 0.08
+          },
+          "badstress_mode": "controlled_qrsband",
+          "badstress_gate": {
+            "qrs_band_ratio_min": 0.4,
+            "band_15_30_min": 0.7,
+            "baseline_step_max": 0.28,
+            "band_30_45_max": 0.2,
+            "fatal_max": 1.1,
+            "contact_loss_max": 0.035
+          }
+        },
+        "refine_note": "Boundary block generator: stable good/medium body plus explicit good rescue, visible-QRS medium, very-low-QRS medium, and small controlled bad-outlier blocks. Original BUT remains report-only."
+      },
+      "mode": "quick",
+      "returncode": 0,
+      "elapsed_sec": 429.5339387000058,
+      "run_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\runs\\quick\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_stabilit_4a251ec11c37",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_stabilit_4a251ec11c37",
+      "reused_existing_training": false,
+      "clean64_distance": {
+        "score": NaN,
+        "bad_64d_KS": null,
+        "medium_64d_KS": null,
+        "good_64d_KS": null,
+        "domain_separability": null
+      },
+      "ptb_test_report": {
+        "acc": 0.9987007362494587,
+        "recall_good_medium_bad": [
+          1.0,
+          0.9962732919254659,
+          1.0
+        ],
+        "confusion_3x3": [
+          [
+            767,
+            0,
+            0
+          ],
+          [
+            3,
+            802,
+            0
+          ],
+          [
+            0,
+            0,
+            737
+          ]
+        ]
+      },
+      "ptb_denoise_metrics": {
+        "n": 2309,
+        "mse_noisy_vs_clean_mean": 0.025936270913588327,
+        "mse_pred_vs_clean_mean": 0.0008742369916223826,
+        "mse_ratio_pred_over_noisy": 0.03370711982849671,
+        "improvement_fraction": 0.9865742745777393,
+        "snr_noisy_db_mean": 2.4152677494387107,
+        "snr_pred_db_mean": 16.205172635537973,
+        "snr_improve_db_mean": 13.789904886099263,
+        "deriv_corr_noisy_mean": 0.691605072006901,
+        "deriv_corr_pred_mean": 0.9678653150168414,
+        "deriv_corr_delta_mean": 0.2762602430099404,
+        "hf_error_energy_reduction": 0.9765795350133398,
+        "drift_error_energy_reduction": 0.9006971426883638,
+        "qrs_noisy": {
+          "qrs_peak_count": 35555,
+          "qrs_matched_fraction": 1.0,
+          "qrs_timing_abs_ms_mean": 12.553846153846154,
+          "qrs_amp_rel_abs_err_mean": 0.6309064486347782
+        },
+        "qrs_pred": {
+          "qrs_peak_count": 35555,
+          "qrs_matched_fraction": 1.0,
+          "qrs_timing_abs_ms_mean": 2.316861200956265,
+          "qrs_amp_rel_abs_err_mean": 0.08752004859732715
+        },
+        "qrs_timing_abs_ms_delta": -10.23698495288989,
+        "qrs_amp_rel_abs_err_delta": -0.5433864000374511,
+        "ssim_noisy_mean": 0.41348425981442205,
+        "ssim_pred_mean": 0.8943353985506991,
+        "ssim_delta_mean": 0.480851138736277,
+        "patch_corr_noisy_mean": 0.7217364052387493,
+        "patch_corr_pred_mean": 0.9863237606783055,
+        "patch_corr_delta_mean": 0.2645873554395563,
+        "local_mae_noisy_mean": 0.08693911460414007,
+        "local_mae_pred_mean": 0.01830940914116354,
+        "local_mae_reduction": 0.7893996364660351,
+        "critical_mae_noisy_mean": 0.0958835149855114,
+        "critical_mae_pred_mean": 0.017357398109181927,
+        "critical_mae_reduction": 0.8189741155022976,
+        "qrs_mae_noisy_mean": 0.13978340553270097,
+        "qrs_mae_pred_mean": 0.022274227176266946,
+        "qrs_mae_reduction": 0.8406518492576234,
+        "tst_mae_noisy_mean": 0.07318633757405443,
+        "tst_mae_pred_mean": 0.014827078613209824,
+        "tst_mae_reduction": 0.7974064681402553,
+        "denoise_score": 4.75336587080306
+      },
+      "but_10s_eval": {
+        "checkpoint": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\runs\\quick\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_stabilit_4a251ec11c37\\ckpt_best.pt",
+        "calibration": {
+          "t_bad": 0.05,
+          "t_good": 0.07,
+          "key": [
+            0.7868295588682703,
+            0.891566265060241,
+            0.8272590287436049
+          ],
+          "val_report": {
+            "acc": 0.8694900605012964,
+            "balanced_acc": 0.8272590287436049,
+            "macro_f1": 0.7868295588682703,
+            "recall_good_medium_bad": [
+              0.8854489164086687,
+              0.7047619047619048,
+              0.891566265060241
+            ],
+            "precision_good_medium_bad": [
+              0.9618834080717489,
+              0.3894736842105263,
+              0.9866666666666667
+            ],
+            "f1_good_medium_bad": [
+              0.9220849005910801,
+              0.5016949152542373,
+              0.9367088607594937
+            ],
+            "support_good_medium_bad": [
+              969,
+              105,
+              83
+            ],
+            "confusion_3x3": [
+              [
+                858,
+                111,
+                0
+              ],
+              [
+                30,
+                74,
+                1
+              ],
+              [
+                4,
+                5,
+                74
+              ]
+            ]
+          }
+        },
+        "but_10s_test_report": {
+          "acc": 0.6774802406511737,
+          "balanced_acc": 0.48086394896806833,
+          "macro_f1": 0.46849804382982985,
+          "recall_good_medium_bad": [
+            0.7793956043956044,
+            0.6558969724356077,
+            0.0072992700729927005
+          ],
+          "precision_good_medium_bad": [
+            0.6449192998408729,
+            0.7203473945409429,
+            0.0625
+          ],
+          "f1_good_medium_bad": [
+            0.7058091802462992,
+            0.6866130558183539,
+            0.013071895424836602
+          ],
+          "support_good_medium_bad": [
+            3640,
+            4426,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              2837,
+              799,
+              4
+            ],
+            [
+              1482,
+              2903,
+              41
+            ],
+            [
+              80,
+              328,
+              3
+            ]
+          ]
+        },
+        "but_10s_raw_test_report": {
+          "acc": 0.6843222838268255,
+          "balanced_acc": 0.483256502896421,
+          "macro_f1": 0.47005174634849783,
+          "recall_good_medium_bad": [
+            0.7708791208791209,
+            0.6764572977858111,
+            0.0024330900243309003
+          ],
+          "precision_good_medium_bad": [
+            0.6551482605650245,
+            0.7195385724585436,
+            0.030303030303030304
+          ],
+          "f1_good_medium_bad": [
+            0.7083175564811309,
+            0.697333178059858,
+            0.0045045045045045045
+          ],
+          "support_good_medium_bad": [
+            3640,
+            4426,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              2806,
+              832,
+              2
+            ],
+            [
+              1402,
+              2994,
+              30
+            ],
+            [
+              75,
+              335,
+              1
+            ]
+          ]
+        },
+        "but_10s_balanced_test_report": {
+          "acc": 0.48580697485806973,
+          "balanced_acc": 0.4858069748580698,
+          "macro_f1": 0.3980933917866767,
+          "recall_good_medium_bad": [
+            0.7615571776155717,
+            0.6885644768856448,
+            0.0072992700729927005
+          ],
+          "precision_good_medium_bad": [
+            0.6054158607350096,
+            0.3991537376586742,
+            0.42857142857142855
+          ],
+          "f1_good_medium_bad": [
+            0.6745689655172413,
+            0.5053571428571428,
+            0.014354066985645933
+          ],
+          "support_good_medium_bad": [
+            411,
+            411,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              313,
+              98,
+              0
+            ],
+            [
+              124,
+              283,
+              4
+            ],
+            [
+              80,
+              328,
+              3
+            ]
+          ]
+        },
+        "but_10s_balanced_raw_report": {
+          "acc": 0.4906731549067315,
+          "balanced_acc": 0.4906731549067316,
+          "macro_f1": 0.40044107084654557,
+          "recall_good_medium_bad": [
+            0.7566909975669099,
+            0.7128953771289538,
+            0.0024330900243309003
+          ],
+          "precision_good_medium_bad": [
+            0.6207584830339321,
+            0.4024725274725275,
+            0.25
+          ],
+          "f1_good_medium_bad": [
+            0.6820175438596491,
+            0.514486391571554,
+            0.004819277108433735
+          ],
+          "support_good_medium_bad": [
+            411,
+            411,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              311,
+              100,
+              0
+            ],
+            [
+              115,
+              293,
+              3
+            ],
+            [
+              75,
+              335,
+              1
+            ]
+          ]
+        },
+        "but_10s_balanced_test_selection": {
+          "name": "but_10s_p1_balanced_test",
+          "seed": 20260605,
+          "source_split": "test",
+          "source_counts_good_medium_bad": [
+            3640,
+            4426,
+            411
+          ],
+          "n_per_class": 411,
+          "selected_counts_good_medium_bad": [
+            411,
+            411,
+            411
+          ],
+          "n_total": 1233,
+          "note": "Evaluation-only balanced subset; validation thresholds are still selected on the original validation split."
+        },
+        "but_10s_all_report": {
+          "acc": 0.8011894647408666,
+          "balanced_acc": 0.8008934197353929,
+          "macro_f1": 0.8147693179897236,
+          "recall_good_medium_bad": [
+            0.8929179135128792,
+            0.6002070003763643,
+            0.9095553453169347
+          ],
+          "precision_good_medium_bad": [
+            0.7802102025121763,
+            0.7424348230912476,
+            0.9892982095081292
+          ],
+          "f1_good_medium_bad": [
+            0.8327678669147422,
+            0.6637877211238293,
+            0.9477523659305994
+          ],
+          "support_good_medium_bad": [
+            17043,
+            10628,
+            5285
+          ],
+          "confusion_3x3": [
+            [
+              15218,
+              1820,
+              5
+            ],
+            [
+              4202,
+              6379,
+              47
+            ],
+            [
+              85,
+              393,
+              4807
+            ]
+          ]
+        },
+        "elapsed_sec": 24.308128699994995,
+        "peak_cuda_memory_bytes": 871285248,
+        "clean_but_strict_balanced_report": {
+          "acc": 0.9726471951784886,
+          "balanced_acc": 0.9726471951784886,
+          "macro_f1": 0.9726010719367992,
+          "recall_good_medium_bad": [
+            1.0,
+            0.9179415855354659,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9241645244215938,
+            1.0,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9605878423513694,
+            0.9572153734590283,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            719,
+            719,
+            719
+          ],
+          "confusion_3x3": [
+            [
+              719,
+              0,
+              0
+            ],
+            [
+              59,
+              660,
+              0
+            ],
+            [
+              0,
+              0,
+              719
+            ]
+          ]
+        },
+        "clean_but_strict_balanced_raw_report": {
+          "acc": 0.9749652294853964,
+          "balanced_acc": 0.9749652294853964,
+          "macro_f1": 0.9749298764896404,
+          "recall_good_medium_bad": [
+            1.0,
+            0.9248956884561892,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9301423027166882,
+            1.0,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9638069705093834,
+            0.9609826589595376,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            719,
+            719,
+            719
+          ],
+          "confusion_3x3": [
+            [
+              719,
+              0,
+              0
+            ],
+            [
+              54,
+              665,
+              0
+            ],
+            [
+              0,
+              0,
+              719
+            ]
+          ]
+        },
+        "clean_but_strict_balanced_selection": {
+          "source_counts_good_medium_bad": [
+            1920,
+            1137,
+            719
+          ],
+          "n_per_class": 719,
+          "selected_counts_good_medium_bad": [
+            719,
+            719,
+            719
+          ],
+          "n_total": 2157,
+          "seed": 20260607,
+          "note": "CleanBUT-Core diagnostic only; not the formal BUT benchmark and not used for threshold selection."
+        },
+        "clean_but_train_target_balanced_report": {
+          "acc": 0.9629938786867001,
+          "balanced_acc": 0.9629938786867,
+          "macro_f1": 0.9628795004316114,
+          "recall_good_medium_bad": [
+            1.0,
+            0.8889816360601002,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9000751314800901,
+            1.0,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9474100434954528,
+            0.9412284577993814,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1198,
+              0,
+              0
+            ],
+            [
+              133,
+              1065,
+              0
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        },
+        "clean_but_train_target_balanced_raw_report": {
+          "acc": 0.9657762938230384,
+          "balanced_acc": 0.9657762938230384,
+          "macro_f1": 0.9656858644211602,
+          "recall_good_medium_bad": [
+            1.0,
+            0.8973288814691152,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.906888720666162,
+            1.0,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9511710996427154,
+            0.9458864936207655,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1198,
+              0,
+              0
+            ],
+            [
+              123,
+              1075,
+              0
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        },
+        "clean_but_train_target_balanced_selection": {
+          "source_counts_good_medium_bad": [
+            3264,
+            1970,
+            1198
+          ],
+          "n_per_class": 1198,
+          "selected_counts_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "n_total": 3594,
+          "seed": 20260607,
+          "note": "CleanBUT-Core diagnostic only; not the formal BUT benchmark and not used for threshold selection."
+        },
+        "clean_but_formal_test_unbalanced_report": {
+          "acc": 0.9367311072056239,
+          "balanced_acc": 0.9661016949152542,
+          "macro_f1": 0.547827903091061,
+          "recall_good_medium_bad": [
+            1.0,
+            0.9322033898305084,
+            0.0
+          ],
+          "precision_good_medium_bad": [
+            0.5135135135135135,
+            1.0,
+            0.0
+          ],
+          "f1_good_medium_bad": [
+            0.6785714285714286,
+            0.9649122807017544,
+            0.0
+          ],
+          "support_good_medium_bad": [
+            38,
+            531,
+            0
+          ],
+          "confusion_3x3": [
+            [
+              38,
+              0,
+              0
+            ],
+            [
+              36,
+              495,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        "clean_but_formal_test_unbalanced_raw_report": {
+          "acc": 0.945518453427065,
+          "balanced_acc": 0.9708097928436912,
+          "macro_f1": 0.5600708261948143,
+          "recall_good_medium_bad": [
+            1.0,
+            0.9416195856873822,
+            0.0
+          ],
+          "precision_good_medium_bad": [
+            0.5507246376811594,
+            1.0,
+            0.0
+          ],
+          "f1_good_medium_bad": [
+            0.7102803738317757,
+            0.9699321047526673,
+            0.0
+          ],
+          "support_good_medium_bad": [
+            38,
+            531,
+            0
+          ],
+          "confusion_3x3": [
+            [
+              38,
+              0,
+              0
+            ],
+            [
+              31,
+              500,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        "clean_but_formal_test_unbalanced_selection": {
+          "source_counts_good_medium_bad": [
+            38,
+            531,
+            0
+          ],
+          "n_total": 569,
+          "warning": "The formal CleanBUT clean-core test split is not class complete when bad count is zero.",
+          "note": "Unbalanced clean-core test diagnostic only; original BUT test remains primary."
+        },
+        "clean_but_test_report": {
+          "acc": 0.9629938786867001,
+          "balanced_acc": 0.9629938786867,
+          "macro_f1": 0.9628795004316114,
+          "recall_good_medium_bad": [
+            1.0,
+            0.8889816360601002,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9000751314800901,
+            1.0,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9474100434954528,
+            0.9412284577993814,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1198,
+              0,
+              0
+            ],
+            [
+              133,
+              1065,
+              0
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        },
+        "clean_but_raw_test_report": {
+          "acc": 0.9657762938230384,
+          "balanced_acc": 0.9657762938230384,
+          "macro_f1": 0.9656858644211602,
+          "recall_good_medium_bad": [
+            1.0,
+            0.8973288814691152,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.906888720666162,
+            1.0,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9511710996427154,
+            0.9458864936207655,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1198,
+              0,
+              0
+            ],
+            [
+              123,
+              1075,
+              0
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        }
+      },
+      "node_id": "N7160_gm_trim_bad",
+      "node_level": 7160,
+      "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+      "cls_loss_variant": "soft_sample_weighted_ce",
+      "boundary_block_config": {
+        "name": "boundaryblocks_breakthrough_stability_n7155bb_to7160_g000_m000_q000_b000",
+        "geometry_profile": "boundary_blocks",
+        "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+        "source_variant_ids": [
+          "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+          "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+          "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+        ],
+        "boundary_blocks": [],
+        "class_weight": "1.235,1.735,1.50",
+        "loss": "soft_sample_weighted_ce",
+        "seed": 20261421,
+        "epochs": [
+          5,
+          5
+        ],
+        "tri_good_gate": {
+          "pc1_max": -3.55,
+          "flatline_min": 0.18,
+          "pc3_max": 0.55,
+          "qrs_visibility_min": 0.42,
+          "non_qrs_diff_max": 0.095
+        },
+        "tri_medium_gate": {
+          "pc1_min": -1.3,
+          "flatline_max": 0.16,
+          "pc3_min": 1.25,
+          "non_qrs_diff_min": 0.075,
+          "qrs_visibility_min": 0.16,
+          "qrs_visibility_max": 0.62
+        },
+        "qrslow_medium_gate": {
+          "qrs_visibility_max": 0.042,
+          "pc1_min": -1.7,
+          "pc3_min": 1.15,
+          "flatline_max": 0.26,
+          "non_qrs_diff_min": 0.04,
+          "fatal_max": 1.2,
+          "contact_loss_max": 0.08
+        },
+        "badstress_mode": "controlled_qrsband",
+        "badstress_gate": {
+          "qrs_band_ratio_min": 0.4,
+          "band_15_30_min": 0.7,
+          "baseline_step_max": 0.28,
+          "band_30_45_max": 0.2,
+          "fatal_max": 1.1,
+          "contact_loss_max": 0.035
+        }
+      },
+      "geometry_gate_audit": {
+        "created_at": "2026-06-12T01:50:56",
+        "spec_id": "nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_stabilit_4a251ec11c37",
+        "node_id": "N7160_gm_trim_bad",
+        "node_level": 7160,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+        "source_variant_ids": [
+          "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+          "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+          "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+        ],
+        "config": {
+          "name": "boundaryblocks_breakthrough_stability_n7155bb_to7160_g000_m000_q000_b000",
+          "geometry_profile": "boundary_blocks",
+          "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+          "source_variant_ids": [
+            "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+          ],
+          "boundary_blocks": [],
+          "class_weight": "1.235,1.735,1.50",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20261421,
+          "epochs": [
+            5,
+            5
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.55,
+            "flatline_min": 0.18,
+            "pc3_max": 0.55,
+            "qrs_visibility_min": 0.42,
+            "non_qrs_diff_max": 0.095
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.3,
+            "flatline_max": 0.16,
+            "pc3_min": 1.25,
+            "non_qrs_diff_min": 0.075,
+            "qrs_visibility_min": 0.16,
+            "qrs_visibility_max": 0.62
+          },
+          "qrslow_medium_gate": {
+            "qrs_visibility_max": 0.042,
+            "pc1_min": -1.7,
+            "pc3_min": 1.15,
+            "flatline_max": 0.26,
+            "non_qrs_diff_min": 0.04,
+            "fatal_max": 1.2,
+            "contact_loss_max": 0.08
+          },
+          "badstress_mode": "controlled_qrsband",
+          "badstress_gate": {
+            "qrs_band_ratio_min": 0.4,
+            "band_15_30_min": 0.7,
+            "baseline_step_max": 0.28,
+            "band_30_45_max": 0.2,
+            "fatal_max": 1.1,
+            "contact_loss_max": 0.035
+          }
+        },
+        "rows": 16052,
+        "class_counts": {
+          "bad": 5125,
+          "good": 5330,
+          "medium": 5597
+        },
+        "split_counts": {
+          "test": 2309,
+          "train": 11453,
+          "val": 2290
+        },
+        "composition": [],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "spec": {
+        "id": "nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_mediumgu_35ddcfe3c52a",
+        "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+        "node_id": "N7160_gm_trim_bad",
+        "node_role": "boundary_block_generator_trim_bad",
+        "class_weight": "1.20,1.79,1.50",
+        "cls_loss_variant": "soft_sample_weighted_ce",
+        "geometry_gate_config": {
+          "name": "boundaryblocks_breakthrough_mediumguard_n7155bb_to7160_g0005_m0035_q002_b0005",
+          "geometry_profile": "boundary_blocks",
+          "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+          "source_variant_ids": [
+            "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+          ],
+          "boundary_blocks": [
+            {
+              "block": "gm_good_rescue_pc1flat_qrsvisible",
+              "class_name": "good",
+              "picker": "good_rescue_pc1flat_qrsvisible",
+              "frac": 0.0005,
+              "weight": 1.001
+            },
+            {
+              "block": "gm_visible_qrs_medium_detail",
+              "class_name": "medium",
+              "picker": "medium_visible_qrs_detail",
+              "frac": 0.0035,
+              "weight": 1.014
+            },
+            {
+              "block": "gm_medium_qrslow_hardneg",
+              "class_name": "medium",
+              "picker": "medium_qrslow_hardneg",
+              "frac": 0.002,
+              "weight": 1.01
+            },
+            {
+              "block": "bad_controlled_outlier",
+              "class_name": "bad",
+              "picker": "bad_controlled_outlier",
+              "frac": 0.0005,
+              "weight": 1.002
+            }
+          ],
+          "seed": 20261422,
+          "epochs": [
+            5,
+            5
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.55,
+            "flatline_min": 0.18,
+            "pc3_max": 0.55,
+            "qrs_visibility_min": 0.42,
+            "non_qrs_diff_max": 0.095
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.3,
+            "flatline_max": 0.16,
+            "pc3_min": 1.25,
+            "non_qrs_diff_min": 0.075,
+            "qrs_visibility_min": 0.16,
+            "qrs_visibility_max": 0.62
+          },
+          "qrslow_medium_gate": {
+            "qrs_visibility_max": 0.042,
+            "pc1_min": -1.7,
+            "pc3_min": 1.15,
+            "flatline_max": 0.26,
+            "non_qrs_diff_min": 0.04,
+            "fatal_max": 1.2,
+            "contact_loss_max": 0.08
+          },
+          "badstress_mode": "controlled_qrsband",
+          "badstress_gate": {
+            "qrs_band_ratio_min": 0.4,
+            "band_15_30_min": 0.7,
+            "baseline_step_max": 0.28,
+            "band_30_45_max": 0.2,
+            "fatal_max": 1.1,
+            "contact_loss_max": 0.035
+          }
+        },
+        "refine_note": "Boundary block generator: stable good/medium body plus explicit good rescue, visible-QRS medium, very-low-QRS medium, and small controlled bad-outlier blocks. Original BUT remains report-only."
+      },
+      "mode": "quick",
+      "returncode": 0,
+      "elapsed_sec": 455.92348800000036,
+      "run_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\runs\\quick\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_mediumgu_35ddcfe3c52a",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_mediumgu_35ddcfe3c52a",
+      "reused_existing_training": false,
+      "clean64_distance": {
+        "score": NaN,
+        "bad_64d_KS": null,
+        "medium_64d_KS": null,
+        "good_64d_KS": null,
+        "domain_separability": null
+      },
+      "ptb_test_report": {
+        "acc": 0.9991356957649092,
+        "recall_good_medium_bad": [
+          1.0,
+          0.9975308641975309,
+          1.0
+        ],
+        "confusion_3x3": [
+          [
+            767,
+            0,
+            0
+          ],
+          [
+            2,
+            808,
+            0
+          ],
+          [
+            0,
+            0,
+            737
+          ]
+        ]
+      },
+      "ptb_denoise_metrics": {
+        "n": 2314,
+        "mse_noisy_vs_clean_mean": 0.025908329472334884,
+        "mse_pred_vs_clean_mean": 0.0008857763214912837,
+        "mse_ratio_pred_over_noisy": 0.0341888627903599,
+        "improvement_fraction": 0.9891961970613656,
+        "snr_noisy_db_mean": 2.426861128093235,
+        "snr_pred_db_mean": 15.930319188994671,
+        "snr_improve_db_mean": 13.503458060901437,
+        "deriv_corr_noisy_mean": 0.6920250883725272,
+        "deriv_corr_pred_mean": 0.9668879700808045,
+        "deriv_corr_delta_mean": 0.2748628817082774,
+        "hf_error_energy_reduction": 0.9761854882937284,
+        "drift_error_energy_reduction": 0.8865970042296425,
+        "qrs_noisy": {
+          "qrs_peak_count": 35629,
+          "qrs_matched_fraction": 1.0,
+          "qrs_timing_abs_ms_mean": 12.531589435572146,
+          "qrs_amp_rel_abs_err_mean": 0.6296731375009795
+        },
+        "qrs_pred": {
+          "qrs_peak_count": 35629,
+          "qrs_matched_fraction": 1.0,
+          "qrs_timing_abs_ms_mean": 2.320806084930815,
+          "qrs_amp_rel_abs_err_mean": 0.09338961939545605
+        },
+        "qrs_timing_abs_ms_delta": -10.21078335064133,
+        "qrs_amp_rel_abs_err_delta": -0.5362835181055234,
+        "ssim_noisy_mean": 0.4145129279830324,
+        "ssim_pred_mean": 0.8941235911699528,
+        "ssim_delta_mean": 0.47961066318692036,
+        "patch_corr_noisy_mean": 0.7221875037366507,
+        "patch_corr_pred_mean": 0.9860749944784971,
+        "patch_corr_delta_mean": 0.2638874907418463,
+        "local_mae_noisy_mean": 0.08692005320897186,
+        "local_mae_pred_mean": 0.019056307000387105,
+        "local_mae_reduction": 0.7807605230710918,
+        "critical_mae_noisy_mean": 0.09582836342462542,
+        "critical_mae_pred_mean": 0.01784098878320436,
+        "critical_mae_reduction": 0.8138235054274807,
+        "qrs_mae_noisy_mean": 0.13955387989801296,
+        "qrs_mae_pred_mean": 0.022953995089634586,
+        "qrs_mae_reduction": 0.8355187608811374,
+        "tst_mae_noisy_mean": 0.0732210139658622,
+        "tst_mae_pred_mean": 0.015215483907295126,
+        "tst_mae_reduction": 0.7921978530073179,
+        "denoise_score": 4.664665477974026
+      },
+      "but_10s_eval": {
+        "checkpoint": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\runs\\quick\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_mediumgu_35ddcfe3c52a\\ckpt_best.pt",
+        "calibration": {
+          "t_bad": 0.05,
+          "t_good": 0.07,
+          "key": [
+            0.8238361179831551,
+            0.9036144578313253,
+            0.8649278523499867
+          ],
+          "val_report": {
+            "acc": 0.8980121002592912,
+            "balanced_acc": 0.8649278523499867,
+            "macro_f1": 0.8238361179831551,
+            "recall_good_medium_bad": [
+              0.9102167182662538,
+              0.780952380952381,
+              0.9036144578313253
+            ],
+            "precision_good_medium_bad": [
+              0.9724366041896362,
+              0.47126436781609193,
+              0.9868421052631579
+            ],
+            "f1_good_medium_bad": [
+              0.9402985074626866,
+              0.5878136200716846,
+              0.9433962264150944
+            ],
+            "support_good_medium_bad": [
+              969,
+              105,
+              83
+            ],
+            "confusion_3x3": [
+              [
+                882,
+                87,
+                0
+              ],
+              [
+                22,
+                82,
+                1
+              ],
+              [
+                3,
+                5,
+                75
+              ]
+            ]
+          }
+        },
+        "but_10s_test_report": {
+          "acc": 0.726672171758877,
+          "balanced_acc": 0.509757043326017,
+          "macro_f1": 0.4978658574797439,
+          "recall_good_medium_bad": [
+            0.7618131868131868,
+            0.7650248531405333,
+            0.0024330900243309003
+          ],
+          "precision_good_medium_bad": [
+            0.7117556468172485,
+            0.7412434325744308,
+            0.07692307692307693
+          ],
+          "f1_good_medium_bad": [
+            0.7359341825902336,
+            0.7529464087169224,
+            0.0047169811320754715
+          ],
+          "support_good_medium_bad": [
+            3640,
+            4426,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              2773,
+              866,
+              1
+            ],
+            [
+              1029,
+              3386,
+              11
+            ],
+            [
+              94,
+              316,
+              1
+            ]
+          ]
+        },
+        "but_10s_raw_test_report": {
+          "acc": 0.7318626872714403,
+          "balanced_acc": 0.5112617499987585,
+          "macro_f1": 0.49913515799393116,
+          "recall_good_medium_bad": [
+            0.7436813186813187,
+            0.790103931314957,
+            0.0
+          ],
+          "precision_good_medium_bad": [
+            0.7278838397418661,
+            0.7352817493692179,
+            0.0
+          ],
+          "f1_good_medium_bad": [
+            0.7356977850251393,
+            0.7617076889566543,
+            0.0
+          ],
+          "support_good_medium_bad": [
+            3640,
+            4426,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              2707,
+              933,
+              0
+            ],
+            [
+              927,
+              3497,
+              2
+            ],
+            [
+              85,
+              326,
+              0
+            ]
+          ]
+        },
+        "but_10s_balanced_test_report": {
+          "acc": 0.5182481751824818,
+          "balanced_acc": 0.5182481751824818,
+          "macro_f1": 0.4209358608669753,
+          "recall_good_medium_bad": [
+            0.7518248175182481,
+            0.8004866180048662,
+            0.0024330900243309003
+          ],
+          "precision_good_medium_bad": [
+            0.6371134020618556,
+            0.4404283801874163,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.6897321428571429,
+            0.5682210708117443,
+            0.0048543689320388345
+          ],
+          "support_good_medium_bad": [
+            411,
+            411,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              309,
+              102,
+              0
+            ],
+            [
+              82,
+              329,
+              0
+            ],
+            [
+              94,
+              316,
+              1
+            ]
+          ]
+        },
+        "but_10s_balanced_raw_report": {
+          "acc": 0.5158150851581509,
+          "balanced_acc": 0.5158150851581508,
+          "macro_f1": 0.4188146972316716,
+          "recall_good_medium_bad": [
+            0.7274939172749392,
+            0.8199513381995134,
+            0.0
+          ],
+          "precision_good_medium_bad": [
+            0.6528384279475983,
+            0.43483870967741933,
+            0.0
+          ],
+          "f1_good_medium_bad": [
+            0.6881472957422324,
+            0.5682967959527825,
+            0.0
+          ],
+          "support_good_medium_bad": [
+            411,
+            411,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              299,
+              112,
+              0
+            ],
+            [
+              74,
+              337,
+              0
+            ],
+            [
+              85,
+              326,
+              0
+            ]
+          ]
+        },
+        "but_10s_balanced_test_selection": {
+          "name": "but_10s_p1_balanced_test",
+          "seed": 20260605,
+          "source_split": "test",
+          "source_counts_good_medium_bad": [
+            3640,
+            4426,
+            411
+          ],
+          "n_per_class": 411,
+          "selected_counts_good_medium_bad": [
+            411,
+            411,
+            411
+          ],
+          "n_total": 1233,
+          "note": "Evaluation-only balanced subset; validation thresholds are still selected on the original validation split."
+        },
+        "but_10s_all_report": {
+          "acc": 0.8330804709309382,
+          "balanced_acc": 0.8408454117717713,
+          "macro_f1": 0.8501140029153275,
+          "recall_good_medium_bad": [
+            0.8581822449099337,
+            0.7547986450884456,
+            0.9095553453169347
+          ],
+          "precision_good_medium_bad": [
+            0.8446523446523446,
+            0.741953385127636,
+            0.9956503728251864
+          ],
+          "f1_good_medium_bad": [
+            0.8513635437585494,
+            0.748320895522388,
+            0.950657569465045
+          ],
+          "support_good_medium_bad": [
+            17043,
+            10628,
+            5285
+          ],
+          "confusion_3x3": [
+            [
+              14626,
+              2410,
+              7
+            ],
+            [
+              2592,
+              8022,
+              14
+            ],
+            [
+              98,
+              380,
+              4807
+            ]
+          ]
+        },
+        "elapsed_sec": 27.168670400002156,
+        "peak_cuda_memory_bytes": 871418368,
+        "clean_but_strict_balanced_report": {
+          "acc": 0.9925822902178952,
+          "balanced_acc": 0.9925822902178952,
+          "macro_f1": 0.9925817736293143,
+          "recall_good_medium_bad": [
+            0.9972183588317107,
+            0.980528511821975,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9808481532147743,
+            0.9971711456859972,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9889655172413793,
+            0.9887798036465638,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            719,
+            719,
+            719
+          ],
+          "confusion_3x3": [
+            [
+              717,
+              2,
+              0
+            ],
+            [
+              14,
+              705,
+              0
+            ],
+            [
+              0,
+              0,
+              719
+            ]
+          ]
+        },
+        "clean_but_strict_balanced_raw_report": {
+          "acc": 0.9944367176634215,
+          "balanced_acc": 0.9944367176634215,
+          "macro_f1": 0.9944365454738899,
+          "recall_good_medium_bad": [
+            0.9972183588317107,
+            0.9860917941585535,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9862448418156808,
+            0.9971870604781997,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.991701244813278,
+            0.9916083916083916,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            719,
+            719,
+            719
+          ],
+          "confusion_3x3": [
+            [
+              717,
+              2,
+              0
+            ],
+            [
+              10,
+              709,
+              0
+            ],
+            [
+              0,
+              0,
+              719
+            ]
+          ]
+        },
+        "clean_but_strict_balanced_selection": {
+          "source_counts_good_medium_bad": [
+            1920,
+            1137,
+            719
+          ],
+          "n_per_class": 719,
+          "selected_counts_good_medium_bad": [
+            719,
+            719,
+            719
+          ],
+          "n_total": 2157,
+          "seed": 20260607,
+          "note": "CleanBUT-Core diagnostic only; not the formal BUT benchmark and not used for threshold selection."
+        },
+        "clean_but_train_target_balanced_report": {
+          "acc": 0.986644407345576,
+          "balanced_acc": 0.986644407345576,
+          "macro_f1": 0.986643653540498,
+          "recall_good_medium_bad": [
+            0.9874791318864775,
+            0.9724540901502504,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9728618421052632,
+            0.9872881355932204,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.980115990057995,
+            0.9798149705634988,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1183,
+              15,
+              0
+            ],
+            [
+              33,
+              1165,
+              0
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        },
+        "clean_but_train_target_balanced_raw_report": {
+          "acc": 0.9877573734001113,
+          "balanced_acc": 0.9877573734001114,
+          "macro_f1": 0.9877573392790784,
+          "recall_good_medium_bad": [
+            0.9833055091819699,
+            0.9799666110183639,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9800332778702163,
+            0.983249581239531,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9816666666666667,
+            0.9816053511705686,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1178,
+              20,
+              0
+            ],
+            [
+              24,
+              1174,
+              0
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        },
+        "clean_but_train_target_balanced_selection": {
+          "source_counts_good_medium_bad": [
+            3264,
+            1970,
+            1198
+          ],
+          "n_per_class": 1198,
+          "selected_counts_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "n_total": 3594,
+          "seed": 20260607,
+          "note": "CleanBUT-Core diagnostic only; not the formal BUT benchmark and not used for threshold selection."
+        },
+        "clean_but_formal_test_unbalanced_report": {
+          "acc": 0.9806678383128296,
+          "balanced_acc": 0.9896421845574388,
+          "macro_f1": 0.6210323319152349,
+          "recall_good_medium_bad": [
+            1.0,
+            0.9792843691148776,
+            0.0
+          ],
+          "precision_good_medium_bad": [
+            0.7755102040816326,
+            1.0,
+            0.0
+          ],
+          "f1_good_medium_bad": [
+            0.8735632183908046,
+            0.9895337773549001,
+            0.0
+          ],
+          "support_good_medium_bad": [
+            38,
+            531,
+            0
+          ],
+          "confusion_3x3": [
+            [
+              38,
+              0,
+              0
+            ],
+            [
+              11,
+              520,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        "clean_but_formal_test_unbalanced_raw_report": {
+          "acc": 0.9859402460456942,
+          "balanced_acc": 0.9924670433145009,
+          "macro_f1": 0.6323905906448601,
+          "recall_good_medium_bad": [
+            1.0,
+            0.9849340866290018,
+            0.0
+          ],
+          "precision_good_medium_bad": [
+            0.8260869565217391,
+            1.0,
+            0.0
+          ],
+          "f1_good_medium_bad": [
+            0.9047619047619048,
+            0.9924098671726755,
+            0.0
+          ],
+          "support_good_medium_bad": [
+            38,
+            531,
+            0
+          ],
+          "confusion_3x3": [
+            [
+              38,
+              0,
+              0
+            ],
+            [
+              8,
+              523,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        "clean_but_formal_test_unbalanced_selection": {
+          "source_counts_good_medium_bad": [
+            38,
+            531,
+            0
+          ],
+          "n_total": 569,
+          "warning": "The formal CleanBUT clean-core test split is not class complete when bad count is zero.",
+          "note": "Unbalanced clean-core test diagnostic only; original BUT test remains primary."
+        },
+        "clean_but_test_report": {
+          "acc": 0.986644407345576,
+          "balanced_acc": 0.986644407345576,
+          "macro_f1": 0.986643653540498,
+          "recall_good_medium_bad": [
+            0.9874791318864775,
+            0.9724540901502504,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9728618421052632,
+            0.9872881355932204,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.980115990057995,
+            0.9798149705634988,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1183,
+              15,
+              0
+            ],
+            [
+              33,
+              1165,
+              0
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        },
+        "clean_but_raw_test_report": {
+          "acc": 0.9877573734001113,
+          "balanced_acc": 0.9877573734001114,
+          "macro_f1": 0.9877573392790784,
+          "recall_good_medium_bad": [
+            0.9833055091819699,
+            0.9799666110183639,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9800332778702163,
+            0.983249581239531,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9816666666666667,
+            0.9816053511705686,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1178,
+              20,
+              0
+            ],
+            [
+              24,
+              1174,
+              0
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        }
+      },
+      "node_id": "N7160_gm_trim_bad",
+      "node_level": 7160,
+      "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+      "cls_loss_variant": "soft_sample_weighted_ce",
+      "boundary_block_config": {
+        "name": "boundaryblocks_breakthrough_mediumguard_n7155bb_to7160_g0005_m0035_q002_b0005",
+        "geometry_profile": "boundary_blocks",
+        "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+        "source_variant_ids": [
+          "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+          "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+          "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+        ],
+        "boundary_blocks": [
+          {
+            "block": "gm_good_rescue_pc1flat_qrsvisible",
+            "class_name": "good",
+            "picker": "good_rescue_pc1flat_qrsvisible",
+            "frac": 0.0005,
+            "weight": 1.001
+          },
+          {
+            "block": "gm_visible_qrs_medium_detail",
+            "class_name": "medium",
+            "picker": "medium_visible_qrs_detail",
+            "frac": 0.0035,
+            "weight": 1.014
+          },
+          {
+            "block": "gm_medium_qrslow_hardneg",
+            "class_name": "medium",
+            "picker": "medium_qrslow_hardneg",
+            "frac": 0.002,
+            "weight": 1.01
+          },
+          {
+            "block": "bad_controlled_outlier",
+            "class_name": "bad",
+            "picker": "bad_controlled_outlier",
+            "frac": 0.0005,
+            "weight": 1.002
+          }
+        ],
+        "class_weight": "1.20,1.79,1.50",
+        "loss": "soft_sample_weighted_ce",
+        "seed": 20261422,
+        "epochs": [
+          5,
+          5
+        ],
+        "tri_good_gate": {
+          "pc1_max": -3.55,
+          "flatline_min": 0.18,
+          "pc3_max": 0.55,
+          "qrs_visibility_min": 0.42,
+          "non_qrs_diff_max": 0.095
+        },
+        "tri_medium_gate": {
+          "pc1_min": -1.3,
+          "flatline_max": 0.16,
+          "pc3_min": 1.25,
+          "non_qrs_diff_min": 0.075,
+          "qrs_visibility_min": 0.16,
+          "qrs_visibility_max": 0.62
+        },
+        "qrslow_medium_gate": {
+          "qrs_visibility_max": 0.042,
+          "pc1_min": -1.7,
+          "pc3_min": 1.15,
+          "flatline_max": 0.26,
+          "non_qrs_diff_min": 0.04,
+          "fatal_max": 1.2,
+          "contact_loss_max": 0.08
+        },
+        "badstress_mode": "controlled_qrsband",
+        "badstress_gate": {
+          "qrs_band_ratio_min": 0.4,
+          "band_15_30_min": 0.7,
+          "baseline_step_max": 0.28,
+          "band_30_45_max": 0.2,
+          "fatal_max": 1.1,
+          "contact_loss_max": 0.035
+        }
+      },
+      "geometry_gate_audit": {
+        "created_at": "2026-06-12T01:51:16",
+        "spec_id": "nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_mediumgu_35ddcfe3c52a",
+        "node_id": "N7160_gm_trim_bad",
+        "node_level": 7160,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+        "source_variant_ids": [
+          "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+          "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+          "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+        ],
+        "config": {
+          "name": "boundaryblocks_breakthrough_mediumguard_n7155bb_to7160_g0005_m0035_q002_b0005",
+          "geometry_profile": "boundary_blocks",
+          "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+          "source_variant_ids": [
+            "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+          ],
+          "boundary_blocks": [
+            {
+              "block": "gm_good_rescue_pc1flat_qrsvisible",
+              "class_name": "good",
+              "picker": "good_rescue_pc1flat_qrsvisible",
+              "frac": 0.0005,
+              "weight": 1.001
+            },
+            {
+              "block": "gm_visible_qrs_medium_detail",
+              "class_name": "medium",
+              "picker": "medium_visible_qrs_detail",
+              "frac": 0.0035,
+              "weight": 1.014
+            },
+            {
+              "block": "gm_medium_qrslow_hardneg",
+              "class_name": "medium",
+              "picker": "medium_qrslow_hardneg",
+              "frac": 0.002,
+              "weight": 1.01
+            },
+            {
+              "block": "bad_controlled_outlier",
+              "class_name": "bad",
+              "picker": "bad_controlled_outlier",
+              "frac": 0.0005,
+              "weight": 1.002
+            }
+          ],
+          "class_weight": "1.20,1.79,1.50",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20261422,
+          "epochs": [
+            5,
+            5
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.55,
+            "flatline_min": 0.18,
+            "pc3_max": 0.55,
+            "qrs_visibility_min": 0.42,
+            "non_qrs_diff_max": 0.095
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.3,
+            "flatline_max": 0.16,
+            "pc3_min": 1.25,
+            "non_qrs_diff_min": 0.075,
+            "qrs_visibility_min": 0.16,
+            "qrs_visibility_max": 0.62
+          },
+          "qrslow_medium_gate": {
+            "qrs_visibility_max": 0.042,
+            "pc1_min": -1.7,
+            "pc3_min": 1.15,
+            "flatline_max": 0.26,
+            "non_qrs_diff_min": 0.04,
+            "fatal_max": 1.2,
+            "contact_loss_max": 0.08
+          },
+          "badstress_mode": "controlled_qrsband",
+          "badstress_gate": {
+            "qrs_band_ratio_min": 0.4,
+            "band_15_30_min": 0.7,
+            "baseline_step_max": 0.28,
+            "band_30_45_max": 0.2,
+            "fatal_max": 1.1,
+            "contact_loss_max": 0.035
+          }
+        },
+        "rows": 16088,
+        "class_counts": {
+          "bad": 5127,
+          "good": 5332,
+          "medium": 5629
+        },
+        "split_counts": {
+          "test": 2314,
+          "train": 11479,
+          "val": 2295
+        },
+        "composition": [
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 3
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 3
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "spec": {
+        "id": "nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_nogood_m_becc3b4b414c",
+        "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+        "node_id": "N7160_gm_trim_bad",
+        "node_role": "boundary_block_generator_trim_bad",
+        "class_weight": "1.18,1.80,1.50",
+        "cls_loss_variant": "soft_sample_weighted_ce",
+        "geometry_gate_config": {
+          "name": "boundaryblocks_breakthrough_nogood_medium_n7155bb_to7160_g000_m003_q0025_b001",
+          "geometry_profile": "boundary_blocks",
+          "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+          "source_variant_ids": [
+            "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+          ],
+          "boundary_blocks": [
+            {
+              "block": "gm_visible_qrs_medium_detail",
+              "class_name": "medium",
+              "picker": "medium_visible_qrs_detail",
+              "frac": 0.003,
+              "weight": 1.014
+            },
+            {
+              "block": "gm_medium_qrslow_hardneg",
+              "class_name": "medium",
+              "picker": "medium_qrslow_hardneg",
+              "frac": 0.0025,
+              "weight": 1.012
+            },
+            {
+              "block": "bad_controlled_outlier",
+              "class_name": "bad",
+              "picker": "bad_controlled_outlier",
+              "frac": 0.001,
+              "weight": 1.003
+            }
+          ],
+          "seed": 20261423,
+          "epochs": [
+            5,
+            5
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.55,
+            "flatline_min": 0.18,
+            "pc3_max": 0.55,
+            "qrs_visibility_min": 0.42,
+            "non_qrs_diff_max": 0.095
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.3,
+            "flatline_max": 0.16,
+            "pc3_min": 1.25,
+            "non_qrs_diff_min": 0.075,
+            "qrs_visibility_min": 0.16,
+            "qrs_visibility_max": 0.62
+          },
+          "qrslow_medium_gate": {
+            "qrs_visibility_max": 0.042,
+            "pc1_min": -1.7,
+            "pc3_min": 1.15,
+            "flatline_max": 0.26,
+            "non_qrs_diff_min": 0.04,
+            "fatal_max": 1.2,
+            "contact_loss_max": 0.08
+          },
+          "badstress_mode": "controlled_qrsband",
+          "badstress_gate": {
+            "qrs_band_ratio_min": 0.4,
+            "band_15_30_min": 0.7,
+            "baseline_step_max": 0.28,
+            "band_30_45_max": 0.2,
+            "fatal_max": 1.1,
+            "contact_loss_max": 0.035
+          }
+        },
+        "refine_note": "Boundary block generator: stable good/medium body plus explicit good rescue, visible-QRS medium, very-low-QRS medium, and small controlled bad-outlier blocks. Original BUT remains report-only."
+      },
+      "mode": "quick",
+      "returncode": 0,
+      "elapsed_sec": 467.29350420000264,
+      "run_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\runs\\quick\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_nogood_m_becc3b4b414c",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_nogood_m_becc3b4b414c",
+      "reused_existing_training": false,
+      "clean64_distance": {
+        "score": NaN,
+        "bad_64d_KS": null,
+        "medium_64d_KS": null,
+        "good_64d_KS": null,
+        "domain_separability": null
+      },
+      "ptb_test_report": {
+        "acc": 0.9995678478824547,
+        "recall_good_medium_bad": [
+          1.0,
+          0.9987639060568603,
+          1.0
+        ],
+        "confusion_3x3": [
+          [
+            767,
+            0,
+            0
+          ],
+          [
+            1,
+            808,
+            0
+          ],
+          [
+            0,
+            0,
+            738
+          ]
+        ]
+      },
+      "ptb_denoise_metrics": {
+        "n": 2314,
+        "mse_noisy_vs_clean_mean": 0.02591005116679426,
+        "mse_pred_vs_clean_mean": 0.0009739804487855739,
+        "mse_ratio_pred_over_noisy": 0.0375908346331718,
+        "improvement_fraction": 0.9822817631806395,
+        "snr_noisy_db_mean": 2.4243100688395556,
+        "snr_pred_db_mean": 15.375576816434885,
+        "snr_improve_db_mean": 12.95126674759533,
+        "deriv_corr_noisy_mean": 0.6917638867381888,
+        "deriv_corr_pred_mean": 0.9634167027341646,
+        "deriv_corr_delta_mean": 0.27165281599597574,
+        "hf_error_energy_reduction": 0.9741349043818189,
+        "drift_error_energy_reduction": 0.871657531800942,
+        "qrs_noisy": {
+          "qrs_peak_count": 35626,
+          "qrs_matched_fraction": 1.0,
+          "qrs_timing_abs_ms_mean": 12.543423342502667,
+          "qrs_amp_rel_abs_err_mean": 0.6299668124694099
+        },
+        "qrs_pred": {
+          "qrs_peak_count": 35626,
+          "qrs_matched_fraction": 1.0,
+          "qrs_timing_abs_ms_mean": 2.47774097569191,
+          "qrs_amp_rel_abs_err_mean": 0.09535527392726578
+        },
+        "qrs_timing_abs_ms_delta": -10.065682366810757,
+        "qrs_amp_rel_abs_err_delta": -0.5346115385421442,
+        "ssim_noisy_mean": 0.4141406362553813,
+        "ssim_pred_mean": 0.868630494021276,
+        "ssim_delta_mean": 0.4544898577658946,
+        "patch_corr_noisy_mean": 0.7219539906385604,
+        "patch_corr_pred_mean": 0.9843274875125595,
+        "patch_corr_delta_mean": 0.2623734968739992,
+        "local_mae_noisy_mean": 0.08690937688958637,
+        "local_mae_pred_mean": 0.020246465355917845,
+        "local_mae_reduction": 0.7670393451168461,
+        "critical_mae_noisy_mean": 0.0958314642449513,
+        "critical_mae_pred_mean": 0.01880489393795322,
+        "critical_mae_reduction": 0.8037711926253105,
+        "qrs_mae_noisy_mean": 0.13958246329094848,
+        "qrs_mae_pred_mean": 0.02397866615696687,
+        "qrs_mae_reduction": 0.8282114701843779,
+        "tst_mae_noisy_mean": 0.07321053897077838,
+        "tst_mae_pred_mean": 0.016139507493514976,
+        "tst_mae_reduction": 0.7795466647262831,
+        "denoise_score": 4.490782531209437
+      },
+      "but_10s_eval": {
+        "checkpoint": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\runs\\quick\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_nogood_m_becc3b4b414c\\ckpt_best.pt",
+        "calibration": {
+          "t_bad": 0.05,
+          "t_good": 0.05,
+          "key": [
+            0.8518531752028181,
+            0.891566265060241,
+            0.8648038712420076
+          ],
+          "val_report": {
+            "acc": 0.9282627484874676,
+            "balanced_acc": 0.8648038712420076,
+            "macro_f1": 0.8518531752028181,
+            "recall_good_medium_bad": [
+              0.9504643962848297,
+              0.7523809523809524,
+              0.891566265060241
+            ],
+            "precision_good_medium_bad": [
+              0.9715189873417721,
+              0.5939849624060151,
+              0.9736842105263158
+            ],
+            "f1_good_medium_bad": [
+              0.9608763693270735,
+              0.6638655462184874,
+              0.9308176100628931
+            ],
+            "support_good_medium_bad": [
+              969,
+              105,
+              83
+            ],
+            "confusion_3x3": [
+              [
+                921,
+                48,
+                0
+              ],
+              [
+                24,
+                79,
+                2
+              ],
+              [
+                3,
+                6,
+                74
+              ]
+            ]
+          }
+        },
+        "but_10s_test_report": {
+          "acc": 0.7081514686799575,
+          "balanced_acc": 0.5088692092598175,
+          "macro_f1": 0.4891405543836544,
+          "recall_good_medium_bad": [
+            0.9217032967032966,
+            0.5976050610031631,
+            0.0072992700729927005
+          ],
+          "precision_good_medium_bad": [
+            0.6518360209830969,
+            0.8229620410703173,
+            0.02586206896551724
+          ],
+          "f1_good_medium_bad": [
+            0.7636280869466257,
+            0.6924083769633508,
+            0.011385199240986717
+          ],
+          "support_good_medium_bad": [
+            3640,
+            4426,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              3355,
+              278,
+              7
+            ],
+            [
+              1675,
+              2645,
+              106
+            ],
+            [
+              117,
+              291,
+              3
+            ]
+          ]
+        },
+        "but_10s_raw_test_report": {
+          "acc": 0.7173528370885927,
+          "balanced_acc": 0.5129143770301198,
+          "macro_f1": 0.4915271572173126,
+          "recall_good_medium_bad": [
+            0.9156593406593406,
+            0.6206507004066878,
+            0.0024330900243309003
+          ],
+          "precision_good_medium_bad": [
+            0.6544276457883369,
+            0.820734986555124,
+            0.02702702702702703
+          ],
+          "f1_good_medium_bad": [
+            0.7633115767777396,
+            0.7068056091599125,
+            0.004464285714285714
+          ],
+          "support_good_medium_bad": [
+            3640,
+            4426,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              3333,
+              302,
+              5
+            ],
+            [
+              1648,
+              2747,
+              31
+            ],
+            [
+              112,
+              298,
+              1
+            ]
+          ]
+        },
+        "but_10s_balanced_test_report": {
+          "acc": 0.5093268450932684,
+          "balanced_acc": 0.5093268450932685,
+          "macro_f1": 0.4098656247423657,
+          "recall_good_medium_bad": [
+            0.9294403892944039,
+            0.5912408759124088,
+            0.0072992700729927005
+          ],
+          "precision_good_medium_bad": [
+            0.5823170731707317,
+            0.43238434163701067,
+            0.2
+          ],
+          "f1_good_medium_bad": [
+            0.7160262417994376,
+            0.499486125385406,
+            0.014084507042253521
+          ],
+          "support_good_medium_bad": [
+            411,
+            411,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              382,
+              28,
+              1
+            ],
+            [
+              157,
+              243,
+              11
+            ],
+            [
+              117,
+              291,
+              3
+            ]
+          ]
+        },
+        "but_10s_balanced_raw_report": {
+          "acc": 0.5182481751824818,
+          "balanced_acc": 0.5182481751824818,
+          "macro_f1": 0.41408527668927014,
+          "recall_good_medium_bad": [
+            0.9245742092457421,
+            0.6277372262773723,
+            0.0024330900243309003
+          ],
+          "precision_good_medium_bad": [
+            0.5900621118012422,
+            0.4395229982964225,
+            0.5
+          ],
+          "f1_good_medium_bad": [
+            0.7203791469194313,
+            0.5170340681362725,
+            0.004842615012106538
+          ],
+          "support_good_medium_bad": [
+            411,
+            411,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              380,
+              31,
+              0
+            ],
+            [
+              152,
+              258,
+              1
+            ],
+            [
+              112,
+              298,
+              1
+            ]
+          ]
+        },
+        "but_10s_balanced_test_selection": {
+          "name": "but_10s_p1_balanced_test",
+          "seed": 20260605,
+          "source_split": "test",
+          "source_counts_good_medium_bad": [
+            3640,
+            4426,
+            411
+          ],
+          "n_per_class": 411,
+          "selected_counts_good_medium_bad": [
+            411,
+            411,
+            411
+          ],
+          "n_total": 1233,
+          "note": "Evaluation-only balanced subset; validation thresholds are still selected on the original validation split."
+        },
+        "but_10s_all_report": {
+          "acc": 0.8139337298215803,
+          "balanced_acc": 0.8188119101723977,
+          "macro_f1": 0.8282306368118152,
+          "recall_good_medium_bad": [
+            0.869330516927771,
+            0.6775498682724878,
+            0.9095553453169347
+          ],
+          "precision_good_medium_bad": [
+            0.812414322531118,
+            0.7379585980733757,
+            0.9689578713968958
+          ],
+          "f1_good_medium_bad": [
+            0.8399092970521542,
+            0.706465221230256,
+            0.9383173921530353
+          ],
+          "support_good_medium_bad": [
+            17043,
+            10628,
+            5285
+          ],
+          "confusion_3x3": [
+            [
+              14816,
+              2200,
+              27
+            ],
+            [
+              3300,
+              7201,
+              127
+            ],
+            [
+              121,
+              357,
+              4807
+            ]
+          ]
+        },
+        "elapsed_sec": 26.904282300005434,
+        "peak_cuda_memory_bytes": 871418368,
+        "clean_but_strict_balanced_report": {
+          "acc": 0.9847009735744089,
+          "balanced_acc": 0.9847009735744089,
+          "macro_f1": 0.9846955781366784,
+          "recall_good_medium_bad": [
+            0.9958275382475661,
+            0.9582753824756607,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9597855227882037,
+            0.9956647398843931,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9774744027303754,
+            0.9766123316796598,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            719,
+            719,
+            719
+          ],
+          "confusion_3x3": [
+            [
+              716,
+              3,
+              0
+            ],
+            [
+              30,
+              689,
+              0
+            ],
+            [
+              0,
+              0,
+              719
+            ]
+          ]
+        },
+        "clean_but_strict_balanced_raw_report": {
+          "acc": 0.9851645804357905,
+          "balanced_acc": 0.9851645804357906,
+          "macro_f1": 0.985161710143862,
+          "recall_good_medium_bad": [
+            0.9916550764951322,
+            0.9638386648122392,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9648173207036536,
+            0.9914163090128756,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9780521262002744,
+            0.9774330042313117,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            719,
+            719,
+            719
+          ],
+          "confusion_3x3": [
+            [
+              713,
+              6,
+              0
+            ],
+            [
+              26,
+              693,
+              0
+            ],
+            [
+              0,
+              0,
+              719
+            ]
+          ]
+        },
+        "clean_but_strict_balanced_selection": {
+          "source_counts_good_medium_bad": [
+            1920,
+            1137,
+            719
+          ],
+          "n_per_class": 719,
+          "selected_counts_good_medium_bad": [
+            719,
+            719,
+            719
+          ],
+          "n_total": 2157,
+          "seed": 20260607,
+          "note": "CleanBUT-Core diagnostic only; not the formal BUT benchmark and not used for threshold selection."
+        },
+        "clean_but_train_target_balanced_report": {
+          "acc": 0.9771841958820257,
+          "balanced_acc": 0.9771841958820255,
+          "macro_f1": 0.9771669552709535,
+          "recall_good_medium_bad": [
+            0.986644407345576,
+            0.9449081803005008,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9478748997594226,
+            0.9860627177700348,
+            0.9991659716430359
+          ],
+          "f1_good_medium_bad": [
+            0.9668711656441717,
+            0.9650468883205456,
+            0.9995828118481435
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1182,
+              16,
+              0
+            ],
+            [
+              65,
+              1132,
+              1
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        },
+        "clean_but_train_target_balanced_raw_report": {
+          "acc": 0.9771841958820257,
+          "balanced_acc": 0.9771841958820255,
+          "macro_f1": 0.9771784555290486,
+          "recall_good_medium_bad": [
+            0.9816360601001669,
+            0.9499165275459098,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9514563106796117,
+            0.9810344827586207,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9663105998356615,
+            0.9652247667514843,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1176,
+              22,
+              0
+            ],
+            [
+              60,
+              1138,
+              0
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        },
+        "clean_but_train_target_balanced_selection": {
+          "source_counts_good_medium_bad": [
+            3264,
+            1970,
+            1198
+          ],
+          "n_per_class": 1198,
+          "selected_counts_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "n_total": 3594,
+          "seed": 20260607,
+          "note": "CleanBUT-Core diagnostic only; not the formal BUT benchmark and not used for threshold selection."
+        },
+        "clean_but_formal_test_unbalanced_report": {
+          "acc": 0.9279437609841827,
+          "balanced_acc": 0.9613935969868173,
+          "macro_f1": 0.5364719801546443,
+          "recall_good_medium_bad": [
+            1.0,
+            0.9227871939736346,
+            0.0
+          ],
+          "precision_good_medium_bad": [
+            0.4810126582278481,
+            1.0,
+            0.0
+          ],
+          "f1_good_medium_bad": [
+            0.6495726495726496,
+            0.9598432908912831,
+            0.0
+          ],
+          "support_good_medium_bad": [
+            38,
+            531,
+            0
+          ],
+          "confusion_3x3": [
+            [
+              38,
+              0,
+              0
+            ],
+            [
+              41,
+              490,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        "clean_but_formal_test_unbalanced_raw_report": {
+          "acc": 0.929701230228471,
+          "balanced_acc": 0.9623352165725048,
+          "macro_f1": 0.538677823514857,
+          "recall_good_medium_bad": [
+            1.0,
+            0.9246704331450094,
+            0.0
+          ],
+          "precision_good_medium_bad": [
+            0.48717948717948717,
+            1.0,
+            0.0
+          ],
+          "f1_good_medium_bad": [
+            0.6551724137931034,
+            0.9608610567514677,
+            0.0
+          ],
+          "support_good_medium_bad": [
+            38,
+            531,
+            0
+          ],
+          "confusion_3x3": [
+            [
+              38,
+              0,
+              0
+            ],
+            [
+              40,
+              491,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        "clean_but_formal_test_unbalanced_selection": {
+          "source_counts_good_medium_bad": [
+            38,
+            531,
+            0
+          ],
+          "n_total": 569,
+          "warning": "The formal CleanBUT clean-core test split is not class complete when bad count is zero.",
+          "note": "Unbalanced clean-core test diagnostic only; original BUT test remains primary."
+        },
+        "clean_but_test_report": {
+          "acc": 0.9771841958820257,
+          "balanced_acc": 0.9771841958820255,
+          "macro_f1": 0.9771669552709535,
+          "recall_good_medium_bad": [
+            0.986644407345576,
+            0.9449081803005008,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9478748997594226,
+            0.9860627177700348,
+            0.9991659716430359
+          ],
+          "f1_good_medium_bad": [
+            0.9668711656441717,
+            0.9650468883205456,
+            0.9995828118481435
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1182,
+              16,
+              0
+            ],
+            [
+              65,
+              1132,
+              1
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        },
+        "clean_but_raw_test_report": {
+          "acc": 0.9771841958820257,
+          "balanced_acc": 0.9771841958820255,
+          "macro_f1": 0.9771784555290486,
+          "recall_good_medium_bad": [
+            0.9816360601001669,
+            0.9499165275459098,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9514563106796117,
+            0.9810344827586207,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9663105998356615,
+            0.9652247667514843,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1176,
+              22,
+              0
+            ],
+            [
+              60,
+              1138,
+              0
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        }
+      },
+      "node_id": "N7160_gm_trim_bad",
+      "node_level": 7160,
+      "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+      "cls_loss_variant": "soft_sample_weighted_ce",
+      "boundary_block_config": {
+        "name": "boundaryblocks_breakthrough_nogood_medium_n7155bb_to7160_g000_m003_q0025_b001",
+        "geometry_profile": "boundary_blocks",
+        "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+        "source_variant_ids": [
+          "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+          "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+          "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+        ],
+        "boundary_blocks": [
+          {
+            "block": "gm_visible_qrs_medium_detail",
+            "class_name": "medium",
+            "picker": "medium_visible_qrs_detail",
+            "frac": 0.003,
+            "weight": 1.014
+          },
+          {
+            "block": "gm_medium_qrslow_hardneg",
+            "class_name": "medium",
+            "picker": "medium_qrslow_hardneg",
+            "frac": 0.0025,
+            "weight": 1.012
+          },
+          {
+            "block": "bad_controlled_outlier",
+            "class_name": "bad",
+            "picker": "bad_controlled_outlier",
+            "frac": 0.001,
+            "weight": 1.003
+          }
+        ],
+        "class_weight": "1.18,1.80,1.50",
+        "loss": "soft_sample_weighted_ce",
+        "seed": 20261423,
+        "epochs": [
+          5,
+          5
+        ],
+        "tri_good_gate": {
+          "pc1_max": -3.55,
+          "flatline_min": 0.18,
+          "pc3_max": 0.55,
+          "qrs_visibility_min": 0.42,
+          "non_qrs_diff_max": 0.095
+        },
+        "tri_medium_gate": {
+          "pc1_min": -1.3,
+          "flatline_max": 0.16,
+          "pc3_min": 1.25,
+          "non_qrs_diff_min": 0.075,
+          "qrs_visibility_min": 0.16,
+          "qrs_visibility_max": 0.62
+        },
+        "qrslow_medium_gate": {
+          "qrs_visibility_max": 0.042,
+          "pc1_min": -1.7,
+          "pc3_min": 1.15,
+          "flatline_max": 0.26,
+          "non_qrs_diff_min": 0.04,
+          "fatal_max": 1.2,
+          "contact_loss_max": 0.08
+        },
+        "badstress_mode": "controlled_qrsband",
+        "badstress_gate": {
+          "qrs_band_ratio_min": 0.4,
+          "band_15_30_min": 0.7,
+          "baseline_step_max": 0.28,
+          "band_30_45_max": 0.2,
+          "fatal_max": 1.1,
+          "contact_loss_max": 0.035
+        }
+      },
+      "geometry_gate_audit": {
+        "created_at": "2026-06-12T01:51:38",
+        "spec_id": "nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_nogood_m_becc3b4b414c",
+        "node_id": "N7160_gm_trim_bad",
+        "node_level": 7160,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+        "source_variant_ids": [
+          "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+          "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+          "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+        ],
+        "config": {
+          "name": "boundaryblocks_breakthrough_nogood_medium_n7155bb_to7160_g000_m003_q0025_b001",
+          "geometry_profile": "boundary_blocks",
+          "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+          "source_variant_ids": [
+            "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+          ],
+          "boundary_blocks": [
+            {
+              "block": "gm_visible_qrs_medium_detail",
+              "class_name": "medium",
+              "picker": "medium_visible_qrs_detail",
+              "frac": 0.003,
+              "weight": 1.014
+            },
+            {
+              "block": "gm_medium_qrslow_hardneg",
+              "class_name": "medium",
+              "picker": "medium_qrslow_hardneg",
+              "frac": 0.0025,
+              "weight": 1.012
+            },
+            {
+              "block": "bad_controlled_outlier",
+              "class_name": "bad",
+              "picker": "bad_controlled_outlier",
+              "frac": 0.001,
+              "weight": 1.003
+            }
+          ],
+          "class_weight": "1.18,1.80,1.50",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20261423,
+          "epochs": [
+            5,
+            5
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.55,
+            "flatline_min": 0.18,
+            "pc3_max": 0.55,
+            "qrs_visibility_min": 0.42,
+            "non_qrs_diff_max": 0.095
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.3,
+            "flatline_max": 0.16,
+            "pc3_min": 1.25,
+            "non_qrs_diff_min": 0.075,
+            "qrs_visibility_min": 0.16,
+            "qrs_visibility_max": 0.62
+          },
+          "qrslow_medium_gate": {
+            "qrs_visibility_max": 0.042,
+            "pc1_min": -1.7,
+            "pc3_min": 1.15,
+            "flatline_max": 0.26,
+            "non_qrs_diff_min": 0.04,
+            "fatal_max": 1.2,
+            "contact_loss_max": 0.08
+          },
+          "badstress_mode": "controlled_qrsband",
+          "badstress_gate": {
+            "qrs_band_ratio_min": 0.4,
+            "band_15_30_min": 0.7,
+            "baseline_step_max": 0.28,
+            "band_30_45_max": 0.2,
+            "fatal_max": 1.1,
+            "contact_loss_max": 0.035
+          }
+        },
+        "rows": 16088,
+        "class_counts": {
+          "bad": 5131,
+          "good": 5330,
+          "medium": 5627
+        },
+        "split_counts": {
+          "test": 2314,
+          "train": 11479,
+          "val": 2295
+        },
+        "composition": [
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "spec": {
+        "id": "nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_softbala_70cdb2525f82",
+        "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+        "node_id": "N7160_gm_trim_bad",
+        "node_role": "boundary_block_generator_trim_bad",
+        "class_weight": "1.22,1.76,1.51",
+        "cls_loss_variant": "soft_sample_weighted_ce",
+        "geometry_gate_config": {
+          "name": "boundaryblocks_breakthrough_softbalance_n7155bb_to7160_g00075_m0025_q0015_b001",
+          "geometry_profile": "boundary_blocks",
+          "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+          "source_variant_ids": [
+            "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+          ],
+          "boundary_blocks": [
+            {
+              "block": "gm_good_rescue_pc1flat_qrsvisible",
+              "class_name": "good",
+              "picker": "good_rescue_pc1flat_qrsvisible",
+              "frac": 0.00075,
+              "weight": 1.002
+            },
+            {
+              "block": "gm_visible_qrs_medium_detail",
+              "class_name": "medium",
+              "picker": "medium_visible_qrs_detail",
+              "frac": 0.0025,
+              "weight": 1.011
+            },
+            {
+              "block": "gm_medium_qrslow_hardneg",
+              "class_name": "medium",
+              "picker": "medium_qrslow_hardneg",
+              "frac": 0.0015,
+              "weight": 1.008
+            },
+            {
+              "block": "bad_controlled_outlier",
+              "class_name": "bad",
+              "picker": "bad_controlled_outlier",
+              "frac": 0.001,
+              "weight": 1.003
+            }
+          ],
+          "seed": 20261424,
+          "epochs": [
+            5,
+            5
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.55,
+            "flatline_min": 0.18,
+            "pc3_max": 0.55,
+            "qrs_visibility_min": 0.42,
+            "non_qrs_diff_max": 0.095
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.3,
+            "flatline_max": 0.16,
+            "pc3_min": 1.25,
+            "non_qrs_diff_min": 0.075,
+            "qrs_visibility_min": 0.16,
+            "qrs_visibility_max": 0.62
+          },
+          "qrslow_medium_gate": {
+            "qrs_visibility_max": 0.042,
+            "pc1_min": -1.7,
+            "pc3_min": 1.15,
+            "flatline_max": 0.26,
+            "non_qrs_diff_min": 0.04,
+            "fatal_max": 1.2,
+            "contact_loss_max": 0.08
+          },
+          "badstress_mode": "controlled_qrsband",
+          "badstress_gate": {
+            "qrs_band_ratio_min": 0.4,
+            "band_15_30_min": 0.7,
+            "baseline_step_max": 0.28,
+            "band_30_45_max": 0.2,
+            "fatal_max": 1.1,
+            "contact_loss_max": 0.035
+          }
+        },
+        "refine_note": "Boundary block generator: stable good/medium body plus explicit good rescue, visible-QRS medium, very-low-QRS medium, and small controlled bad-outlier blocks. Original BUT remains report-only."
+      },
+      "mode": "quick",
+      "returncode": 0,
+      "elapsed_sec": 444.3024407999983,
+      "run_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\runs\\quick\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_softbala_70cdb2525f82",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_softbala_70cdb2525f82",
+      "reused_existing_training": false,
+      "clean64_distance": {
+        "score": NaN,
+        "bad_64d_KS": null,
+        "medium_64d_KS": null,
+        "good_64d_KS": null,
+        "domain_separability": null
+      },
+      "ptb_test_report": {
+        "acc": 0.9995678478824547,
+        "recall_good_medium_bad": [
+          1.0,
+          0.9987623762376238,
+          1.0
+        ],
+        "confusion_3x3": [
+          [
+            768,
+            0,
+            0
+          ],
+          [
+            1,
+            807,
+            0
+          ],
+          [
+            0,
+            0,
+            738
+          ]
+        ]
+      },
+      "ptb_denoise_metrics": {
+        "n": 2314,
+        "mse_noisy_vs_clean_mean": 0.02591192967153191,
+        "mse_pred_vs_clean_mean": 0.0009071949704758291,
+        "mse_ratio_pred_over_noisy": 0.03501070672623453,
+        "improvement_fraction": 0.9853068280034573,
+        "snr_noisy_db_mean": 2.4226525620802106,
+        "snr_pred_db_mean": 15.666423723956921,
+        "snr_improve_db_mean": 13.243771161876712,
+        "deriv_corr_noisy_mean": 0.6917826417339367,
+        "deriv_corr_pred_mean": 0.9658443759964006,
+        "deriv_corr_delta_mean": 0.27406173426246394,
+        "hf_error_energy_reduction": 0.975742384784207,
+        "drift_error_energy_reduction": 0.8826610836011979,
+        "qrs_noisy": {
+          "qrs_peak_count": 35625,
+          "qrs_matched_fraction": 1.0,
+          "qrs_timing_abs_ms_mean": 12.54377543859649,
+          "qrs_amp_rel_abs_err_mean": 0.630171531954551
+        },
+        "qrs_pred": {
+          "qrs_peak_count": 35625,
+          "qrs_matched_fraction": 1.0,
+          "qrs_timing_abs_ms_mean": 2.3455438596491227,
+          "qrs_amp_rel_abs_err_mean": 0.09737790979726724
+        },
+        "qrs_timing_abs_ms_delta": -10.198231578947368,
+        "qrs_amp_rel_abs_err_delta": -0.5327936221572838,
+        "ssim_noisy_mean": 0.4139932270402795,
+        "ssim_pred_mean": 0.8825454748218229,
+        "ssim_delta_mean": 0.46855224778154325,
+        "patch_corr_noisy_mean": 0.7219560420466232,
+        "patch_corr_pred_mean": 0.9856892438115163,
+        "patch_corr_delta_mean": 0.263733201764893,
+        "local_mae_noisy_mean": 0.08688724461007052,
+        "local_mae_pred_mean": 0.01944812687106271,
+        "local_mae_reduction": 0.7761682171172825,
+        "critical_mae_noisy_mean": 0.09583103649551569,
+        "critical_mae_pred_mean": 0.018071707898827803,
+        "critical_mae_reduction": 0.8114211370396179,
+        "qrs_mae_noisy_mean": 0.13962077019072497,
+        "qrs_mae_pred_mean": 0.023472521497863014,
+        "qrs_mae_reduction": 0.8318837414689023,
+        "tst_mae_noisy_mean": 0.07319022045553043,
+        "tst_mae_pred_mean": 0.015295146519713476,
+        "tst_mae_reduction": 0.7910219914039245,
+        "denoise_score": 4.58399896405594
+      },
+      "but_10s_eval": {
+        "checkpoint": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\runs\\quick\\nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_softbala_70cdb2525f82\\ckpt_best.pt",
+        "calibration": {
+          "t_bad": 0.05,
+          "t_good": 0.05,
+          "key": [
+            0.8481904404529249,
+            0.9156626506024096,
+            0.8640788126707034
+          ],
+          "val_report": {
+            "acc": 0.9222126188418324,
+            "balanced_acc": 0.8640788126707034,
+            "macro_f1": 0.8481904404529249,
+            "recall_good_medium_bad": [
+              0.9432404540763674,
+              0.7333333333333333,
+              0.9156626506024096
+            ],
+            "precision_good_medium_bad": [
+              0.9682203389830508,
+              0.5661764705882353,
+              0.987012987012987
+            ],
+            "f1_good_medium_bad": [
+              0.9555671719811814,
+              0.6390041493775933,
+              0.95
+            ],
+            "support_good_medium_bad": [
+              969,
+              105,
+              83
+            ],
+            "confusion_3x3": [
+              [
+                914,
+                55,
+                0
+              ],
+              [
+                27,
+                77,
+                1
+              ],
+              [
+                3,
+                4,
+                76
+              ]
+            ]
+          }
+        },
+        "but_10s_test_report": {
+          "acc": 0.7300931933467029,
+          "balanced_acc": 0.5229911808264344,
+          "macro_f1": 0.5040201026569645,
+          "recall_good_medium_bad": [
+            0.9236263736263737,
+            0.6380478987799367,
+            0.0072992700729927005
+          ],
+          "precision_good_medium_bad": [
+            0.6707901037509976,
+            0.8327926865231495,
+            0.04054054054054054
+          ],
+          "f1_good_medium_bad": [
+            0.7771613499768839,
+            0.7225278239733913,
+            0.012371134020618556
+          ],
+          "support_good_medium_bad": [
+            3640,
+            4426,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              3362,
+              273,
+              5
+            ],
+            [
+              1536,
+              2824,
+              66
+            ],
+            [
+              114,
+              294,
+              3
+            ]
+          ]
+        },
+        "but_10s_raw_test_report": {
+          "acc": 0.7467264362392356,
+          "balanced_acc": 0.5322116711359441,
+          "macro_f1": 0.5160393759786485,
+          "recall_good_medium_bad": [
+            0.9,
+            0.6893357433348396,
+            0.0072992700729927005
+          ],
+          "precision_good_medium_bad": [
+            0.6983585589426562,
+            0.8201612903225807,
+            0.045454545454545456
+          ],
+          "f1_good_medium_bad": [
+            0.7864602088584803,
+            0.7490793027252639,
+            0.012578616352201259
+          ],
+          "support_good_medium_bad": [
+            3640,
+            4426,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              3276,
+              359,
+              5
+            ],
+            [
+              1317,
+              3051,
+              58
+            ],
+            [
+              98,
+              310,
+              3
+            ]
+          ]
+        },
+        "but_10s_balanced_test_report": {
+          "acc": 0.5279805352798054,
+          "balanced_acc": 0.5279805352798054,
+          "macro_f1": 0.42588560297723915,
+          "recall_good_medium_bad": [
+            0.9197080291970803,
+            0.656934306569343,
+            0.0072992700729927005
+          ],
+          "precision_good_medium_bad": [
+            0.6019108280254777,
+            0.45226130653266333,
+            0.375
+          ],
+          "f1_good_medium_bad": [
+            0.7276227141482194,
+            0.5357142857142857,
+            0.014319809069212411
+          ],
+          "support_good_medium_bad": [
+            411,
+            411,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              378,
+              33,
+              0
+            ],
+            [
+              136,
+              270,
+              5
+            ],
+            [
+              114,
+              294,
+              3
+            ]
+          ]
+        },
+        "but_10s_balanced_raw_report": {
+          "acc": 0.5328467153284672,
+          "balanced_acc": 0.5328467153284672,
+          "macro_f1": 0.43252988286944144,
+          "recall_good_medium_bad": [
+            0.8880778588807786,
+            0.7031630170316302,
+            0.0072992700729927005
+          ],
+          "precision_good_medium_bad": [
+            0.6282271944922547,
+            0.448062015503876,
+            0.42857142857142855
+          ],
+          "f1_good_medium_bad": [
+            0.7358870967741935,
+            0.5473484848484849,
+            0.014354066985645933
+          ],
+          "support_good_medium_bad": [
+            411,
+            411,
+            411
+          ],
+          "confusion_3x3": [
+            [
+              365,
+              46,
+              0
+            ],
+            [
+              118,
+              289,
+              4
+            ],
+            [
+              98,
+              310,
+              3
+            ]
+          ]
+        },
+        "but_10s_balanced_test_selection": {
+          "name": "but_10s_p1_balanced_test",
+          "seed": 20260605,
+          "source_split": "test",
+          "source_counts_good_medium_bad": [
+            3640,
+            4426,
+            411
+          ],
+          "n_per_class": 411,
+          "selected_counts_good_medium_bad": [
+            411,
+            411,
+            411
+          ],
+          "n_total": 1233,
+          "note": "Evaluation-only balanced subset; validation thresholds are still selected on the original validation split."
+        },
+        "but_10s_all_report": {
+          "acc": 0.8342031799975725,
+          "balanced_acc": 0.8300160510354796,
+          "macro_f1": 0.843742336502444,
+          "recall_good_medium_bad": [
+            0.918089538226838,
+            0.6620248400451637,
+            0.909933774834437
+          ],
+          "precision_good_medium_bad": [
+            0.8114822113888601,
+            0.8017319963536919,
+            0.981829318089016
+          ],
+          "f1_good_medium_bad": [
+            0.8615003441156228,
+            0.725211296639868,
+            0.9445153687518413
+          ],
+          "support_good_medium_bad": [
+            17043,
+            10628,
+            5285
+          ],
+          "confusion_3x3": [
+            [
+              15647,
+              1382,
+              14
+            ],
+            [
+              3517,
+              7036,
+              75
+            ],
+            [
+              118,
+              358,
+              4809
+            ]
+          ]
+        },
+        "elapsed_sec": 24.922925699996995,
+        "peak_cuda_memory_bytes": 871418368,
+        "clean_but_strict_balanced_report": {
+          "acc": 0.9837737598516458,
+          "balanced_acc": 0.9837737598516458,
+          "macro_f1": 0.9837641416568156,
+          "recall_good_medium_bad": [
+            1.0,
+            0.9513212795549374,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9535809018567639,
+            1.0,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9762389680923286,
+            0.9750534568781183,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            719,
+            719,
+            719
+          ],
+          "confusion_3x3": [
+            [
+              719,
+              0,
+              0
+            ],
+            [
+              35,
+              684,
+              0
+            ],
+            [
+              0,
+              0,
+              719
+            ]
+          ]
+        },
+        "clean_but_strict_balanced_raw_report": {
+          "acc": 0.9874826147426982,
+          "balanced_acc": 0.9874826147426982,
+          "macro_f1": 0.987478200293646,
+          "recall_good_medium_bad": [
+            1.0,
+            0.9624478442280946,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9638069705093834,
+            1.0,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9815699658703072,
+            0.9808646350106307,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            719,
+            719,
+            719
+          ],
+          "confusion_3x3": [
+            [
+              719,
+              0,
+              0
+            ],
+            [
+              27,
+              692,
+              0
+            ],
+            [
+              0,
+              0,
+              719
+            ]
+          ]
+        },
+        "clean_but_strict_balanced_selection": {
+          "source_counts_good_medium_bad": [
+            1920,
+            1137,
+            719
+          ],
+          "n_per_class": 719,
+          "selected_counts_good_medium_bad": [
+            719,
+            719,
+            719
+          ],
+          "n_total": 2157,
+          "seed": 20260607,
+          "note": "CleanBUT-Core diagnostic only; not the formal BUT benchmark and not used for threshold selection."
+        },
+        "clean_but_train_target_balanced_report": {
+          "acc": 0.9757929883138564,
+          "balanced_acc": 0.9757929883138564,
+          "macro_f1": 0.9757624846278711,
+          "recall_good_medium_bad": [
+            0.9991652754590985,
+            0.9282136894824707,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9329696024941543,
+            0.9991015274034142,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9649334945586457,
+            0.9623539593249676,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1197,
+              1,
+              0
+            ],
+            [
+              86,
+              1112,
+              0
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        },
+        "clean_but_train_target_balanced_raw_report": {
+          "acc": 0.9799666110183639,
+          "balanced_acc": 0.979966611018364,
+          "macro_f1": 0.9799513985977414,
+          "recall_good_medium_bad": [
+            0.9974958263772955,
+            0.9424040066777963,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9454113924050633,
+            0.9973498233215548,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9707554833468724,
+            0.9690987124463519,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1195,
+              3,
+              0
+            ],
+            [
+              69,
+              1129,
+              0
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        },
+        "clean_but_train_target_balanced_selection": {
+          "source_counts_good_medium_bad": [
+            3264,
+            1970,
+            1198
+          ],
+          "n_per_class": 1198,
+          "selected_counts_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "n_total": 3594,
+          "seed": 20260607,
+          "note": "CleanBUT-Core diagnostic only; not the formal BUT benchmark and not used for threshold selection."
+        },
+        "clean_but_formal_test_unbalanced_report": {
+          "acc": 0.929701230228471,
+          "balanced_acc": 0.9623352165725048,
+          "macro_f1": 0.538677823514857,
+          "recall_good_medium_bad": [
+            1.0,
+            0.9246704331450094,
+            0.0
+          ],
+          "precision_good_medium_bad": [
+            0.48717948717948717,
+            1.0,
+            0.0
+          ],
+          "f1_good_medium_bad": [
+            0.6551724137931034,
+            0.9608610567514677,
+            0.0
+          ],
+          "support_good_medium_bad": [
+            38,
+            531,
+            0
+          ],
+          "confusion_3x3": [
+            [
+              38,
+              0,
+              0
+            ],
+            [
+              40,
+              491,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        "clean_but_formal_test_unbalanced_raw_report": {
+          "acc": 0.9507908611599297,
+          "balanced_acc": 0.9736346516007532,
+          "macro_f1": 0.5678966423647275,
+          "recall_good_medium_bad": [
+            1.0,
+            0.9472693032015066,
+            0.0
+          ],
+          "precision_good_medium_bad": [
+            0.5757575757575758,
+            1.0,
+            0.0
+          ],
+          "f1_good_medium_bad": [
+            0.7307692307692307,
+            0.9729206963249516,
+            0.0
+          ],
+          "support_good_medium_bad": [
+            38,
+            531,
+            0
+          ],
+          "confusion_3x3": [
+            [
+              38,
+              0,
+              0
+            ],
+            [
+              28,
+              503,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ]
+        },
+        "clean_but_formal_test_unbalanced_selection": {
+          "source_counts_good_medium_bad": [
+            38,
+            531,
+            0
+          ],
+          "n_total": 569,
+          "warning": "The formal CleanBUT clean-core test split is not class complete when bad count is zero.",
+          "note": "Unbalanced clean-core test diagnostic only; original BUT test remains primary."
+        },
+        "clean_but_test_report": {
+          "acc": 0.9757929883138564,
+          "balanced_acc": 0.9757929883138564,
+          "macro_f1": 0.9757624846278711,
+          "recall_good_medium_bad": [
+            0.9991652754590985,
+            0.9282136894824707,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9329696024941543,
+            0.9991015274034142,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9649334945586457,
+            0.9623539593249676,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1197,
+              1,
+              0
+            ],
+            [
+              86,
+              1112,
+              0
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        },
+        "clean_but_raw_test_report": {
+          "acc": 0.9799666110183639,
+          "balanced_acc": 0.979966611018364,
+          "macro_f1": 0.9799513985977414,
+          "recall_good_medium_bad": [
+            0.9974958263772955,
+            0.9424040066777963,
+            1.0
+          ],
+          "precision_good_medium_bad": [
+            0.9454113924050633,
+            0.9973498233215548,
+            1.0
+          ],
+          "f1_good_medium_bad": [
+            0.9707554833468724,
+            0.9690987124463519,
+            1.0
+          ],
+          "support_good_medium_bad": [
+            1198,
+            1198,
+            1198
+          ],
+          "confusion_3x3": [
+            [
+              1195,
+              3,
+              0
+            ],
+            [
+              69,
+              1129,
+              0
+            ],
+            [
+              0,
+              0,
+              1198
+            ]
+          ]
+        }
+      },
+      "node_id": "N7160_gm_trim_bad",
+      "node_level": 7160,
+      "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+      "cls_loss_variant": "soft_sample_weighted_ce",
+      "boundary_block_config": {
+        "name": "boundaryblocks_breakthrough_softbalance_n7155bb_to7160_g00075_m0025_q0015_b001",
+        "geometry_profile": "boundary_blocks",
+        "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+        "source_variant_ids": [
+          "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+          "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+          "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+        ],
+        "boundary_blocks": [
+          {
+            "block": "gm_good_rescue_pc1flat_qrsvisible",
+            "class_name": "good",
+            "picker": "good_rescue_pc1flat_qrsvisible",
+            "frac": 0.00075,
+            "weight": 1.002
+          },
+          {
+            "block": "gm_visible_qrs_medium_detail",
+            "class_name": "medium",
+            "picker": "medium_visible_qrs_detail",
+            "frac": 0.0025,
+            "weight": 1.011
+          },
+          {
+            "block": "gm_medium_qrslow_hardneg",
+            "class_name": "medium",
+            "picker": "medium_qrslow_hardneg",
+            "frac": 0.0015,
+            "weight": 1.008
+          },
+          {
+            "block": "bad_controlled_outlier",
+            "class_name": "bad",
+            "picker": "bad_controlled_outlier",
+            "frac": 0.001,
+            "weight": 1.003
+          }
+        ],
+        "class_weight": "1.22,1.76,1.51",
+        "loss": "soft_sample_weighted_ce",
+        "seed": 20261424,
+        "epochs": [
+          5,
+          5
+        ],
+        "tri_good_gate": {
+          "pc1_max": -3.55,
+          "flatline_min": 0.18,
+          "pc3_max": 0.55,
+          "qrs_visibility_min": 0.42,
+          "non_qrs_diff_max": 0.095
+        },
+        "tri_medium_gate": {
+          "pc1_min": -1.3,
+          "flatline_max": 0.16,
+          "pc3_min": 1.25,
+          "non_qrs_diff_min": 0.075,
+          "qrs_visibility_min": 0.16,
+          "qrs_visibility_max": 0.62
+        },
+        "qrslow_medium_gate": {
+          "qrs_visibility_max": 0.042,
+          "pc1_min": -1.7,
+          "pc3_min": 1.15,
+          "flatline_max": 0.26,
+          "non_qrs_diff_min": 0.04,
+          "fatal_max": 1.2,
+          "contact_loss_max": 0.08
+        },
+        "badstress_mode": "controlled_qrsband",
+        "badstress_gate": {
+          "qrs_band_ratio_min": 0.4,
+          "band_15_30_min": 0.7,
+          "baseline_step_max": 0.28,
+          "band_30_45_max": 0.2,
+          "fatal_max": 1.1,
+          "contact_loss_max": 0.035
+        }
+      },
+      "geometry_gate_audit": {
+        "created_at": "2026-06-12T01:52:00",
+        "spec_id": "nl_n7160_gm_trim_bad_boundaryblocks_breakthrough_softbala_70cdb2525f82",
+        "node_id": "N7160_gm_trim_bad",
+        "node_level": 7160,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+        "source_variant_ids": [
+          "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+          "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+          "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+        ],
+        "config": {
+          "name": "boundaryblocks_breakthrough_softbalance_n7155bb_to7160_g00075_m0025_q0015_b001",
+          "geometry_profile": "boundary_blocks",
+          "base_variant_id": "nl_n7155_gm_trim_bad_boundaryblocks_breakthrough_softbala_5c50f0ee6d7a",
+          "source_variant_ids": [
+            "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd"
+          ],
+          "boundary_blocks": [
+            {
+              "block": "gm_good_rescue_pc1flat_qrsvisible",
+              "class_name": "good",
+              "picker": "good_rescue_pc1flat_qrsvisible",
+              "frac": 0.00075,
+              "weight": 1.002
+            },
+            {
+              "block": "gm_visible_qrs_medium_detail",
+              "class_name": "medium",
+              "picker": "medium_visible_qrs_detail",
+              "frac": 0.0025,
+              "weight": 1.011
+            },
+            {
+              "block": "gm_medium_qrslow_hardneg",
+              "class_name": "medium",
+              "picker": "medium_qrslow_hardneg",
+              "frac": 0.0015,
+              "weight": 1.008
+            },
+            {
+              "block": "bad_controlled_outlier",
+              "class_name": "bad",
+              "picker": "bad_controlled_outlier",
+              "frac": 0.001,
+              "weight": 1.003
+            }
+          ],
+          "class_weight": "1.22,1.76,1.51",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20261424,
+          "epochs": [
+            5,
+            5
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.55,
+            "flatline_min": 0.18,
+            "pc3_max": 0.55,
+            "qrs_visibility_min": 0.42,
+            "non_qrs_diff_max": 0.095
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.3,
+            "flatline_max": 0.16,
+            "pc3_min": 1.25,
+            "non_qrs_diff_min": 0.075,
+            "qrs_visibility_min": 0.16,
+            "qrs_visibility_max": 0.62
+          },
+          "qrslow_medium_gate": {
+            "qrs_visibility_max": 0.042,
+            "pc1_min": -1.7,
+            "pc3_min": 1.15,
+            "flatline_max": 0.26,
+            "non_qrs_diff_min": 0.04,
+            "fatal_max": 1.2,
+            "contact_loss_max": 0.08
+          },
+          "badstress_mode": "controlled_qrsband",
+          "badstress_gate": {
+            "qrs_band_ratio_min": 0.4,
+            "band_15_30_min": 0.7,
+            "baseline_step_max": 0.28,
+            "band_30_45_max": 0.2,
+            "fatal_max": 1.1,
+            "contact_loss_max": 0.035
+          }
+        },
+        "rows": 16085,
+        "class_counts": {
+          "bad": 5131,
+          "good": 5335,
+          "medium": 5619
+        },
+        "split_counts": {
+          "test": 2314,
+          "train": 11476,
+          "val": 2295
+        },
+        "composition": [
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "good",
+            "source": "gm_good_rescue_pc1flat_qrsvisible",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 2
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_visible_qrs_medium_detail",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "gm_medium_qrslow_hardneg",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+            "n": 1
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7160_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "bad_controlled_outlier",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_visibleqrs_mound_detai_0032d0df93dd",
+            "n": 0
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    }
+  ]
+}
