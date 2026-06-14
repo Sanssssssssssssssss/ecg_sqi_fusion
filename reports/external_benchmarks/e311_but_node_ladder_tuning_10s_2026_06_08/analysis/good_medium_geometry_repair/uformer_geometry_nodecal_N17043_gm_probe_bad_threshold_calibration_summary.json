@@ -1,0 +1,201 @@
+{
+  "created_at": "2026-06-14T19:16:04",
+  "node_id": "N17043_gm_probe",
+  "metrics_csv": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\uformer_geometry_nodecal_N17043_gm_probe_bad_threshold_calibration_metrics.csv",
+  "sweep_csv": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\uformer_geometry_nodecal_N17043_gm_probe_bad_threshold_trainval_sweep.csv",
+  "report": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\uformer_geometry_nodecal_N17043_gm_probe_bad_threshold_calibration_report.md",
+  "rows": [
+    {
+      "variant_id": "nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_uformergeom_N17043_gm_probe_nodecal_geom_tabular_dualbad_internal",
+      "config_name": "geom_tabular_dualbad_internal",
+      "bucket": "trainval_selection",
+      "threshold": 0.13,
+      "n": 24479,
+      "acc": 0.992932717839781,
+      "macro_f1": 0.9931447081740492,
+      "good_recall": 0.9976870849809744,
+      "medium_recall": 0.9771041599484037,
+      "bad_recall": 1.0,
+      "good_precision": 0.9895656034929328,
+      "medium_precision": 0.9949105237235265,
+      "bad_precision": 0.9997948717948718,
+      "confusion_3x3": [
+        [
+          13372,
+          31,
+          0
+        ],
+        [
+          141,
+          6060,
+          1
+        ],
+        [
+          0,
+          0,
+          4874
+        ]
+      ]
+    },
+    {
+      "variant_id": "nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_uformergeom_N17043_gm_probe_nodecal_geom_tabular_dualbad_internal",
+      "config_name": "geom_tabular_dualbad_internal",
+      "bucket": "node_test_original_test_all_10s+",
+      "threshold": 0.13,
+      "n": 8477,
+      "acc": 0.963548425150407,
+      "macro_f1": 0.9306830954417679,
+      "good_recall": 0.9563186813186814,
+      "medium_recall": 0.9728874830546769,
+      "bad_recall": 0.927007299270073,
+      "good_precision": 0.9767115600448933,
+      "medium_precision": 0.9717896637327917,
+      "bad_precision": 0.7904564315352697,
+      "confusion_3x3": [
+        [
+          3481,
+          102,
+          57
+        ],
+        [
+          76,
+          4306,
+          44
+        ],
+        [
+          7,
+          23,
+          381
+        ]
+      ]
+    },
+    {
+      "variant_id": "nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_uformergeom_N17043_gm_probe_nodecal_geom_tabular_dualbad_internal",
+      "config_name": "geom_tabular_dualbad_internal",
+      "bucket": "original_test_main_without_bad_stress",
+      "threshold": 0.13,
+      "n": 8185,
+      "acc": 0.9659132559560171,
+      "macro_f1": 0.8814274079353249,
+      "good_recall": 0.9563186813186814,
+      "medium_recall": 0.9728874830546769,
+      "bad_recall": 1.0,
+      "good_precision": 0.9786336800674726,
+      "medium_precision": 0.9768602540834845,
+      "bad_precision": 0.5409090909090909,
+      "confusion_3x3": [
+        [
+          3481,
+          102,
+          57
+        ],
+        [
+          76,
+          4306,
+          44
+        ],
+        [
+          0,
+          0,
+          119
+        ]
+      ]
+    },
+    {
+      "variant_id": "nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_uformergeom_N17043_gm_probe_nodecal_geom_tabular_dualbad_internal",
+      "config_name": "geom_tabular_dualbad_internal",
+      "bucket": "bad_core_nearboundary",
+      "threshold": 0.13,
+      "n": 119,
+      "acc": 1.0,
+      "macro_f1": 0.3333333333333333,
+      "good_recall": 0.0,
+      "medium_recall": 0.0,
+      "bad_recall": 1.0,
+      "good_precision": 0.0,
+      "medium_precision": 0.0,
+      "bad_precision": 1.0,
+      "confusion_3x3": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          119
+        ]
+      ]
+    },
+    {
+      "variant_id": "nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_uformergeom_N17043_gm_probe_nodecal_geom_tabular_dualbad_internal",
+      "config_name": "geom_tabular_dualbad_internal",
+      "bucket": "bad_outlier_stress",
+      "threshold": 0.13,
+      "n": 292,
+      "acc": 0.8972602739726028,
+      "macro_f1": 0.31528279181708785,
+      "good_recall": 0.0,
+      "medium_recall": 0.0,
+      "bad_recall": 0.8972602739726028,
+      "good_precision": 0.0,
+      "medium_precision": 0.0,
+      "bad_precision": 1.0,
+      "confusion_3x3": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          7,
+          23,
+          262
+        ]
+      ]
+    },
+    {
+      "variant_id": "nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_uformergeom_N17043_gm_probe_nodecal_geom_tabular_dualbad_internal",
+      "config_name": "geom_tabular_dualbad_internal",
+      "bucket": "node_all_original_all_10s+",
+      "threshold": 0.13,
+      "n": 32956,
+      "acc": 0.9853744386454667,
+      "macro_f1": 0.985233025715266,
+      "good_recall": 0.9888517279821628,
+      "medium_recall": 0.9753481369966127,
+      "bad_recall": 0.9943235572374646,
+      "good_precision": 0.9868829419687298,
+      "medium_precision": 0.9851739213077362,
+      "bad_precision": 0.9809594922531267,
+      "confusion_3x3": [
+        [
+          16853,
+          133,
+          57
+        ],
+        [
+          217,
+          10366,
+          45
+        ],
+        [
+          7,
+          23,
+          5255
+        ]
+      ]
+    }
+  ]
+}
