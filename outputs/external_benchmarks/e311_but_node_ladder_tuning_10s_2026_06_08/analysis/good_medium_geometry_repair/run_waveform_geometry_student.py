@@ -904,6 +904,317 @@ CANDIDATES: dict[str, dict[str, Any]] = {
         "bad_stress_shell_strength": 1.45,
         "seed": 20260834,
     },
+    "retrieval_statfed_protoatlas": {
+        "arch": "statfed_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 112,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 192,
+        "teacher_prototypes_per_class": 18,
+        "teacher_prototype_mode": "farthest",
+        "embedding_prototypes_per_class": 18,
+        "embedding_proto_weight": 0.72,
+        "embedding_proto_temp": 0.35,
+        "embedding_proto_logit_mix": 0.34,
+        "lr": 3.5e-4,
+        "class_weight": [1.00, 1.44, 2.85],
+        "focal_gamma": 1.08,
+        "aux_weight": 0.72,
+        "core_aux_weight": 0.96,
+        "atlas_distill_weight": 0.74,
+        "bad_aux_weight": 0.70,
+        "bad_aux_pos_weight": 3.0,
+        "bad_logit_mix": 0.48,
+        "neighbor_weight": 0.66,
+        "neighbor_tau": 0.34,
+        "supcon_weight": 0.22,
+        "rank_weight": 0.42,
+        "recon_weight": 0.0,
+        "augment_strength": 0.30,
+        "bad_outlier_aug_strength": 1.25,
+        "bad_stress_shell_strength": 1.45,
+        "seed": 20260901,
+    },
+    "retrieval_stressbank_protoatlas": {
+        "arch": "stress_statfed_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 112,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 192,
+        "teacher_prototypes_per_class": 18,
+        "teacher_prototype_mode": "farthest",
+        "embedding_prototypes_per_class": 18,
+        "embedding_proto_weight": 0.78,
+        "embedding_proto_temp": 0.32,
+        "embedding_proto_logit_mix": 0.38,
+        "lr": 3.4e-4,
+        "class_weight": [1.00, 1.42, 3.10],
+        "focal_gamma": 1.12,
+        "aux_weight": 0.76,
+        "core_aux_weight": 1.00,
+        "atlas_distill_weight": 0.78,
+        "bad_aux_weight": 0.82,
+        "bad_aux_pos_weight": 3.4,
+        "bad_logit_mix": 0.56,
+        "neighbor_weight": 0.70,
+        "neighbor_tau": 0.32,
+        "supcon_weight": 0.24,
+        "rank_weight": 0.44,
+        "recon_weight": 0.0,
+        "augment_strength": 0.34,
+        "bad_outlier_aug_strength": 1.35,
+        "bad_stress_shell_strength": 1.75,
+        "seed": 20260902,
+    },
+    "retrieval_statbank_protoatlas": {
+        "arch": "statbank_token_teacher_atlas",
+        "channels": "robust3",
+        "width": 128,
+        "layers": 4,
+        "heads": 4,
+        "stat_hidden": 224,
+        "teacher_prototypes_per_class": 18,
+        "teacher_prototype_mode": "farthest",
+        "embedding_prototypes_per_class": 18,
+        "embedding_proto_weight": 0.68,
+        "embedding_proto_temp": 0.34,
+        "embedding_proto_logit_mix": 0.32,
+        "lr": 3.8e-4,
+        "class_weight": [1.00, 1.44, 2.90],
+        "focal_gamma": 1.08,
+        "aux_weight": 0.78,
+        "core_aux_weight": 1.04,
+        "atlas_distill_weight": 0.82,
+        "bad_aux_weight": 0.72,
+        "bad_aux_pos_weight": 3.0,
+        "bad_logit_mix": 0.48,
+        "neighbor_weight": 0.68,
+        "neighbor_tau": 0.34,
+        "supcon_weight": 0.20,
+        "rank_weight": 0.42,
+        "recon_weight": 0.0,
+        "augment_strength": 0.30,
+        "bad_outlier_aug_strength": 1.25,
+        "bad_stress_shell_strength": 1.45,
+        "seed": 20260903,
+    },
+    "waveatlas_statfed_memory": {
+        "arch": "statfed_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 112,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 192,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "waveform_atlas_prototypes_per_class": 32,
+        "waveform_atlas_mode": "farthest",
+        "waveform_proto_weight": 0.70,
+        "waveform_atlas_temp": 0.70,
+        "waveform_atlas_logit_mix": 0.42,
+        "lr": 3.4e-4,
+        "class_weight": [1.00, 1.44, 2.80],
+        "focal_gamma": 1.05,
+        "aux_weight": 0.62,
+        "core_aux_weight": 0.88,
+        "atlas_distill_weight": 0.64,
+        "bad_aux_weight": 0.62,
+        "bad_aux_pos_weight": 2.8,
+        "bad_logit_mix": 0.42,
+        "neighbor_weight": 0.52,
+        "neighbor_tau": 0.38,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.34,
+        "recon_weight": 0.0,
+        "augment_strength": 0.28,
+        "bad_outlier_aug_strength": 1.20,
+        "bad_stress_shell_strength": 1.25,
+        "seed": 20260911,
+    },
+    "waveatlas_stressbank_memory": {
+        "arch": "stress_statfed_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 112,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 192,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "waveform_atlas_prototypes_per_class": 36,
+        "waveform_atlas_mode": "farthest",
+        "waveform_proto_weight": 0.78,
+        "waveform_atlas_temp": 0.64,
+        "waveform_atlas_logit_mix": 0.50,
+        "lr": 3.3e-4,
+        "class_weight": [1.00, 1.42, 3.25],
+        "focal_gamma": 1.12,
+        "aux_weight": 0.66,
+        "core_aux_weight": 0.90,
+        "atlas_distill_weight": 0.66,
+        "bad_aux_weight": 0.86,
+        "bad_aux_pos_weight": 3.6,
+        "bad_logit_mix": 0.62,
+        "neighbor_weight": 0.54,
+        "neighbor_tau": 0.38,
+        "supcon_weight": 0.20,
+        "rank_weight": 0.36,
+        "recon_weight": 0.0,
+        "augment_strength": 0.32,
+        "bad_outlier_aug_strength": 1.35,
+        "bad_stress_shell_strength": 1.90,
+        "seed": 20260912,
+    },
+    "waveatlas_statbank_memory": {
+        "arch": "statbank_token_teacher_atlas",
+        "channels": "robust3",
+        "width": 128,
+        "layers": 4,
+        "heads": 4,
+        "stat_hidden": 224,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "waveform_atlas_prototypes_per_class": 40,
+        "waveform_atlas_mode": "farthest",
+        "waveform_proto_weight": 0.72,
+        "waveform_atlas_temp": 0.68,
+        "waveform_atlas_logit_mix": 0.46,
+        "lr": 3.7e-4,
+        "class_weight": [1.00, 1.44, 2.95],
+        "focal_gamma": 1.08,
+        "aux_weight": 0.68,
+        "core_aux_weight": 0.94,
+        "atlas_distill_weight": 0.70,
+        "bad_aux_weight": 0.72,
+        "bad_aux_pos_weight": 3.0,
+        "bad_logit_mix": 0.50,
+        "neighbor_weight": 0.54,
+        "neighbor_tau": 0.38,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.36,
+        "recon_weight": 0.0,
+        "augment_strength": 0.30,
+        "bad_outlier_aug_strength": 1.25,
+        "bad_stress_shell_strength": 1.50,
+        "seed": 20260913,
+    },
+    "featurefusion_statfed_teacher": {
+        "arch": "statfed_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 112,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 224,
+        "teacher_prototypes_per_class": 18,
+        "teacher_prototype_mode": "farthest",
+        "predicted_feature_fusion": "teacher",
+        "wide_aux_head": True,
+        "aux_hidden": 320,
+        "waveform_atlas_prototypes_per_class": 32,
+        "waveform_atlas_mode": "farthest",
+        "waveform_proto_weight": 0.42,
+        "waveform_atlas_temp": 0.70,
+        "waveform_atlas_logit_mix": 0.18,
+        "lr": 3.2e-4,
+        "class_weight": [1.00, 1.45, 2.85],
+        "focal_gamma": 0.95,
+        "aux_weight": 1.60,
+        "core_aux_weight": 2.80,
+        "atlas_distill_weight": 1.25,
+        "bad_aux_weight": 0.64,
+        "bad_aux_pos_weight": 3.0,
+        "bad_logit_mix": 0.42,
+        "neighbor_weight": 0.82,
+        "neighbor_tau": 0.30,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.68,
+        "recon_weight": 0.0,
+        "augment_strength": 0.24,
+        "bad_outlier_aug_strength": 1.15,
+        "bad_stress_shell_strength": 1.35,
+        "seed": 20260921,
+    },
+    "featurefusion_stressbank_teacher": {
+        "arch": "stress_statfed_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 112,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 224,
+        "teacher_prototypes_per_class": 18,
+        "teacher_prototype_mode": "farthest",
+        "predicted_feature_fusion": "teacher",
+        "wide_aux_head": True,
+        "aux_hidden": 320,
+        "waveform_atlas_prototypes_per_class": 36,
+        "waveform_atlas_mode": "farthest",
+        "waveform_proto_weight": 0.48,
+        "waveform_atlas_temp": 0.64,
+        "waveform_atlas_logit_mix": 0.24,
+        "lr": 3.1e-4,
+        "class_weight": [1.00, 1.43, 3.15],
+        "focal_gamma": 1.02,
+        "aux_weight": 1.70,
+        "core_aux_weight": 2.90,
+        "atlas_distill_weight": 1.30,
+        "bad_aux_weight": 0.84,
+        "bad_aux_pos_weight": 3.6,
+        "bad_logit_mix": 0.56,
+        "neighbor_weight": 0.86,
+        "neighbor_tau": 0.30,
+        "supcon_weight": 0.20,
+        "rank_weight": 0.72,
+        "recon_weight": 0.0,
+        "augment_strength": 0.28,
+        "bad_outlier_aug_strength": 1.30,
+        "bad_stress_shell_strength": 1.80,
+        "seed": 20260922,
+    },
+    "featurefusion_multiscale_core": {
+        "arch": "stress_multiscale_stat_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 112,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "scales": [25, 50, 100, 250, 500],
+        "stat_hidden": 224,
+        "teacher_prototypes_per_class": 18,
+        "teacher_prototype_mode": "farthest",
+        "predicted_feature_fusion": "core",
+        "wide_aux_head": True,
+        "aux_hidden": 320,
+        "waveform_atlas_prototypes_per_class": 36,
+        "waveform_atlas_mode": "farthest",
+        "waveform_proto_weight": 0.50,
+        "waveform_atlas_temp": 0.66,
+        "waveform_atlas_logit_mix": 0.22,
+        "lr": 2.9e-4,
+        "class_weight": [1.00, 1.44, 3.05],
+        "focal_gamma": 1.00,
+        "aux_weight": 1.70,
+        "core_aux_weight": 3.10,
+        "atlas_distill_weight": 1.35,
+        "bad_aux_weight": 0.78,
+        "bad_aux_pos_weight": 3.4,
+        "bad_logit_mix": 0.54,
+        "neighbor_weight": 0.88,
+        "neighbor_tau": 0.30,
+        "supcon_weight": 0.20,
+        "rank_weight": 0.76,
+        "recon_weight": 0.0,
+        "augment_strength": 0.30,
+        "bad_outlier_aug_strength": 1.25,
+        "bad_stress_shell_strength": 1.70,
+        "seed": 20260923,
+    },
 }
 
 
@@ -1536,6 +1847,10 @@ def qrs_detail_stats(x: torch.Tensor) -> torch.Tensor:
     return torch.cat([top01, top03, top10, prom_ratio, detail_rms, diff_top, diff_ratio, baseline_span, baseline_slope, flat, low_amp, mean_abs, rms, ptp, zcr], dim=1)
 
 
+def waveform_atlas_stats(x: torch.Tensor) -> torch.Tensor:
+    return torch.cat([waveform_stats_v2(x), qrs_detail_stats(x), waveform_stress_stats(x)], dim=1)
+
+
 class GeometryStudent(nn.Module):
     def __init__(self, cfg: dict[str, Any], in_ch: int):
         super().__init__()
@@ -1674,9 +1989,52 @@ class GeometryStudent(nn.Module):
             class_head_in = 192 + 9
         else:
             class_head_in = 192
+        self.embedding_prototypes_per_class = int(cfg.get("embedding_prototypes_per_class", 0))
+        self.use_embedding_prototypes = self.embedding_prototypes_per_class > 0
+        self.embedding_proto_temp = float(cfg.get("embedding_proto_temp", 0.35))
+        self.embedding_proto_logit_mix = float(cfg.get("embedding_proto_logit_mix", 0.0))
+        if self.use_embedding_prototypes:
+            self.embedding_proto_norm = nn.LayerNorm(192)
+            self.embedding_prototypes = nn.Parameter(torch.randn(3, self.embedding_prototypes_per_class, 192) * 0.04)
+            class_head_in += 9
+        self.waveform_atlas_prototypes_per_class = int(cfg.get("waveform_atlas_prototypes_per_class", 0))
+        self.use_waveform_atlas = self.waveform_atlas_prototypes_per_class > 0
+        self.waveform_atlas_dim = int(in_ch) * 55
+        self.waveform_atlas_temp = float(cfg.get("waveform_atlas_temp", 0.42))
+        self.waveform_atlas_logit_mix = float(cfg.get("waveform_atlas_logit_mix", 0.0))
+        if self.use_waveform_atlas:
+            self.register_buffer("waveform_atlas_mean", torch.zeros(self.waveform_atlas_dim), persistent=True)
+            self.register_buffer("waveform_atlas_std", torch.ones(self.waveform_atlas_dim), persistent=True)
+            self.register_buffer(
+                "waveform_atlas_prototypes",
+                torch.zeros(3, self.waveform_atlas_prototypes_per_class, self.waveform_atlas_dim),
+                persistent=True,
+            )
+            class_head_in += 9
+        self.predicted_feature_fusion = str(cfg.get("predicted_feature_fusion", "none"))
+        if self.predicted_feature_fusion == "core":
+            self.predicted_feature_indices = CORE_IDX
+            class_head_in += len(CORE_IDX)
+        elif self.predicted_feature_fusion == "teacher":
+            self.predicted_feature_indices = TEACHER_IDX
+            class_head_in += len(TEACHER_IDX)
+        else:
+            self.predicted_feature_indices = []
         self.project = nn.Sequential(nn.LayerNorm(out_dim), nn.Linear(out_dim, 192), nn.GELU(), nn.Dropout(0.08))
         self.class_head = nn.Sequential(nn.LayerNorm(class_head_in), nn.Linear(class_head_in, 96), nn.GELU(), nn.Dropout(0.08), nn.Linear(96, 3))
-        self.aux_head = nn.Sequential(nn.LayerNorm(192), nn.Linear(192, 128), nn.GELU(), nn.Linear(128, len(FEATURE_COLUMNS)))
+        aux_hidden = int(cfg.get("aux_hidden", 128))
+        if bool(cfg.get("wide_aux_head", False)):
+            self.aux_head = nn.Sequential(
+                nn.LayerNorm(192),
+                nn.Linear(192, aux_hidden),
+                nn.GELU(),
+                nn.Dropout(0.08),
+                nn.Linear(aux_hidden, aux_hidden),
+                nn.GELU(),
+                nn.Linear(aux_hidden, len(FEATURE_COLUMNS)),
+            )
+        else:
+            self.aux_head = nn.Sequential(nn.LayerNorm(192), nn.Linear(192, aux_hidden), nn.GELU(), nn.Linear(aux_hidden, len(FEATURE_COLUMNS)))
         self.bad_logit_mix = float(cfg.get("bad_logit_mix", 0.0))
         if float(cfg.get("bad_aux_weight", 0.0)) > 0 or self.bad_logit_mix != 0.0:
             self.bad_head = nn.Sequential(nn.LayerNorm(192), nn.Linear(192, 96), nn.GELU(), nn.Dropout(0.08), nn.Linear(96, 1))
@@ -1691,6 +2049,20 @@ class GeometryStudent(nn.Module):
             raise ValueError(f"prototype shape mismatch: got {tuple(tensor.shape)} expected {tuple(self.teacher_prototypes.shape)}")
         self.teacher_prototypes.copy_(tensor)
 
+    def set_waveform_atlas(self, prototypes: np.ndarray, mean: np.ndarray, std: np.ndarray) -> None:
+        if not self.use_waveform_atlas:
+            return
+        proto = torch.as_tensor(prototypes, dtype=torch.float32, device=self.waveform_atlas_prototypes.device)
+        mu = torch.as_tensor(mean, dtype=torch.float32, device=self.waveform_atlas_mean.device)
+        sigma = torch.as_tensor(std, dtype=torch.float32, device=self.waveform_atlas_std.device)
+        if tuple(proto.shape) != tuple(self.waveform_atlas_prototypes.shape):
+            raise ValueError(f"waveform atlas shape mismatch: got {tuple(proto.shape)} expected {tuple(self.waveform_atlas_prototypes.shape)}")
+        if tuple(mu.shape) != tuple(self.waveform_atlas_mean.shape):
+            raise ValueError(f"waveform atlas mean mismatch: got {tuple(mu.shape)} expected {tuple(self.waveform_atlas_mean.shape)}")
+        self.waveform_atlas_prototypes.copy_(proto)
+        self.waveform_atlas_mean.copy_(mu)
+        self.waveform_atlas_std.copy_(sigma.clamp_min(1e-4))
+
     def teacher_distance_features(self, aux_values: torch.Tensor) -> torch.Tensor:
         core = aux_values[:, CORE_IDX]
         dist = torch.mean((core[:, None, None, :] - self.teacher_prototypes[None, :, :, :]) ** 2, dim=3)
@@ -1698,6 +2070,30 @@ class GeometryStudent(nn.Module):
         mean_dist = dist.mean(dim=2)
         purity_like = torch.softmax(-min_dist, dim=1)
         return torch.cat([min_dist, mean_dist, purity_like], dim=1)
+
+    def embedding_prototype_outputs(self, emb: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        z = F.normalize(self.embedding_proto_norm(emb), dim=1)
+        prototypes = F.normalize(self.embedding_prototypes, dim=2)
+        sim = torch.einsum("bd,ckd->bck", z, prototypes)
+        dist = 1.0 - sim
+        min_dist = dist.min(dim=2).values
+        mean_dist = dist.mean(dim=2)
+        purity_like = torch.softmax(-min_dist / max(self.embedding_proto_temp, 1e-4), dim=1)
+        features = torch.cat([min_dist, mean_dist, purity_like], dim=1)
+        class_logits = -min_dist / max(self.embedding_proto_temp, 1e-4)
+        proto_logits = sim.reshape(emb.shape[0], -1) / max(self.embedding_proto_temp, 1e-4)
+        return features, class_logits, proto_logits
+
+    def waveform_atlas_outputs(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        stat = (waveform_atlas_stats(x) - self.waveform_atlas_mean[None, :]) / self.waveform_atlas_std[None, :]
+        dist = torch.mean((stat[:, None, None, :] - self.waveform_atlas_prototypes[None, :, :, :]) ** 2, dim=3)
+        min_dist = dist.min(dim=2).values
+        mean_dist = dist.mean(dim=2)
+        purity_like = torch.softmax(-min_dist / max(self.waveform_atlas_temp, 1e-4), dim=1)
+        features = torch.cat([min_dist, mean_dist, purity_like], dim=1)
+        class_logits = -min_dist / max(self.waveform_atlas_temp, 1e-4)
+        proto_logits = (-dist / max(self.waveform_atlas_temp, 1e-4)).reshape(x.shape[0], -1)
+        return features, class_logits, proto_logits
 
     def forward(self, x: torch.Tensor, mask_ratio: float = 0.0) -> dict[str, torch.Tensor | None]:
         recon = None
@@ -1714,7 +2110,23 @@ class GeometryStudent(nn.Module):
         else:
             atlas_pred = None
             head_input = emb
+        proto_logits = None
+        proto_class_logits = None
+        if self.use_embedding_prototypes:
+            proto_features, proto_class_logits, proto_logits = self.embedding_prototype_outputs(emb)
+            head_input = torch.cat([head_input, proto_features], dim=1)
+        waveform_proto_logits = None
+        waveform_proto_class_logits = None
+        if self.use_waveform_atlas:
+            waveform_features, waveform_proto_class_logits, waveform_proto_logits = self.waveform_atlas_outputs(x)
+            head_input = torch.cat([head_input, waveform_features], dim=1)
+        if self.predicted_feature_indices:
+            head_input = torch.cat([head_input, aux_pred[:, self.predicted_feature_indices]], dim=1)
         logits = self.class_head(head_input)
+        if proto_class_logits is not None and self.embedding_proto_logit_mix != 0.0:
+            logits = logits + self.embedding_proto_logit_mix * proto_class_logits
+        if waveform_proto_class_logits is not None and self.waveform_atlas_logit_mix != 0.0:
+            logits = logits + self.waveform_atlas_logit_mix * waveform_proto_class_logits
         bad_logit = self.bad_head(emb).squeeze(1) if self.bad_head is not None else None
         if bad_logit is not None and self.bad_logit_mix != 0.0:
             logits = logits.clone()
@@ -1724,6 +2136,10 @@ class GeometryStudent(nn.Module):
             "bad_logit": bad_logit,
             "aux_pred": aux_pred,
             "atlas_pred": atlas_pred,
+            "proto_logits": proto_logits,
+            "proto_class_logits": proto_class_logits,
+            "waveform_proto_logits": waveform_proto_logits,
+            "waveform_proto_class_logits": waveform_proto_class_logits,
             "embedding": emb,
             "recon": recon,
             "recon_mask": recon_mask,
@@ -1935,6 +2351,57 @@ def build_teacher_prototypes(aux: np.ndarray, y: np.ndarray, prototypes_per_clas
     return out
 
 
+@torch.no_grad()
+def collect_waveform_atlas_matrix(dataset: Any, batch_size: int = 256) -> np.ndarray:
+    loader = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=0)
+    chunks: list[np.ndarray] = []
+    for batch in loader:
+        x = batch["x"].to(dtype=torch.float32)
+        chunks.append(waveform_atlas_stats(x).cpu().numpy().astype(np.float32))
+    return np.concatenate(chunks, axis=0)
+
+
+def build_waveform_atlas(dataset: Any, prototypes_per_class: int, mode: str = "farthest") -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    stats = collect_waveform_atlas_matrix(dataset)
+    mean = stats.mean(axis=0).astype(np.float32)
+    std = stats.std(axis=0).astype(np.float32)
+    std = np.where(std < 1e-4, 1.0, std).astype(np.float32)
+    z = ((stats - mean[None, :]) / std[None, :]).astype(np.float32)
+    labels = np.asarray(dataset.y, dtype=np.int64)
+    out = np.zeros((3, int(prototypes_per_class), z.shape[1]), dtype=np.float32)
+    for cls in range(3):
+        rows = z[labels == cls]
+        if rows.size == 0:
+            continue
+        if str(mode) == "pc1_quantile" and "pc1" in FEATURE_COLUMNS:
+            pc1 = np.asarray(dataset.aux[labels == cls, FEATURE_COLUMNS.index("pc1")], dtype=np.float32)
+            order = np.argsort(pc1)
+            chunks = np.array_split(rows[order], int(prototypes_per_class))
+            for i, chunk in enumerate(chunks):
+                out[cls, i] = chunk.mean(axis=0) if len(chunk) else rows.mean(axis=0)
+        else:
+            out[cls] = farthest_prototype_means(rows, int(prototypes_per_class))
+    return out, mean, std
+
+
+def teacher_prototype_targets(aux: torch.Tensor, y: torch.Tensor, teacher_prototypes: torch.Tensor) -> torch.Tensor:
+    if not CORE_IDX:
+        return torch.zeros_like(y)
+    core = aux[:, CORE_IDX]
+    selected = teacher_prototypes[y]
+    dist = torch.mean((core[:, None, :] - selected) ** 2, dim=2)
+    nearest = dist.argmin(dim=1)
+    return y * int(teacher_prototypes.shape[1]) + nearest
+
+
+def waveform_prototype_targets(x: torch.Tensor, y: torch.Tensor, model: GeometryStudent) -> torch.Tensor:
+    stat = (waveform_atlas_stats(x) - model.waveform_atlas_mean[None, :]) / model.waveform_atlas_std[None, :]
+    selected = model.waveform_atlas_prototypes[y]
+    dist = torch.mean((stat[:, None, :] - selected) ** 2, dim=2)
+    nearest = dist.argmin(dim=1)
+    return y * int(model.waveform_atlas_prototypes.shape[1]) + nearest
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--stage", choices=["smoke", "search", "all"], default="all")
@@ -2052,6 +2519,13 @@ def train_candidate(
             str(cfg.get("teacher_prototype_mode", "pc1_quantile")),
         )
         model.set_teacher_prototypes(prototypes)
+    if getattr(model, "use_waveform_atlas", False):
+        wave_proto, wave_mean, wave_std = build_waveform_atlas(
+            base_train_ds,
+            int(cfg["waveform_atlas_prototypes_per_class"]),
+            str(cfg.get("waveform_atlas_mode", "farthest")),
+        )
+        model.set_waveform_atlas(wave_proto, wave_mean, wave_std)
     opt = torch.optim.AdamW(model.parameters(), lr=float(cfg["lr"]), weight_decay=1e-4)
     class_weight = torch.tensor(cfg["class_weight"], dtype=torch.float32, device=device)
     best_state = None
@@ -2077,6 +2551,20 @@ def train_candidate(
             con_loss = supervised_contrastive_loss(out["embedding"], y)
             rank_loss = feature_rank_loss(out["aux_pred"], aux)
             neighbor_loss = teacher_neighborhood_loss(out["embedding"], aux, float(cfg.get("neighbor_tau", 0.45)))
+            if (
+                out.get("proto_logits") is not None
+                and float(cfg.get("embedding_proto_weight", 0.0)) > 0
+                and getattr(model, "use_teacher_atlas", False)
+            ):
+                proto_target = teacher_prototype_targets(aux, y, model.teacher_prototypes)
+                embedding_proto_loss = F.cross_entropy(out["proto_logits"], proto_target)
+            else:
+                embedding_proto_loss = torch.zeros((), device=device)
+            if out.get("waveform_proto_logits") is not None and float(cfg.get("waveform_proto_weight", 0.0)) > 0:
+                waveform_target = waveform_prototype_targets(x, y, model)
+                waveform_proto_loss = F.cross_entropy(out["waveform_proto_logits"], waveform_target)
+            else:
+                waveform_proto_loss = torch.zeros((), device=device)
             rec_loss = reconstruction_loss(out, x, int(cfg.get("patch", 25)))
             if out.get("bad_logit") is not None and float(cfg.get("bad_aux_weight", 0.0)) > 0:
                 bad_target = (y == CLASS_TO_INT["bad"]).float()
@@ -2091,6 +2579,8 @@ def train_candidate(
                 + float(cfg.get("atlas_distill_weight", 0.0)) * atlas_loss
                 + float(cfg.get("bad_aux_weight", 0.0)) * bad_aux_loss
                 + float(cfg.get("neighbor_weight", 0.0)) * neighbor_loss
+                + float(cfg.get("embedding_proto_weight", 0.0)) * embedding_proto_loss
+                + float(cfg.get("waveform_proto_weight", 0.0)) * waveform_proto_loss
                 + float(cfg["supcon_weight"]) * con_loss
                 + float(cfg["rank_weight"]) * rank_loss
                 + float(cfg["recon_weight"]) * rec_loss
@@ -2108,6 +2598,8 @@ def train_candidate(
                     "atlas": float(atlas_loss.detach().cpu()),
                     "bad_aux": float(bad_aux_loss.detach().cpu()),
                     "neighbor": float(neighbor_loss.detach().cpu()),
+                    "embedding_proto": float(embedding_proto_loss.detach().cpu()),
+                    "waveform_proto": float(waveform_proto_loss.detach().cpu()),
                     "supcon": float(con_loss.detach().cpu()),
                     "rank": float(rank_loss.detach().cpu()),
                     "recon": float(rec_loss.detach().cpu()),
@@ -2171,6 +2663,9 @@ def train_candidate(
             "feature_train_mean": base_train_ds.mean,
             "feature_train_std": base_train_ds.std,
             "teacher_prototypes": model.teacher_prototypes.detach().cpu().numpy() if getattr(model, "use_teacher_atlas", False) else None,
+            "waveform_atlas_prototypes": model.waveform_atlas_prototypes.detach().cpu().numpy() if getattr(model, "use_waveform_atlas", False) else None,
+            "waveform_atlas_mean": model.waveform_atlas_mean.detach().cpu().numpy() if getattr(model, "use_waveform_atlas", False) else None,
+            "waveform_atlas_std": model.waveform_atlas_std.detach().cpu().numpy() if getattr(model, "use_waveform_atlas", False) else None,
             "best_epoch": best_epoch,
             "bad_threshold_trainval": threshold,
             "original_rows_used_for_training": False,

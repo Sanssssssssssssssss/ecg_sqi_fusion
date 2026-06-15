@@ -1,0 +1,84 @@
+{
+  "created_at": "2026-06-15 03:40:23",
+  "node_id": "N17043_gm_probe",
+  "feature_assisted_not_waveform_only": true,
+  "original_used_for_training": true,
+  "training_rows_source": "current node_boundary_manifest train split; same split/counts as original_region_atlas",
+  "metrics_csv": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\feature_token_transformer_probe_metrics.csv",
+  "candidates": [
+    {
+      "candidate": "featuretx_top14",
+      "feature_columns": [
+        "pc1",
+        "qrs_visibility",
+        "baseline_step",
+        "flatline_ratio",
+        "non_qrs_diff_p95",
+        "pca_margin",
+        "qrs_band_ratio",
+        "template_corr",
+        "amplitude_entropy",
+        "sqi_bSQI",
+        "region_confidence",
+        "detector_agreement",
+        "mean_abs",
+        "sqi_basSQI"
+      ],
+      "checkpoint": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\runs\\feature_token_transformer\\N17043_gm_probe\\featuretx_top14\\ckpt_best.pt"
+    },
+    {
+      "candidate": "featuretx_top20",
+      "feature_columns": [
+        "pca_margin",
+        "sample_entropy_proxy",
+        "flatline_ratio",
+        "pc1",
+        "higuchi_fd_proxy",
+        "non_qrs_diff_p95",
+        "diff_zero_crossing_rate",
+        "zero_crossing_rate",
+        "qrs_prom_p90",
+        "sqi_fSQI",
+        "amplitude_entropy",
+        "sqi_kSQI",
+        "sqi_sSQI",
+        "low_amp_ratio",
+        "non_qrs_rms_ratio",
+        "baseline_step",
+        "ptp_p99_p01",
+        "band_30_45",
+        "qrs_visibility",
+        "band_15_30"
+      ],
+      "checkpoint": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\runs\\feature_token_transformer\\N17043_gm_probe\\featuretx_top20\\ckpt_best.pt"
+    },
+    {
+      "candidate": "featuretx_top22",
+      "feature_columns": [
+        "pca_margin",
+        "sample_entropy_proxy",
+        "flatline_ratio",
+        "pc1",
+        "higuchi_fd_proxy",
+        "non_qrs_diff_p95",
+        "diff_zero_crossing_rate",
+        "zero_crossing_rate",
+        "qrs_prom_p90",
+        "sqi_fSQI",
+        "amplitude_entropy",
+        "sqi_kSQI",
+        "sqi_sSQI",
+        "low_amp_ratio",
+        "non_qrs_rms_ratio",
+        "baseline_step",
+        "ptp_p99_p01",
+        "band_30_45",
+        "qrs_visibility",
+        "band_15_30",
+        "hjorth_mobility",
+        "wavelet_e4"
+      ],
+      "checkpoint": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\runs\\feature_token_transformer\\N17043_gm_probe\\featuretx_top22\\ckpt_best.pt"
+    }
+  ]
+}

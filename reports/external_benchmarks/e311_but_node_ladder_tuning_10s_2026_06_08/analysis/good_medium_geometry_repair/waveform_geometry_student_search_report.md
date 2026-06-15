@@ -42,28 +42,39 @@ M outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysi
 
 | Candidate | Run | Bucket | Acc | Macro-F1 | Good R | Medium R | Bad R | g->m | m->g | b->m | Teacher MAE | Core MAE |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| statbank_token_balanced | search | synthetic_val | 0.992437 | 0.991122 | 0.985258 | 0.999053 | 0.976562 | 6 | 1 | 6 | 0.7369 | 0.6486 |
-| statbank_token_balanced | search | synthetic_test | 0.992312 | 0.991000 | 0.991632 | 0.995130 | 0.979253 | 4 | 6 | 5 | 0.7424 | 0.6222 |
-| statbank_token_balanced_badcal | search | synthetic_test | 0.992312 | 0.991000 | 0.991632 | 0.995130 | 0.979253 | 4 | 6 | 5 | nan | nan |
-| statbank_token_balanced | search | original_test_all_10s+ | 0.766073 | 0.662647 | 0.875824 | 0.721193 | 0.277372 | 452 | 1234 | 32 | nan | nan |
-| statbank_token_balanced_badcal | search | original_test_all_10s+ | 0.764539 | 0.660990 | 0.875824 | 0.717126 | 0.289538 | 452 | 1230 | 27 | nan | nan |
-| statbank_token_balanced | search | original_all_10s+ | 0.811142 | 0.840934 | 0.751159 | 0.847384 | 0.931693 | 4240 | 1621 | 95 | nan | nan |
-| statbank_token_balanced_badcal | search | original_all_10s+ | 0.810475 | 0.839571 | 0.750983 | 0.843432 | 0.936045 | 4238 | 1614 | 72 | nan | nan |
-| statbank_token_balanced | search | bad_core_nearboundary | 0.957983 | 0.326180 | 0.000000 | 0.000000 | 0.957983 | 0 | 0 | 5 | nan | nan |
-| statbank_token_balanced_badcal | search | bad_core_nearboundary | 1.000000 | 0.333333 | 0.000000 | 0.000000 | 1.000000 | 0 | 0 | 0 | nan | nan |
-| statbank_token_balanced | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 27 | nan | nan |
-| statbank_token_balanced_badcal | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 27 | nan | nan |
-| statbank_token_badguard | search | synthetic_val | 0.993601 | 0.992264 | 0.990172 | 0.999053 | 0.976562 | 4 | 1 | 6 | 0.7485 | 0.6508 |
-| statbank_token_badguard | search | synthetic_test | 0.991799 | 0.990514 | 0.989540 | 0.995130 | 0.979253 | 5 | 6 | 5 | 0.7424 | 0.6269 |
-| statbank_token_badguard_badcal | search | synthetic_test | 0.991799 | 0.990514 | 0.989540 | 0.995130 | 0.979253 | 5 | 6 | 5 | nan | nan |
-| statbank_token_badguard | search | original_test_all_10s+ | 0.752153 | 0.638128 | 0.896429 | 0.678717 | 0.265207 | 376 | 1376 | 30 | nan | nan |
-| statbank_token_badguard_badcal | search | original_test_all_10s+ | 0.748732 | 0.640154 | 0.895604 | 0.668098 | 0.316302 | 374 | 1357 | 15 | nan | nan |
-| statbank_token_badguard | search | original_all_10s+ | 0.811112 | 0.837945 | 0.765358 | 0.824991 | 0.930747 | 3959 | 1800 | 93 | nan | nan |
-| statbank_token_badguard_badcal | search | original_all_10s+ | 0.808988 | 0.833681 | 0.763481 | 0.818875 | 0.935856 | 3944 | 1771 | 72 | nan | nan |
-| statbank_token_badguard | search | bad_core_nearboundary | 0.907563 | 0.317181 | 0.000000 | 0.000000 | 0.907563 | 0 | 0 | 11 | nan | nan |
-| statbank_token_badguard_badcal | search | bad_core_nearboundary | 1.000000 | 0.333333 | 0.000000 | 0.000000 | 1.000000 | 0 | 0 | 0 | nan | nan |
-| statbank_token_badguard | search | bad_outlier_stress | 0.003425 | 0.002275 | 0.000000 | 0.000000 | 0.003425 | 0 | 0 | 19 | nan | nan |
-| statbank_token_badguard_badcal | search | bad_outlier_stress | 0.037671 | 0.024202 | 0.000000 | 0.000000 | 0.037671 | 0 | 0 | 15 | nan | nan |
+| featurefusion_statfed_teacher | search | synthetic_val | 0.994764 | 0.993402 | 0.995086 | 0.999053 | 0.976562 | 2 | 1 | 6 | 0.7461 | 0.6532 |
+| featurefusion_statfed_teacher | search | synthetic_test | 0.995387 | 0.993892 | 0.991632 | 1.000000 | 0.979253 | 4 | 0 | 5 | 0.7408 | 0.6123 |
+| featurefusion_statfed_teacher_badcal | search | synthetic_test | 0.995387 | 0.993337 | 0.991632 | 1.000000 | 0.979253 | 3 | 0 | 5 | nan | nan |
+| featurefusion_statfed_teacher | search | original_test_all_10s+ | 0.772915 | 0.544508 | 0.854121 | 0.775418 | 0.026764 | 528 | 940 | 195 | nan | nan |
+| featurefusion_statfed_teacher_badcal | search | original_test_all_10s+ | 0.772443 | 0.564406 | 0.851099 | 0.772933 | 0.070560 | 528 | 892 | 186 | nan | nan |
+| featurefusion_statfed_teacher | search | original_all_10s+ | 0.773091 | 0.808685 | 0.658393 | 0.888690 | 0.910501 | 5811 | 1106 | 266 | nan | nan |
+| featurefusion_statfed_teacher_badcal | search | original_all_10s+ | 0.771210 | 0.804464 | 0.655166 | 0.885491 | 0.915610 | 5805 | 1050 | 248 | nan | nan |
+| featurefusion_statfed_teacher | search | bad_core_nearboundary | 0.008403 | 0.005556 | 0.000000 | 0.000000 | 0.008403 | 0 | 0 | 118 | nan | nan |
+| featurefusion_statfed_teacher_badcal | search | bad_core_nearboundary | 0.084034 | 0.051680 | 0.000000 | 0.000000 | 0.084034 | 0 | 0 | 109 | nan | nan |
+| featurefusion_statfed_teacher | search | bad_outlier_stress | 0.034247 | 0.022075 | 0.000000 | 0.000000 | 0.034247 | 0 | 0 | 77 | nan | nan |
+| featurefusion_statfed_teacher_badcal | search | bad_outlier_stress | 0.065068 | 0.040729 | 0.000000 | 0.000000 | 0.065068 | 0 | 0 | 77 | nan | nan |
+| featurefusion_stressbank_teacher | search | synthetic_val | 0.994183 | 0.992836 | 0.995086 | 0.998106 | 0.976562 | 2 | 2 | 6 | 0.7475 | 0.6495 |
+| featurefusion_stressbank_teacher | search | synthetic_test | 0.995387 | 0.993892 | 0.991632 | 1.000000 | 0.979253 | 4 | 0 | 5 | 0.7362 | 0.6159 |
+| featurefusion_stressbank_teacher_badcal | search | synthetic_test | 0.986674 | 0.975946 | 0.956067 | 1.000000 | 0.979253 | 3 | 0 | 5 | nan | nan |
+| featurefusion_stressbank_teacher | search | original_test_all_10s+ | 0.802289 | 0.689333 | 0.900000 | 0.767058 | 0.316302 | 361 | 980 | 58 | nan | nan |
+| featurefusion_stressbank_teacher_badcal | search | original_test_all_10s+ | 0.800401 | 0.678255 | 0.895604 | 0.764347 | 0.345499 | 359 | 905 | 58 | nan | nan |
+| featurefusion_stressbank_teacher | search | original_all_10s+ | 0.828529 | 0.853457 | 0.766590 | 0.875047 | 0.934721 | 3969 | 1257 | 120 | nan | nan |
+| featurefusion_stressbank_teacher_badcal | search | original_all_10s+ | 0.825495 | 0.846762 | 0.761544 | 0.872318 | 0.937559 | 3953 | 1166 | 118 | nan | nan |
+| featurefusion_stressbank_teacher | search | bad_core_nearboundary | 1.000000 | 0.333333 | 0.000000 | 0.000000 | 1.000000 | 0 | 0 | 0 | nan | nan |
+| featurefusion_stressbank_teacher_badcal | search | bad_core_nearboundary | 1.000000 | 0.333333 | 0.000000 | 0.000000 | 1.000000 | 0 | 0 | 0 | nan | nan |
+| featurefusion_stressbank_teacher | search | bad_outlier_stress | 0.037671 | 0.024202 | 0.000000 | 0.000000 | 0.037671 | 0 | 0 | 58 | nan | nan |
+| featurefusion_stressbank_teacher_badcal | search | bad_outlier_stress | 0.078767 | 0.048677 | 0.000000 | 0.000000 | 0.078767 | 0 | 0 | 58 | nan | nan |
+| featurefusion_multiscale_core | search | synthetic_val | 0.993601 | 0.992260 | 0.987715 | 1.000000 | 0.976562 | 5 | 0 | 6 | 0.7449 | 0.6422 |
+| featurefusion_multiscale_core | search | synthetic_test | 0.993849 | 0.992432 | 0.985356 | 1.000000 | 0.979253 | 7 | 0 | 5 | 0.7388 | 0.6188 |
+| featurefusion_multiscale_core_badcal | search | synthetic_test | 0.993849 | 0.992432 | 0.985356 | 1.000000 | 0.979253 | 7 | 0 | 5 | nan | nan |
+| featurefusion_multiscale_core | search | original_test_all_10s+ | 0.812434 | 0.681101 | 0.874176 | 0.812020 | 0.270073 | 458 | 785 | 103 | nan | nan |
+| featurefusion_multiscale_core_badcal | search | original_test_all_10s+ | 0.807479 | 0.676055 | 0.868956 | 0.799593 | 0.347932 | 452 | 698 | 84 | nan | nan |
+| featurefusion_multiscale_core | search | original_all_10s+ | 0.798064 | 0.830860 | 0.691310 | 0.902992 | 0.931315 | 5257 | 973 | 164 | nan | nan |
+| featurefusion_multiscale_core_badcal | search | original_all_10s+ | 0.793148 | 0.820715 | 0.684915 | 0.894900 | 0.937559 | 5230 | 868 | 145 | nan | nan |
+| featurefusion_multiscale_core | search | bad_core_nearboundary | 0.857143 | 0.307692 | 0.000000 | 0.000000 | 0.857143 | 0 | 0 | 17 | nan | nan |
+| featurefusion_multiscale_core_badcal | search | bad_core_nearboundary | 0.983193 | 0.330508 | 0.000000 | 0.000000 | 0.983193 | 0 | 0 | 2 | nan | nan |
+| featurefusion_multiscale_core | search | bad_outlier_stress | 0.030822 | 0.019934 | 0.000000 | 0.000000 | 0.030822 | 0 | 0 | 86 | nan | nan |
+| featurefusion_multiscale_core_badcal | search | bad_outlier_stress | 0.089041 | 0.054507 | 0.000000 | 0.000000 | 0.089041 | 0 | 0 | 82 | nan | nan |
 
 ## Baselines
 
@@ -74,8 +85,9 @@ M outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysi
 
 ## Candidates
 
-- `statbank_token_balanced` (search): best_epoch=4, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\statbank_token_balanced\ckpt_best.pt`
-- `statbank_token_badguard` (search): best_epoch=6, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\statbank_token_badguard\ckpt_best.pt`
+- `featurefusion_statfed_teacher` (search): best_epoch=8, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\featurefusion_statfed_teacher\ckpt_best.pt`
+- `featurefusion_stressbank_teacher` (search): best_epoch=8, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\featurefusion_stressbank_teacher\ckpt_best.pt`
+- `featurefusion_multiscale_core` (search): best_epoch=7, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\featurefusion_multiscale_core\ckpt_best.pt`
 
 ## Notes
 

@@ -42,12 +42,15 @@ M outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysi
 
 | Candidate | Run | Bucket | Acc | Macro-F1 | Good R | Medium R | Bad R | g->m | m->g | b->m | Teacher MAE | Core MAE |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| statbank_token_balanced | smoke | synthetic_val | 0.986620 | 0.985346 | 0.958231 | 1.000000 | 0.976562 | 17 | 0 | 6 | 0.7352 | 0.6530 |
-| statbank_token_balanced | smoke | synthetic_test | 0.982060 | 0.981097 | 0.943515 | 0.997565 | 0.979253 | 27 | 3 | 5 | 0.7405 | 0.6275 |
-| statbank_token_balanced_badcal | smoke | synthetic_test | 0.981548 | 0.980271 | 0.943515 | 0.996753 | 0.979253 | 27 | 3 | 5 | nan | nan |
-| statbank_token_badguard | smoke | synthetic_val | 0.972077 | 0.971923 | 0.995086 | 0.962121 | 0.976562 | 2 | 40 | 6 | 0.7530 | 0.6613 |
-| statbank_token_badguard | smoke | synthetic_test | 0.926192 | 0.933411 | 0.993724 | 0.889610 | 0.979253 | 3 | 136 | 5 | 0.7461 | 0.6277 |
-| statbank_token_badguard_badcal | smoke | synthetic_test | 0.926192 | 0.933411 | 0.993724 | 0.889610 | 0.979253 | 3 | 136 | 5 | nan | nan |
+| featurefusion_statfed_teacher | smoke | synthetic_val | 0.990692 | 0.989427 | 0.985258 | 0.996212 | 0.976562 | 6 | 4 | 6 | 0.7435 | 0.6539 |
+| featurefusion_statfed_teacher | smoke | synthetic_test | 0.992312 | 0.990994 | 0.989540 | 0.995942 | 0.979253 | 5 | 5 | 5 | 0.7414 | 0.6288 |
+| featurefusion_statfed_teacher_badcal | smoke | synthetic_test | 0.992312 | 0.990438 | 0.989540 | 0.995942 | 0.979253 | 4 | 5 | 5 | nan | nan |
+| featurefusion_stressbank_teacher | smoke | synthetic_val | 0.990692 | 0.989427 | 0.985258 | 0.996212 | 0.976562 | 6 | 4 | 6 | 0.7442 | 0.6491 |
+| featurefusion_stressbank_teacher | smoke | synthetic_test | 0.990774 | 0.989291 | 0.972803 | 0.999188 | 0.983402 | 12 | 1 | 4 | 0.7375 | 0.6294 |
+| featurefusion_stressbank_teacher_badcal | smoke | synthetic_test | 0.990774 | 0.988738 | 0.972803 | 0.999188 | 0.983402 | 11 | 1 | 4 | nan | nan |
+| featurefusion_multiscale_core | smoke | synthetic_val | 0.987784 | 0.986508 | 0.963145 | 1.000000 | 0.976562 | 15 | 0 | 6 | 0.7492 | 0.6648 |
+| featurefusion_multiscale_core | smoke | synthetic_test | 0.985648 | 0.983431 | 0.951883 | 1.000000 | 0.979253 | 21 | 0 | 5 | 0.7409 | 0.6302 |
+| featurefusion_multiscale_core_badcal | smoke | synthetic_test | 0.985136 | 0.982631 | 0.951883 | 0.998377 | 0.983402 | 21 | 0 | 4 | nan | nan |
 
 ## Baselines
 
@@ -58,8 +61,9 @@ M outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysi
 
 ## Candidates
 
-- `statbank_token_balanced` (smoke): best_epoch=2, useful_gate=pass, original_report_ran=False, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\smoke\statbank_token_balanced\ckpt_best.pt`
-- `statbank_token_badguard` (smoke): best_epoch=2, useful_gate=fail, original_report_ran=False, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\smoke\statbank_token_badguard\ckpt_best.pt`
+- `featurefusion_statfed_teacher` (smoke): best_epoch=1, useful_gate=pass, original_report_ran=False, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\smoke\featurefusion_statfed_teacher\ckpt_best.pt`
+- `featurefusion_stressbank_teacher` (smoke): best_epoch=2, useful_gate=pass, original_report_ran=False, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\smoke\featurefusion_stressbank_teacher\ckpt_best.pt`
+- `featurefusion_multiscale_core` (smoke): best_epoch=1, useful_gate=pass, original_report_ran=False, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\smoke\featurefusion_multiscale_core\ckpt_best.pt`
 
 ## Notes
 
