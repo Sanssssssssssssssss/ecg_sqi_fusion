@@ -377,6 +377,188 @@ CANDIDATES: dict[str, dict[str, Any]] = {
         "recon_weight": 0.0,
         "seed": 20260814,
     },
+    "statfed_patch_tx": {
+        "arch": "statfed_patch",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 160,
+        "lr": 4.4e-4,
+        "class_weight": [1.00, 1.24, 2.30],
+        "focal_gamma": 0.9,
+        "aux_weight": 0.72,
+        "core_aux_weight": 0.84,
+        "neighbor_weight": 0.45,
+        "neighbor_tau": 0.42,
+        "supcon_weight": 0.14,
+        "rank_weight": 0.34,
+        "recon_weight": 0.0,
+        "augment_strength": 0.28,
+        "bad_outlier_aug_strength": 1.30,
+        "seed": 20260815,
+    },
+    "statfed_patch_atlas_tx": {
+        "arch": "statfed_patch_atlas",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 160,
+        "prototypes_per_class": 8,
+        "lr": 4.2e-4,
+        "class_weight": [1.00, 1.24, 2.35],
+        "focal_gamma": 0.9,
+        "aux_weight": 0.72,
+        "core_aux_weight": 0.84,
+        "neighbor_weight": 0.45,
+        "neighbor_tau": 0.42,
+        "supcon_weight": 0.16,
+        "rank_weight": 0.34,
+        "recon_weight": 0.0,
+        "augment_strength": 0.28,
+        "bad_outlier_aug_strength": 1.35,
+        "seed": 20260816,
+    },
+    "statfed_patch_medium_guard": {
+        "arch": "statfed_patch",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 160,
+        "lr": 4.2e-4,
+        "class_weight": [1.00, 1.55, 2.15],
+        "focal_gamma": 0.9,
+        "aux_weight": 0.72,
+        "core_aux_weight": 0.84,
+        "neighbor_weight": 0.42,
+        "neighbor_tau": 0.42,
+        "supcon_weight": 0.14,
+        "rank_weight": 0.34,
+        "recon_weight": 0.0,
+        "augment_strength": 0.26,
+        "bad_outlier_aug_strength": 1.25,
+        "seed": 20260817,
+    },
+    "statfed_patch_badstress_guard": {
+        "arch": "statfed_patch",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 160,
+        "lr": 4.2e-4,
+        "class_weight": [1.00, 1.34, 2.85],
+        "focal_gamma": 1.0,
+        "aux_weight": 0.72,
+        "core_aux_weight": 0.84,
+        "neighbor_weight": 0.40,
+        "neighbor_tau": 0.42,
+        "supcon_weight": 0.16,
+        "rank_weight": 0.34,
+        "recon_weight": 0.0,
+        "augment_strength": 0.30,
+        "bad_outlier_aug_strength": 2.20,
+        "seed": 20260818,
+    },
+    "multiscale_statpatch_balanced": {
+        "arch": "multiscale_stat_patch",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "scales": [50, 100, 250, 500],
+        "stat_hidden": 192,
+        "lr": 4.0e-4,
+        "class_weight": [1.00, 1.42, 2.45],
+        "focal_gamma": 0.95,
+        "aux_weight": 0.78,
+        "core_aux_weight": 0.90,
+        "neighbor_weight": 0.48,
+        "neighbor_tau": 0.42,
+        "supcon_weight": 0.16,
+        "rank_weight": 0.38,
+        "recon_weight": 0.0,
+        "augment_strength": 0.30,
+        "bad_outlier_aug_strength": 1.70,
+        "seed": 20260819,
+    },
+    "multiscale_statpatch_medium_badguard": {
+        "arch": "multiscale_stat_patch",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "scales": [50, 100, 250, 500],
+        "stat_hidden": 192,
+        "lr": 3.8e-4,
+        "class_weight": [1.00, 1.55, 2.80],
+        "focal_gamma": 1.05,
+        "aux_weight": 0.78,
+        "core_aux_weight": 0.92,
+        "neighbor_weight": 0.48,
+        "neighbor_tau": 0.42,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.38,
+        "recon_weight": 0.0,
+        "augment_strength": 0.34,
+        "bad_outlier_aug_strength": 2.35,
+        "seed": 20260820,
+    },
+    "multiscale_statpatch_stress_shell": {
+        "arch": "multiscale_stat_patch",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "scales": [50, 100, 250, 500],
+        "stat_hidden": 192,
+        "lr": 3.8e-4,
+        "class_weight": [1.00, 1.44, 2.95],
+        "focal_gamma": 1.05,
+        "aux_weight": 0.78,
+        "core_aux_weight": 0.92,
+        "neighbor_weight": 0.48,
+        "neighbor_tau": 0.42,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.38,
+        "recon_weight": 0.0,
+        "augment_strength": 0.32,
+        "bad_outlier_aug_strength": 1.15,
+        "bad_stress_shell_strength": 1.35,
+        "seed": 20260821,
+    },
+    "statfed_patch_stress_shell": {
+        "arch": "statfed_patch",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 160,
+        "lr": 4.0e-4,
+        "class_weight": [1.00, 1.42, 2.95],
+        "focal_gamma": 1.05,
+        "aux_weight": 0.72,
+        "core_aux_weight": 0.86,
+        "neighbor_weight": 0.42,
+        "neighbor_tau": 0.42,
+        "supcon_weight": 0.16,
+        "rank_weight": 0.34,
+        "recon_weight": 0.0,
+        "augment_strength": 0.30,
+        "bad_outlier_aug_strength": 1.05,
+        "bad_stress_shell_strength": 1.25,
+        "seed": 20260822,
+    },
 }
 
 
@@ -504,6 +686,129 @@ class MaskedGeometryMAEEncoder(PatchStudentEncoder):
         feat = torch.cat([cls, self.pool(body), body.mean(dim=1)], dim=1)
         recon = self.decoder(body)
         return feat, recon, mask if mask is not None else torch.ones(body.shape[:2], dtype=torch.bool, device=x.device)
+
+
+def patch_stat_features(x: torch.Tensor, patch: int) -> torch.Tensor:
+    eps = 1e-6
+    b, c, n = x.shape
+    keep = (n // patch) * patch
+    chunks = x[:, :, :keep].reshape(b, c, keep // patch, patch)
+    diff = chunks[..., 1:] - chunks[..., :-1]
+    mean = chunks.mean(dim=3)
+    std = chunks.std(dim=3)
+    mean_abs = chunks.abs().mean(dim=3)
+    rms = torch.sqrt((chunks * chunks).mean(dim=3) + eps)
+    ptp = chunks.amax(dim=3) - chunks.amin(dim=3)
+    diff_abs = diff.abs().mean(dim=3)
+    flat = (diff.abs() < 0.015).float().mean(dim=3)
+    low_amp = (chunks.abs() < 0.050).float().mean(dim=3)
+    zcr = ((chunks[..., 1:] * chunks[..., :-1]) < 0).float().mean(dim=3)
+    slope = (chunks[..., -1] - chunks[..., 0]).abs()
+    return torch.stack([mean, std, mean_abs, rms, ptp, diff_abs, flat, low_amp, zcr, slope], dim=3)
+
+
+class StatFedPatchTransformer(nn.Module):
+    """Patch Transformer with waveform-derived local/global statistics injected at tokenization."""
+
+    def __init__(self, in_ch: int, width: int, layers: int, heads: int, patch: int, stat_hidden: int):
+        super().__init__()
+        self.in_ch = int(in_ch)
+        self.patch = int(patch)
+        self.patch_proj = nn.Linear(self.patch, width)
+        self.patch_stat_proj = nn.Sequential(nn.LayerNorm(10), nn.Linear(10, width), nn.GELU())
+        self.channel_embed = nn.Parameter(torch.randn(in_ch, width) * 0.02)
+        self.cls = nn.Parameter(torch.randn(1, 1, width) * 0.02)
+        self.global_stat = nn.Sequential(
+            nn.LayerNorm(in_ch * 31),
+            nn.Linear(in_ch * 31, stat_hidden),
+            nn.GELU(),
+            nn.Dropout(0.08),
+            nn.Linear(stat_hidden, width),
+            nn.GELU(),
+        )
+        self.pos = PositionalEncoding(width, max_len=1024)
+        self.encoder = nn.TransformerEncoder(make_encoder_layer(width, heads), num_layers=layers)
+        self.pool = AttentionPool(width)
+        self.out_dim = width * 4
+
+    def tokenize(self, x: torch.Tensor) -> torch.Tensor:
+        b, c, n = x.shape
+        keep = (n // self.patch) * self.patch
+        patch_count = keep // self.patch
+        chunks = x[:, :, :keep].reshape(b, c, patch_count, self.patch)
+        raw_tokens = self.patch_proj(chunks).reshape(b, c * patch_count, -1)
+        stat_tokens = self.patch_stat_proj(patch_stat_features(x, self.patch)).reshape(b, c * patch_count, -1)
+        ch = self.channel_embed[:, None, :].expand(c, patch_count, -1).reshape(1, c * patch_count, -1)
+        global_stats = torch.cat([waveform_stats_v2(x), qrs_detail_stats(x)], dim=1)
+        global_token = self.global_stat(global_stats).unsqueeze(1)
+        cls = self.cls.expand(b, -1, -1)
+        return torch.cat([cls, global_token, raw_tokens + stat_tokens + ch], dim=1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        tokens = self.encoder(self.pos(self.tokenize(x)))
+        cls = tokens[:, 0, :]
+        global_token = tokens[:, 1, :]
+        body = tokens[:, 2:, :]
+        return torch.cat([cls, global_token, self.pool(body), body.mean(dim=1)], dim=1)
+
+
+class MultiScaleStatPatchTransformer(nn.Module):
+    """Patch Transformer with raw patches plus multi-scale waveform statistic tokens."""
+
+    def __init__(self, in_ch: int, width: int, layers: int, heads: int, patch: int, stat_hidden: int, scales: list[int]):
+        super().__init__()
+        self.in_ch = int(in_ch)
+        self.patch = int(patch)
+        self.scales = [int(s) for s in scales if int(s) > 0]
+        self.patch_proj = nn.Linear(self.patch, width)
+        self.patch_stat_proj = nn.Sequential(nn.LayerNorm(10), nn.Linear(10, width), nn.GELU())
+        self.scale_stat_proj = nn.Sequential(nn.LayerNorm(10), nn.Linear(10, width), nn.GELU(), nn.Linear(width, width))
+        self.channel_embed = nn.Parameter(torch.randn(in_ch, width) * 0.02)
+        self.raw_scale_embed = nn.Parameter(torch.randn(1, 1, width) * 0.02)
+        self.scale_embed = nn.Parameter(torch.randn(max(1, len(self.scales)), width) * 0.02)
+        self.cls = nn.Parameter(torch.randn(1, 1, width) * 0.02)
+        self.global_stat = nn.Sequential(
+            nn.LayerNorm(in_ch * 31),
+            nn.Linear(in_ch * 31, stat_hidden),
+            nn.GELU(),
+            nn.Dropout(0.08),
+            nn.Linear(stat_hidden, width),
+            nn.GELU(),
+        )
+        self.pos = PositionalEncoding(width, max_len=2048)
+        self.encoder = nn.TransformerEncoder(make_encoder_layer(width, heads), num_layers=layers)
+        self.pool = AttentionPool(width)
+        self.out_dim = width * 4
+
+    def _channel_tokens(self, count: int) -> torch.Tensor:
+        return self.channel_embed[:, None, :].expand(self.in_ch, count, -1).reshape(1, self.in_ch * count, -1)
+
+    def tokenize(self, x: torch.Tensor) -> torch.Tensor:
+        b, c, n = x.shape
+        keep = (n // self.patch) * self.patch
+        patch_count = keep // self.patch
+        chunks = x[:, :, :keep].reshape(b, c, patch_count, self.patch)
+        raw_tokens = self.patch_proj(chunks).reshape(b, c * patch_count, -1)
+        stat_tokens = self.patch_stat_proj(patch_stat_features(x, self.patch)).reshape(b, c * patch_count, -1)
+        raw_tokens = raw_tokens + stat_tokens + self._channel_tokens(patch_count) + self.raw_scale_embed
+        parts = [raw_tokens]
+        for i, scale in enumerate(self.scales):
+            scale_stats = patch_stat_features(x, scale)
+            count = scale_stats.shape[2]
+            scale_tokens = self.scale_stat_proj(scale_stats).reshape(b, c * count, -1)
+            scale_tokens = scale_tokens + self._channel_tokens(count) + self.scale_embed[i].view(1, 1, -1)
+            parts.append(scale_tokens)
+        global_stats = torch.cat([waveform_stats_v2(x), qrs_detail_stats(x)], dim=1)
+        global_token = self.global_stat(global_stats).unsqueeze(1)
+        cls = self.cls.expand(b, -1, -1)
+        return torch.cat([cls, global_token, *parts], dim=1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        tokens = self.encoder(self.pos(self.tokenize(x)))
+        cls = tokens[:, 0, :]
+        global_token = tokens[:, 1, :]
+        body = tokens[:, 2:, :]
+        return torch.cat([cls, global_token, self.pool(body), body.mean(dim=1)], dim=1)
 
 
 class ConvSubsampleEncoder(nn.Module):
@@ -722,6 +1027,36 @@ class GeometryStudent(nn.Module):
             base = QRSDetailTokenTransformer(in_ch, width, layers, heads, int(cfg["stat_hidden"]))
             self.encoder = AtlasMemoryTransformer(base, base.out_dim, int(cfg["prototypes_per_class"]))
             out_dim = self.encoder.out_dim
+        elif arch == "statfed_patch":
+            self.encoder = StatFedPatchTransformer(in_ch, width, layers, heads, int(cfg["patch"]), int(cfg["stat_hidden"]))
+            out_dim = self.encoder.out_dim
+        elif arch == "statfed_patch_atlas":
+            base = StatFedPatchTransformer(in_ch, width, layers, heads, int(cfg["patch"]), int(cfg["stat_hidden"]))
+            self.encoder = AtlasMemoryTransformer(base, base.out_dim, int(cfg["prototypes_per_class"]))
+            out_dim = self.encoder.out_dim
+        elif arch == "multiscale_stat_patch":
+            self.encoder = MultiScaleStatPatchTransformer(
+                in_ch,
+                width,
+                layers,
+                heads,
+                int(cfg["patch"]),
+                int(cfg["stat_hidden"]),
+                list(cfg.get("scales", [50, 100, 250, 500])),
+            )
+            out_dim = self.encoder.out_dim
+        elif arch == "multiscale_stat_patch_atlas":
+            base = MultiScaleStatPatchTransformer(
+                in_ch,
+                width,
+                layers,
+                heads,
+                int(cfg["patch"]),
+                int(cfg["stat_hidden"]),
+                list(cfg.get("scales", [50, 100, 250, 500])),
+            )
+            self.encoder = AtlasMemoryTransformer(base, base.out_dim, int(cfg["prototypes_per_class"]))
+            out_dim = self.encoder.out_dim
         else:
             raise ValueError(f"unknown architecture {arch}")
         if self.use_teacher_atlas:
@@ -776,10 +1111,11 @@ class GeometryStudent(nn.Module):
 
 
 class AugmentedSyntheticDataset(torch.utils.data.Dataset):
-    def __init__(self, base: Any, strength: float, seed: int, bad_strength: float):
+    def __init__(self, base: Any, strength: float, seed: int, bad_strength: float, bad_stress_strength: float = 0.0):
         self.base = base
         self.strength = float(strength)
         self.bad_strength = float(bad_strength)
+        self.bad_stress_strength = float(bad_stress_strength)
         self.rng = np.random.default_rng(seed)
         self.x = base.x
         self.y = base.y
@@ -795,7 +1131,7 @@ class AugmentedSyntheticDataset(torch.utils.data.Dataset):
         item = self.base[i]
         x = item["x"].detach().cpu().numpy().astype(np.float32, copy=True)
         y = int(item["y"])
-        x = augment_synthetic_waveform(x, self.rng, self.strength, y, self.bad_strength)
+        x = augment_synthetic_waveform(x, self.rng, self.strength, y, self.bad_strength, self.bad_stress_strength)
         return {"x": torch.from_numpy(x), "aux": item["aux"], "y": item["y"]}
 
 
@@ -845,7 +1181,14 @@ def waveform_stats_v2(x: torch.Tensor) -> torch.Tensor:
     )
 
 
-def augment_synthetic_waveform(x: np.ndarray, rng: np.random.Generator, strength: float, y: int, bad_strength: float) -> np.ndarray:
+def augment_synthetic_waveform(
+    x: np.ndarray,
+    rng: np.random.Generator,
+    strength: float,
+    y: int,
+    bad_strength: float,
+    bad_stress_strength: float = 0.0,
+) -> np.ndarray:
     if strength > 0:
         if rng.random() < 0.65:
             x = np.roll(x, int(rng.integers(-32, 33)), axis=1)
@@ -859,6 +1202,8 @@ def augment_synthetic_waveform(x: np.ndarray, rng: np.random.Generator, strength
             x[:, start : start + width] *= float(rng.uniform(0.15, 0.70))
     if y == CLASS_TO_INT["bad"] and bad_strength > 0:
         x = augment_controlled_bad_outlier(x, rng, bad_strength)
+    if y == CLASS_TO_INT["bad"] and bad_stress_strength > 0:
+        x = augment_bad_stress_shell(x, rng, bad_stress_strength)
     return np.nan_to_num(x, nan=0.0, posinf=0.0, neginf=0.0).astype(np.float32)
 
 
@@ -879,6 +1224,32 @@ def augment_controlled_bad_outlier(x: np.ndarray, rng: np.random.Generator, stre
     if rng.random() < 0.45:
         clip = float(rng.uniform(0.45, 1.05))
         x = np.clip(x, -clip, clip)
+    return x
+
+
+def augment_bad_stress_shell(x: np.ndarray, rng: np.random.Generator, strength: float) -> np.ndarray:
+    """Mimic original bad-stress robust3 shell: flat/contact spans plus baseline drift."""
+
+    n = x.shape[1]
+    if rng.random() < min(0.95, 0.55 + 0.22 * float(strength)):
+        width = int(rng.integers(max(80, n // 5), max(120, int(n * 0.62))))
+        start = int(rng.integers(0, max(1, n - width)))
+        level = float(rng.uniform(-0.18, 0.18))
+        x[0, start : start + width] = level + rng.normal(0.0, 0.006 * float(strength), size=width).astype(np.float32)
+        if x.shape[0] > 1:
+            x[1, start : start + width] = rng.normal(0.0, 0.004 * float(strength), size=width).astype(np.float32)
+        if x.shape[0] > 2:
+            plateau = float(rng.uniform(-1.8, 1.8) * float(strength))
+            ramp = np.linspace(-0.35, 0.35, width, dtype=np.float32) * float(rng.uniform(0.4, 1.4))
+            x[2, start : start + width] += plateau + ramp
+    if x.shape[0] > 2 and rng.random() < 0.85:
+        t = np.linspace(-1.0, 1.0, n, dtype=np.float32)
+        drift = float(rng.uniform(0.55, 1.65) * float(strength))
+        x[2] += drift * (0.55 * t + 0.45 * np.sin(np.pi * t + float(rng.uniform(-1.2, 1.2))))
+    if rng.random() < 0.45:
+        width = int(rng.integers(max(60, n // 8), max(90, n // 3)))
+        start = int(rng.integers(0, max(1, n - width)))
+        x[:, start : start + width] *= float(rng.uniform(0.02, 0.20))
     return x
 
 
@@ -988,12 +1359,17 @@ def train_candidate(
     np.random.seed(int(cfg["seed"]))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     base_train_ds = ARCH.SyntheticWaveDataset("train", str(cfg["channels"]))
-    if float(cfg.get("augment_strength", 0.0)) > 0 or float(cfg.get("bad_outlier_aug_strength", 0.0)) > 0:
+    if (
+        float(cfg.get("augment_strength", 0.0)) > 0
+        or float(cfg.get("bad_outlier_aug_strength", 0.0)) > 0
+        or float(cfg.get("bad_stress_shell_strength", 0.0)) > 0
+    ):
         train_ds = AugmentedSyntheticDataset(
             base_train_ds,
             float(cfg.get("augment_strength", 0.0)),
             int(cfg["seed"]),
             float(cfg.get("bad_outlier_aug_strength", 0.0)),
+            float(cfg.get("bad_stress_shell_strength", 0.0)),
         )
     else:
         train_ds = base_train_ds

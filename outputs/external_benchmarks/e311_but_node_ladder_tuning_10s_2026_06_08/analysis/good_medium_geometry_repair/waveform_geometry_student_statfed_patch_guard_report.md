@@ -42,28 +42,28 @@ M outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysi
 
 | Candidate | Run | Bucket | Acc | Macro-F1 | Good R | Medium R | Bad R | g->m | m->g | b->m | Teacher MAE | Core MAE |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| multiscale_statpatch_stress_shell | search | synthetic_val | 0.995346 | 0.993969 | 0.995086 | 1.000000 | 0.976562 | 2 | 0 | 6 | 0.7677 | 0.6458 |
-| multiscale_statpatch_stress_shell | search | synthetic_test | 0.995387 | 0.993892 | 0.991632 | 1.000000 | 0.979253 | 4 | 0 | 5 | 0.7592 | 0.6158 |
-| multiscale_statpatch_stress_shell_badcal | search | synthetic_test | 0.995387 | 0.993892 | 0.991632 | 1.000000 | 0.979253 | 4 | 0 | 5 | nan | nan |
-| multiscale_statpatch_stress_shell | search | original_test_all_10s+ | 0.765483 | 0.604574 | 0.889011 | 0.721419 | 0.145985 | 404 | 1230 | 112 | nan | nan |
-| multiscale_statpatch_stress_shell_badcal | search | original_test_all_10s+ | 0.768196 | 0.659436 | 0.887637 | 0.713285 | 0.301703 | 400 | 1217 | 55 | nan | nan |
-| multiscale_statpatch_stress_shell | search | original_all_10s+ | 0.777370 | 0.814288 | 0.679458 | 0.863568 | 0.919773 | 5462 | 1443 | 183 | nan | nan |
-| multiscale_statpatch_stress_shell_badcal | search | original_all_10s+ | 0.777855 | 0.814251 | 0.678930 | 0.858675 | 0.934342 | 5458 | 1426 | 114 | nan | nan |
-| multiscale_statpatch_stress_shell | search | bad_core_nearboundary | 0.504202 | 0.223464 | 0.000000 | 0.000000 | 0.504202 | 0 | 0 | 59 | nan | nan |
-| multiscale_statpatch_stress_shell_badcal | search | bad_core_nearboundary | 0.941176 | 0.323232 | 0.000000 | 0.000000 | 0.941176 | 0 | 0 | 7 | nan | nan |
-| multiscale_statpatch_stress_shell | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 53 | nan | nan |
-| multiscale_statpatch_stress_shell_badcal | search | bad_outlier_stress | 0.041096 | 0.026316 | 0.000000 | 0.000000 | 0.041096 | 0 | 0 | 48 | nan | nan |
-| statfed_patch_stress_shell | search | synthetic_val | 0.993601 | 0.992264 | 0.990172 | 0.999053 | 0.976562 | 4 | 1 | 6 | 0.7521 | 0.6470 |
-| statfed_patch_stress_shell | search | synthetic_test | 0.994874 | 0.993406 | 0.989540 | 1.000000 | 0.979253 | 5 | 0 | 5 | 0.7453 | 0.6158 |
-| statfed_patch_stress_shell_badcal | search | synthetic_test | 0.994362 | 0.991478 | 0.989540 | 0.999188 | 0.979253 | 3 | 0 | 5 | nan | nan |
-| statfed_patch_stress_shell | search | original_test_all_10s+ | 0.800047 | 0.649800 | 0.856868 | 0.809761 | 0.192214 | 521 | 842 | 114 | nan | nan |
-| statfed_patch_stress_shell_badcal | search | original_test_all_10s+ | 0.803940 | 0.692677 | 0.856868 | 0.807049 | 0.301703 | 518 | 838 | 73 | nan | nan |
-| statfed_patch_stress_shell | search | original_all_10s+ | 0.783924 | 0.820610 | 0.664848 | 0.905438 | 0.923557 | 5711 | 1004 | 183 | nan | nan |
-| statfed_patch_stress_shell_badcal | search | original_all_10s+ | 0.783560 | 0.817989 | 0.664672 | 0.899323 | 0.934153 | 5632 | 998 | 133 | nan | nan |
-| statfed_patch_stress_shell | search | bad_core_nearboundary | 0.663866 | 0.265993 | 0.000000 | 0.000000 | 0.663866 | 0 | 0 | 40 | nan | nan |
-| statfed_patch_stress_shell_badcal | search | bad_core_nearboundary | 1.000000 | 0.333333 | 0.000000 | 0.000000 | 1.000000 | 0 | 0 | 0 | nan | nan |
-| statfed_patch_stress_shell | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 74 | nan | nan |
-| statfed_patch_stress_shell_badcal | search | bad_outlier_stress | 0.017123 | 0.011223 | 0.000000 | 0.000000 | 0.017123 | 0 | 0 | 73 | nan | nan |
+| statfed_patch_medium_guard | search | synthetic_val | 0.993601 | 0.992023 | 0.990172 | 0.999053 | 0.976562 | 4 | 0 | 6 | 0.7652 | 0.6532 |
+| statfed_patch_medium_guard | search | synthetic_test | 0.995387 | 0.993892 | 0.991632 | 1.000000 | 0.979253 | 4 | 0 | 5 | 0.7587 | 0.6229 |
+| statfed_patch_medium_guard_badcal | search | synthetic_test | 0.995387 | 0.993892 | 0.991632 | 1.000000 | 0.979253 | 4 | 0 | 5 | nan | nan |
+| statfed_patch_medium_guard | search | original_test_all_10s+ | 0.804530 | 0.643224 | 0.892582 | 0.791008 | 0.170316 | 391 | 925 | 148 | nan | nan |
+| statfed_patch_medium_guard_badcal | search | original_test_all_10s+ | 0.805710 | 0.656941 | 0.892582 | 0.790556 | 0.199513 | 391 | 925 | 136 | nan | nan |
+| statfed_patch_medium_guard | search | original_all_10s+ | 0.800704 | 0.832619 | 0.705451 | 0.894806 | 0.918638 | 5020 | 1113 | 222 | nan | nan |
+| statfed_patch_medium_guard_badcal | search | original_all_10s+ | 0.800977 | 0.832987 | 0.705451 | 0.894148 | 0.921665 | 5020 | 1113 | 207 | nan | nan |
+| statfed_patch_medium_guard | search | bad_core_nearboundary | 0.588235 | 0.246914 | 0.000000 | 0.000000 | 0.588235 | 0 | 0 | 49 | nan | nan |
+| statfed_patch_medium_guard_badcal | search | bad_core_nearboundary | 0.689076 | 0.271973 | 0.000000 | 0.000000 | 0.689076 | 0 | 0 | 37 | nan | nan |
+| statfed_patch_medium_guard | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 99 | nan | nan |
+| statfed_patch_medium_guard_badcal | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 99 | nan | nan |
+| statfed_patch_badstress_guard | search | synthetic_val | 0.994183 | 0.992836 | 0.995086 | 0.998106 | 0.976562 | 2 | 2 | 6 | 0.7514 | 0.6429 |
+| statfed_patch_badstress_guard | search | synthetic_test | 0.994874 | 0.993409 | 0.991632 | 0.999188 | 0.979253 | 4 | 1 | 5 | 0.7478 | 0.6110 |
+| statfed_patch_badstress_guard_badcal | search | synthetic_test | 0.994874 | 0.993409 | 0.991632 | 0.999188 | 0.979253 | 4 | 1 | 5 | nan | nan |
+| statfed_patch_badstress_guard | search | original_test_all_10s+ | 0.760293 | 0.663326 | 0.890934 | 0.696566 | 0.289538 | 397 | 1343 | 55 | nan | nan |
+| statfed_patch_badstress_guard_badcal | search | original_test_all_10s+ | 0.760175 | 0.662993 | 0.890934 | 0.696340 | 0.289538 | 397 | 1343 | 55 | nan | nan |
+| statfed_patch_badstress_guard | search | original_all_10s+ | 0.786351 | 0.822294 | 0.700816 | 0.851148 | 0.931883 | 5099 | 1582 | 122 | nan | nan |
+| statfed_patch_badstress_guard_badcal | search | original_all_10s+ | 0.786382 | 0.822322 | 0.700816 | 0.850866 | 0.932640 | 5099 | 1582 | 118 | nan | nan |
+| statfed_patch_badstress_guard | search | bad_core_nearboundary | 1.000000 | 0.333333 | 0.000000 | 0.000000 | 1.000000 | 0 | 0 | 0 | nan | nan |
+| statfed_patch_badstress_guard_badcal | search | bad_core_nearboundary | 1.000000 | 0.333333 | 0.000000 | 0.000000 | 1.000000 | 0 | 0 | 0 | nan | nan |
+| statfed_patch_badstress_guard | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 55 | nan | nan |
+| statfed_patch_badstress_guard_badcal | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 55 | nan | nan |
 
 ## Baselines
 
@@ -74,8 +74,8 @@ M outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysi
 
 ## Candidates
 
-- `multiscale_statpatch_stress_shell` (search): best_epoch=7, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\multiscale_statpatch_stress_shell\ckpt_best.pt`
-- `statfed_patch_stress_shell` (search): best_epoch=7, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\statfed_patch_stress_shell\ckpt_best.pt`
+- `statfed_patch_medium_guard` (search): best_epoch=4, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\statfed_patch_medium_guard\ckpt_best.pt`
+- `statfed_patch_badstress_guard` (search): best_epoch=8, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\statfed_patch_badstress_guard\ckpt_best.pt`
 
 ## Notes
 

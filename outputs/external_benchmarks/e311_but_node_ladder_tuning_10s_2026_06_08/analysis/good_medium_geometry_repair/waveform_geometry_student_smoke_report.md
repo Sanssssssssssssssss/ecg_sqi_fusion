@@ -42,12 +42,12 @@ M outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysi
 
 | Candidate | Run | Bucket | Acc | Macro-F1 | Good R | Medium R | Bad R | g->m | m->g | b->m | Teacher MAE | Core MAE |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| neighbor_stattoken_student | smoke | synthetic_val | 0.990111 | 0.988872 | 0.987715 | 0.994318 | 0.976562 | 5 | 6 | 6 | 0.7508 | 0.6394 |
-| neighbor_stattoken_student | smoke | synthetic_test | 0.988211 | 0.987103 | 0.976987 | 0.994318 | 0.979253 | 11 | 7 | 5 | 0.7453 | 0.6220 |
-| neighbor_stattoken_student_badcal | smoke | synthetic_test | 0.988724 | 0.987942 | 0.976987 | 0.994318 | 0.983402 | 11 | 7 | 4 | nan | nan |
-| neighbor_hybrid_atlas_student | smoke | synthetic_val | 0.961606 | 0.952109 | 0.990172 | 0.942235 | 0.996094 | 4 | 5 | 1 | 0.7634 | 0.6769 |
-| neighbor_hybrid_atlas_student | smoke | synthetic_test | 0.995387 | 0.994620 | 0.993724 | 0.995942 | 0.995851 | 3 | 3 | 1 | 0.7518 | 0.6247 |
-| neighbor_hybrid_atlas_student_badcal | smoke | synthetic_test | 0.995900 | 0.995447 | 0.993724 | 0.995942 | 1.000000 | 3 | 3 | 0 | nan | nan |
+| multiscale_statpatch_stress_shell | smoke | synthetic_val | 0.980803 | 0.979253 | 0.936118 | 1.000000 | 0.972656 | 26 | 0 | 7 | 0.7645 | 0.6492 |
+| multiscale_statpatch_stress_shell | smoke | synthetic_test | 0.973347 | 0.972382 | 0.901674 | 1.000000 | 0.979253 | 47 | 0 | 5 | 0.7524 | 0.6198 |
+| multiscale_statpatch_stress_shell_badcal | smoke | synthetic_test | 0.973860 | 0.973216 | 0.901674 | 1.000000 | 0.983402 | 47 | 0 | 4 | nan | nan |
+| statfed_patch_stress_shell | smoke | synthetic_val | 0.989529 | 0.988243 | 0.970516 | 1.000000 | 0.976562 | 12 | 0 | 6 | 0.7476 | 0.6494 |
+| statfed_patch_stress_shell | smoke | synthetic_test | 0.990261 | 0.989001 | 0.970711 | 1.000000 | 0.979253 | 14 | 0 | 5 | 0.7416 | 0.6159 |
+| statfed_patch_stress_shell_badcal | smoke | synthetic_test | 0.990774 | 0.989849 | 0.970711 | 0.999188 | 0.987552 | 14 | 0 | 3 | nan | nan |
 
 ## Baselines
 
@@ -58,8 +58,8 @@ M outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysi
 
 ## Candidates
 
-- `neighbor_stattoken_student` (smoke): best_epoch=2, useful_gate=pass, original_report_ran=False, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\smoke\neighbor_stattoken_student\ckpt_best.pt`
-- `neighbor_hybrid_atlas_student` (smoke): best_epoch=2, useful_gate=pass, original_report_ran=False, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\smoke\neighbor_hybrid_atlas_student\ckpt_best.pt`
+- `multiscale_statpatch_stress_shell` (smoke): best_epoch=1, useful_gate=fail, original_report_ran=False, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\smoke\multiscale_statpatch_stress_shell\ckpt_best.pt`
+- `statfed_patch_stress_shell` (smoke): best_epoch=1, useful_gate=pass, original_report_ran=False, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\smoke\statfed_patch_stress_shell\ckpt_best.pt`
 
 ## Notes
 
