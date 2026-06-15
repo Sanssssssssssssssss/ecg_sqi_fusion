@@ -42,28 +42,28 @@ M outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysi
 
 | Candidate | Run | Bucket | Acc | Macro-F1 | Good R | Medium R | Bad R | g->m | m->g | b->m | Teacher MAE | Core MAE |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| statbank_token_balanced | search | synthetic_val | 0.992437 | 0.991122 | 0.985258 | 0.999053 | 0.976562 | 6 | 1 | 6 | 0.7369 | 0.6486 |
-| statbank_token_balanced | search | synthetic_test | 0.992312 | 0.991000 | 0.991632 | 0.995130 | 0.979253 | 4 | 6 | 5 | 0.7424 | 0.6222 |
-| statbank_token_balanced_badcal | search | synthetic_test | 0.992312 | 0.991000 | 0.991632 | 0.995130 | 0.979253 | 4 | 6 | 5 | nan | nan |
-| statbank_token_balanced | search | original_test_all_10s+ | 0.766073 | 0.662647 | 0.875824 | 0.721193 | 0.277372 | 452 | 1234 | 32 | nan | nan |
-| statbank_token_balanced_badcal | search | original_test_all_10s+ | 0.764539 | 0.660990 | 0.875824 | 0.717126 | 0.289538 | 452 | 1230 | 27 | nan | nan |
-| statbank_token_balanced | search | original_all_10s+ | 0.811142 | 0.840934 | 0.751159 | 0.847384 | 0.931693 | 4240 | 1621 | 95 | nan | nan |
-| statbank_token_balanced_badcal | search | original_all_10s+ | 0.810475 | 0.839571 | 0.750983 | 0.843432 | 0.936045 | 4238 | 1614 | 72 | nan | nan |
-| statbank_token_balanced | search | bad_core_nearboundary | 0.957983 | 0.326180 | 0.000000 | 0.000000 | 0.957983 | 0 | 0 | 5 | nan | nan |
-| statbank_token_balanced_badcal | search | bad_core_nearboundary | 1.000000 | 0.333333 | 0.000000 | 0.000000 | 1.000000 | 0 | 0 | 0 | nan | nan |
-| statbank_token_balanced | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 27 | nan | nan |
-| statbank_token_balanced_badcal | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 27 | nan | nan |
-| statbank_token_badguard | search | synthetic_val | 0.993601 | 0.992264 | 0.990172 | 0.999053 | 0.976562 | 4 | 1 | 6 | 0.7485 | 0.6508 |
-| statbank_token_badguard | search | synthetic_test | 0.991799 | 0.990514 | 0.989540 | 0.995130 | 0.979253 | 5 | 6 | 5 | 0.7424 | 0.6269 |
-| statbank_token_badguard_badcal | search | synthetic_test | 0.991799 | 0.990514 | 0.989540 | 0.995130 | 0.979253 | 5 | 6 | 5 | nan | nan |
-| statbank_token_badguard | search | original_test_all_10s+ | 0.752153 | 0.638128 | 0.896429 | 0.678717 | 0.265207 | 376 | 1376 | 30 | nan | nan |
-| statbank_token_badguard_badcal | search | original_test_all_10s+ | 0.748732 | 0.640154 | 0.895604 | 0.668098 | 0.316302 | 374 | 1357 | 15 | nan | nan |
-| statbank_token_badguard | search | original_all_10s+ | 0.811112 | 0.837945 | 0.765358 | 0.824991 | 0.930747 | 3959 | 1800 | 93 | nan | nan |
-| statbank_token_badguard_badcal | search | original_all_10s+ | 0.808988 | 0.833681 | 0.763481 | 0.818875 | 0.935856 | 3944 | 1771 | 72 | nan | nan |
-| statbank_token_badguard | search | bad_core_nearboundary | 0.907563 | 0.317181 | 0.000000 | 0.000000 | 0.907563 | 0 | 0 | 11 | nan | nan |
-| statbank_token_badguard_badcal | search | bad_core_nearboundary | 1.000000 | 0.333333 | 0.000000 | 0.000000 | 1.000000 | 0 | 0 | 0 | nan | nan |
-| statbank_token_badguard | search | bad_outlier_stress | 0.003425 | 0.002275 | 0.000000 | 0.000000 | 0.003425 | 0 | 0 | 19 | nan | nan |
-| statbank_token_badguard_badcal | search | bad_outlier_stress | 0.037671 | 0.024202 | 0.000000 | 0.000000 | 0.037671 | 0 | 0 | 15 | nan | nan |
+| stresstoken_statfed_atlas | search | synthetic_val | 0.995346 | 0.993970 | 1.000000 | 0.998106 | 0.976562 | 0 | 2 | 6 | 0.7513 | 0.6628 |
+| stresstoken_statfed_atlas | search | synthetic_test | 0.992824 | 0.991485 | 0.993724 | 0.995130 | 0.979253 | 3 | 6 | 5 | 0.7484 | 0.6287 |
+| stresstoken_statfed_atlas_badcal | search | synthetic_test | 0.992824 | 0.991485 | 0.993724 | 0.995130 | 0.979253 | 3 | 6 | 5 | nan | nan |
+| stresstoken_statfed_atlas | search | original_test_all_10s+ | 0.749322 | 0.533105 | 0.915934 | 0.678717 | 0.034063 | 306 | 1422 | 139 | nan | nan |
+| stresstoken_statfed_atlas_badcal | search | original_test_all_10s+ | 0.753804 | 0.587251 | 0.915934 | 0.678717 | 0.126521 | 306 | 1422 | 101 | nan | nan |
+| stresstoken_statfed_atlas | search | original_all_10s+ | 0.769511 | 0.751159 | 0.802265 | 0.821509 | 0.559319 | 3370 | 1897 | 2053 | nan | nan |
+| stresstoken_statfed_atlas_badcal | search | original_all_10s+ | 0.826344 | 0.849529 | 0.802265 | 0.821321 | 0.914096 | 3370 | 1897 | 178 | nan | nan |
+| stresstoken_statfed_atlas | search | bad_core_nearboundary | 0.117647 | 0.070175 | 0.000000 | 0.000000 | 0.117647 | 0 | 0 | 105 | nan | nan |
+| stresstoken_statfed_atlas_badcal | search | bad_core_nearboundary | 0.436975 | 0.202729 | 0.000000 | 0.000000 | 0.436975 | 0 | 0 | 67 | nan | nan |
+| stresstoken_statfed_atlas | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 34 | nan | nan |
+| stresstoken_statfed_atlas_badcal | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 34 | nan | nan |
+| stresstoken_multiscale_atlas | search | synthetic_val | 0.994183 | 0.992836 | 0.995086 | 0.998106 | 0.976562 | 2 | 2 | 6 | 0.7656 | 0.6580 |
+| stresstoken_multiscale_atlas | search | synthetic_test | 0.994362 | 0.992926 | 0.991632 | 0.998377 | 0.979253 | 4 | 2 | 5 | 0.7520 | 0.6200 |
+| stresstoken_multiscale_atlas_badcal | search | synthetic_test | 0.994362 | 0.992926 | 0.991632 | 0.998377 | 0.979253 | 4 | 2 | 5 | nan | nan |
+| stresstoken_multiscale_atlas | search | original_test_all_10s+ | 0.787543 | 0.672866 | 0.902473 | 0.741301 | 0.267640 | 355 | 1142 | 56 | nan | nan |
+| stresstoken_multiscale_atlas_badcal | search | original_test_all_10s+ | 0.788604 | 0.681993 | 0.902473 | 0.741075 | 0.291971 | 355 | 1139 | 47 | nan | nan |
+| stresstoken_multiscale_atlas | search | original_all_10s+ | 0.814328 | 0.843668 | 0.746465 | 0.865450 | 0.930369 | 4321 | 1427 | 119 | nan | nan |
+| stresstoken_multiscale_atlas_badcal | search | original_all_10s+ | 0.814692 | 0.844116 | 0.746465 | 0.865262 | 0.933018 | 4321 | 1424 | 108 | nan | nan |
+| stresstoken_multiscale_atlas | search | bad_core_nearboundary | 0.924370 | 0.320233 | 0.000000 | 0.000000 | 0.924370 | 0 | 0 | 9 | nan | nan |
+| stresstoken_multiscale_atlas_badcal | search | bad_core_nearboundary | 1.000000 | 0.333333 | 0.000000 | 0.000000 | 1.000000 | 0 | 0 | 0 | nan | nan |
+| stresstoken_multiscale_atlas | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 47 | nan | nan |
+| stresstoken_multiscale_atlas_badcal | search | bad_outlier_stress | 0.003425 | 0.002275 | 0.000000 | 0.000000 | 0.003425 | 0 | 0 | 47 | nan | nan |
 
 ## Baselines
 
@@ -74,8 +74,8 @@ M outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysi
 
 ## Candidates
 
-- `statbank_token_balanced` (search): best_epoch=4, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\statbank_token_balanced\ckpt_best.pt`
-- `statbank_token_badguard` (search): best_epoch=6, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\statbank_token_badguard\ckpt_best.pt`
+- `stresstoken_statfed_atlas` (search): best_epoch=6, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\stresstoken_statfed_atlas\ckpt_best.pt`
+- `stresstoken_multiscale_atlas` (search): best_epoch=8, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\stresstoken_multiscale_atlas\ckpt_best.pt`
 
 ## Notes
 

@@ -559,6 +559,351 @@ CANDIDATES: dict[str, dict[str, Any]] = {
         "bad_stress_shell_strength": 1.25,
         "seed": 20260822,
     },
+    "statfed_patch_teacher_atlas": {
+        "arch": "statfed_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 160,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "lr": 4.0e-4,
+        "class_weight": [1.00, 1.42, 2.55],
+        "focal_gamma": 1.0,
+        "aux_weight": 0.76,
+        "core_aux_weight": 0.98,
+        "atlas_distill_weight": 0.85,
+        "neighbor_weight": 0.52,
+        "neighbor_tau": 0.40,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.42,
+        "recon_weight": 0.0,
+        "augment_strength": 0.30,
+        "bad_outlier_aug_strength": 1.25,
+        "bad_stress_shell_strength": 0.65,
+        "seed": 20260823,
+    },
+    "multiscale_statpatch_teacher_atlas": {
+        "arch": "multiscale_stat_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "scales": [50, 100, 250, 500],
+        "stat_hidden": 192,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "lr": 3.8e-4,
+        "class_weight": [1.00, 1.48, 2.70],
+        "focal_gamma": 1.05,
+        "aux_weight": 0.80,
+        "core_aux_weight": 1.00,
+        "atlas_distill_weight": 0.90,
+        "neighbor_weight": 0.54,
+        "neighbor_tau": 0.40,
+        "supcon_weight": 0.20,
+        "rank_weight": 0.42,
+        "recon_weight": 0.0,
+        "augment_strength": 0.32,
+        "bad_outlier_aug_strength": 1.35,
+        "bad_stress_shell_strength": 0.75,
+        "seed": 20260824,
+    },
+    "statfed_patch_dualbad_atlas": {
+        "arch": "statfed_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 160,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "lr": 4.0e-4,
+        "class_weight": [1.00, 1.38, 2.45],
+        "focal_gamma": 0.95,
+        "aux_weight": 0.74,
+        "core_aux_weight": 0.94,
+        "atlas_distill_weight": 0.70,
+        "bad_aux_weight": 0.55,
+        "bad_aux_pos_weight": 2.2,
+        "bad_logit_mix": 0.38,
+        "neighbor_weight": 0.50,
+        "neighbor_tau": 0.40,
+        "supcon_weight": 0.16,
+        "rank_weight": 0.40,
+        "recon_weight": 0.0,
+        "augment_strength": 0.28,
+        "bad_outlier_aug_strength": 1.10,
+        "bad_stress_shell_strength": 0.85,
+        "seed": 20260825,
+    },
+    "multiscale_statpatch_dualbad_atlas": {
+        "arch": "multiscale_stat_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "scales": [50, 100, 250, 500],
+        "stat_hidden": 192,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "lr": 3.8e-4,
+        "class_weight": [1.00, 1.42, 2.55],
+        "focal_gamma": 1.0,
+        "aux_weight": 0.78,
+        "core_aux_weight": 0.96,
+        "atlas_distill_weight": 0.72,
+        "bad_aux_weight": 0.55,
+        "bad_aux_pos_weight": 2.4,
+        "bad_logit_mix": 0.40,
+        "neighbor_weight": 0.52,
+        "neighbor_tau": 0.40,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.40,
+        "recon_weight": 0.0,
+        "augment_strength": 0.30,
+        "bad_outlier_aug_strength": 1.20,
+        "bad_stress_shell_strength": 0.95,
+        "seed": 20260826,
+    },
+    "stressbank_statfed_atlas": {
+        "arch": "stress_statfed_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 176,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "lr": 3.8e-4,
+        "class_weight": [1.00, 1.38, 2.75],
+        "focal_gamma": 1.05,
+        "aux_weight": 0.76,
+        "core_aux_weight": 0.98,
+        "atlas_distill_weight": 0.82,
+        "bad_aux_weight": 0.70,
+        "bad_aux_pos_weight": 2.8,
+        "bad_logit_mix": 0.46,
+        "neighbor_weight": 0.52,
+        "neighbor_tau": 0.40,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.42,
+        "recon_weight": 0.0,
+        "augment_strength": 0.30,
+        "bad_outlier_aug_strength": 1.25,
+        "bad_stress_shell_strength": 1.25,
+        "seed": 20260827,
+    },
+    "stressbank_multiscale_atlas": {
+        "arch": "stress_multiscale_stat_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "scales": [50, 100, 250, 500],
+        "stat_hidden": 208,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "lr": 3.6e-4,
+        "class_weight": [1.00, 1.42, 2.90],
+        "focal_gamma": 1.08,
+        "aux_weight": 0.80,
+        "core_aux_weight": 1.00,
+        "atlas_distill_weight": 0.84,
+        "bad_aux_weight": 0.72,
+        "bad_aux_pos_weight": 3.0,
+        "bad_logit_mix": 0.48,
+        "neighbor_weight": 0.54,
+        "neighbor_tau": 0.40,
+        "supcon_weight": 0.20,
+        "rank_weight": 0.42,
+        "recon_weight": 0.0,
+        "augment_strength": 0.32,
+        "bad_outlier_aug_strength": 1.35,
+        "bad_stress_shell_strength": 1.35,
+        "seed": 20260828,
+    },
+    "stresstoken_statfed_atlas": {
+        "arch": "stresstoken_statfed_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 176,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "lr": 3.8e-4,
+        "class_weight": [1.00, 1.40, 2.85],
+        "focal_gamma": 1.05,
+        "aux_weight": 0.78,
+        "core_aux_weight": 1.00,
+        "atlas_distill_weight": 0.84,
+        "bad_aux_weight": 0.76,
+        "bad_aux_pos_weight": 3.0,
+        "bad_logit_mix": 0.50,
+        "neighbor_weight": 0.54,
+        "neighbor_tau": 0.40,
+        "supcon_weight": 0.20,
+        "rank_weight": 0.42,
+        "recon_weight": 0.0,
+        "augment_strength": 0.30,
+        "bad_outlier_aug_strength": 1.25,
+        "bad_stress_shell_strength": 1.45,
+        "seed": 20260829,
+    },
+    "stresstoken_multiscale_atlas": {
+        "arch": "stresstoken_multiscale_stat_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "scales": [50, 100, 250, 500],
+        "stat_hidden": 208,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "lr": 3.6e-4,
+        "class_weight": [1.00, 1.44, 3.05],
+        "focal_gamma": 1.10,
+        "aux_weight": 0.82,
+        "core_aux_weight": 1.02,
+        "atlas_distill_weight": 0.86,
+        "bad_aux_weight": 0.80,
+        "bad_aux_pos_weight": 3.2,
+        "bad_logit_mix": 0.52,
+        "neighbor_weight": 0.56,
+        "neighbor_tau": 0.40,
+        "supcon_weight": 0.20,
+        "rank_weight": 0.44,
+        "recon_weight": 0.0,
+        "augment_strength": 0.32,
+        "bad_outlier_aug_strength": 1.35,
+        "bad_stress_shell_strength": 1.55,
+        "seed": 20260830,
+    },
+    "stressbank_statfed_highstress": {
+        "arch": "stress_statfed_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "stat_hidden": 176,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "lr": 3.6e-4,
+        "class_weight": [1.00, 1.36, 3.65],
+        "focal_gamma": 1.15,
+        "aux_weight": 0.76,
+        "core_aux_weight": 0.98,
+        "atlas_distill_weight": 0.80,
+        "bad_aux_weight": 0.92,
+        "bad_aux_pos_weight": 4.0,
+        "bad_logit_mix": 0.72,
+        "neighbor_weight": 0.50,
+        "neighbor_tau": 0.40,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.42,
+        "recon_weight": 0.0,
+        "augment_strength": 0.30,
+        "bad_outlier_aug_strength": 1.10,
+        "bad_stress_shell_strength": 2.35,
+        "seed": 20260831,
+    },
+    "stressbank_multiscale_highstress": {
+        "arch": "stress_multiscale_stat_patch_teacher_atlas",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "patch": 25,
+        "scales": [50, 100, 250, 500],
+        "stat_hidden": 208,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "lr": 3.4e-4,
+        "class_weight": [1.00, 1.40, 3.85],
+        "focal_gamma": 1.18,
+        "aux_weight": 0.80,
+        "core_aux_weight": 1.00,
+        "atlas_distill_weight": 0.82,
+        "bad_aux_weight": 0.96,
+        "bad_aux_pos_weight": 4.2,
+        "bad_logit_mix": 0.78,
+        "neighbor_weight": 0.52,
+        "neighbor_tau": 0.40,
+        "supcon_weight": 0.20,
+        "rank_weight": 0.42,
+        "recon_weight": 0.0,
+        "augment_strength": 0.32,
+        "bad_outlier_aug_strength": 1.20,
+        "bad_stress_shell_strength": 2.55,
+        "seed": 20260832,
+    },
+    "statbank_token_balanced": {
+        "arch": "statbank_token_teacher_atlas",
+        "channels": "robust3",
+        "width": 112,
+        "layers": 4,
+        "heads": 4,
+        "stat_hidden": 192,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "lr": 4.0e-4,
+        "class_weight": [1.00, 1.42, 2.65],
+        "focal_gamma": 1.0,
+        "aux_weight": 0.78,
+        "core_aux_weight": 1.00,
+        "atlas_distill_weight": 0.86,
+        "bad_aux_weight": 0.62,
+        "bad_aux_pos_weight": 2.6,
+        "bad_logit_mix": 0.42,
+        "neighbor_weight": 0.56,
+        "neighbor_tau": 0.40,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.42,
+        "recon_weight": 0.0,
+        "augment_strength": 0.28,
+        "bad_outlier_aug_strength": 1.10,
+        "bad_stress_shell_strength": 1.10,
+        "seed": 20260833,
+    },
+    "statbank_token_badguard": {
+        "arch": "statbank_token_teacher_atlas",
+        "channels": "robust3",
+        "width": 112,
+        "layers": 4,
+        "heads": 4,
+        "stat_hidden": 192,
+        "teacher_prototypes_per_class": 14,
+        "teacher_prototype_mode": "farthest",
+        "lr": 3.8e-4,
+        "class_weight": [1.00, 1.40, 3.20],
+        "focal_gamma": 1.10,
+        "aux_weight": 0.78,
+        "core_aux_weight": 1.00,
+        "atlas_distill_weight": 0.84,
+        "bad_aux_weight": 0.78,
+        "bad_aux_pos_weight": 3.4,
+        "bad_logit_mix": 0.58,
+        "neighbor_weight": 0.56,
+        "neighbor_tau": 0.40,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.42,
+        "recon_weight": 0.0,
+        "augment_strength": 0.30,
+        "bad_outlier_aug_strength": 1.20,
+        "bad_stress_shell_strength": 1.45,
+        "seed": 20260834,
+    },
 }
 
 
@@ -811,6 +1156,212 @@ class MultiScaleStatPatchTransformer(nn.Module):
         return torch.cat([cls, global_token, self.pool(body), body.mean(dim=1)], dim=1)
 
 
+def waveform_stress_stats(x: torch.Tensor) -> torch.Tensor:
+    """Waveform-derived stress bank for flat/contact/drift shells.
+
+    These are computed from the inference waveform itself, not from external
+    SQI/geometry sidecars.  The bank targets the original bad-stress gaps:
+    long low-derivative spans, low zero-crossing, large baseline drift, and
+    low-detail/contact-like sections.
+    """
+
+    eps = 1e-6
+    diff = x[:, :, 1:] - x[:, :, :-1]
+    abs_x = x.abs()
+    abs_d = diff.abs()
+    flat005 = (abs_d < 0.005).float().mean(dim=2)
+    flat015 = (abs_d < 0.015).float().mean(dim=2)
+    flat030 = (abs_d < 0.030).float().mean(dim=2)
+    low015 = (abs_x < 0.015).float().mean(dim=2)
+    low050 = (abs_x < 0.050).float().mean(dim=2)
+    low100 = (abs_x < 0.100).float().mean(dim=2)
+    zcr = ((x[:, :, 1:] * x[:, :, :-1]) < 0).float().mean(dim=2)
+    dzcr = ((diff[:, :, 1:] * diff[:, :, :-1]) < 0).float().mean(dim=2)
+
+    flat_mask = (abs_d < 0.015).float()
+    low_mask = (abs_x < 0.050).float()
+    flat_run101 = F.avg_pool1d(flat_mask, kernel_size=101, stride=1, padding=50)
+    flat_run251 = F.avg_pool1d(flat_mask, kernel_size=251, stride=1, padding=125)
+    low_run101 = F.avg_pool1d(low_mask, kernel_size=101, stride=1, padding=50)
+    low_run251 = F.avg_pool1d(low_mask, kernel_size=251, stride=1, padding=125)
+    flat_run101_max = flat_run101.amax(dim=2)
+    flat_run251_max = flat_run251.amax(dim=2)
+    low_run101_max = low_run101.amax(dim=2)
+    low_run251_max = low_run251.amax(dim=2)
+    flat_run101_mean = flat_run101.mean(dim=2)
+    low_run101_mean = low_run101.mean(dim=2)
+
+    smooth101 = F.avg_pool1d(x, kernel_size=101, stride=1, padding=50)
+    smooth251 = F.avg_pool1d(x, kernel_size=251, stride=1, padding=125)
+    baseline_span101 = smooth101.amax(dim=2) - smooth101.amin(dim=2)
+    baseline_span251 = smooth251.amax(dim=2) - smooth251.amin(dim=2)
+    baseline_slope251 = (smooth251[:, :, -1] - smooth251[:, :, 0]).abs()
+    baseline_curve251 = smooth251.std(dim=2)
+
+    rms = torch.sqrt((x * x).mean(dim=2) + eps)
+    high31 = x - F.avg_pool1d(x, kernel_size=31, stride=1, padding=15)
+    high101 = x - smooth101
+    detail_ratio31 = torch.sqrt((high31 * high31).mean(dim=2) + eps) / (rms + eps)
+    detail_ratio101 = torch.sqrt((high101 * high101).mean(dim=2) + eps) / (rms + eps)
+    k01 = max(1, int(abs_d.shape[2] * 0.01))
+    k10 = max(1, int(abs_d.shape[2] * 0.10))
+    diff_top01 = torch.topk(abs_d, k=k01, dim=2).values.mean(dim=2)
+    diff_top10 = torch.topk(abs_d, k=k10, dim=2).values.mean(dim=2)
+    ptp = x.amax(dim=2) - x.amin(dim=2)
+    top_abs10 = torch.topk(abs_x, k=max(1, int(abs_x.shape[2] * 0.10)), dim=2).values.mean(dim=2)
+
+    return torch.cat(
+        [
+            flat005,
+            flat015,
+            flat030,
+            low015,
+            low050,
+            low100,
+            zcr,
+            dzcr,
+            flat_run101_max,
+            flat_run251_max,
+            low_run101_max,
+            low_run251_max,
+            baseline_span101,
+            baseline_span251,
+            baseline_slope251,
+            baseline_curve251,
+            detail_ratio31,
+            detail_ratio101,
+            diff_top01,
+            diff_top10,
+            ptp,
+            top_abs10,
+            flat_run101_mean,
+            low_run101_mean,
+        ],
+        dim=1,
+    )
+
+
+class StressBankWrapper(nn.Module):
+    """Append a waveform-computed stress token bank to a Transformer encoder."""
+
+    def __init__(self, base: nn.Module, base_dim: int, in_ch: int, stat_hidden: int):
+        super().__init__()
+        self.base = base
+        self.stress_dim = int(in_ch) * 24
+        self.stress_branch = nn.Sequential(
+            nn.LayerNorm(self.stress_dim),
+            nn.Linear(self.stress_dim, stat_hidden),
+            nn.GELU(),
+            nn.Dropout(0.08),
+            nn.Linear(stat_hidden, stat_hidden),
+            nn.GELU(),
+        )
+        self.out_dim = int(base_dim) + int(stat_hidden)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return torch.cat([self.base(x), self.stress_branch(waveform_stress_stats(x))], dim=1)
+
+
+class StressTokenStatFedPatchTransformer(StatFedPatchTransformer):
+    """Stat-fed patch Transformer with stress bank inserted as an attention token."""
+
+    def __init__(self, in_ch: int, width: int, layers: int, heads: int, patch: int, stat_hidden: int):
+        super().__init__(in_ch, width, layers, heads, patch, stat_hidden)
+        self.stress_token = nn.Sequential(nn.LayerNorm(in_ch * 24), nn.Linear(in_ch * 24, width), nn.GELU())
+        self.out_dim = width * 5
+
+    def tokenize(self, x: torch.Tensor) -> torch.Tensor:
+        base_tokens = super().tokenize(x)
+        stress = self.stress_token(waveform_stress_stats(x)).unsqueeze(1)
+        return torch.cat([base_tokens[:, :2, :], stress, base_tokens[:, 2:, :]], dim=1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        tokens = self.encoder(self.pos(self.tokenize(x)))
+        cls = tokens[:, 0, :]
+        global_token = tokens[:, 1, :]
+        stress_token = tokens[:, 2, :]
+        body = tokens[:, 3:, :]
+        return torch.cat([cls, global_token, stress_token, self.pool(body), body.mean(dim=1)], dim=1)
+
+
+class StressTokenMultiScaleStatPatchTransformer(MultiScaleStatPatchTransformer):
+    """Multi-scale stat-patch Transformer with stress bank as an attention token."""
+
+    def __init__(self, in_ch: int, width: int, layers: int, heads: int, patch: int, stat_hidden: int, scales: list[int]):
+        super().__init__(in_ch, width, layers, heads, patch, stat_hidden, scales)
+        self.stress_token = nn.Sequential(nn.LayerNorm(in_ch * 24), nn.Linear(in_ch * 24, width), nn.GELU())
+        self.out_dim = width * 5
+
+    def tokenize(self, x: torch.Tensor) -> torch.Tensor:
+        base_tokens = super().tokenize(x)
+        stress = self.stress_token(waveform_stress_stats(x)).unsqueeze(1)
+        return torch.cat([base_tokens[:, :2, :], stress, base_tokens[:, 2:, :]], dim=1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        tokens = self.encoder(self.pos(self.tokenize(x)))
+        cls = tokens[:, 0, :]
+        global_token = tokens[:, 1, :]
+        stress_token = tokens[:, 2, :]
+        body = tokens[:, 3:, :]
+        return torch.cat([cls, global_token, stress_token, self.pool(body), body.mean(dim=1)], dim=1)
+
+
+class StatBankTokenTransformer(nn.Module):
+    """Transformer over waveform-derived statistic groups.
+
+    This is still waveform-only at inference: the three token groups are
+    computed directly from the input trace and then contextualized by a small
+    Transformer.  It tests whether high-value SQI-like summaries are easier to
+    transfer than dense patch tokens.
+    """
+
+    def __init__(self, in_ch: int, width: int, layers: int, heads: int, stat_hidden: int):
+        super().__init__()
+        self.in_ch = int(in_ch)
+        self.wave_proj = nn.Sequential(nn.LayerNorm(16), nn.Linear(16, width), nn.GELU())
+        self.qrs_proj = nn.Sequential(nn.LayerNorm(15), nn.Linear(15, width), nn.GELU())
+        self.stress_proj = nn.Sequential(nn.LayerNorm(24), nn.Linear(24, width), nn.GELU())
+        self.channel_embed = nn.Parameter(torch.randn(in_ch, width) * 0.02)
+        self.group_embed = nn.Parameter(torch.randn(3, width) * 0.02)
+        self.cls = nn.Parameter(torch.randn(1, 1, width) * 0.02)
+        self.pos = PositionalEncoding(width, max_len=32)
+        self.encoder = nn.TransformerEncoder(make_encoder_layer(width, heads), num_layers=layers)
+        self.pool = AttentionPool(width)
+        self.summary = nn.Sequential(
+            nn.LayerNorm(in_ch * 55),
+            nn.Linear(in_ch * 55, stat_hidden),
+            nn.GELU(),
+            nn.Dropout(0.08),
+            nn.Linear(stat_hidden, width),
+            nn.GELU(),
+        )
+        self.out_dim = width * 4
+
+    def _tokens(self, x: torch.Tensor) -> torch.Tensor:
+        b = x.shape[0]
+        wave = waveform_stats_v2(x).reshape(b, self.in_ch, 16)
+        qrs = qrs_detail_stats(x).reshape(b, self.in_ch, 15)
+        stress = waveform_stress_stats(x).reshape(b, self.in_ch, 24)
+        pieces = [
+            self.wave_proj(wave) + self.group_embed[0].view(1, 1, -1),
+            self.qrs_proj(qrs) + self.group_embed[1].view(1, 1, -1),
+            self.stress_proj(stress) + self.group_embed[2].view(1, 1, -1),
+        ]
+        tokens = []
+        ch = self.channel_embed.view(1, self.in_ch, -1)
+        for item in pieces:
+            tokens.append(item + ch)
+        return torch.cat(tokens, dim=1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        stat_tokens = self._tokens(x)
+        cls = self.cls.expand(x.shape[0], -1, -1)
+        tokens = self.encoder(self.pos(torch.cat([cls, stat_tokens], dim=1)))
+        summary = self.summary(torch.cat([waveform_stats_v2(x), qrs_detail_stats(x), waveform_stress_stats(x)], dim=1))
+        body = tokens[:, 1:, :]
+        return torch.cat([tokens[:, 0, :], self.pool(body), body.mean(dim=1), summary], dim=1)
+
+
 class ConvSubsampleEncoder(nn.Module):
     def __init__(self, in_ch: int, width: int, layers: int, heads: int):
         super().__init__()
@@ -993,7 +1544,18 @@ class GeometryStudent(nn.Module):
         layers = int(cfg["layers"])
         heads = int(cfg["heads"])
         self.arch = arch
-        self.use_teacher_atlas = arch in {"teacher_atlas_student", "qrs_teacher_atlas_student", "hybrid_atlas_student"}
+        self.use_teacher_atlas = arch in {
+            "teacher_atlas_student",
+            "qrs_teacher_atlas_student",
+            "hybrid_atlas_student",
+            "statfed_patch_teacher_atlas",
+            "multiscale_stat_patch_teacher_atlas",
+            "stress_statfed_patch_teacher_atlas",
+            "stress_multiscale_stat_patch_teacher_atlas",
+            "stresstoken_statfed_patch_teacher_atlas",
+            "stresstoken_multiscale_stat_patch_teacher_atlas",
+            "statbank_token_teacher_atlas",
+        }
         if arch == "mapstudent":
             self.encoder = PatchStudentEncoder(in_ch, width, layers, heads, int(cfg["patch"]))
             out_dim = self.encoder.out_dim
@@ -1005,6 +1567,9 @@ class GeometryStudent(nn.Module):
             out_dim = self.encoder.out_dim
         elif arch == "morphology_token":
             self.encoder = MorphologyTokenTransformer(in_ch, width, layers, heads)
+            out_dim = self.encoder.out_dim
+        elif arch == "statbank_token_teacher_atlas":
+            self.encoder = StatBankTokenTransformer(in_ch, width, layers, heads, int(cfg["stat_hidden"]))
             out_dim = self.encoder.out_dim
         elif arch == "qrs_detail_token":
             self.encoder = QRSDetailTokenTransformer(in_ch, width, layers, heads, int(cfg["stat_hidden"]))
@@ -1030,12 +1595,56 @@ class GeometryStudent(nn.Module):
         elif arch == "statfed_patch":
             self.encoder = StatFedPatchTransformer(in_ch, width, layers, heads, int(cfg["patch"]), int(cfg["stat_hidden"]))
             out_dim = self.encoder.out_dim
+        elif arch == "statfed_patch_teacher_atlas":
+            self.encoder = StatFedPatchTransformer(in_ch, width, layers, heads, int(cfg["patch"]), int(cfg["stat_hidden"]))
+            out_dim = self.encoder.out_dim
+        elif arch == "stress_statfed_patch_teacher_atlas":
+            base = StatFedPatchTransformer(in_ch, width, layers, heads, int(cfg["patch"]), int(cfg["stat_hidden"]))
+            self.encoder = StressBankWrapper(base, base.out_dim, in_ch, int(cfg["stat_hidden"]))
+            out_dim = self.encoder.out_dim
+        elif arch == "stresstoken_statfed_patch_teacher_atlas":
+            self.encoder = StressTokenStatFedPatchTransformer(in_ch, width, layers, heads, int(cfg["patch"]), int(cfg["stat_hidden"]))
+            out_dim = self.encoder.out_dim
         elif arch == "statfed_patch_atlas":
             base = StatFedPatchTransformer(in_ch, width, layers, heads, int(cfg["patch"]), int(cfg["stat_hidden"]))
             self.encoder = AtlasMemoryTransformer(base, base.out_dim, int(cfg["prototypes_per_class"]))
             out_dim = self.encoder.out_dim
         elif arch == "multiscale_stat_patch":
             self.encoder = MultiScaleStatPatchTransformer(
+                in_ch,
+                width,
+                layers,
+                heads,
+                int(cfg["patch"]),
+                int(cfg["stat_hidden"]),
+                list(cfg.get("scales", [50, 100, 250, 500])),
+            )
+            out_dim = self.encoder.out_dim
+        elif arch == "multiscale_stat_patch_teacher_atlas":
+            self.encoder = MultiScaleStatPatchTransformer(
+                in_ch,
+                width,
+                layers,
+                heads,
+                int(cfg["patch"]),
+                int(cfg["stat_hidden"]),
+                list(cfg.get("scales", [50, 100, 250, 500])),
+            )
+            out_dim = self.encoder.out_dim
+        elif arch == "stress_multiscale_stat_patch_teacher_atlas":
+            base = MultiScaleStatPatchTransformer(
+                in_ch,
+                width,
+                layers,
+                heads,
+                int(cfg["patch"]),
+                int(cfg["stat_hidden"]),
+                list(cfg.get("scales", [50, 100, 250, 500])),
+            )
+            self.encoder = StressBankWrapper(base, base.out_dim, in_ch, int(cfg["stat_hidden"]))
+            out_dim = self.encoder.out_dim
+        elif arch == "stresstoken_multiscale_stat_patch_teacher_atlas":
+            self.encoder = StressTokenMultiScaleStatPatchTransformer(
                 in_ch,
                 width,
                 layers,
@@ -1068,6 +1677,11 @@ class GeometryStudent(nn.Module):
         self.project = nn.Sequential(nn.LayerNorm(out_dim), nn.Linear(out_dim, 192), nn.GELU(), nn.Dropout(0.08))
         self.class_head = nn.Sequential(nn.LayerNorm(class_head_in), nn.Linear(class_head_in, 96), nn.GELU(), nn.Dropout(0.08), nn.Linear(96, 3))
         self.aux_head = nn.Sequential(nn.LayerNorm(192), nn.Linear(192, 128), nn.GELU(), nn.Linear(128, len(FEATURE_COLUMNS)))
+        self.bad_logit_mix = float(cfg.get("bad_logit_mix", 0.0))
+        if float(cfg.get("bad_aux_weight", 0.0)) > 0 or self.bad_logit_mix != 0.0:
+            self.bad_head = nn.Sequential(nn.LayerNorm(192), nn.Linear(192, 96), nn.GELU(), nn.Dropout(0.08), nn.Linear(96, 1))
+        else:
+            self.bad_head = None
 
     def set_teacher_prototypes(self, prototypes: np.ndarray | torch.Tensor) -> None:
         if not self.use_teacher_atlas:
@@ -1100,8 +1714,14 @@ class GeometryStudent(nn.Module):
         else:
             atlas_pred = None
             head_input = emb
+        logits = self.class_head(head_input)
+        bad_logit = self.bad_head(emb).squeeze(1) if self.bad_head is not None else None
+        if bad_logit is not None and self.bad_logit_mix != 0.0:
+            logits = logits.clone()
+            logits[:, CLASS_TO_INT["bad"]] = logits[:, CLASS_TO_INT["bad"]] + self.bad_logit_mix * bad_logit
         return {
-            "logits": self.class_head(head_input),
+            "logits": logits,
+            "bad_logit": bad_logit,
             "aux_pred": aux_pred,
             "atlas_pred": atlas_pred,
             "embedding": emb,
@@ -1232,7 +1852,9 @@ def augment_bad_stress_shell(x: np.ndarray, rng: np.random.Generator, strength: 
 
     n = x.shape[1]
     if rng.random() < min(0.95, 0.55 + 0.22 * float(strength)):
-        width = int(rng.integers(max(80, n // 5), max(120, int(n * 0.62))))
+        max_frac = 0.62 if strength < 1.8 else min(0.86, 0.62 + 0.10 * (float(strength) - 1.8))
+        min_frac = 0.20 if strength < 1.8 else 0.30
+        width = int(rng.integers(max(80, int(n * min_frac)), max(120, int(n * max_frac))))
         start = int(rng.integers(0, max(1, n - width)))
         level = float(rng.uniform(-0.18, 0.18))
         x[0, start : start + width] = level + rng.normal(0.0, 0.006 * float(strength), size=width).astype(np.float32)
@@ -1244,16 +1866,52 @@ def augment_bad_stress_shell(x: np.ndarray, rng: np.random.Generator, strength: 
             x[2, start : start + width] += plateau + ramp
     if x.shape[0] > 2 and rng.random() < 0.85:
         t = np.linspace(-1.0, 1.0, n, dtype=np.float32)
-        drift = float(rng.uniform(0.55, 1.65) * float(strength))
+        drift_hi = 1.65 if strength < 1.8 else min(3.10, 1.65 + 0.55 * (float(strength) - 1.8))
+        drift = float(rng.uniform(0.55, drift_hi) * float(strength))
         x[2] += drift * (0.55 * t + 0.45 * np.sin(np.pi * t + float(rng.uniform(-1.2, 1.2))))
     if rng.random() < 0.45:
         width = int(rng.integers(max(60, n // 8), max(90, n // 3)))
         start = int(rng.integers(0, max(1, n - width)))
         x[:, start : start + width] *= float(rng.uniform(0.02, 0.20))
+    if strength >= 2.0 and rng.random() < 0.40:
+        width = int(rng.integers(max(100, n // 4), max(140, int(n * 0.72))))
+        start = int(rng.integers(0, max(1, n - width)))
+        channel = int(rng.integers(0, x.shape[0]))
+        contact_level = float(rng.uniform(-0.05, 0.05))
+        x[channel, start : start + width] = contact_level + rng.normal(0.0, 0.0035 * float(strength), size=width).astype(np.float32)
     return x
 
 
-def build_teacher_prototypes(aux: np.ndarray, y: np.ndarray, prototypes_per_class: int) -> np.ndarray:
+def farthest_prototype_means(rows: np.ndarray, count: int) -> np.ndarray:
+    rows = np.asarray(rows, dtype=np.float32)
+    count = int(count)
+    if len(rows) == 0:
+        return np.zeros((count, rows.shape[1] if rows.ndim == 2 else len(CORE_IDX)), dtype=np.float32)
+    finite = np.nan_to_num(rows, nan=0.0, posinf=0.0, neginf=0.0)
+    if len(finite) <= count:
+        reps = np.zeros((count, finite.shape[1]), dtype=np.float32)
+        reps[: len(finite)] = finite
+        if len(finite) < count:
+            reps[len(finite) :] = finite.mean(axis=0, keepdims=True)
+        return reps
+    selected = [int(np.argmin(np.sum((finite - np.median(finite, axis=0, keepdims=True)) ** 2, axis=1)))]
+    min_dist = np.sum((finite - finite[selected[0]][None, :]) ** 2, axis=1)
+    for _ in range(1, count):
+        idx = int(np.argmax(min_dist))
+        selected.append(idx)
+        dist = np.sum((finite - finite[idx][None, :]) ** 2, axis=1)
+        min_dist = np.minimum(min_dist, dist)
+    seeds = finite[selected]
+    dist = np.sum((finite[:, None, :] - seeds[None, :, :]) ** 2, axis=2)
+    assign = np.argmin(dist, axis=1)
+    out = np.zeros_like(seeds)
+    for i in range(count):
+        chunk = finite[assign == i]
+        out[i] = chunk.mean(axis=0) if len(chunk) else seeds[i]
+    return out.astype(np.float32)
+
+
+def build_teacher_prototypes(aux: np.ndarray, y: np.ndarray, prototypes_per_class: int, mode: str = "pc1_quantile") -> np.ndarray:
     core = np.asarray(aux[:, CORE_IDX], dtype=np.float32)
     labels = np.asarray(y, dtype=np.int64)
     out = np.zeros((3, int(prototypes_per_class), core.shape[1]), dtype=np.float32)
@@ -1263,6 +1921,9 @@ def build_teacher_prototypes(aux: np.ndarray, y: np.ndarray, prototypes_per_clas
     for cls in range(3):
         rows = core[labels == cls]
         if rows.size == 0:
+            continue
+        if str(mode) == "farthest":
+            out[cls] = farthest_prototype_means(rows, int(prototypes_per_class))
             continue
         order = np.argsort(rows[:, pc1_col])
         chunks = np.array_split(rows[order], int(prototypes_per_class))
@@ -1384,7 +2045,12 @@ def train_candidate(
     original_loader = DataLoader(original_ds, batch_size=args.batch_size * 2, shuffle=False, num_workers=args.num_workers, pin_memory=pin)
     model = GeometryStudent(cfg, int(train_ds.x.shape[1])).to(device)
     if getattr(model, "use_teacher_atlas", False):
-        prototypes = build_teacher_prototypes(base_train_ds.aux, base_train_ds.y, int(cfg["teacher_prototypes_per_class"]))
+        prototypes = build_teacher_prototypes(
+            base_train_ds.aux,
+            base_train_ds.y,
+            int(cfg["teacher_prototypes_per_class"]),
+            str(cfg.get("teacher_prototype_mode", "pc1_quantile")),
+        )
         model.set_teacher_prototypes(prototypes)
     opt = torch.optim.AdamW(model.parameters(), lr=float(cfg["lr"]), weight_decay=1e-4)
     class_weight = torch.tensor(cfg["class_weight"], dtype=torch.float32, device=device)
@@ -1412,11 +2078,18 @@ def train_candidate(
             rank_loss = feature_rank_loss(out["aux_pred"], aux)
             neighbor_loss = teacher_neighborhood_loss(out["embedding"], aux, float(cfg.get("neighbor_tau", 0.45)))
             rec_loss = reconstruction_loss(out, x, int(cfg.get("patch", 25)))
+            if out.get("bad_logit") is not None and float(cfg.get("bad_aux_weight", 0.0)) > 0:
+                bad_target = (y == CLASS_TO_INT["bad"]).float()
+                pos_weight = torch.tensor(float(cfg.get("bad_aux_pos_weight", 1.0)), dtype=torch.float32, device=device)
+                bad_aux_loss = F.binary_cross_entropy_with_logits(out["bad_logit"], bad_target, pos_weight=pos_weight)
+            else:
+                bad_aux_loss = torch.zeros((), device=device)
             loss = (
                 cls_loss
                 + float(cfg["aux_weight"]) * aux_loss
                 + float(cfg["core_aux_weight"]) * core_loss
                 + float(cfg.get("atlas_distill_weight", 0.0)) * atlas_loss
+                + float(cfg.get("bad_aux_weight", 0.0)) * bad_aux_loss
                 + float(cfg.get("neighbor_weight", 0.0)) * neighbor_loss
                 + float(cfg["supcon_weight"]) * con_loss
                 + float(cfg["rank_weight"]) * rank_loss
@@ -1433,6 +2106,7 @@ def train_candidate(
                     "aux": float(aux_loss.detach().cpu()),
                     "core": float(core_loss.detach().cpu()),
                     "atlas": float(atlas_loss.detach().cpu()),
+                    "bad_aux": float(bad_aux_loss.detach().cpu()),
                     "neighbor": float(neighbor_loss.detach().cpu()),
                     "supcon": float(con_loss.detach().cpu()),
                     "rank": float(rank_loss.detach().cpu()),
