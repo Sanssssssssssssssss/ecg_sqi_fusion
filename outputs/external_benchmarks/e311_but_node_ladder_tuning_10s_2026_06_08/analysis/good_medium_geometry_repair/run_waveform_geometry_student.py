@@ -223,6 +223,160 @@ CANDIDATES: dict[str, dict[str, Any]] = {
         "bad_outlier_aug_strength": 1.55,
         "seed": 20260806,
     },
+    "qrs_detail_token_tx": {
+        "arch": "qrs_detail_token",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "stat_hidden": 160,
+        "lr": 4.8e-4,
+        "class_weight": [1.00, 1.24, 2.05],
+        "focal_gamma": 0.9,
+        "aux_weight": 0.78,
+        "core_aux_weight": 0.70,
+        "supcon_weight": 0.12,
+        "rank_weight": 0.25,
+        "recon_weight": 0.0,
+        "seed": 20260807,
+    },
+    "atlas_memory_tx": {
+        "arch": "atlas_memory",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "stat_hidden": 128,
+        "prototypes_per_class": 8,
+        "lr": 4.4e-4,
+        "class_weight": [1.00, 1.24, 2.10],
+        "focal_gamma": 0.9,
+        "aux_weight": 0.72,
+        "core_aux_weight": 0.70,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.30,
+        "recon_weight": 0.0,
+        "seed": 20260808,
+    },
+    "qrs_atlas_memory_tx": {
+        "arch": "qrs_atlas_memory",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "stat_hidden": 128,
+        "prototypes_per_class": 8,
+        "lr": 4.2e-4,
+        "class_weight": [1.00, 1.24, 2.10],
+        "focal_gamma": 0.9,
+        "aux_weight": 0.76,
+        "core_aux_weight": 0.76,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.32,
+        "recon_weight": 0.0,
+        "seed": 20260809,
+    },
+    "teacher_atlas_student": {
+        "arch": "teacher_atlas_student",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "stat_hidden": 160,
+        "teacher_prototypes_per_class": 10,
+        "lr": 4.2e-4,
+        "class_weight": [1.00, 1.24, 2.15],
+        "focal_gamma": 0.9,
+        "aux_weight": 0.72,
+        "core_aux_weight": 0.80,
+        "atlas_distill_weight": 0.55,
+        "supcon_weight": 0.16,
+        "rank_weight": 0.34,
+        "recon_weight": 0.0,
+        "seed": 20260810,
+    },
+    "qrs_teacher_atlas_student": {
+        "arch": "qrs_teacher_atlas_student",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "stat_hidden": 128,
+        "teacher_prototypes_per_class": 10,
+        "lr": 4.0e-4,
+        "class_weight": [1.00, 1.24, 2.15],
+        "focal_gamma": 0.9,
+        "aux_weight": 0.76,
+        "core_aux_weight": 0.84,
+        "atlas_distill_weight": 0.58,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.36,
+        "recon_weight": 0.0,
+        "seed": 20260811,
+    },
+    "hybrid_atlas_student": {
+        "arch": "hybrid_atlas_student",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "stat_hidden": 128,
+        "prototypes_per_class": 8,
+        "teacher_prototypes_per_class": 10,
+        "lr": 4.1e-4,
+        "class_weight": [1.00, 1.24, 2.20],
+        "focal_gamma": 0.9,
+        "aux_weight": 0.76,
+        "core_aux_weight": 0.84,
+        "atlas_distill_weight": 0.58,
+        "supcon_weight": 0.18,
+        "rank_weight": 0.36,
+        "recon_weight": 0.0,
+        "seed": 20260812,
+    },
+    "neighbor_stattoken_student": {
+        "arch": "stattoken_v2",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "stat_hidden": 160,
+        "lr": 4.2e-4,
+        "class_weight": [1.00, 1.24, 2.35],
+        "focal_gamma": 0.9,
+        "aux_weight": 0.70,
+        "core_aux_weight": 0.82,
+        "neighbor_weight": 0.75,
+        "neighbor_tau": 0.42,
+        "supcon_weight": 0.14,
+        "rank_weight": 0.36,
+        "recon_weight": 0.0,
+        "augment_strength": 0.30,
+        "bad_outlier_aug_strength": 1.25,
+        "seed": 20260813,
+    },
+    "neighbor_hybrid_atlas_student": {
+        "arch": "hybrid_atlas_student",
+        "channels": "robust3",
+        "width": 96,
+        "layers": 4,
+        "heads": 4,
+        "stat_hidden": 128,
+        "prototypes_per_class": 8,
+        "teacher_prototypes_per_class": 10,
+        "lr": 4.0e-4,
+        "class_weight": [1.00, 1.24, 2.25],
+        "focal_gamma": 0.9,
+        "aux_weight": 0.74,
+        "core_aux_weight": 0.84,
+        "atlas_distill_weight": 0.52,
+        "neighbor_weight": 0.70,
+        "neighbor_tau": 0.42,
+        "supcon_weight": 0.16,
+        "rank_weight": 0.36,
+        "recon_weight": 0.0,
+        "seed": 20260814,
+    },
 }
 
 
@@ -431,6 +585,101 @@ class MorphologyTokenTransformer(nn.Module):
         return torch.cat([self.pool(tokens), tokens.mean(dim=1)], dim=1)
 
 
+class QRSDetailTokenTransformer(nn.Module):
+    """High-resolution local token encoder for QRS visibility/prominence."""
+
+    def __init__(self, in_ch: int, width: int, layers: int, heads: int, stat_hidden: int):
+        super().__init__()
+        self.highres = nn.Sequential(
+            nn.Conv1d(in_ch, width, kernel_size=5, stride=1, padding=2),
+            nn.GroupNorm(max(1, min(8, width // 8)), width),
+            nn.GELU(),
+            nn.Conv1d(width, width, kernel_size=7, stride=2, padding=3),
+            nn.GroupNorm(max(1, min(8, width // 8)), width),
+            nn.GELU(),
+            nn.Conv1d(width, width, kernel_size=9, stride=2, padding=4),
+            nn.GELU(),
+        )
+        self.detail = nn.Sequential(
+            nn.Conv1d(in_ch * 3, width, kernel_size=11, stride=4, padding=5),
+            nn.GroupNorm(max(1, min(8, width // 8)), width),
+            nn.GELU(),
+        )
+        self.pos = PositionalEncoding(width, max_len=768)
+        self.encoder = nn.TransformerEncoder(make_encoder_layer(width, heads), num_layers=layers)
+        self.pool = AttentionPool(width)
+        self.stat_branch = nn.Sequential(
+            nn.LayerNorm(in_ch * 15),
+            nn.Linear(in_ch * 15, stat_hidden),
+            nn.GELU(),
+            nn.Dropout(0.08),
+            nn.Linear(stat_hidden, stat_hidden),
+            nn.GELU(),
+        )
+        self.out_dim = width * 2 + stat_hidden
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        diff = F.pad(x[:, :, 1:] - x[:, :, :-1], (1, 0))
+        smooth = F.avg_pool1d(x, kernel_size=31, stride=1, padding=15)
+        highpass = x - smooth
+        detail_view = torch.cat([x, diff, highpass], dim=1)
+        tokens = torch.cat([self.highres(x).transpose(1, 2), self.detail(detail_view).transpose(1, 2)], dim=1)
+        tokens = self.encoder(self.pos(tokens))
+        return torch.cat([self.pool(tokens), tokens.mean(dim=1), self.stat_branch(qrs_detail_stats(x))], dim=1)
+
+
+class AtlasMemoryTransformer(nn.Module):
+    """Prototype-distance memory for boundary confidence / KNN-purity targets."""
+
+    def __init__(self, base: nn.Module, base_dim: int, prototypes_per_class: int):
+        super().__init__()
+        self.base = base
+        self.base_dim = int(base_dim)
+        self.prototypes_per_class = int(prototypes_per_class)
+        self.prototype_proj = nn.Sequential(nn.LayerNorm(base_dim), nn.Linear(base_dim, base_dim), nn.GELU())
+        self.prototypes = nn.Parameter(torch.randn(3, self.prototypes_per_class, base_dim) * 0.04)
+        self.out_dim = base_dim + 9
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        feat = self.base(x)
+        z = F.normalize(self.prototype_proj(feat), dim=1)
+        p = F.normalize(self.prototypes, dim=2)
+        dist = torch.sum((z[:, None, None, :] - p[None, :, :, :]) ** 2, dim=3)
+        min_dist = dist.min(dim=2).values
+        mean_dist = dist.mean(dim=2)
+        purity_like = torch.softmax(-min_dist, dim=1)
+        return torch.cat([feat, min_dist, mean_dist, purity_like], dim=1)
+
+
+def qrs_detail_stats(x: torch.Tensor) -> torch.Tensor:
+    eps = 1e-6
+    diff = x[:, :, 1:] - x[:, :, :-1]
+    smooth31 = F.avg_pool1d(x, kernel_size=31, stride=1, padding=15)
+    smooth101 = F.avg_pool1d(x, kernel_size=101, stride=1, padding=50)
+    highpass = x - smooth31
+    local_peak = highpass.abs()
+    k01 = max(1, int(x.shape[2] * 0.01))
+    k03 = max(1, int(x.shape[2] * 0.03))
+    k10 = max(1, int(x.shape[2] * 0.10))
+    top01 = torch.topk(local_peak, k=k01, dim=2).values.mean(dim=2)
+    top03 = torch.topk(local_peak, k=k03, dim=2).values.mean(dim=2)
+    top10 = torch.topk(local_peak, k=k10, dim=2).values.mean(dim=2)
+    prom_ratio = top03 / (top10 + eps)
+    detail_rms = torch.sqrt((highpass * highpass).mean(dim=2) + eps)
+    diff_top = torch.topk(diff.abs(), k=k03, dim=2).values.mean(dim=2)
+    diff_bg = torch.topk(diff.abs(), k=k10, dim=2).values.mean(dim=2)
+    diff_ratio = diff_top / (diff_bg + eps)
+    baseline_span = smooth101.amax(dim=2) - smooth101.amin(dim=2)
+    baseline_slope = (smooth101[:, :, -1] - smooth101[:, :, 0]).abs()
+    flat = (diff.abs() < 0.015).float().mean(dim=2)
+    low_amp = (x.abs() < 0.050).float().mean(dim=2)
+    mean_abs = x.abs().mean(dim=2)
+    rms = torch.sqrt((x * x).mean(dim=2) + eps)
+    ptp = x.amax(dim=2) - x.amin(dim=2)
+    zcr = ((x[:, :, 1:] * x[:, :, :-1]) < 0).float().mean(dim=2)
+    return torch.cat([top01, top03, top10, prom_ratio, detail_rms, diff_top, diff_ratio, baseline_span, baseline_slope, flat, low_amp, mean_abs, rms, ptp, zcr], dim=1)
+
+
 class GeometryStudent(nn.Module):
     def __init__(self, cfg: dict[str, Any], in_ch: int):
         super().__init__()
@@ -439,6 +688,7 @@ class GeometryStudent(nn.Module):
         layers = int(cfg["layers"])
         heads = int(cfg["heads"])
         self.arch = arch
+        self.use_teacher_atlas = arch in {"teacher_atlas_student", "qrs_teacher_atlas_student", "hybrid_atlas_student"}
         if arch == "mapstudent":
             self.encoder = PatchStudentEncoder(in_ch, width, layers, heads, int(cfg["patch"]))
             out_dim = self.encoder.out_dim
@@ -451,11 +701,54 @@ class GeometryStudent(nn.Module):
         elif arch == "morphology_token":
             self.encoder = MorphologyTokenTransformer(in_ch, width, layers, heads)
             out_dim = self.encoder.out_dim
+        elif arch == "qrs_detail_token":
+            self.encoder = QRSDetailTokenTransformer(in_ch, width, layers, heads, int(cfg["stat_hidden"]))
+            out_dim = self.encoder.out_dim
+        elif arch == "atlas_memory":
+            base = StatTokenTransformerV2(in_ch, width, layers, heads, int(cfg["stat_hidden"]))
+            self.encoder = AtlasMemoryTransformer(base, base.out_dim, int(cfg["prototypes_per_class"]))
+            out_dim = self.encoder.out_dim
+        elif arch == "qrs_atlas_memory":
+            base = QRSDetailTokenTransformer(in_ch, width, layers, heads, int(cfg["stat_hidden"]))
+            self.encoder = AtlasMemoryTransformer(base, base.out_dim, int(cfg["prototypes_per_class"]))
+            out_dim = self.encoder.out_dim
+        elif arch == "teacher_atlas_student":
+            self.encoder = StatTokenTransformerV2(in_ch, width, layers, heads, int(cfg["stat_hidden"]))
+            out_dim = self.encoder.out_dim
+        elif arch == "qrs_teacher_atlas_student":
+            self.encoder = QRSDetailTokenTransformer(in_ch, width, layers, heads, int(cfg["stat_hidden"]))
+            out_dim = self.encoder.out_dim
+        elif arch == "hybrid_atlas_student":
+            base = QRSDetailTokenTransformer(in_ch, width, layers, heads, int(cfg["stat_hidden"]))
+            self.encoder = AtlasMemoryTransformer(base, base.out_dim, int(cfg["prototypes_per_class"]))
+            out_dim = self.encoder.out_dim
         else:
             raise ValueError(f"unknown architecture {arch}")
+        if self.use_teacher_atlas:
+            proto_count = int(cfg["teacher_prototypes_per_class"])
+            self.register_buffer("teacher_prototypes", torch.zeros(3, proto_count, len(CORE_IDX)), persistent=True)
+            class_head_in = 192 + 9
+        else:
+            class_head_in = 192
         self.project = nn.Sequential(nn.LayerNorm(out_dim), nn.Linear(out_dim, 192), nn.GELU(), nn.Dropout(0.08))
-        self.class_head = nn.Sequential(nn.LayerNorm(192), nn.Linear(192, 96), nn.GELU(), nn.Dropout(0.08), nn.Linear(96, 3))
+        self.class_head = nn.Sequential(nn.LayerNorm(class_head_in), nn.Linear(class_head_in, 96), nn.GELU(), nn.Dropout(0.08), nn.Linear(96, 3))
         self.aux_head = nn.Sequential(nn.LayerNorm(192), nn.Linear(192, 128), nn.GELU(), nn.Linear(128, len(FEATURE_COLUMNS)))
+
+    def set_teacher_prototypes(self, prototypes: np.ndarray | torch.Tensor) -> None:
+        if not self.use_teacher_atlas:
+            return
+        tensor = torch.as_tensor(prototypes, dtype=torch.float32, device=self.teacher_prototypes.device)
+        if tuple(tensor.shape) != tuple(self.teacher_prototypes.shape):
+            raise ValueError(f"prototype shape mismatch: got {tuple(tensor.shape)} expected {tuple(self.teacher_prototypes.shape)}")
+        self.teacher_prototypes.copy_(tensor)
+
+    def teacher_distance_features(self, aux_values: torch.Tensor) -> torch.Tensor:
+        core = aux_values[:, CORE_IDX]
+        dist = torch.mean((core[:, None, None, :] - self.teacher_prototypes[None, :, :, :]) ** 2, dim=3)
+        min_dist = dist.min(dim=2).values
+        mean_dist = dist.mean(dim=2)
+        purity_like = torch.softmax(-min_dist, dim=1)
+        return torch.cat([min_dist, mean_dist, purity_like], dim=1)
 
     def forward(self, x: torch.Tensor, mask_ratio: float = 0.0) -> dict[str, torch.Tensor | None]:
         recon = None
@@ -465,9 +758,17 @@ class GeometryStudent(nn.Module):
         else:
             feat = self.encoder(x)
         emb = self.project(feat)
+        aux_pred = self.aux_head(emb)
+        if self.use_teacher_atlas:
+            atlas_pred = self.teacher_distance_features(aux_pred)
+            head_input = torch.cat([emb, atlas_pred], dim=1)
+        else:
+            atlas_pred = None
+            head_input = emb
         return {
-            "logits": self.class_head(emb),
-            "aux_pred": self.aux_head(emb),
+            "logits": self.class_head(head_input),
+            "aux_pred": aux_pred,
+            "atlas_pred": atlas_pred,
             "embedding": emb,
             "recon": recon,
             "recon_mask": recon_mask,
@@ -581,6 +882,27 @@ def augment_controlled_bad_outlier(x: np.ndarray, rng: np.random.Generator, stre
     return x
 
 
+def build_teacher_prototypes(aux: np.ndarray, y: np.ndarray, prototypes_per_class: int) -> np.ndarray:
+    core = np.asarray(aux[:, CORE_IDX], dtype=np.float32)
+    labels = np.asarray(y, dtype=np.int64)
+    out = np.zeros((3, int(prototypes_per_class), core.shape[1]), dtype=np.float32)
+    pc1_col = 0
+    if "pc1" in CORE_COLUMNS:
+        pc1_col = CORE_COLUMNS.index("pc1")
+    for cls in range(3):
+        rows = core[labels == cls]
+        if rows.size == 0:
+            continue
+        order = np.argsort(rows[:, pc1_col])
+        chunks = np.array_split(rows[order], int(prototypes_per_class))
+        for i, chunk in enumerate(chunks):
+            if len(chunk) == 0:
+                out[cls, i] = rows.mean(axis=0)
+            else:
+                out[cls, i] = chunk.mean(axis=0)
+    return out
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--stage", choices=["smoke", "search", "all"], default="all")
@@ -685,6 +1007,9 @@ def train_candidate(
     test_loader = DataLoader(test_ds, batch_size=args.batch_size * 2, shuffle=False, num_workers=args.num_workers, pin_memory=pin)
     original_loader = DataLoader(original_ds, batch_size=args.batch_size * 2, shuffle=False, num_workers=args.num_workers, pin_memory=pin)
     model = GeometryStudent(cfg, int(train_ds.x.shape[1])).to(device)
+    if getattr(model, "use_teacher_atlas", False):
+        prototypes = build_teacher_prototypes(base_train_ds.aux, base_train_ds.y, int(cfg["teacher_prototypes_per_class"]))
+        model.set_teacher_prototypes(prototypes)
     opt = torch.optim.AdamW(model.parameters(), lr=float(cfg["lr"]), weight_decay=1e-4)
     class_weight = torch.tensor(cfg["class_weight"], dtype=torch.float32, device=device)
     best_state = None
@@ -702,13 +1027,21 @@ def train_candidate(
             cls_loss = classification_loss(out["logits"], y, class_weight, float(cfg.get("focal_gamma", 0.0)))
             aux_loss = F.smooth_l1_loss(out["aux_pred"][:, TEACHER_IDX], aux[:, TEACHER_IDX])
             core_loss = F.smooth_l1_loss(out["aux_pred"][:, CORE_IDX], aux[:, CORE_IDX]) if CORE_IDX else torch.zeros((), device=device)
+            if out.get("atlas_pred") is not None:
+                atlas_target = model.teacher_distance_features(aux)
+                atlas_loss = F.smooth_l1_loss(out["atlas_pred"], atlas_target)
+            else:
+                atlas_loss = torch.zeros((), device=device)
             con_loss = supervised_contrastive_loss(out["embedding"], y)
             rank_loss = feature_rank_loss(out["aux_pred"], aux)
+            neighbor_loss = teacher_neighborhood_loss(out["embedding"], aux, float(cfg.get("neighbor_tau", 0.45)))
             rec_loss = reconstruction_loss(out, x, int(cfg.get("patch", 25)))
             loss = (
                 cls_loss
                 + float(cfg["aux_weight"]) * aux_loss
                 + float(cfg["core_aux_weight"]) * core_loss
+                + float(cfg.get("atlas_distill_weight", 0.0)) * atlas_loss
+                + float(cfg.get("neighbor_weight", 0.0)) * neighbor_loss
                 + float(cfg["supcon_weight"]) * con_loss
                 + float(cfg["rank_weight"]) * rank_loss
                 + float(cfg["recon_weight"]) * rec_loss
@@ -723,6 +1056,8 @@ def train_candidate(
                     "cls": float(cls_loss.detach().cpu()),
                     "aux": float(aux_loss.detach().cpu()),
                     "core": float(core_loss.detach().cpu()),
+                    "atlas": float(atlas_loss.detach().cpu()),
+                    "neighbor": float(neighbor_loss.detach().cpu()),
                     "supcon": float(con_loss.detach().cpu()),
                     "rank": float(rank_loss.detach().cpu()),
                     "recon": float(rec_loss.detach().cpu()),
@@ -785,6 +1120,7 @@ def train_candidate(
             "feature_columns": FEATURE_COLUMNS,
             "feature_train_mean": base_train_ds.mean,
             "feature_train_std": base_train_ds.std,
+            "teacher_prototypes": model.teacher_prototypes.detach().cpu().numpy() if getattr(model, "use_teacher_atlas", False) else None,
             "best_epoch": best_epoch,
             "bad_threshold_trainval": threshold,
             "original_rows_used_for_training": False,
@@ -845,6 +1181,22 @@ def feature_rank_loss(pred: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
     if not losses:
         return torch.zeros((), device=pred.device)
     return torch.stack(losses).mean()
+
+
+def teacher_neighborhood_loss(embedding: torch.Tensor, aux: torch.Tensor, tau: float) -> torch.Tensor:
+    if embedding.shape[0] < 8 or not CORE_IDX:
+        return torch.zeros((), device=embedding.device)
+    teacher = F.normalize(aux[:, CORE_IDX], dim=1)
+    student = F.normalize(embedding, dim=1)
+    teacher_dist = torch.cdist(teacher, teacher, p=2)
+    student_dist = torch.cdist(student, student, p=2)
+    eye = torch.eye(teacher_dist.shape[0], dtype=torch.bool, device=teacher_dist.device)
+    scale = max(float(tau), 1e-3)
+    teacher_logits = (-teacher_dist / scale).masked_fill(eye, -1e4)
+    student_logits = (-student_dist / scale).masked_fill(eye, -1e4)
+    target = torch.softmax(teacher_logits, dim=1).detach()
+    log_pred = torch.log_softmax(student_logits, dim=1)
+    return F.kl_div(log_pred, target, reduction="batchmean")
 
 
 def reconstruction_loss(out: dict[str, torch.Tensor | None], x: torch.Tensor, patch: int) -> torch.Tensor:

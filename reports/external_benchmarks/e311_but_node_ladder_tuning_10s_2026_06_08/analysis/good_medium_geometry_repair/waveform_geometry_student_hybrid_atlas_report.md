@@ -42,28 +42,17 @@ M outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysi
 
 | Candidate | Run | Bucket | Acc | Macro-F1 | Good R | Medium R | Bad R | g->m | m->g | b->m | Teacher MAE | Core MAE |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| neighbor_stattoken_student | search | synthetic_val | 0.995346 | 0.993970 | 1.000000 | 0.998106 | 0.976562 | 0 | 2 | 6 | 0.7698 | 0.6785 |
-| neighbor_stattoken_student | search | synthetic_test | 0.993337 | 0.991953 | 0.987448 | 0.998377 | 0.979253 | 6 | 2 | 5 | 0.7567 | 0.6323 |
-| neighbor_stattoken_student_badcal | search | synthetic_test | 0.993337 | 0.991953 | 0.987448 | 0.998377 | 0.979253 | 6 | 2 | 5 | nan | nan |
-| neighbor_stattoken_student | search | original_test_all_10s+ | 0.765129 | 0.521563 | 0.761813 | 0.838906 | 0.000000 | 867 | 713 | 318 | nan | nan |
-| neighbor_stattoken_student_badcal | search | original_test_all_10s+ | 0.777870 | 0.663403 | 0.761813 | 0.838906 | 0.262774 | 867 | 713 | 210 | nan | nan |
-| neighbor_stattoken_student | search | original_all_10s+ | 0.438828 | 0.308512 | 0.268497 | 0.930184 | 0.000000 | 12467 | 742 | 5190 | nan | nan |
-| neighbor_stattoken_student_badcal | search | original_all_10s+ | 0.466410 | 0.410561 | 0.268497 | 0.930184 | 0.171996 | 12467 | 742 | 4281 | nan | nan |
-| neighbor_stattoken_student | search | bad_core_nearboundary | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 119 | nan | nan |
-| neighbor_stattoken_student_badcal | search | bad_core_nearboundary | 0.907563 | 0.317181 | 0.000000 | 0.000000 | 0.907563 | 0 | 0 | 11 | nan | nan |
-| neighbor_stattoken_student | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 199 | nan | nan |
-| neighbor_stattoken_student_badcal | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 199 | nan | nan |
-| neighbor_hybrid_atlas_student | search | synthetic_val | 0.993601 | 0.993057 | 1.000000 | 0.991477 | 0.992188 | 0 | 8 | 2 | 0.7658 | 0.6532 |
-| neighbor_hybrid_atlas_student | search | synthetic_test | 0.996412 | 0.995574 | 0.997908 | 0.997565 | 0.987552 | 1 | 3 | 3 | 0.7617 | 0.6226 |
-| neighbor_hybrid_atlas_student_badcal | search | synthetic_test | 0.996925 | 0.996413 | 0.997908 | 0.996753 | 0.995851 | 1 | 3 | 1 | nan | nan |
-| neighbor_hybrid_atlas_student | search | original_test_all_10s+ | 0.794267 | 0.672854 | 0.912088 | 0.747402 | 0.255474 | 320 | 1116 | 88 | nan | nan |
-| neighbor_hybrid_atlas_student_badcal | search | original_test_all_10s+ | 0.793913 | 0.681862 | 0.912088 | 0.743561 | 0.289538 | 320 | 1116 | 74 | nan | nan |
-| neighbor_hybrid_atlas_student | search | original_all_10s+ | 0.680908 | 0.501652 | 0.773807 | 0.860651 | 0.019868 | 3855 | 1474 | 4956 | nan | nan |
-| neighbor_hybrid_atlas_student_badcal | search | original_all_10s+ | 0.680453 | 0.503127 | 0.773807 | 0.857734 | 0.022895 | 3855 | 1474 | 4940 | nan | nan |
-| neighbor_hybrid_atlas_student | search | bad_core_nearboundary | 0.882353 | 0.312500 | 0.000000 | 0.000000 | 0.882353 | 0 | 0 | 14 | nan | nan |
-| neighbor_hybrid_atlas_student_badcal | search | bad_core_nearboundary | 1.000000 | 0.333333 | 0.000000 | 0.000000 | 1.000000 | 0 | 0 | 0 | nan | nan |
-| neighbor_hybrid_atlas_student | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 74 | nan | nan |
-| neighbor_hybrid_atlas_student_badcal | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 74 | nan | nan |
+| hybrid_atlas_student | search | synthetic_val | 0.998255 | 0.997563 | 1.000000 | 1.000000 | 0.988281 | 0 | 0 | 3 | 0.7536 | 0.6405 |
+| hybrid_atlas_student | search | synthetic_test | 0.997437 | 0.996538 | 0.995816 | 1.000000 | 0.987552 | 2 | 0 | 3 | 0.7525 | 0.6227 |
+| hybrid_atlas_student_badcal | search | synthetic_test | 0.997437 | 0.996547 | 0.995816 | 0.999188 | 0.991701 | 2 | 0 | 2 | nan | nan |
+| hybrid_atlas_student | search | original_test_all_10s+ | 0.779757 | 0.675549 | 0.860165 | 0.759376 | 0.287105 | 509 | 1065 | 86 | nan | nan |
+| hybrid_atlas_student_badcal | search | original_test_all_10s+ | 0.779757 | 0.676228 | 0.860165 | 0.759150 | 0.289538 | 509 | 1065 | 85 | nan | nan |
+| hybrid_atlas_student | search | original_all_10s+ | 0.526126 | 0.396074 | 0.458135 | 0.885585 | 0.022517 | 9235 | 1216 | 4954 | nan | nan |
+| hybrid_atlas_student_badcal | search | original_all_10s+ | 0.526277 | 0.396813 | 0.458135 | 0.885491 | 0.023652 | 9235 | 1216 | 4948 | nan | nan |
+| hybrid_atlas_student | search | bad_core_nearboundary | 0.991597 | 0.331927 | 0.000000 | 0.000000 | 0.991597 | 0 | 0 | 1 | nan | nan |
+| hybrid_atlas_student_badcal | search | bad_core_nearboundary | 1.000000 | 0.333333 | 0.000000 | 0.000000 | 1.000000 | 0 | 0 | 0 | nan | nan |
+| hybrid_atlas_student | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 85 | nan | nan |
+| hybrid_atlas_student_badcal | search | bad_outlier_stress | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0 | 0 | 85 | nan | nan |
 
 ## Baselines
 
@@ -74,8 +63,7 @@ M outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysi
 
 ## Candidates
 
-- `neighbor_stattoken_student` (search): best_epoch=8, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\neighbor_stattoken_student\ckpt_best.pt`
-- `neighbor_hybrid_atlas_student` (search): best_epoch=8, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\neighbor_hybrid_atlas_student\ckpt_best.pt`
+- `hybrid_atlas_student` (search): best_epoch=8, useful_gate=pass, original_report_ran=True, checkpoint=`E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\runs\waveform_geometry_student\N17043_gm_probe\search\hybrid_atlas_student\ckpt_best.pt`
 
 ## Notes
 
