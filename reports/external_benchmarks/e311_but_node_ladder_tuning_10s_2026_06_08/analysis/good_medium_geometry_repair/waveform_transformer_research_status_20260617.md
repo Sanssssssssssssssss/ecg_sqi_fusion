@@ -8,6 +8,8 @@
 
 最重要的新证据是 aux-pred upper-bound audit：把当前 Transformer 预测出来的 auxiliary features 再喂给 HGB / ExtraTrees / Logistic Regression，original_test 仍只有约 `0.846`。这说明瓶颈不是最后分类头，也不是“换一个浅层 classifier 就能解决”，而是 encoder/tokenizer 没有稳定恢复关键 ECG quality features。
 
+2026-06-17 追加的 module-first probe 进一步确认：把 waveform-derived QRS/RR、baseline/band、local artifact、甚至完整 `qrs_stress_v5` primitive bank 作为诊断输入，PTB synthetic 仍然近乎满分，但 original_test 最高只有 `0.790020`，bad_outlier_stress 基本为 `0`。这说明“全局 waveform primitive summary”也不够，下一步必须是 beat/RR sequence token、baseline/filterbank token、local worst-case artifact token，而不是继续堆全局统计。
+
 下一步不应该继续盲目加 loss 或扩大普通 Transformer；应该转向 literature-guided, SQI-aware waveform representation：RR interval / beat reliability / detector agreement / band-power / baseline drift / local worst-case artifact token 都要成为 waveform encoder 的结构性任务。
 
 ## Formal Evaluation Contract
@@ -31,6 +33,8 @@
 | best waveform-only Transformer `featurefirst_top20_hardrec_qfeatbin_qrsbase_a050` | Yes | waveform-derived tokens only | 0.855963 | 0.890 | 0.884 | 0.253 | Current formal frontier. Better good/medium balance, but bad outlier stress still not learned. |
 | prior waveform-only Transformer `featurefirst_top20_hardrec_a050` | Yes | waveform-derived tokens only | 0.844520 | 0.848 | 0.894 | 0.275 | Previous best before quantile auxiliary binning. |
 | aux-pred upper bound on same Transformer | Yes for model input; diagnostic classifier on predicted aux | predicted auxiliary features | 0.846172 | 0.860 | 0.885 | 0.307 | Final classifier is not the bottleneck; feature recovery is. |
+| module-first QRS/RR primitive probe | Diagnostic only | waveform-derived QRS/RR summary features | 0.790020 | 0.912 | 0.736 | 0.290 | QRS/RR summaries learn synthetic and bad core, but not original good/medium transfer or bad outlier stress. |
+| full qrs_stress_v5 primitive bank probe | Diagnostic only | waveform-derived primitive bank | 0.781880 | 0.897 | 0.733 | 0.290 | More global waveform primitives do not solve the held-out stress slice. |
 | waveform primitive proxy | Yes | deterministic waveform stats | ~0.827-0.831 | mixed | mixed | high in some configs | Some bad stress is waveform-visible, but good/medium balance degrades. |
 
 ## What We Tried
@@ -60,6 +64,11 @@
 - Hard-feature auxiliary losses.
 - Long auxiliary pretraining, wide auxiliary heads, qrsbase variants.
 - Quantile auxiliary binning for hard features (`qfeatbin`) completed. It improves original_test acc to `0.855963` in the qrsbase variant, but bad outlier stress remains weak (`0.003425` raw, `0.068493` bad-calibrated). This is a small frontier improvement, not a structural breakthrough.
+- Module-first SQI probe completed:
+  - `qrs_rr` probe: original_test `0.790020`, good/medium/bad `0.912/0.736/0.290`.
+  - `stable_all` probe: original_test `0.789076`, good/medium/bad `0.914/0.732/0.290`.
+  - `qrs_stress_v5_all` probe: original_test `0.781880`, good/medium/bad `0.897/0.733/0.290`.
+  - all probes recover `bad_core_nearboundary` but fail `bad_outlier_stress`.
 
 ### Key negative result
 
@@ -94,6 +103,22 @@ Example from `featurefirst_top20_hardrec_a050` aux recovery:
 | `band_15_30` | ~0.713 | useful |
 | `band_30_45` | ~0.690 | useful |
 | `flatline_ratio` | ~0.555 | useful but not enough |
+
+Module-first probe gives the same warning from a different angle:
+
+| Target | Best synthetic-test recovery from waveform primitive modules |
+|---|---:|
+| `pca_margin` | ~0.750 |
+| `pc1` | ~0.739 |
+| `non_qrs_diff_p95` | ~0.725 |
+| `flatline_ratio` | ~0.538 |
+| `baseline_step` | ~0.345 |
+| `detector_agreement` | ~0.250 |
+| `sqi_basSQI` | ~0.226 |
+| `qrs_visibility` | ~0.178 |
+| `pc2` | ~0.130 |
+
+So even explicit waveform-computable global modules are not enough for the hard features. The model needs event-level structure, not only summary statistics.
 
 ### Hard features still not learned well enough
 
@@ -278,6 +303,8 @@ The uncovered pieces are not just “more samples”; they are specific waveform
 - Aux-pred upper bound: `reports/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysis/good_medium_geometry_repair/aux_pred_upper_bound/aux_pred_upper_bound_report.md`
 - Aux-pred metrics: `reports/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysis/good_medium_geometry_repair/aux_pred_upper_bound/aux_pred_upper_bound_metrics.csv`
 - Aux feature recovery: `reports/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysis/good_medium_geometry_repair/aux_pred_upper_bound/aux_pred_feature_recovery.csv`
+- Module-first SQI probe: `reports/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysis/good_medium_geometry_repair/waveform_sqi_module_probe_report.md`
+- Full-bank module probe: `reports/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysis/good_medium_geometry_repair/waveform_sqi_module_probe_fullbank_fast_report.md`
 
 ## Bottom Line
 
