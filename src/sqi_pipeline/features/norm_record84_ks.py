@@ -25,10 +25,17 @@ SEED = 0
 STD_EPS = 1e-8   # avoid std=0
 # =======================
 
-def _outputs_exist(out_stats: Path, out_parquet: Path) -> bool:
+def _outputs_exist(out_stats: Path, out_parquet: Path, split_csv: Path) -> bool:
     def ok(p: Path) -> bool:
         return p.exists() and p.is_file() and p.stat().st_size > 0
-    return ok(out_stats) and ok(out_parquet)
+    if not (ok(out_stats) and ok(out_parquet) and ok(split_csv)):
+        return False
+    try:
+        n_expected = len(pd.read_csv(split_csv, usecols=["record_id"]))
+        n_out = len(pd.read_parquet(out_parquet, columns=["record_id"]))
+    except Exception:
+        return False
+    return n_out == n_expected
 
 def run(params: dict[str, Any]) -> dict[str, Any]:
     """
@@ -81,7 +88,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     else:
         out_parquet = Path(str(out_parquet))
 
-    if (not force) and _outputs_exist(Path(out_stats), Path(out_parquet)):
+    if (not force) and _outputs_exist(Path(out_stats), Path(out_parquet), split_csv):
         logger.info("norm_record84_ks: outputs exist -> skip (set force=True to rerun)")
         return {"step": "norm_record84_ks", "skipped": True, "outputs": [str(out_stats), str(out_parquet)]}
 

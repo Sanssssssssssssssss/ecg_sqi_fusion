@@ -258,6 +258,264 @@ def _fit_eval_12lead(
     return out
 
 
+def _fit_eval_12lead_paper(
+    *,
+    df: pd.DataFrame,
+    sqis: list[str],
+    svm_cfg: SVMConfig,
+    threshold_mode: str,
+    threshold_fixed: float,
+    final_trainval: bool,
+    fixed_C: float | None = None,
+    fixed_gamma: float | None = None,
+    tune_params: bool = False,
+    select_metric: str = "val_auc",
+    log_each: bool = True,
+    save_model: bool = False,
+    model_out: Path | None = None,
+    meta: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    cols = _get_feature_cols_12lead(sqis)
+    missing = [c for c in cols if c not in df.columns]
+    if missing:
+        raise ValueError(f"Missing feature columns (examples): {missing[:10]}")
+
+    tr = df["split"].to_numpy() == "train"
+    va = df["split"].to_numpy() == "val"
+    te = df["split"].to_numpy() == "test"
+
+    Xtr = df.loc[tr, cols].to_numpy(dtype=np.float64)
+    ytr = df.loc[tr, "y01"].to_numpy(dtype=int)
+    Xva = df.loc[va, cols].to_numpy(dtype=np.float64)
+    yva = df.loc[va, "y01"].to_numpy(dtype=int)
+    Xte = df.loc[te, cols].to_numpy(dtype=np.float64)
+    yte = df.loc[te, "y01"].to_numpy(dtype=int)
+
+    model_select = SVMRBF(svm_cfg)
+    if tune_params:
+        gs = model_select.fit_gridsearch(
+            Xtr, ytr,
+            Xva, yva,
+            select_metric=select_metric,
+            threshold=threshold_fixed,
+            log_each=log_each,
+        )
+        C = float(gs["best_params"]["svc__C"])
+        gamma = float(gs["best_params"]["svc__gamma"])
+        best_score = float(gs["best_score"])
+        best_val_acc = float(gs["best_val_acc"])
+        best_val_auc = float(gs["best_val_auc"])
+        n_grid = int(gs.get("n_grid", 0))
+        train_time = float(gs["train_time_s"])
+    else:
+        if fixed_C is None or fixed_gamma is None:
+            raise ValueError("fixed_C and fixed_gamma are required when tune_params=False")
+        C = float(fixed_C)
+        gamma = float(fixed_gamma)
+        fit_info = _fit_fixed_params(model_select, Xtr, ytr, C=C, gamma=gamma)
+        train_time = float(fit_info["train_time_s"])
+        p_val_fixed = model_select.predict_proba(Xva)
+        val_fixed = _metrics(yva, p_val_fixed, threshold=threshold_fixed)
+        best_score = float(val_fixed["AUC"])
+        best_val_acc = float(val_fixed["Ac"])
+        best_val_auc = float(val_fixed["AUC"])
+        n_grid = 0
+
+    p_val = model_select.predict_proba(Xva)
+    if threshold_mode == "val_maxacc":
+        thr_info = _max_acc_threshold(yva, p_val)
+        threshold = float(thr_info["threshold"])
+    else:
+        threshold = float(threshold_fixed)
+        met = _metrics(yva, p_val, threshold=threshold)
+        thr_info = {"threshold": threshold, "acc": met["Ac"], "se": met["Se"], "sp": met["Sp"]}
+
+    if final_trainval:
+        Xfit = np.concatenate([Xtr, Xva], axis=0)
+        yfit = np.concatenate([ytr, yva], axis=0)
+    else:
+        Xfit = Xtr
+        yfit = ytr
+
+    model_final = SVMRBF(svm_cfg)
+    fit_final = _fit_fixed_params(model_final, Xfit, yfit, C=C, gamma=gamma)
+    train_time += float(fit_final["train_time_s"])
+
+    p_train = model_final.predict_proba(Xfit)
+    p_test = model_final.predict_proba(Xte)
+    met_train = _metrics(yfit, p_train, threshold=threshold)
+    met_test = _metrics(yte, p_test, threshold=threshold)
+
+    if save_model and model_out is not None:
+        model_final.save(model_out, meta=meta or {})
+
+    return {
+        "sqis": ",".join(sqis),
+        "n_features": int(len(cols)),
+        "best_score": float(best_score),
+        "best_val_acc": float(best_val_acc),
+        "best_val_auc": float(best_val_auc),
+        "best_params": {"svc__C": C, "svc__gamma": gamma},
+        "n_grid": int(n_grid),
+        "threshold": float(threshold),
+        "threshold_selection": thr_info,
+        "train_time_s": float(train_time),
+        "train": met_train,
+        "test": met_test,
+        "p_test": p_test,
+        "y01_test": yte,
+    }
+
+
+def _run_paper_svm_tables(
+    *,
+    df: pd.DataFrame,
+    svm_cfg: SVMConfig,
+    out_dir: Path,
+    seed: int,
+    params: dict[str, Any],
+    out_table5: Path,
+    out_table6: Path,
+    out_table7: Path,
+    roc_dir: Path,
+    probs_dir: Path,
+    maxacc_dir: Path,
+) -> dict[str, Any]:
+    threshold_mode = str(params.get("threshold_mode", "val_maxacc"))
+    if threshold_mode not in {"fixed", "val_maxacc"}:
+        raise ValueError("threshold_mode must be 'fixed' or 'val_maxacc'")
+    threshold_fixed = float(params.get("threshold", 0.5))
+    final_trainval = bool(params.get("final_trainval", True))
+    save_models = bool(params.get("save_models", False))
+    select_metric = str(params.get("select_metric", "val_auc"))
+    log_each = bool(params.get("log_each", True))
+    default_C = float(params.get("paper_default_C", 1.0))
+    default_gamma = float(params.get("paper_default_gamma", 0.14))
+
+    rows5: list[dict[str, Any]] = []
+    logger.info("Paper Table 5: 12-lead single SQI, fixed RBF defaults C=%.6g gamma=%.6g", default_C, default_gamma)
+    for sqi in SQI_LIST:
+        res = _fit_eval_12lead_paper(
+            df=df, sqis=[sqi], svm_cfg=svm_cfg,
+            threshold_mode=threshold_mode, threshold_fixed=threshold_fixed,
+            final_trainval=final_trainval,
+            fixed_C=default_C, fixed_gamma=default_gamma,
+            tune_params=False,
+            save_model=save_models,
+            model_out=(out_dir / "models" / f"paper_svm_12lead__{sqi}__seed{seed}.pkl") if save_models else None,
+        )
+        key = sqi
+        _save_probs_npz(probs_dir / f"{key}_seed{seed}.npz", res["y01_test"], res["p_test"], res["threshold"])
+        best_thr = plot_roc_with_maxacc(res["y01_test"], res["p_test"], roc_dir / f"{key}_roc_maxacc_seed{seed}.png")
+        pd.DataFrame([best_thr]).to_csv(maxacc_dir / f"{key}_maxacc_seed{seed}.csv", index=False)
+        rows5.append({
+            "SQI": sqi,
+            "n_features": res["n_features"],
+            "val_score": res["best_score"],
+            "val_acc_best": res["best_val_acc"],
+            "val_auc_best": res["best_val_auc"],
+            "best_C": res["best_params"]["svc__C"],
+            "best_gamma": res["best_params"]["svc__gamma"],
+            "n_grid": res["n_grid"],
+            "threshold": res["threshold"],
+            "Ac_train": res["train"]["Ac"],
+            "Se_train": res["train"]["Se"],
+            "Sp_train": res["train"]["Sp"],
+            "Ac_test": res["test"]["Ac"],
+            "Se_test": res["test"]["Se"],
+            "Sp_test": res["test"]["Sp"],
+            "AUC_test": res["test"]["AUC"],
+            "maxAcc_thr_test": best_thr["threshold"],
+            "maxAcc_test": best_thr["acc"],
+        })
+        logger.info("  %-6s | test Ac=%.4f thr=%.3f", sqi, res["test"]["Ac"], res["threshold"])
+    pd.DataFrame(rows5).to_csv(out_table5, index=False)
+
+    rows6: list[dict[str, Any]] = []
+    logger.info("Paper Table 6: 12-lead SQI combinations, fixed RBF defaults")
+    for group, sqis in COMBOS:
+        res = _fit_eval_12lead_paper(
+            df=df, sqis=sqis, svm_cfg=svm_cfg,
+            threshold_mode=threshold_mode, threshold_fixed=threshold_fixed,
+            final_trainval=final_trainval,
+            fixed_C=default_C, fixed_gamma=default_gamma,
+            tune_params=False,
+            save_model=save_models,
+            model_out=(out_dir / "models" / f"paper_svm_12lead__{group.replace(' ', '')}__seed{seed}.pkl") if save_models else None,
+        )
+        key = group.replace(" ", "")
+        _save_probs_npz(probs_dir / f"{key}_seed{seed}.npz", res["y01_test"], res["p_test"], res["threshold"])
+        best_thr = plot_roc_with_maxacc(res["y01_test"], res["p_test"], roc_dir / f"{key}_roc_maxacc_seed{seed}.png")
+        pd.DataFrame([best_thr]).to_csv(maxacc_dir / f"{key}_maxacc_seed{seed}.csv", index=False)
+        rows6.append({
+            "Group": group,
+            "Selected_SQI": ",".join(sqis),
+            "n_features": res["n_features"],
+            "val_score": res["best_score"],
+            "val_acc_best": res["best_val_acc"],
+            "val_auc_best": res["best_val_auc"],
+            "best_C": res["best_params"]["svc__C"],
+            "best_gamma": res["best_params"]["svc__gamma"],
+            "n_grid": res["n_grid"],
+            "threshold": res["threshold"],
+            "Ac_train": res["train"]["Ac"],
+            "Ac_test": res["test"]["Ac"],
+            "AUC_test": res["test"]["AUC"],
+            "maxAcc_thr_test": best_thr["threshold"],
+            "maxAcc_test": best_thr["acc"],
+        })
+        logger.info("  %-11s | test Ac=%.4f thr=%.3f", group, res["test"]["Ac"], res["threshold"])
+    pd.DataFrame(rows6).to_csv(out_table6, index=False)
+
+    logger.info("Paper Table 7: selected five SQIs, tune C/gamma on validation")
+    selected5 = ["bSQI", "basSQI", "kSQI", "sSQI", "fSQI"]
+    res7 = _fit_eval_12lead_paper(
+        df=df, sqis=selected5, svm_cfg=svm_cfg,
+        threshold_mode=threshold_mode, threshold_fixed=threshold_fixed,
+        final_trainval=final_trainval,
+        tune_params=True,
+        select_metric=select_metric,
+        log_each=log_each,
+        save_model=save_models,
+        model_out=(out_dir / "models" / f"paper_svm_selected5_seed{seed}.pkl") if save_models else None,
+        meta={"mode": "paper_table7_selected5", "sqis": selected5},
+    )
+    _save_probs_npz(probs_dir / f"Selected5_seed{seed}.npz", res7["y01_test"], res7["p_test"], res7["threshold"])
+    best_thr7 = plot_roc_with_maxacc(res7["y01_test"], res7["p_test"], roc_dir / f"Selected5_roc_maxacc_seed{seed}.png")
+    pd.DataFrame([best_thr7]).to_csv(maxacc_dir / f"Selected5_maxacc_seed{seed}.csv", index=False)
+    pd.DataFrame([{
+        "Setting": "seta_internal_balanced_group_split",
+        "balanced": 1,
+        "Selected_SQI": ",".join(selected5),
+        "n_features": res7["n_features"],
+        "val_score": res7["best_score"],
+        "val_acc_best": res7["best_val_acc"],
+        "val_auc_best": res7["best_val_auc"],
+        "best_C": res7["best_params"]["svc__C"],
+        "best_gamma": res7["best_params"]["svc__gamma"],
+        "n_grid": res7["n_grid"],
+        "threshold": res7["threshold"],
+        "Ac_train": res7["train"]["Ac"],
+        "Se_train": res7["train"]["Se"],
+        "Sp_train": res7["train"]["Sp"],
+        "Ac_test": res7["test"]["Ac"],
+        "Se_test": res7["test"]["Se"],
+        "Sp_test": res7["test"]["Sp"],
+        "AUC_test": res7["test"]["AUC"],
+        "maxAcc_thr_test": best_thr7["threshold"],
+        "maxAcc_test": best_thr7["acc"],
+    }]).to_csv(out_table7, index=False)
+
+    logger.info("[saved] %s", out_table5)
+    logger.info("[saved] %s", out_table6)
+    logger.info("[saved] %s", out_table7)
+    return {
+        "step": "svm_tables",
+        "skipped": False,
+        "outputs": [str(out_table5), str(out_table6), str(out_table7), str(roc_dir), str(probs_dir), str(maxacc_dir)],
+    }
+
+
 def run(params: dict[str, Any]) -> dict[str, Any]:
     verbose = bool(params.get("verbose", False))
     force = bool(params.get("force", False))
@@ -279,6 +537,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
 
     threshold = float(params.get("threshold", 0.5))
     save_models = bool(params.get("save_models", False))
+    paper_mode = bool(params.get("paper_mode", False))
 
     select_metric = str(params.get("select_metric", "val_acc"))
     log_each = bool(params.get("log_each", True))
@@ -286,15 +545,19 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     # outputs
     out_table5 = out_dir / f"table5_12lead_single_sqi_seed{SEED}.csv"
     out_table6 = out_dir / f"table6_12lead_combo_sqi_seed{SEED}.csv"
+    out_table7 = out_dir / f"table7_svm_selected5_seed{SEED}.csv"
 
-    if (not force) and out_table5.exists() and out_table6.exists():
+    if (not force) and out_table5.exists() and out_table6.exists() and ((not paper_mode) or out_table7.exists()):
         logger.info("svm_tables: outputs exist -> skip (set force=True to rerun)")
-        return {"step": "svm_tables", "skipped": True, "outputs": [str(out_table5), str(out_table6)]}
+        outputs = [str(out_table5), str(out_table6)]
+        if paper_mode:
+            outputs.append(str(out_table7))
+        return {"step": "svm_tables", "skipped": True, "outputs": outputs}
 
     logger.info("features: %s", features_parquet)
     logger.info("split_csv: %s", split_csv)
     logger.info("out_dir: %s", out_dir)
-    logger.info("threshold=%.3f | save_models=%s", threshold, save_models)
+    logger.info("threshold=%.3f | save_models=%s | paper_mode=%s", threshold, save_models, paper_mode)
 
     df = _load_df(features_parquet, split_csv)
     ntr = int((df["split"] == "train").sum())
@@ -312,6 +575,21 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
         object.__setattr__(svm_cfg, "C_list", tuple(float(x) for x in params["C_list"]))
     if params.get("gamma_list") is not None:
         object.__setattr__(svm_cfg, "gamma_list", tuple(float(x) for x in params["gamma_list"]))
+
+    if paper_mode:
+        return _run_paper_svm_tables(
+            df=df,
+            svm_cfg=svm_cfg,
+            out_dir=out_dir,
+            seed=SEED,
+            params=params,
+            out_table5=out_table5,
+            out_table6=out_table6,
+            out_table7=out_table7,
+            roc_dir=roc_dir,
+            probs_dir=probs_dir,
+            maxacc_dir=maxacc_dir,
+        )
 
     # ----------------------------------------
     # GLOBAL grid search (run ONCE) to get C*, gamma*

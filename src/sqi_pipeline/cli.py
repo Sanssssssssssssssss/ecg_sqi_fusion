@@ -20,7 +20,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--fresh", action="store_true", help="delete generated SQI artifacts and rerun")
     parser.add_argument("--force", action="store_true", help="force each step to rerun")
     parser.add_argument("--only", default="", help="comma-separated step names, e.g. manifest_raw,record84")
-    parser.add_argument("--artifacts_dir", default="outputs/sqi")
+    parser.add_argument("--artifacts_dir", default=None)
+    parser.add_argument("--profile", choices=["baseline", "paper_aligned"], default="baseline")
     parser.add_argument("--seed", type=int, default=0)
     return parser.parse_args()
 
@@ -46,9 +47,13 @@ def setup_logging(verbose: bool) -> None:
 def main() -> None:
     args = parse_args()
     setup_logging(args.verbose)
+    artifacts_dir = args.artifacts_dir
+    if artifacts_dir is None:
+        artifacts_dir = "outputs/sqi_paper_aligned" if args.profile == "paper_aligned" else "outputs/sqi"
 
     cfg = SQIPipelineConfig.build(
-        artifacts_dir=args.artifacts_dir,
+        artifacts_dir=artifacts_dir,
+        profile=args.profile,
         seed=args.seed,
         verbose=args.verbose,
         force=args.force,

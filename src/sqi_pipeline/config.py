@@ -14,6 +14,7 @@ LEADS_12 = ["I", "II", "III", "aVR", "aVL", "aVF", "V1", "V2", "V3", "V4", "V5",
 class SQIPipelineConfig:
     root: Path
     artifacts_dir: Path
+    profile: str = "baseline"
     seed: int = 0
     verbose: bool = False
     force: bool = False
@@ -23,10 +24,13 @@ class SQIPipelineConfig:
         cls,
         *,
         artifacts_dir: str | Path = "outputs/sqi",
+        profile: str = "baseline",
         seed: int = 0,
         verbose: bool = False,
         force: bool = False,
     ) -> "SQIPipelineConfig":
+        if profile not in {"baseline", "paper_aligned"}:
+            raise ValueError(f"unknown SQI pipeline profile: {profile}")
         root = project_root()
         artifacts_path = Path(artifacts_dir)
         if not artifacts_path.is_absolute():
@@ -34,6 +38,7 @@ class SQIPipelineConfig:
         return cls(
             root=root,
             artifacts_dir=artifacts_path,
+            profile=profile,
             seed=seed,
             verbose=verbose,
             force=force,
@@ -53,6 +58,7 @@ class SQIPipelineConfig:
 
     def base_params(self) -> dict[str, Any]:
         return {
+            "profile": self.profile,
             "seed": self.seed,
             "verbose": self.verbose,
             "force": self.force,

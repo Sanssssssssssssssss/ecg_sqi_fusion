@@ -12,6 +12,8 @@ from src.sqi_pipeline.features.sqi import (
     sqi_pSQI, sqi_basSQI, sqi_sSQI, sqi_kSQI, sqi_fSQI,
     sqi_bSQI_li2008_global,
     sqi_iSQI_li2008_global_per_lead,
+    sqi_bSQI_paper_wqrs_eplimited,
+    sqi_iSQI_paper_all_leads_per_lead,
 )
 
 logger = logging.getLogger(__name__)
@@ -99,10 +101,9 @@ def print_sample_block(i: int, rid: str, y: int, row: dict, leads: list[str]) ->
             f"{row[f'{ld}__basSQI']:6.3f}"
         )
 
-def _outputs_exist(out_dir: Path) -> bool:
+def _outputs_exist(out_dir: Path, split_csv: Path) -> bool:
     """
-    Minimal skip check: record84.parquet exists and non-empty.
-    (lead7.parquet is optional but we include it if you want.)
+    Skip only when feature tables exist and match the current split row count.
     """
     p1 = out_dir / "record84.parquet"
     p2 = out_dir / "lead7.parquet"
@@ -110,7 +111,15 @@ def _outputs_exist(out_dir: Path) -> bool:
         return False
     if not (p2.exists() and p2.is_file() and p2.stat().st_size > 0):
         return False
-    return True
+    if not (split_csv.exists() and split_csv.is_file() and split_csv.stat().st_size > 0):
+        return False
+    try:
+        n_expected = len(pd.read_csv(split_csv, usecols=["record_id"]))
+        n_record84 = len(pd.read_parquet(p1, columns=["record_id"]))
+        n_lead7 = len(pd.read_parquet(p2, columns=["record_id"]))
+    except Exception:
+        return False
+    return n_record84 == n_expected and n_lead7 == n_expected * len(LEADS_12)
 
 def run(params: dict[str, Any]) -> dict[str, Any]:
     """
@@ -134,8 +143,11 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     print_n = int(params.get("print_n", PRINT_N))
     print_all_leads = bool(params.get("print_all_leads", PRINT_ALL_LEADS))
     isqi_use = str(params.get("isqi_use", ISQI_USE))
+    sqi_mode = str(params.get("sqi_mode", "baseline"))
     if isqi_use not in {"r1", "r2"}:
         raise ValueError("isqi_use must be 'r1' or 'r2'")
+    if sqi_mode not in {"baseline", "paper"}:
+        raise ValueError("sqi_mode must be 'baseline' or 'paper'")
     _setup_logging(verbose)
 
     root = project_root()
@@ -151,7 +163,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     out_dir = Path(str(out_dir))
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    if (not force) and _outputs_exist(out_dir):
+    if (not force) and _outputs_exist(out_dir, split_csv):
         logger.info("record84: outputs exist -> skip (set force=True to rerun)")
         return {
             "step": "record84",
@@ -164,7 +176,10 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     logger.info("qrs cache: %s", qrs_dir)
     logger.info("Welch fixed: %s", WELCH_KW)
     logger.info("flatline_eps=%s, iSQI_use=%s", FLATLINE_EPS, isqi_use)
-    logger.info("bSQI/iSQI = Li2008 GLOBAL (full 10s segment), no window, no median")
+    if sqi_mode == "paper":
+        logger.info("bSQI/iSQI = Clifford2012 paper mode: bSQI wqrs->eplimited, iSQI all-leads")
+    else:
+        logger.info("bSQI/iSQI = Li2008 GLOBAL (full 10s segment), no window, no median")
 
     df_split = pd.read_csv(split_csv)
     record_ids = df_split["record_id"].astype(str).tolist()
@@ -199,16 +214,22 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
             tol_ms_seen = tol_ms
             logger.info("beat_match_tol_ms (from qrs npz) = %dms -> %d samples", tol_ms_seen, tol_samp)
 
-        # iSQI (Li2008 global): use one detector across leads
+        # iSQI uses one detector across leads.
         r_for_isqi = r1_all if isqi_use == "r1" else r2_all
-        iSQI_list = sqi_iSQI_li2008_global_per_lead(r_for_isqi, tol_samp)
+        if sqi_mode == "paper":
+            iSQI_list = sqi_iSQI_paper_all_leads_per_lead(r_for_isqi, tol_samp)
+        else:
+            iSQI_list = sqi_iSQI_li2008_global_per_lead(r_for_isqi, tol_samp)
 
         feats: list[float] = []
         for li, lead in enumerate(LEADS_12):
             x = sig12[:, li]
 
             iSQI = float(iSQI_list[li])
-            bSQI = float(sqi_bSQI_li2008_global(r1_all[li], r2_all[li], tol_samp))
+            if sqi_mode == "paper":
+                bSQI = float(sqi_bSQI_paper_wqrs_eplimited(r1_all[li], r2_all[li], tol_samp))
+            else:
+                bSQI = float(sqi_bSQI_li2008_global(r1_all[li], r2_all[li], tol_samp))
 
             pSQI = float(sqi_pSQI(x, fs=FS, welch_kwargs=WELCH_KW))
             sSQI = float(sqi_sSQI(x))

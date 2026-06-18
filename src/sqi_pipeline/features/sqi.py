@@ -231,6 +231,61 @@ def sqi_bSQI_li2008_global(r1: np.ndarray, r2: np.ndarray, tol_samp: int) -> flo
     return float(n_matched / (n_all + 1e-12))
 
 
+def sqi_bSQI_paper_wqrs_eplimited(wqrs: np.ndarray, eplimited: np.ndarray, tol_samp: int) -> float:
+    """
+    Clifford 2012 bSQI definition used in the paper-aligned profile:
+      percentage of beats detected by wqrs also detected by eplimited.
+
+    This is intentionally asymmetric, with wqrs as denominator.
+    """
+    base = np.asarray(wqrs, dtype=int)
+    other = np.asarray(eplimited, dtype=int)
+    if base.size == 0:
+        return 0.0
+    return float(match_count(base, other, tol_samp) / (base.size + 1e-12))
+
+
+def _has_match(t: int, peaks: np.ndarray, tol_samp: int) -> bool:
+    if peaks.size == 0:
+        return False
+    k = int(np.searchsorted(peaks, t))
+    if k < peaks.size and abs(int(peaks[k]) - int(t)) <= tol_samp:
+        return True
+    if k > 0 and abs(int(peaks[k - 1]) - int(t)) <= tol_samp:
+        return True
+    return False
+
+
+def sqi_iSQI_paper_all_leads_per_lead(
+    rpeaks_by_lead: list[np.ndarray],
+    tol_samp: int,
+) -> list[float]:
+    """
+    Clifford 2012 iSQI definition for 12-lead records:
+      for each lead, percentage of beats detected on that lead that were
+      detected on all leads.
+    """
+    r = [np.asarray(x, dtype=int) for x in rpeaks_by_lead]
+    out: list[float] = []
+    for i, base in enumerate(r):
+        if base.size == 0:
+            out.append(0.0)
+            continue
+        n_all = 0
+        for t in base:
+            ok = True
+            for j, other in enumerate(r):
+                if j == i:
+                    continue
+                if not _has_match(int(t), other, tol_samp):
+                    ok = False
+                    break
+            if ok:
+                n_all += 1
+        out.append(float(n_all / (base.size + 1e-12)))
+    return out
+
+
 def sqi_iSQI_li2008_global_per_lead(
     rpeaks_by_lead: list[np.ndarray],
     tol_samp: int,

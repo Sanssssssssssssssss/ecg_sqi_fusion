@@ -101,3 +101,54 @@ def make_3_orthogonal_from_2(
 
     noise3 = np.stack([y1, y2, y3], axis=1)  # (N,3)
     return noise3
+
+
+def make_3_orthogonal_from_2_paper(
+    noise2: np.ndarray,
+    rng: np.random.Generator | None = None,
+    eps: float = 1e-12,
+) -> np.ndarray:
+    """
+    Paper-aligned variant of the NSTDB two-lead -> three-orthogonal-lead step.
+
+    The paper specifies PCA on the two available NSTDB channels and a third
+    orthogonal lead with arbitrary orientation before inverse Dower projection.
+    This keeps that construction explicit and reproducible: PC1/PC2 are used
+    for the first two axes, while the third axis is produced from deterministic
+    circularly shifted PC mixtures and then Gram-Schmidt orthogonalized. If the
+    deterministic vector degenerates, a seeded random fallback is used.
+    """
+    x = np.asarray(noise2, dtype=np.float64)
+    if x.ndim != 2 or x.shape[1] != 2:
+        raise ValueError(f"noise2 must be (N,2), got {x.shape}")
+
+    x0 = x - np.mean(x, axis=0, keepdims=True)
+    cov = (x0.T @ x0) / max(1, x0.shape[0] - 1)
+    w, v = np.linalg.eigh(cov)
+    v = v[:, np.argsort(w)[::-1]]
+
+    pc1 = x0 @ v[:, 0]
+    pc2 = x0 @ v[:, 1]
+    basis = _gram_schmidt_orthonormal([_zscore(pc1), _zscore(pc2)], eps=eps)
+    if len(basis) < 2:
+        basis = _gram_schmidt_orthonormal([_zscore(x0[:, 0]), _zscore(x0[:, 1])], eps=eps)
+    if len(basis) < 2:
+        raise RuntimeError("Failed to construct PC1/PC2 basis for paper PCA mode.")
+
+    n = x0.shape[0]
+    third = np.roll(_zscore(pc1), max(1, n // 3)) + 0.5 * np.roll(_zscore(pc2), max(1, n // 5))
+    basis3 = _gram_schmidt_orthonormal([basis[0], basis[1], third], eps=eps)
+    if len(basis3) < 3:
+        if rng is None:
+            rng = np.random.default_rng(0)
+        basis3 = _gram_schmidt_orthonormal([basis[0], basis[1], rng.standard_normal(size=n)], eps=eps)
+    if len(basis3) < 3:
+        raise RuntimeError("Failed to construct third orthogonal noise lead in paper PCA mode.")
+
+    target_rms = float(np.sqrt(np.mean(x0[:, 0] ** 2) + np.mean(x0[:, 1] ** 2)) / np.sqrt(2.0) + eps)
+
+    def scale_to_rms(u: np.ndarray) -> np.ndarray:
+        rms = float(np.sqrt(np.mean(u**2)) + eps)
+        return u * (target_rms / rms)
+
+    return np.stack([scale_to_rms(u) for u in basis3[:3]], axis=1)

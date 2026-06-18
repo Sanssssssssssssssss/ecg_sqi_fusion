@@ -22,7 +22,7 @@ class StepSpec:
     func: str = "run"
 
 
-STEPS: tuple[StepSpec, ...] = (
+BASELINE_STEPS: tuple[StepSpec, ...] = (
     StepSpec("manifest_raw", "src.sqi_pipeline.data.make_manifest_raw"),
     StepSpec("split_seta", "src.sqi_pipeline.data.make_split_seta"),
     StepSpec("balanced_noise", "src.sqi_pipeline.noise.make_balanced_noisy_cases"),
@@ -35,7 +35,28 @@ STEPS: tuple[StepSpec, ...] = (
     StepSpec("logreg_baseline", "src.sqi_pipeline.models.logreg_baseline"),
     StepSpec("gnb_baseline", "src.sqi_pipeline.models.gnb_baseline"),
 )
-STEP_NAMES = tuple(spec.name for spec in STEPS)
+
+PAPER_ALIGNED_STEPS: tuple[StepSpec, ...] = (
+    StepSpec("manifest_raw", "src.sqi_pipeline.data.make_manifest_raw"),
+    StepSpec("paper_balanced_seta", "src.sqi_pipeline.noise.make_paper_aligned_balanced_cases"),
+    StepSpec("resample_125", "src.sqi_pipeline.preprocess.resample_125"),
+    StepSpec("qrs_cache", "src.sqi_pipeline.qrs.run_qrs_cache"),
+    StepSpec("record84", "src.sqi_pipeline.features.make_record84"),
+    StepSpec("norm_record84_ks", "src.sqi_pipeline.features.norm_record84_ks"),
+    StepSpec("lm_mlp_search", "src.sqi_pipeline.models.lm_mlp_search"),
+    StepSpec("svm_tables", "src.sqi_pipeline.models.svm_tables"),
+)
+
+
+def steps_for_profile(profile: str) -> tuple[StepSpec, ...]:
+    if profile == "baseline":
+        return BASELINE_STEPS
+    if profile == "paper_aligned":
+        return PAPER_ALIGNED_STEPS
+    raise ValueError(f"unknown profile: {profile}")
+
+
+STEP_NAMES = tuple(sorted({spec.name for spec in BASELINE_STEPS + PAPER_ALIGNED_STEPS}))
 
 
 def fresh_artifacts(artifacts_dir: Path) -> None:
@@ -80,9 +101,76 @@ def step_params(cfg: SQIPipelineConfig, step_name: str) -> dict[str, Any]:
 
     split_seed = art / "splits" / f"split_seta_seed{cfg.seed}.csv"
     split_balanced = art / "splits" / f"split_seta_seed{cfg.seed}_balanced.csv"
+    split_paper_balanced = art / "splits" / f"split_seta_seed{cfg.seed}_paper_balanced.csv"
     features_dir = art / "features"
     record84 = features_dir / "record84.parquet"
     record84_norm = features_dir / "record84_norm.parquet"
+
+    if cfg.profile == "paper_aligned":
+        per_step: dict[str, dict[str, Any]] = {
+            "paper_balanced_seta": {
+                "manifest_csv": str(art / "manifests" / "manifest_challenge2011_seta.csv"),
+                "out_split_csv": str(split_paper_balanced),
+                "audit_csv": str(split_paper_balanced.with_suffix(".audit.csv")),
+                "qc_png": str(art / "qc" / f"paper_balanced_seta_seed{cfg.seed}_label_counts.png"),
+                "set_a_dir": str(cfg.set_a_dir),
+                "nstdb_dir": str(cfg.nstdb_root),
+                "cases_500_dir": str(art / "cases_500"),
+                "noise_start_stride_s": 1.0,
+            },
+            "resample_125": {
+                "split_csv": str(split_paper_balanced),
+                "cases_500_dir": str(art / "cases_500"),
+                "out_dir": str(art / "resampled_125"),
+            },
+            "qrs_cache": {
+                "split_csv": str(split_paper_balanced),
+                "resampled_dir": str(art / "resampled_125"),
+                "out_dir": str(art / "qrs"),
+                "detector_profile": "paper",
+                "paper_qrs_work_dir": str(art / "qrs" / "_wfdb_tmp"),
+                "qrs_summary_csv": str(art / "qrs" / f"qrs_summary_seed{cfg.seed}.csv"),
+            },
+            "record84": {
+                "split_csv": str(split_paper_balanced),
+                "resampled_dir": str(art / "resampled_125"),
+                "qrs_dir": str(art / "qrs"),
+                "out_dir": str(features_dir),
+                "sqi_mode": "paper",
+                "isqi_use": "r1",
+            },
+            "norm_record84_ks": {
+                "split_csv": str(split_paper_balanced),
+                "in_parquet": str(record84),
+                "out_dir": str(features_dir),
+                "out_stats": str(features_dir / f"norm_stats_seed{cfg.seed}.json"),
+                "out_parquet": str(record84_norm),
+            },
+            "lm_mlp_search": {
+                "features_parquet": str(record84_norm),
+                "split_csv": str(split_paper_balanced),
+                "out_dir": str(art / "models" / "lm_mlp"),
+                "tables": True,
+                "tables_mode": "searchJ",
+                "paper_mode": True,
+                "final_trainval": True,
+                "threshold_mode": "val_maxacc",
+                "final_patience": 101,
+            },
+            "svm_tables": {
+                "features_parquet": str(record84_norm),
+                "split_csv": str(split_paper_balanced),
+                "out_dir": str(art / "models" / "svm"),
+                "paper_mode": True,
+                "threshold_mode": "val_maxacc",
+                "final_trainval": True,
+                "C_list": (1.0, 2.0, 8.0, 25.0, 32.0, 128.0, 512.0),
+                "gamma_list": (2.0**-11, 2.0**-9, 2.0**-7, 2.0**-5, 2.0**-3, 0.14, 0.5, 0.7, 1.0, 1.5, 2.0),
+                "select_metric": "val_auc",
+            },
+        }
+        params.update(per_step.get(step_name, {}))
+        return params
 
     per_step: dict[str, dict[str, Any]] = {
         "split_seta": {
@@ -149,19 +237,22 @@ def step_params(cfg: SQIPipelineConfig, step_name: str) -> dict[str, Any]:
 
 
 def run_pipeline(cfg: SQIPipelineConfig, *, only: list[str] | None = None) -> dict[str, Any]:
+    steps = steps_for_profile(cfg.profile)
+    step_names = tuple(spec.name for spec in steps)
     allowed = set(only) if only else None
     if allowed:
-        unknown = sorted(allowed - set(STEP_NAMES))
+        unknown = sorted(allowed - set(step_names))
         if unknown:
-            raise ValueError(f"unknown step(s): {', '.join(unknown)}")
+            raise ValueError(f"unknown step(s) for profile={cfg.profile}: {', '.join(unknown)}")
 
     summary: dict[str, Any] = {
+        "profile": cfg.profile,
         "seed": cfg.seed,
         "artifacts_dir": _rel_path(cfg.artifacts_dir, cfg.root),
         "steps": [],
     }
 
-    for spec in STEPS:
+    for spec in steps:
         if allowed is not None and spec.name not in allowed:
             continue
 

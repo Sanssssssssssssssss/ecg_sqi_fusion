@@ -134,17 +134,21 @@ def resample_500_to_125(sig500_12: np.ndarray) -> np.ndarray:
 
 def _outputs_exist(out_dir: Path, split_csv: Path) -> bool:
     """
-    Minimal skip check:
-      - output directory exists and contains at least one .npz
-      - split_csv exists
-    (We keep it simple for stability.)
+    Skip only when every split row has a matching resampled .npz.
     """
     if not (split_csv.exists() and split_csv.is_file() and split_csv.stat().st_size > 0):
         return False
     if not out_dir.exists():
         return False
-    # if already produced anything, we assume step done unless force=True
-    return any(out_dir.glob("*.npz"))
+    try:
+        df = pd.read_csv(split_csv, usecols=["record_id"])
+    except Exception:
+        return False
+    expected = {str(x) for x in df["record_id"].astype(str)}
+    if not expected:
+        return False
+    have = {p.stem for p in out_dir.glob("*.npz")}
+    return expected.issubset(have)
 
 
 def run(params: dict[str, Any]) -> dict[str, Any]:

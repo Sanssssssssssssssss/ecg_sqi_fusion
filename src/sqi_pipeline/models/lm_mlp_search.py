@@ -57,6 +57,9 @@ class RunConfig:
     # early stop for final model
     final_patience: int = 15
     threshold_fixed: float = 0.7
+    threshold_mode: Literal["fixed", "val_maxacc"] = "fixed"
+    final_trainval: bool = False
+    paper_mode: bool = False
 
     # LM damping
     mu_init: float = 1e-3
@@ -136,6 +139,8 @@ class SearchResult:
 @dataclass(frozen=True)
 class FinalResult:
     bestJ: int
+    threshold: float
+    threshold_selection: dict[str, Any]
     train_summary: dict[str, Any]
     train_time_s: float
     p_test: np.ndarray
@@ -186,6 +191,14 @@ def build_cfg(params: dict[str, Any]) -> RunConfig:
     tables = bool(params.get("tables", False))
     tables_mode = str(params.get("tables_mode", "fixedJ"))
     j_fixed = int(params.get("J_fixed", 12))  # keep your param key
+    final_patience = int(params.get("final_patience", 15))
+    threshold_fixed = float(params.get("threshold_fixed", 0.7))
+    threshold_mode = str(params.get("threshold_mode", "fixed"))
+    if threshold_mode not in {"fixed", "val_maxacc"}:
+        raise ValueError("threshold_mode must be 'fixed' or 'val_maxacc'")
+    model_select_metric = str(params.get("model_select_metric", "val_acc"))
+    if model_select_metric not in {"val_acc", "val_auc"}:
+        raise ValueError("model_select_metric must be 'val_acc' or 'val_auc'")
 
     seed = int(params.get("seed", 0)) if params.get("seed") is not None else 0
 
@@ -220,6 +233,12 @@ def build_cfg(params: dict[str, Any]) -> RunConfig:
         tables=tables,
         tables_mode="searchJ" if tables_mode == "searchJ" else "fixedJ",
         j_fixed=j_fixed,
+        final_patience=final_patience,
+        threshold_fixed=threshold_fixed,
+        threshold_mode=threshold_mode,  # type: ignore[arg-type]
+        final_trainval=bool(params.get("final_trainval", False)),
+        paper_mode=bool(params.get("paper_mode", False)),
+        model_select_metric=model_select_metric,  # type: ignore[arg-type]
         verbose=verbose,
         force=force,
     )
@@ -496,8 +515,8 @@ def train_final(data: DataSplit, cfg: RunConfig, bestJ: int) -> FinalResult:
     Xte_t, _ = to_tensors(data.Xte, data.yte, cfg)
 
     t0 = time.time()
-    m_final = LMMLP(J=int(bestJ), device=cfg.device, dtype=cfg.dtype, seed=cfg.seed)
-    train_summary = m_final.fit_lm(
+    m_probe = LMMLP(J=int(bestJ), device=cfg.device, dtype=cfg.dtype, seed=cfg.seed)
+    probe_summary = m_probe.fit_lm(
         X_train=Xtr_t,
         y_train=ytr_t,
         cfg=cfg.lm_cfg,
@@ -507,10 +526,48 @@ def train_final(data: DataSplit, cfg: RunConfig, bestJ: int) -> FinalResult:
         patience=cfg.final_patience,
         threshold=cfg.threshold_fixed,
     )
+
+    p_val = m_probe.predict_proba(Xva_t)
+    if cfg.threshold_mode == "val_maxacc":
+        threshold_selection = find_maxacc_threshold(data.yva, p_val)
+        threshold = float(threshold_selection["threshold"])
+    else:
+        threshold = float(cfg.threshold_fixed)
+        threshold_selection = {
+            "threshold": threshold,
+            "mode": "fixed",
+            "acc": compute_metrics(data.yva, p_val, threshold=threshold)["acc"],
+        }
+
+    if cfg.final_trainval:
+        X_final = np.concatenate([data.Xtr, data.Xva], axis=0)
+        y_final = np.concatenate([data.ytr, data.yva], axis=0)
+        X_final_t, y_final_t = to_tensors(X_final, y_final, cfg)
+        m_final = LMMLP(J=int(bestJ), device=cfg.device, dtype=cfg.dtype, seed=cfg.seed)
+        train_summary = m_final.fit_lm(
+            X_train=X_final_t,
+            y_train=y_final_t,
+            cfg=cfg.lm_cfg,
+            X_val=None,
+            y_val=None,
+            model_select_metric=cfg.model_select_metric,
+            patience=cfg.final_patience,
+            threshold=threshold,
+        )
+        train_summary = dict(train_summary)
+        train_summary["probe_train_stop"] = probe_summary
+        train_summary["final_training_rows"] = int(len(y_final))
+        train_summary["final_trainval"] = True
+    else:
+        m_final = m_probe
+        train_summary = dict(probe_summary)
+        train_summary["final_training_rows"] = int(len(data.ytr))
+        train_summary["final_trainval"] = False
+
     train_time_s = float(time.time() - t0)
 
     p_test = m_final.predict_proba(Xte_t)
-    test_metrics_fixed = compute_metrics(data.yte, p_test, threshold=cfg.threshold_fixed)
+    test_metrics_fixed = compute_metrics(data.yte, p_test, threshold=threshold)
     test_bestthr = find_maxacc_threshold(data.yte, p_test)
 
     # store model payload (pickle dict) in train_summary? no — return only what is needed,
@@ -523,6 +580,8 @@ def train_final(data: DataSplit, cfg: RunConfig, bestJ: int) -> FinalResult:
 
     return FinalResult(
         bestJ=int(bestJ),
+        threshold=float(threshold),
+        threshold_selection=threshold_selection,
         train_summary=train_summary,
         train_time_s=train_time_s,
         p_test=p_test,
@@ -572,6 +631,8 @@ def save_main_artifacts(paths: Paths, cfg: RunConfig, data: DataSplit, search: S
                     "max_damping_tries": cfg.max_damping_tries,
                     "final_patience": cfg.final_patience,
                     "threshold_fixed": cfg.threshold_fixed,
+                    "threshold_mode": cfg.threshold_mode,
+                    "final_trainval": cfg.final_trainval,
                 },
             },
             f,
@@ -587,7 +648,7 @@ def save_main_artifacts(paths: Paths, cfg: RunConfig, data: DataSplit, search: S
             "seed": cfg.seed,
             "J": final.bestJ,
             "feature_columns": data.feat_cols,
-            "threshold": cfg.threshold_fixed,
+            "threshold": final.threshold,
             "model": final.train_summary["_model_pickle_dict"],
         }
         pickle.dump(payload, f)
@@ -605,7 +666,9 @@ def save_main_artifacts(paths: Paths, cfg: RunConfig, data: DataSplit, search: S
                 "seed": cfg.seed,
                 "device": str(cfg.device),
                 "J": final.bestJ,
-                "threshold_fixed": cfg.threshold_fixed,
+                "threshold": final.threshold,
+                "threshold_mode": cfg.threshold_mode,
+                "threshold_selection": final.threshold_selection,
                 "train_time_s": final.train_time_s,
                 "train_stop": train_summary_clean,
                 "test_metrics_fixed": final.test_metrics_fixed,
@@ -623,7 +686,7 @@ def save_main_artifacts(paths: Paths, cfg: RunConfig, data: DataSplit, search: S
         out_test_probs,
         y01_test=data.yte.astype(np.int32),
         p_test=final.p_test.astype(np.float64),
-        threshold_fixed=np.array(cfg.threshold_fixed, dtype=np.float64),
+        threshold_fixed=np.array(final.threshold, dtype=np.float64),
     )
     outs.append(str(out_test_probs))
     logger.info("[saved] %s", out_test_probs)
@@ -648,7 +711,7 @@ def save_main_artifacts(paths: Paths, cfg: RunConfig, data: DataSplit, search: S
 
     # 10) confmat (fixed threshold)
     out_cm = paths.out_dir / f"lm_mlp_confmat_seed{cfg.seed}.png"
-    plot_confmat(data.yte, final.p_test, threshold=cfg.threshold_fixed, out_png=out_cm)
+    plot_confmat(data.yte, final.p_test, threshold=final.threshold, out_png=out_cm)
     outs.append(str(out_cm))
     logger.info("[saved] %s", out_cm)
 
@@ -679,6 +742,7 @@ class SettingResult:
     sqis: list[str]
     n_features: int
     J_star: int
+    threshold: float
     train_fixed: dict[str, Any]
     test_fixed: dict[str, Any]
     test_maxacc: dict[str, Any]
@@ -760,10 +824,10 @@ def fit_eval_setting_from_dfm(
 
         assert bestJ_local is not None
 
-    # --- final fit ---
+    # --- final fit / threshold selection ---
     seed_all(cfg.seed)
-    m_final = LMMLP(J=int(bestJ_local), D=Din, device=cfg.device, dtype=cfg.dtype, seed=cfg.seed)
-    _ = m_final.fit_lm(
+    m_probe = LMMLP(J=int(bestJ_local), D=Din, device=cfg.device, dtype=cfg.dtype, seed=cfg.seed)
+    _ = m_probe.fit_lm(
         X_train=Xtr_t, y_train=ytr_t,
         cfg=cfg.lm_cfg,
         X_val=Xva_t, y_val=yva_t,
@@ -772,11 +836,37 @@ def fit_eval_setting_from_dfm(
         threshold=cfg.threshold_fixed,
     )
 
-    p_tr = m_final.predict_proba(Xtr_t)
+    p_val = m_probe.predict_proba(Xva_t)
+    if cfg.threshold_mode == "val_maxacc":
+        threshold = float(find_maxacc_threshold(yva, p_val)["threshold"])
+    else:
+        threshold = float(cfg.threshold_fixed)
+
+    if cfg.final_trainval:
+        Xtrv = np.concatenate([Xtr, Xva], axis=0)
+        ytrv = np.concatenate([ytr, yva], axis=0)
+        Xtrv_t, ytrv_t = to_tensors(Xtrv, ytrv, cfg)
+        m_final = LMMLP(J=int(bestJ_local), D=Din, device=cfg.device, dtype=cfg.dtype, seed=cfg.seed)
+        _ = m_final.fit_lm(
+            X_train=Xtrv_t, y_train=ytrv_t,
+            cfg=cfg.lm_cfg,
+            X_val=None, y_val=None,
+            model_select_metric=cfg.model_select_metric,
+            patience=cfg.final_patience,
+            threshold=threshold,
+        )
+        X_train_eval_t = Xtrv_t
+        y_train_eval = ytrv
+    else:
+        m_final = m_probe
+        X_train_eval_t = Xtr_t
+        y_train_eval = ytr
+
+    p_tr = m_final.predict_proba(X_train_eval_t)
     p_te = m_final.predict_proba(Xte_t)
 
-    met_tr = compute_metrics(ytr, p_tr, threshold=cfg.threshold_fixed)
-    met_te = compute_metrics(yte, p_te, threshold=cfg.threshold_fixed)
+    met_tr = compute_metrics(y_train_eval, p_tr, threshold=threshold)
+    met_te = compute_metrics(yte, p_te, threshold=threshold)
     best_thr = find_maxacc_threshold(yte, p_te)
 
     # --- write per-setting artifacts ---
@@ -798,6 +888,7 @@ def fit_eval_setting_from_dfm(
         sqis=sqis,
         n_features=Din,
         J_star=int(bestJ_local),
+        threshold=float(threshold),
         train_fixed=met_tr,
         test_fixed=met_te,
         test_maxacc=best_thr,
@@ -830,6 +921,7 @@ def run_tables(data: DataSplit, cfg: RunConfig, paths: Paths, bestJ_global: int)
             "SQI": s,
             "n_features": res.n_features,
             "J_star": res.J_star,
+            "threshold": res.threshold,
             "Ac_train": res.train_fixed["acc"],
             "Se_train": res.train_fixed["se"],
             "Sp_train": res.train_fixed["sp"],
@@ -862,6 +954,7 @@ def run_tables(data: DataSplit, cfg: RunConfig, paths: Paths, bestJ_global: int)
             "Selected_SQI": ",".join(sqis),
             "n_features": res.n_features,
             "J_star": res.J_star,
+            "threshold": res.threshold,
             "Ac_train": res.train_fixed["acc"],
             "Ac_test":  res.test_fixed["acc"],
             "AUC_test": res.test_fixed["auc"],
@@ -889,6 +982,7 @@ def run_tables(data: DataSplit, cfg: RunConfig, paths: Paths, bestJ_global: int)
         "Selected_SQI": ",".join(SELECTED_5),
         "n_features": res7.n_features,
         "J_star": res7.J_star,
+        "threshold": res7.threshold,
         "Ac_train": res7.train_fixed["acc"],
         "Se_train": res7.train_fixed["se"],
         "Sp_train": res7.train_fixed["sp"],
