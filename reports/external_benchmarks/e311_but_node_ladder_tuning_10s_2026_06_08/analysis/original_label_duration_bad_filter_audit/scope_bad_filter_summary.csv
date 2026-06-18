@@ -1,0 +1,5 @@
+scope,n,class_counts,bad_total,bad_outlier_low_confidence,bad_core_after_drop_outlier,bad_outlier_rate_within_bad,drop_bad_outlier_total_after_filter,drop_bad_outlier_class_counts
+original_all_protocol,32956,"{'good': 17043, 'medium': 10628, 'bad': 5285}",5285,1201,4084,0.2272469252601703,31755,"{'good': 17043, 'medium': 10628, 'bad': 4084}"
+original_all_10s_labeled,32956,"{'good': 17043, 'medium': 10628, 'bad': 5285}",5285,1201,4084,0.2272469252601703,31755,"{'good': 17043, 'medium': 10628, 'bad': 4084}"
+original_test_protocol,8477,"{'good': 3640, 'medium': 4426, 'bad': 411}",411,292,119,0.7104622871046229,8185,"{'good': 3640, 'medium': 4426, 'bad': 119}"
+original_test_10s_labeled,8477,"{'good': 3640, 'medium': 4426, 'bad': 411}",411,292,119,0.7104622871046229,8185,"{'good': 3640, 'medium': 4426, 'bad': 119}"

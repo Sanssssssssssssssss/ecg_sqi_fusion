@@ -1,0 +1,4 @@
+original_region,added_n,added_rate
+good_medium_overlap,160,0.8
+clean_core,20,0.1
+outlier_low_confidence,20,0.1

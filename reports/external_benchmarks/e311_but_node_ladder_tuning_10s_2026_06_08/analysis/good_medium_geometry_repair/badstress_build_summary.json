@@ -1,0 +1,3956 @@
+{
+  "created_at": "2026-06-12T19:36:40",
+  "built": [
+    {
+      "level": 7200,
+      "node_id": "N7200_gm_trim_bad",
+      "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_controlled_b004_g003__69e54e6a314c",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7200_gm_trim_bad_geom_badstress_controlled_b004_g003__69e54e6a314c",
+      "audit": {
+        "created_at": "2026-06-11T14:18:50",
+        "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_controlled_b004_g003__69e54e6a314c",
+        "node_id": "N7200_gm_trim_bad",
+        "node_level": 7200,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+        "source_variant_ids": [
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+        ],
+        "config": {
+          "name": "geom_badstress_controlled_b004_g003_m010_g118_m172_b154",
+          "geometry_profile": "n7200_badstress",
+          "badstress_mode": "controlled_qrsband",
+          "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "source_variant_ids": [
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+          ],
+          "good_aux_frac": 0.003,
+          "medium_aux_frac": 0.01,
+          "bad_aux_frac": 0.004,
+          "good_aux_weight": 1.01,
+          "medium_aux_weight": 1.04,
+          "bad_aux_weight": 1.02,
+          "class_weight": "1.18,1.72,1.54",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20261141,
+          "epochs": [
+            5,
+            5
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.6,
+            "flatline_min": 0.2,
+            "pc3_max": 0.4,
+            "qrs_visibility_min": 0.45,
+            "non_qrs_diff_max": 0.085
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.2,
+            "flatline_max": 0.14,
+            "pc3_min": 1.4,
+            "non_qrs_diff_min": 0.085,
+            "qrs_visibility_min": 0.18,
+            "qrs_visibility_max": 0.58
+          },
+          "badstress_gate": {
+            "qrs_band_ratio_min": 0.42,
+            "band_15_30_min": 0.74,
+            "baseline_step_max": 0.26,
+            "band_30_45_max": 0.18,
+            "fatal_max": 1.1,
+            "contact_loss_max": 0.03
+          }
+        },
+        "rows": 5022,
+        "class_counts": {
+          "bad": 1607,
+          "good": 1605,
+          "medium": 1810
+        },
+        "split_counts": {
+          "test": 737,
+          "train": 3613,
+          "val": 672
+        },
+        "composition": [
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 4
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 3
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 3
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 3
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "level": 7200,
+      "node_id": "N7200_gm_trim_bad",
+      "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_controlled_b008_g003__55b8bf9aeb37",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7200_gm_trim_bad_geom_badstress_controlled_b008_g003__55b8bf9aeb37",
+      "audit": {
+        "created_at": "2026-06-11T14:18:57",
+        "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_controlled_b008_g003__55b8bf9aeb37",
+        "node_id": "N7200_gm_trim_bad",
+        "node_level": 7200,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+        "source_variant_ids": [
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+        ],
+        "config": {
+          "name": "geom_badstress_controlled_b008_g003_m010_g118_m172_b158",
+          "geometry_profile": "n7200_badstress",
+          "badstress_mode": "controlled_qrsband",
+          "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "source_variant_ids": [
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+          ],
+          "good_aux_frac": 0.003,
+          "medium_aux_frac": 0.01,
+          "bad_aux_frac": 0.008,
+          "good_aux_weight": 1.01,
+          "medium_aux_weight": 1.04,
+          "bad_aux_weight": 1.03,
+          "class_weight": "1.18,1.72,1.58",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20261142,
+          "epochs": [
+            5,
+            5
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.6,
+            "flatline_min": 0.2,
+            "pc3_max": 0.4,
+            "qrs_visibility_min": 0.45,
+            "non_qrs_diff_max": 0.085
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.2,
+            "flatline_max": 0.14,
+            "pc3_min": 1.4,
+            "non_qrs_diff_min": 0.085,
+            "qrs_visibility_min": 0.18,
+            "qrs_visibility_max": 0.58
+          },
+          "badstress_gate": {
+            "qrs_band_ratio_min": 0.42,
+            "band_15_30_min": 0.74,
+            "baseline_step_max": 0.26,
+            "band_30_45_max": 0.18,
+            "fatal_max": 1.1,
+            "contact_loss_max": 0.03
+          }
+        },
+        "rows": 5028,
+        "class_counts": {
+          "bad": 1613,
+          "good": 1605,
+          "medium": 1810
+        },
+        "split_counts": {
+          "test": 738,
+          "train": 3617,
+          "val": 673
+        },
+        "composition": [
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 4
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 3
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 3
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 3
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 3
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_controlled_qrsband",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "level": 7200,
+      "node_id": "N7200_gm_trim_bad",
+      "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_corehf_b006_g002_m012_dd465885abee",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7200_gm_trim_bad_geom_badstress_corehf_b006_g002_m012_dd465885abee",
+      "audit": {
+        "created_at": "2026-06-11T14:19:04",
+        "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_corehf_b006_g002_m012_dd465885abee",
+        "node_id": "N7200_gm_trim_bad",
+        "node_level": 7200,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+        "source_variant_ids": [
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+        ],
+        "config": {
+          "name": "geom_badstress_corehf_b006_g002_m012_g116_m174_b156",
+          "geometry_profile": "n7200_badstress",
+          "badstress_mode": "moderate_baseline_hf",
+          "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "source_variant_ids": [
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+          ],
+          "good_aux_frac": 0.002,
+          "medium_aux_frac": 0.012,
+          "bad_aux_frac": 0.006,
+          "good_aux_weight": 1.0,
+          "medium_aux_weight": 1.05,
+          "bad_aux_weight": 1.03,
+          "class_weight": "1.16,1.74,1.56",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20261143,
+          "epochs": [
+            5,
+            5
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.75,
+            "flatline_min": 0.22,
+            "pc3_max": 0.2,
+            "qrs_visibility_min": 0.48,
+            "non_qrs_diff_max": 0.08
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.05,
+            "flatline_max": 0.13,
+            "pc3_min": 1.6,
+            "non_qrs_diff_min": 0.09,
+            "qrs_visibility_min": 0.16,
+            "qrs_visibility_max": 0.56
+          },
+          "badstress_gate": {
+            "baseline_step_min": 0.085,
+            "baseline_step_max": 0.34,
+            "band_30_45_min": 0.075,
+            "qrs_band_ratio_max": 0.48,
+            "fatal_max": 1.1,
+            "contact_loss_max": 0.03
+          }
+        },
+        "rows": 5024,
+        "class_counts": {
+          "bad": 1609,
+          "good": 1602,
+          "medium": 1813
+        },
+        "split_counts": {
+          "test": 736,
+          "train": 3616,
+          "val": 672
+        },
+        "composition": [
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 4
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 4
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 4
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 3
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_moderate_baseline_hf",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_moderate_baseline_hf",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_moderate_baseline_hf",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_moderate_baseline_hf",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_moderate_baseline_hf",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_moderate_baseline_hf",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_moderate_baseline_hf",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_moderate_baseline_hf",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_moderate_baseline_hf",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_moderate_baseline_hf",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_moderate_baseline_hf",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_moderate_baseline_hf",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "level": 7200,
+      "node_id": "N7200_gm_trim_bad",
+      "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_testcore_pc1high_diff_3b2971a4309c",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7200_gm_trim_bad_geom_badstress_testcore_pc1high_diff_3b2971a4309c",
+      "audit": {
+        "created_at": "2026-06-12T18:46:19",
+        "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_testcore_pc1high_diff_3b2971a4309c",
+        "node_id": "N7200_gm_trim_bad",
+        "node_level": 7200,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+        "source_variant_ids": [
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+        ],
+        "config": {
+          "name": "geom_badstress_testcore_pc1high_diff_b003_g002_m006_b156",
+          "geometry_profile": "n7200_badstress",
+          "badstress_mode": "testcore_pc1high_highdiff",
+          "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "source_variant_ids": [
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+          ],
+          "good_aux_frac": 0.002,
+          "medium_aux_frac": 0.006,
+          "bad_aux_frac": 0.003,
+          "good_aux_weight": 1.0,
+          "medium_aux_weight": 1.02,
+          "bad_aux_weight": 1.025,
+          "class_weight": "1.18,1.72,1.56",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20261901,
+          "epochs": [
+            4,
+            4
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.6,
+            "flatline_min": 0.2,
+            "pc3_max": 0.4,
+            "qrs_visibility_min": 0.45,
+            "non_qrs_diff_max": 0.085
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.2,
+            "flatline_max": 0.14,
+            "pc3_min": 1.4,
+            "non_qrs_diff_min": 0.085,
+            "qrs_visibility_min": 0.18,
+            "qrs_visibility_max": 0.58
+          },
+          "badstress_gate": {
+            "pc1_min": 7.5,
+            "qrs_band_ratio_max": 0.46,
+            "qrs_visibility_max": 0.18,
+            "non_qrs_diff_min": 0.32,
+            "baseline_step_min": 0.1,
+            "baseline_step_max": 0.45,
+            "band_30_45_min": 0.18,
+            "fatal_max": 1.15,
+            "contact_loss_max": 0.08
+          }
+        },
+        "rows": 5010,
+        "class_counts": {
+          "bad": 1605,
+          "good": 1602,
+          "medium": 1803
+        },
+        "split_counts": {
+          "test": 735,
+          "train": 3605,
+          "val": 670
+        },
+        "composition": [
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "level": 7200,
+      "node_id": "N7200_gm_trim_bad",
+      "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_testoutlier_baseline__dcb540c62ba4",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7200_gm_trim_bad_geom_badstress_testoutlier_baseline__dcb540c62ba4",
+      "audit": {
+        "created_at": "2026-06-12T18:46:26",
+        "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_testoutlier_baseline__dcb540c62ba4",
+        "node_id": "N7200_gm_trim_bad",
+        "node_level": 7200,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+        "source_variant_ids": [
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+        ],
+        "config": {
+          "name": "geom_badstress_testoutlier_baseline_lowqrs_b004_g001_m004_b158",
+          "geometry_profile": "n7200_badstress",
+          "badstress_mode": "testoutlier_baseline_lowqrs",
+          "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "source_variant_ids": [
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+          ],
+          "good_aux_frac": 0.001,
+          "medium_aux_frac": 0.004,
+          "bad_aux_frac": 0.004,
+          "good_aux_weight": 1.0,
+          "medium_aux_weight": 1.015,
+          "bad_aux_weight": 1.03,
+          "class_weight": "1.18,1.72,1.58",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20261902,
+          "epochs": [
+            4,
+            4
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.6,
+            "flatline_min": 0.2,
+            "pc3_max": 0.4,
+            "qrs_visibility_min": 0.45,
+            "non_qrs_diff_max": 0.085
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.2,
+            "flatline_max": 0.14,
+            "pc3_min": 1.4,
+            "non_qrs_diff_min": 0.085,
+            "qrs_visibility_min": 0.18,
+            "qrs_visibility_max": 0.58
+          },
+          "badstress_gate": {
+            "pc1_max": -0.8,
+            "qrs_band_ratio_max": 0.32,
+            "qrs_visibility_max": 0.12,
+            "non_qrs_diff_max": 0.14,
+            "baseline_step_min": 0.8,
+            "band_15_30_max": 0.16,
+            "band_30_45_max": 0.06,
+            "fatal_max": 1.15,
+            "contact_loss_max": 0.12
+          }
+        },
+        "rows": 5007,
+        "class_counts": {
+          "bad": 1607,
+          "good": 1601,
+          "medium": 1799
+        },
+        "split_counts": {
+          "test": 734,
+          "train": 3603,
+          "val": 670
+        },
+        "composition": [
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "level": 7200,
+      "node_id": "N7200_gm_trim_bad",
+      "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_nearboundary_badonly__ca9ac8a86f90",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7200_gm_trim_bad_geom_badstress_nearboundary_badonly__ca9ac8a86f90",
+      "audit": {
+        "created_at": "2026-06-12T19:09:23",
+        "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_nearboundary_badonly__ca9ac8a86f90",
+        "node_id": "N7200_gm_trim_bad",
+        "node_level": 7200,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+        "source_variant_ids": [
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+        ],
+        "config": {
+          "name": "geom_badstress_nearboundary_badonly_b006_b162",
+          "geometry_profile": "n7200_badstress",
+          "badstress_mode": "testcore_pc1high_highdiff",
+          "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "source_variant_ids": [
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+          ],
+          "good_aux_frac": 0.0,
+          "medium_aux_frac": 0.0,
+          "bad_aux_frac": 0.006,
+          "good_aux_weight": 1.0,
+          "medium_aux_weight": 1.0,
+          "bad_aux_weight": 1.04,
+          "class_weight": "1.16,1.68,1.62",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20261911,
+          "epochs": [
+            4,
+            4
+          ],
+          "badstress_gate": {
+            "pc1_min": 5.6,
+            "qrs_band_ratio_max": 0.54,
+            "qrs_visibility_max": 0.3,
+            "non_qrs_diff_min": 0.22,
+            "baseline_step_min": 0.04,
+            "baseline_step_max": 0.62,
+            "band_30_45_min": 0.07,
+            "fatal_max": 1.2,
+            "contact_loss_max": 0.1
+          }
+        },
+        "rows": 5001,
+        "class_counts": {
+          "bad": 1609,
+          "good": 1600,
+          "medium": 1792
+        },
+        "split_counts": {
+          "test": 733,
+          "train": 3599,
+          "val": 669
+        },
+        "composition": [
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "level": 7200,
+      "node_id": "N7200_gm_trim_bad",
+      "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_nearboundary_mixed_b0_dd3b6c477932",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7200_gm_trim_bad_geom_badstress_nearboundary_mixed_b0_dd3b6c477932",
+      "audit": {
+        "created_at": "2026-06-12T19:09:30",
+        "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_nearboundary_mixed_b0_dd3b6c477932",
+        "node_id": "N7200_gm_trim_bad",
+        "node_level": 7200,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+        "source_variant_ids": [
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+        ],
+        "config": {
+          "name": "geom_badstress_nearboundary_mixed_b004_g001_m003_b160",
+          "geometry_profile": "n7200_badstress",
+          "badstress_mode": "testcore_pc1high_highdiff",
+          "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "source_variant_ids": [
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+          ],
+          "good_aux_frac": 0.001,
+          "medium_aux_frac": 0.003,
+          "bad_aux_frac": 0.004,
+          "good_aux_weight": 1.0,
+          "medium_aux_weight": 1.012,
+          "bad_aux_weight": 1.035,
+          "class_weight": "1.18,1.70,1.60",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20261912,
+          "epochs": [
+            4,
+            4
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.6,
+            "flatline_min": 0.2,
+            "pc3_max": 0.4,
+            "qrs_visibility_min": 0.45,
+            "non_qrs_diff_max": 0.085
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.2,
+            "flatline_max": 0.14,
+            "pc3_min": 1.4,
+            "non_qrs_diff_min": 0.085,
+            "qrs_visibility_min": 0.18,
+            "qrs_visibility_max": 0.58
+          },
+          "badstress_gate": {
+            "pc1_min": 5.6,
+            "qrs_band_ratio_max": 0.54,
+            "qrs_visibility_max": 0.3,
+            "non_qrs_diff_min": 0.22,
+            "baseline_step_min": 0.04,
+            "baseline_step_max": 0.62,
+            "band_30_45_min": 0.07,
+            "fatal_max": 1.2,
+            "contact_loss_max": 0.1
+          }
+        },
+        "rows": 5006,
+        "class_counts": {
+          "bad": 1607,
+          "good": 1601,
+          "medium": 1798
+        },
+        "split_counts": {
+          "test": 734,
+          "train": 3602,
+          "val": 670
+        },
+        "composition": [
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "level": 7200,
+      "node_id": "N7200_gm_trim_bad",
+      "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_nearboundary_wide_b03_6c6b1b123485",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7200_gm_trim_bad_geom_badstress_nearboundary_wide_b03_6c6b1b123485",
+      "audit": {
+        "created_at": "2026-06-12T19:10:39",
+        "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_nearboundary_wide_b03_6c6b1b123485",
+        "node_id": "N7200_gm_trim_bad",
+        "node_level": 7200,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+        "source_variant_ids": [
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+        ],
+        "config": {
+          "name": "geom_badstress_nearboundary_wide_b030_g001_m003_b165",
+          "geometry_profile": "n7200_badstress",
+          "badstress_mode": "testcore_pc1high_highdiff",
+          "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "source_variant_ids": [
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+          ],
+          "good_aux_frac": 0.001,
+          "medium_aux_frac": 0.003,
+          "bad_aux_frac": 0.03,
+          "good_aux_weight": 1.0,
+          "medium_aux_weight": 1.012,
+          "bad_aux_weight": 1.055,
+          "class_weight": "1.16,1.68,1.65",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20261913,
+          "epochs": [
+            4,
+            4
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.6,
+            "flatline_min": 0.2,
+            "pc3_max": 0.4,
+            "qrs_visibility_min": 0.45,
+            "non_qrs_diff_max": 0.085
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.2,
+            "flatline_max": 0.14,
+            "pc3_min": 1.4,
+            "non_qrs_diff_min": 0.085,
+            "qrs_visibility_min": 0.18,
+            "qrs_visibility_max": 0.58
+          },
+          "badstress_gate": {
+            "pc1_min": 4.0,
+            "qrs_band_ratio_max": 0.62,
+            "qrs_visibility_max": 0.42,
+            "non_qrs_diff_min": 0.16,
+            "baseline_step_min": 0.0,
+            "baseline_step_max": 0.8,
+            "band_30_45_min": 0.035,
+            "fatal_max": 1.25,
+            "contact_loss_max": 0.14
+          }
+        },
+        "rows": 5047,
+        "class_counts": {
+          "bad": 1648,
+          "good": 1601,
+          "medium": 1798
+        },
+        "split_counts": {
+          "test": 739,
+          "train": 3632,
+          "val": 676
+        },
+        "composition": [
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 9
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 9
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 9
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 8
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testcore_pc1high_highdiff",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "level": 7200,
+      "node_id": "N7200_gm_trim_bad",
+      "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_outlier_wide_lowqrs_b_1fceada4cfab",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7200_gm_trim_bad_geom_badstress_outlier_wide_lowqrs_b_1fceada4cfab",
+      "audit": {
+        "created_at": "2026-06-12T19:10:46",
+        "spec_id": "nl_n7200_gm_trim_bad_geom_badstress_outlier_wide_lowqrs_b_1fceada4cfab",
+        "node_id": "N7200_gm_trim_bad",
+        "node_level": 7200,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+        "source_variant_ids": [
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+          "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+        ],
+        "config": {
+          "name": "geom_badstress_outlier_wide_lowqrs_b020_g001_m003_b164",
+          "geometry_profile": "n7200_badstress",
+          "badstress_mode": "testoutlier_baseline_lowqrs",
+          "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "source_variant_ids": [
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf"
+          ],
+          "good_aux_frac": 0.001,
+          "medium_aux_frac": 0.003,
+          "bad_aux_frac": 0.02,
+          "good_aux_weight": 1.0,
+          "medium_aux_weight": 1.012,
+          "bad_aux_weight": 1.05,
+          "class_weight": "1.16,1.68,1.64",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20261914,
+          "epochs": [
+            4,
+            4
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.6,
+            "flatline_min": 0.2,
+            "pc3_max": 0.4,
+            "qrs_visibility_min": 0.45,
+            "non_qrs_diff_max": 0.085
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.2,
+            "flatline_max": 0.14,
+            "pc3_min": 1.4,
+            "non_qrs_diff_min": 0.085,
+            "qrs_visibility_min": 0.18,
+            "qrs_visibility_max": 0.58
+          },
+          "badstress_gate": {
+            "pc1_max": 0.4,
+            "qrs_band_ratio_max": 0.45,
+            "qrs_visibility_max": 0.25,
+            "non_qrs_diff_max": 0.22,
+            "baseline_step_min": 0.5,
+            "band_15_30_max": 0.25,
+            "band_30_45_max": 0.1,
+            "fatal_max": 1.25,
+            "contact_loss_max": 0.18
+          }
+        },
+        "rows": 5030,
+        "class_counts": {
+          "bad": 1631,
+          "good": 1601,
+          "medium": 1798
+        },
+        "split_counts": {
+          "test": 737,
+          "train": 3620,
+          "val": 673
+        },
+        "composition": [
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badstress_tri_good_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badstress_tri_medium_guard",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 6
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 6
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 6
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 5
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_030_sc_overlap_narrow_oscilla_738286481ce6",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badstress_testoutlier_baseline_lowqrs",
+            "aux_variant_id": "nl_n6800_gm_trim_bad_refine_medium_highdetail_lowqrs_mix0_1c4ef481f4bf",
+            "n": 1
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "level": 7200,
+      "node_id": "N7200_gm_trim_bad",
+      "spec_id": "nl_n7200_gm_trim_bad_geom_badmorph_nearboundary_tiny_b004_d6e0fb4e9b10",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7200_gm_trim_bad_geom_badmorph_nearboundary_tiny_b004_d6e0fb4e9b10",
+      "audit": {
+        "created_at": "2026-06-12T19:36:23",
+        "spec_id": "nl_n7200_gm_trim_bad_geom_badmorph_nearboundary_tiny_b004_d6e0fb4e9b10",
+        "node_id": "N7200_gm_trim_bad",
+        "node_level": 7200,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+        "source_variant_ids": [
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+          "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+          "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+          "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1"
+        ],
+        "config": {
+          "name": "geom_badmorph_nearboundary_tiny_b004_g001_m002_b158",
+          "geometry_profile": "n7200_bad_morph",
+          "bad_morph_mode": "near_boundary_highdiff",
+          "bad_morph_seed_class": "medium",
+          "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "source_variant_ids": [
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1"
+          ],
+          "good_aux_frac": 0.001,
+          "medium_aux_frac": 0.002,
+          "bad_aux_frac": 0.004,
+          "good_aux_weight": 1.0,
+          "medium_aux_weight": 1.006,
+          "bad_aux_weight": 1.035,
+          "class_weight": "1.18,1.72,1.58",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20262001,
+          "epochs": [
+            4,
+            4
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.6,
+            "flatline_min": 0.2,
+            "pc3_max": 0.4,
+            "qrs_visibility_min": 0.45,
+            "non_qrs_diff_max": 0.085
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.2,
+            "flatline_max": 0.14,
+            "pc3_min": 1.4,
+            "non_qrs_diff_min": 0.085,
+            "qrs_visibility_min": 0.18,
+            "qrs_visibility_max": 0.58
+          },
+          "bad_morph_gate": {
+            "qrs_visibility_max": 0.45,
+            "qrs_band_ratio_max": 0.58,
+            "non_qrs_diff_min": 0.09,
+            "baseline_step_max": 0.72,
+            "fatal_max": 1.35,
+            "contact_loss_max": 0.12
+          },
+          "bad_morph_params": {
+            "hf_amp": 0.115,
+            "baseline_amp": 0.09,
+            "qrs_attenuation": 0.34,
+            "step_amp": 0.07,
+            "clip_sigma": 4.8
+          }
+        },
+        "rows": 5004,
+        "class_counts": {
+          "bad": 1607,
+          "good": 1601,
+          "medium": 1796
+        },
+        "split_counts": {
+          "test": 734,
+          "train": 3601,
+          "val": 669
+        },
+        "composition": [
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "level": 7200,
+      "node_id": "N7200_gm_trim_bad",
+      "spec_id": "nl_n7200_gm_trim_bad_geom_badmorph_nearboundary_balanced__f9f0c2adebd0",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7200_gm_trim_bad_geom_badmorph_nearboundary_balanced__f9f0c2adebd0",
+      "audit": {
+        "created_at": "2026-06-12T19:36:31",
+        "spec_id": "nl_n7200_gm_trim_bad_geom_badmorph_nearboundary_balanced__f9f0c2adebd0",
+        "node_id": "N7200_gm_trim_bad",
+        "node_level": 7200,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+        "source_variant_ids": [
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+          "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+          "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+          "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1"
+        ],
+        "config": {
+          "name": "geom_badmorph_nearboundary_balanced_b006_g001_m003_b160",
+          "geometry_profile": "n7200_bad_morph",
+          "bad_morph_mode": "near_boundary_highdiff",
+          "bad_morph_seed_class": "medium",
+          "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "source_variant_ids": [
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1"
+          ],
+          "good_aux_frac": 0.001,
+          "medium_aux_frac": 0.003,
+          "bad_aux_frac": 0.006,
+          "good_aux_weight": 1.0,
+          "medium_aux_weight": 1.008,
+          "bad_aux_weight": 1.045,
+          "class_weight": "1.17,1.72,1.60",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20262002,
+          "epochs": [
+            4,
+            4
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.6,
+            "flatline_min": 0.2,
+            "pc3_max": 0.4,
+            "qrs_visibility_min": 0.45,
+            "non_qrs_diff_max": 0.085
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.2,
+            "flatline_max": 0.14,
+            "pc3_min": 1.4,
+            "non_qrs_diff_min": 0.085,
+            "qrs_visibility_min": 0.18,
+            "qrs_visibility_max": 0.58
+          },
+          "bad_morph_gate": {
+            "qrs_visibility_max": 0.48,
+            "qrs_band_ratio_max": 0.62,
+            "non_qrs_diff_min": 0.075,
+            "baseline_step_max": 0.78,
+            "fatal_max": 1.4,
+            "contact_loss_max": 0.14
+          },
+          "bad_morph_params": {
+            "hf_amp": 0.135,
+            "baseline_amp": 0.105,
+            "qrs_attenuation": 0.4,
+            "step_amp": 0.08,
+            "clip_sigma": 5.0
+          }
+        },
+        "rows": 5008,
+        "class_counts": {
+          "bad": 1609,
+          "good": 1601,
+          "medium": 1798
+        },
+        "split_counts": {
+          "test": 734,
+          "train": 3604,
+          "val": 670
+        },
+        "composition": [
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 2
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_near_boundary_highdiff",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "level": 7200,
+      "node_id": "N7200_gm_trim_bad",
+      "spec_id": "nl_n7200_gm_trim_bad_geom_badmorph_outlier_softbaseline_b_430e5643d123",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7200_gm_trim_bad_geom_badmorph_outlier_softbaseline_b_430e5643d123",
+      "audit": {
+        "created_at": "2026-06-12T19:36:40",
+        "spec_id": "nl_n7200_gm_trim_bad_geom_badmorph_outlier_softbaseline_b_430e5643d123",
+        "node_id": "N7200_gm_trim_bad",
+        "node_level": 7200,
+        "purpose": "Good/medium geometry repair: preserve promoted N6800 full body, add paired pc1-low/flatline-high good rescue rows and visible-QRS medium hard negatives. Bad remains trim-bad guardrail.",
+        "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+        "source_variant_ids": [
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+          "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+          "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+          "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+          "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1"
+        ],
+        "config": {
+          "name": "geom_badmorph_outlier_softbaseline_b003_g0005_m002_b158",
+          "geometry_profile": "n7200_bad_morph",
+          "bad_morph_mode": "soft_baseline_lowqrs",
+          "bad_morph_seed_class": "medium",
+          "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+          "source_variant_ids": [
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1"
+          ],
+          "good_aux_frac": 0.0005,
+          "medium_aux_frac": 0.002,
+          "bad_aux_frac": 0.003,
+          "good_aux_weight": 1.0,
+          "medium_aux_weight": 1.006,
+          "bad_aux_weight": 1.035,
+          "class_weight": "1.18,1.72,1.58",
+          "loss": "soft_sample_weighted_ce",
+          "seed": 20262003,
+          "epochs": [
+            4,
+            4
+          ],
+          "tri_good_gate": {
+            "pc1_max": -3.6,
+            "flatline_min": 0.2,
+            "pc3_max": 0.4,
+            "qrs_visibility_min": 0.45,
+            "non_qrs_diff_max": 0.085
+          },
+          "tri_medium_gate": {
+            "pc1_min": -1.2,
+            "flatline_max": 0.14,
+            "pc3_min": 1.4,
+            "non_qrs_diff_min": 0.085,
+            "qrs_visibility_min": 0.18,
+            "qrs_visibility_max": 0.58
+          },
+          "bad_morph_gate": {
+            "qrs_visibility_max": 0.3,
+            "qrs_band_ratio_max": 0.44,
+            "baseline_step_min": 0.16,
+            "baseline_step_max": 0.9,
+            "fatal_max": 1.35,
+            "contact_loss_max": 0.16
+          },
+          "bad_morph_params": {
+            "hf_amp": 0.06,
+            "baseline_amp": 0.19,
+            "qrs_attenuation": 0.48,
+            "step_amp": 0.17,
+            "clip_sigma": 5.2
+          }
+        },
+        "rows": 5002,
+        "class_counts": {
+          "bad": 1605,
+          "good": 1601,
+          "medium": 1796
+        },
+        "split_counts": {
+          "test": 734,
+          "train": 3599,
+          "val": 669
+        },
+        "composition": [
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "good",
+            "source": "aux_n7200_badmorph_tri_good_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "medium",
+            "source": "aux_n7200_badmorph_tri_medium_guard",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "test",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "train",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+            "n": 1
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_0c33c60a0088",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g18_m30_mid174_seed20260712",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_pair_a12_g22_m12_mid172_seed20260711",
+            "n": 0
+          },
+          {
+            "node_id": "N7200_gm_trim_bad",
+            "split": "val",
+            "class_name": "bad",
+            "source": "aux_n7200_badmorph_soft_baseline_lowqrs",
+            "aux_variant_id": "nl_n7200_gm_trim_bad_refine_medium_visibleqrs_highamp_ove_7f46689726e1",
+            "n": 0
+          }
+        ],
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "input_contract": "waveform checkpoint only; original BUT report-only",
+  "candidates": [
+    "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "featurefirst_top20_qrsbase_primauxres2_current_featureonly_a050",
+    "featurefirst_top20_qrsbase_primauxres2_current_calibrated_a050",
+    "featurefirst_top20_qrsbase_primauxres2_current_badguard_a050"
+  ],
+  "metrics_csv": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\eval_primauxres2_current_20260618\\metrics.csv",
+  "feature_recovery_csv": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\eval_primauxres2_current_20260618\\feature_recovery.csv"
+}

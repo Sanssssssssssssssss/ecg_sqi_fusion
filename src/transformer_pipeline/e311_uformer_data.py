@@ -71,6 +71,17 @@ class E311DenoiseDataset(Dataset):
         morph = np.clip(morph, 0.0, np.percentile(morph, 98, axis=0, keepdims=True) + 1e-6)
         morph = morph / (np.max(morph, axis=0, keepdims=True) + 1e-6)
         self.sample_weight = (1.0 + 0.6 * morph[:, 2] + 0.35 * morph[:, 3] + 0.35 * morph[:, 4]).astype(np.float32)
+        if "sample_weight" in self.labels:
+            external_weight = self.labels["sample_weight"].fillna(1.0).to_numpy(dtype=np.float32)
+            self.cls_sample_weight = np.clip(external_weight, 0.05, 5.0).astype(np.float32)
+        else:
+            self.cls_sample_weight = np.ones_like(self.sample_weight, dtype=np.float32)
+        if {"soft_good", "soft_medium", "soft_bad"}.issubset(self.labels.columns):
+            soft = self.labels[["soft_good", "soft_medium", "soft_bad"]].fillna(0.0).to_numpy(dtype=np.float32)
+            denom = np.maximum(soft.sum(axis=1, keepdims=True), 1e-6)
+            self.soft_y = soft / denom
+        else:
+            self.soft_y = np.eye(3, dtype=np.float32)[self.y]
 
     def __len__(self) -> int:
         return int(len(self.labels))
@@ -92,6 +103,8 @@ class E311DenoiseDataset(Dataset):
             "qrs_mask": torch.from_numpy(self.qrs_mask[i]),
             "tst_mask": torch.from_numpy(self.tst_mask[i]),
             "sample_weight": torch.tensor(float(self.sample_weight[i]), dtype=torch.float32),
+            "cls_sample_weight": torch.tensor(float(self.cls_sample_weight[i]), dtype=torch.float32),
+            "soft_y": torch.from_numpy(self.soft_y[i]),
             "y": torch.tensor(int(self.y[i]), dtype=torch.long),
             "idx": torch.tensor(int(self.idx[i]), dtype=torch.long),
             "ecg_id": torch.tensor(int(self.ecg_id[i]), dtype=torch.long),

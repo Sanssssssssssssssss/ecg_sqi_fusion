@@ -1,0 +1,137 @@
+{
+  "variant_id": "blockwise_snr02_uniform__m07_medium_raw_logit_probe__cw1p00_1p75_1p55",
+  "family": "real_noise_medium_cluster",
+  "spec": {
+    "id": "blockwise_snr02_uniform__m07_medium_raw_logit_probe__cw1p00_1p75_1p55",
+    "family": "real_noise_medium_cluster",
+    "mix": {
+      "name": "blockwise_switch",
+      "mode": "blockwise",
+      "choices": [
+        "em",
+        "ma",
+        "bw"
+      ]
+    },
+    "snr": {
+      "good": [
+        14,
+        18
+      ],
+      "medium": [
+        6,
+        12
+      ],
+      "bad": [
+        -4,
+        2
+      ],
+      "sampler": "uniform"
+    },
+    "class_weight": "1.00,1.75,1.55",
+    "qrs": {
+      "good_qrs_noise_gain": 0.52,
+      "good_nonqrs_noise_gain": 0.95,
+      "medium_qrs_noise_gain": 0.62,
+      "medium_nonqrs_noise_gain": 1.45,
+      "medium_tst_noise_gain": 1.95,
+      "bad_qrs_noise_gain": 1.25,
+      "bad_nonqrs_noise_gain": 1.0,
+      "bad_tst_noise_gain": 1.05,
+      "bad_qrs_atten": 0.14
+    },
+    "base_variant_id": "blockwise_snr02_uniform",
+    "medium_profile": "m07_medium_raw_logit_probe",
+    "note": "Medium-focused real NSTDB grid: QRS usable, non-QRS/P/T/ST detail unreliable; bad keeps mild fatal-QRS mechanism."
+  },
+  "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_medium_cluster_grid_10s_2026_06_05\\scan_variants\\blockwise_snr02_uniform__m07_medium_raw_logit_probe__cw1p00_1p75_1p55",
+  "morph_overall_distance": 0.4251592094706546,
+  "morph_medium_distance": 0.2629475363346331,
+  "morph_by_class": {
+    "good": 0.4140513113998966,
+    "medium": 0.2629475363346331,
+    "bad": 0.5984787806774342
+  },
+  "sqi_overall_distance": 0.43650793650793646,
+  "sqi_by_class": {
+    "good": 0.36309523809523814,
+    "medium": 0.2619047619047619,
+    "bad": 0.6845238095238094
+  },
+  "domain_separability_bal_acc": 0.9384126984126984,
+  "overall_but_like_score": 0.4376339491364459,
+  "audit": {
+    "spec": {
+      "id": "blockwise_snr02_uniform__m07_medium_raw_logit_probe__cw1p00_1p75_1p55",
+      "family": "real_noise_medium_cluster",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.75,1.55",
+      "qrs": {
+        "good_qrs_noise_gain": 0.52,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.62,
+        "medium_nonqrs_noise_gain": 1.45,
+        "medium_tst_noise_gain": 1.95,
+        "bad_qrs_noise_gain": 1.25,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.14
+      },
+      "base_variant_id": "blockwise_snr02_uniform",
+      "medium_profile": "m07_medium_raw_logit_probe",
+      "note": "Medium-focused real NSTDB grid: QRS usable, non-QRS/P/T/ST detail unreliable; bad keeps mild fatal-QRS mechanism."
+    },
+    "rows": 180,
+    "sample_per_class": 60,
+    "split_counts": {
+      "test": 32,
+      "train": 119,
+      "val": 29
+    },
+    "class_counts": {
+      "bad": 60,
+      "good": 60,
+      "medium": 60
+    },
+    "snr_by_class": {
+      "good": {
+        "mean": 16.04139518737793,
+        "min": 14.047639846801758,
+        "max": 17.769441604614258
+      },
+      "medium": {
+        "mean": 8.715235710144043,
+        "min": 6.016430377960205,
+        "max": 11.88501262664795
+      },
+      "bad": {
+        "mean": -0.030123110860586166,
+        "min": -3.5044960975646973,
+        "max": 2.8274035453796387
+      }
+    }
+  }
+}

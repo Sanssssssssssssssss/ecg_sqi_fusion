@@ -1,0 +1,7 @@
+split,record_id,n
+test,111001,292
+train,105001,770
+train,124001,31
+train,100001,22
+train,113001,4
+val,114001,82

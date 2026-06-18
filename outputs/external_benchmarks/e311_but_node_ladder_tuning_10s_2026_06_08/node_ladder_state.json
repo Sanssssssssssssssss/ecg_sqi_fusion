@@ -1,12 +1,12 @@
 {
   "started_at": "2026-06-08T02:05:27",
-  "status": "node_diagnostic_medium_guard_complete",
+  "status": "node_diagnostic_boundary_rescue_complete",
   "stage": "diagnostic",
-  "updated_at": "2026-06-12T03:53:33",
-  "completed": 56,
-  "total": 56,
-  "node_id": "N7165_gm_trim_bad",
-  "current": "nl_n7165_gm_trim_bad_boundaryblocks_balance_tinybad_n7160_c22ec761bb78",
+  "updated_at": "2026-06-14T05:24:06",
+  "completed": 926,
+  "total": 926,
+  "node_id": "N17043_gm_trim_bad",
+  "current": "nl_n17043_gm_trim_bad_boundaryblocks_badstress111_pc2_vis_f5aa424db111",
   "best_variant": "nl_n7000_gm_trim_bad_scan_014_sc_overlap_compact_pca_core_8b486652852a",
   "best_node_score": 0.17672239408532367,
   "subtype_modes": [

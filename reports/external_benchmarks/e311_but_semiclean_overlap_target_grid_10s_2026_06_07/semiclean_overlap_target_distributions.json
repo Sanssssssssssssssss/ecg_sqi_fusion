@@ -1,0 +1,31 @@
+{
+  "target_name": "SemiCleanBUT-Overlap",
+  "n_selected": 14400,
+  "selected_counts": {
+    "good": 4800,
+    "medium": 4800,
+    "bad": 4800
+  },
+  "feature_count": 64,
+  "note": "Good/medium intentionally preserve moderate overlap; bad is restricted to the separated right island.",
+  "by_class": {
+    "good": {
+      "n": 4800,
+      "ambiguous_fraction": 0.32,
+      "pc1_median": -4.926379910423392,
+      "pc2_median": -1.9625213522718568
+    },
+    "medium": {
+      "n": 4800,
+      "ambiguous_fraction": 0.5895833333333333,
+      "pc1_median": 0.11555759342106081,
+      "pc2_median": 0.4722122161896967
+    },
+    "bad": {
+      "n": 4800,
+      "ambiguous_fraction": 0.7504166666666666,
+      "pc1_median": 10.428629286157834,
+      "pc2_median": -0.04397330408906275
+    }
+  }
+}

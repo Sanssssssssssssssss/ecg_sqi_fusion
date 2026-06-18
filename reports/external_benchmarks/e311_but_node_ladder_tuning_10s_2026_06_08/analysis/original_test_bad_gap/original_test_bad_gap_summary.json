@@ -1,0 +1,47 @@
+{
+  "created_at": "2026-06-12T18:43:41",
+  "counts": [
+    {
+      "group": "all_non_test_bad_core",
+      "n": 1,
+      "records": "114001",
+      "base_pred_counts": "{\"medium\": 1}",
+      "badstress_pred_counts": "{\"good\": 1}",
+      "region_counts": "{\"near_bad_boundary\": 1}"
+    },
+    {
+      "group": "all_non_test_bad_outlier",
+      "n": 69,
+      "records": "100001,105001,113001,114001,124001",
+      "base_pred_counts": "{\"medium\": 67, \"good\": 2}",
+      "badstress_pred_counts": "{\"medium\": 61, \"good\": 8}",
+      "region_counts": "{\"outlier_low_confidence\": 69}"
+    },
+    {
+      "group": "badstress_predicted_bad_reference",
+      "n": 4810,
+      "records": "105001,111001,114001",
+      "base_pred_counts": "{\"bad\": 4799, \"medium\": 11}",
+      "badstress_pred_counts": "{\"bad\": 4810}",
+      "region_counts": "{\"right_bad_island\": 3964, \"outlier_low_confidence\": 846}"
+    },
+    {
+      "group": "test_bad_core_missed",
+      "n": 119,
+      "records": "122001",
+      "base_pred_counts": "{\"medium\": 119}",
+      "badstress_pred_counts": "{\"medium\": 119}",
+      "region_counts": "{\"near_bad_boundary\": 119}"
+    },
+    {
+      "group": "test_bad_outlier_missed",
+      "n": 286,
+      "records": "111001",
+      "base_pred_counts": "{\"medium\": 252, \"good\": 34}",
+      "badstress_pred_counts": "{\"medium\": 241, \"good\": 45}",
+      "region_counts": "{\"outlier_low_confidence\": 286}"
+    }
+  ],
+  "report": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\original_test_bad_gap\\original_test_bad_gap_report.md",
+  "selection_note": "Original BUT is report-only. This analysis diagnoses domain stress buckets only."
+}

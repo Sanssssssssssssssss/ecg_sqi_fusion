@@ -1,0 +1,111 @@
+{
+  "variant_id": "triple_balanced_snr06_triangular",
+  "family": "real_noise_snr",
+  "spec": {
+    "id": "triple_balanced_snr06_triangular",
+    "family": "real_noise_snr",
+    "mix": {
+      "name": "triple_balanced",
+      "mode": "weighted",
+      "weights": {
+        "em": 0.3333333333333333,
+        "ma": 0.3333333333333333,
+        "bw": 0.3333333333333333
+      }
+    },
+    "snr": {
+      "good": [
+        12,
+        16
+      ],
+      "medium": [
+        6,
+        12
+      ],
+      "bad": [
+        -2,
+        4
+      ],
+      "sampler": "triangular"
+    },
+    "class_weight": "1.00,1.40,1.70",
+    "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+  },
+  "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\triple_balanced_snr06_triangular",
+  "morph_overall_distance": 0.4459408602150538,
+  "morph_medium_distance": 0.2989516129032258,
+  "morph_by_class": {
+    "good": 0.4512096774193549,
+    "medium": 0.2989516129032258,
+    "bad": 0.5876612903225805
+  },
+  "sqi_overall_distance": 0.44841269841269843,
+  "sqi_by_class": {
+    "good": 0.4047619047619048,
+    "medium": 0.27976190476190477,
+    "bad": 0.6607142857142857
+  },
+  "domain_separability_bal_acc": 0.9488095238095238,
+  "overall_but_like_score": 0.4598511904761905,
+  "audit": {
+    "spec": {
+      "id": "triple_balanced_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "triple_balanced",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.3333333333333333,
+          "ma": 0.3333333333333333,
+          "bw": 0.3333333333333333
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    "rows": 180,
+    "sample_per_class": 60,
+    "split_counts": {
+      "test": 32,
+      "train": 119,
+      "val": 29
+    },
+    "class_counts": {
+      "bad": 60,
+      "good": 60,
+      "medium": 60
+    },
+    "snr_by_class": {
+      "good": {
+        "mean": 14.181185722351074,
+        "min": 12.56722640991211,
+        "max": 15.801939964294434
+      },
+      "medium": {
+        "mean": 9.271780014038086,
+        "min": 6.51450252532959,
+        "max": 11.429884910583496
+      },
+      "bad": {
+        "mean": 1.2209712266921997,
+        "min": -1.9264307022094727,
+        "max": 3.54890775680542
+      }
+    }
+  }
+}

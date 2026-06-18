@@ -1,0 +1,39 @@
+{
+  "findings": [
+    "7SQI can distinguish BUT from PTB with AUC 0.828, so it carries strong domain identity in addition to quality evidence.",
+    "Largest class-wise distribution shifts: I__kSQI/bad KS=0.96, I__basSQI/bad KS=0.92, I__bSQI/bad KS=0.92, I__pSQI/bad KS=0.91, I__fSQI/bad KS=0.90",
+    "Some SQI class directions flip between PTB and BUT: I__bSQI bad_minus_good, I__bSQI bad_minus_medium, I__kSQI bad_minus_medium, I__basSQI bad_minus_good, I__basSQI bad_minus_medium. This explains why high SQI weight can help calibration but may also hurt one boundary.",
+    "Implication: use SQI as a higher-weight but calibrated branch, not as a replacement for morphology/Uformer features."
+  ],
+  "domain_separability": [
+    {
+      "class_name": "all",
+      "n": 48277,
+      "but_share": 0.6826439091078568,
+      "domain_auc": 0.8276077986077015,
+      "domain_balanced_acc": 0.7571442458531072
+    },
+    {
+      "class_name": "good",
+      "n": 22150,
+      "but_share": 0.7694356659142212,
+      "domain_auc": 0.8595434524720708,
+      "domain_balanced_acc": 0.7964199669179843
+    },
+    {
+      "class_name": "medium",
+      "n": 15735,
+      "but_share": 0.6754369240546553,
+      "domain_auc": 0.8355176187901047,
+      "domain_balanced_acc": 0.7543002135600874
+    },
+    {
+      "class_name": "bad",
+      "n": 10392,
+      "but_share": 0.5085642802155504,
+      "domain_auc": 0.996849932126991,
+      "domain_balanced_acc": 0.9804123597899688
+    }
+  ],
+  "output_root": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_sqi_gap_analysis_10s_2026_06_04"
+}

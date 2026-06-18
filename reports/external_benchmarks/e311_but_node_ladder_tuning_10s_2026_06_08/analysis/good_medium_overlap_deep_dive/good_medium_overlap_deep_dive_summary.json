@@ -1,0 +1,207 @@
+{
+  "counts": {
+    "original_all_total": 32956,
+    "original_all_counts": {
+      "good": 17043,
+      "medium": 10628,
+      "bad": 5285
+    },
+    "original_test_total": 8477,
+    "original_test_counts": {
+      "good": 3640,
+      "medium": 4426,
+      "bad": 411
+    },
+    "original_test_drop_bad_outlier_total": 8185,
+    "original_test_drop_bad_outlier_counts": {
+      "good": 3640,
+      "medium": 4426,
+      "bad": 119
+    },
+    "original_test_region_counts": [
+      {
+        "class_name": "bad",
+        "original_region": "near_bad_boundary",
+        "n": 119
+      },
+      {
+        "class_name": "bad",
+        "original_region": "outlier_low_confidence",
+        "n": 292
+      },
+      {
+        "class_name": "good",
+        "original_region": "clean_core",
+        "n": 38
+      },
+      {
+        "class_name": "good",
+        "original_region": "good_medium_overlap",
+        "n": 1191
+      },
+      {
+        "class_name": "good",
+        "original_region": "outlier_low_confidence",
+        "n": 2411
+      },
+      {
+        "class_name": "medium",
+        "original_region": "clean_core",
+        "n": 531
+      },
+      {
+        "class_name": "medium",
+        "original_region": "good_medium_overlap",
+        "n": 1711
+      },
+      {
+        "class_name": "medium",
+        "original_region": "medium_bad_overlap",
+        "n": 5
+      },
+      {
+        "class_name": "medium",
+        "original_region": "outlier_low_confidence",
+        "n": 2179
+      }
+    ]
+  },
+  "overlap_metrics": [
+    {
+      "n": 14391,
+      "acc": 0.9266902925439511,
+      "macro_f1": 0.6177921652630723,
+      "good_recall": 0.9313888888888889,
+      "medium_recall": 0.9219858156028369,
+      "bad_recall": 0.0,
+      "good_precision": 0.9228017063437457,
+      "medium_precision": 0.9306569343065694,
+      "bad_precision": 0.0,
+      "good_f1": 0.9270754130089168,
+      "medium_f1": 0.9263010827803004,
+      "bad_f1": 0.0,
+      "support_good": 7200,
+      "support_medium": 7191,
+      "support_bad": 0,
+      "confusion_3x3": [
+        [
+          6706,
+          494,
+          0
+        ],
+        [
+          561,
+          6630,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "dataset_view": "N7200 current best",
+      "n_focus": 14391,
+      "good_to_medium": 494,
+      "medium_to_good": 561,
+      "correct_good": 6706,
+      "correct_medium": 6630
+    },
+    {
+      "n": 13591,
+      "acc": 0.9439334853947465,
+      "macro_f1": 0.6292706478895455,
+      "good_recall": 0.9654411764705882,
+      "medium_recall": 0.9223972905315859,
+      "bad_recall": 0.0,
+      "good_precision": 0.9256909193457417,
+      "medium_precision": 0.9638405908601323,
+      "bad_precision": 0.0,
+      "good_f1": 0.9451482867837604,
+      "medium_f1": 0.9426636568848759,
+      "bad_f1": 0.0,
+      "support_good": 6800,
+      "support_medium": 6791,
+      "support_bad": 0,
+      "confusion_3x3": [
+        [
+          6565,
+          235,
+          0
+        ],
+        [
+          527,
+          6264,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "dataset_view": "N6800 promoted",
+      "n_focus": 13591,
+      "good_to_medium": 235,
+      "medium_to_good": 527,
+      "correct_good": 6565,
+      "correct_medium": 6264
+    },
+    {
+      "n": 8061,
+      "acc": 0.7277012777571021,
+      "macro_f1": 0.48467706386410886,
+      "good_recall": 0.7502747252747253,
+      "medium_recall": 0.7091155847093418,
+      "bad_recall": 0.0,
+      "good_precision": 0.6798605924819517,
+      "medium_precision": 0.7752225519287834,
+      "bad_precision": 0.0,
+      "good_f1": 0.7133342039963432,
+      "medium_f1": 0.7406969875959835,
+      "bad_f1": 0.0,
+      "support_good": 3640,
+      "support_medium": 4421,
+      "support_bad": 0,
+      "confusion_3x3": [
+        [
+          2731,
+          909,
+          0
+        ],
+        [
+          1286,
+          3135,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "dataset_view": "Original filtered best macro",
+      "n_focus": 8061,
+      "good_to_medium": 909,
+      "medium_to_good": 1286,
+      "correct_good": 2731,
+      "correct_medium": 3135
+    }
+  ],
+  "variants": {
+    "n7200_current": {
+      "variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good124_mid172_ec4f54fe7e3d",
+      "mode": "medium_guarded_pmed0005"
+    },
+    "n6800_promoted": {
+      "variant_id": "nl_n6800_gm_trim_bad_scan_029_sc_overlap_narrow_oscillato_873d37fc4791",
+      "mode": "medium_guarded_pmed001"
+    },
+    "original_filtered_macro": {
+      "variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+      "mode": "calibrated"
+    }
+  },
+  "output_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_overlap_deep_dive",
+  "report_dir": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_overlap_deep_dive"
+}

@@ -1,0 +1,10 @@
+y_class,pred_calibrated_class,error_type,n
+medium,medium,correct,3740
+good,good,correct,2112
+good,medium,good_to_medium,1525
+medium,good,medium_to_good,492
+bad,bad,correct_bad,215
+medium,bad,medium_to_bad,194
+bad,medium,bad_missed,172
+bad,good,bad_missed,24
+good,bad,good_false_bad,3

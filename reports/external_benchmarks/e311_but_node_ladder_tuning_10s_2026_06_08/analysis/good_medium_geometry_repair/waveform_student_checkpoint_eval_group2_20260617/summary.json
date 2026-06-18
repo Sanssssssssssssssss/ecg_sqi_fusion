@@ -1,0 +1,14 @@
+{
+  "input_contract": "waveform checkpoint only; original BUT report-only",
+  "candidates": [
+    "predfailaxis_sqiquery_subject111_impulsebad_dual_p20",
+    "predtop14balanced_sqiquery_subject111_impulsebad_dual_p20",
+    "featurefirst_top20_rawbeat_qfeatbin_a050",
+    "featurefirst_top20_rawbeat_qfeatbin_wide_a050",
+    "p20_sqiquery_primctx_v5_badguard",
+    "featurefirst_top20_rawbeat_artifact_auxctx_jointartifact_badrecall_a050",
+    "featurefirst_top20_rawbeat_artifact_auxctx_router_event_mediumrecall_a050"
+  ],
+  "metrics_csv": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\waveform_student_checkpoint_eval_group2_20260617\\metrics.csv",
+  "feature_recovery_csv": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\waveform_student_checkpoint_eval_group2_20260617\\feature_recovery.csv"
+}

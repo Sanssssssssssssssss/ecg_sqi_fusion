@@ -1,0 +1,25 @@
+{
+  "source": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\n7150_added_boundary_rows.csv",
+  "strategy": "N7110 conservative bisection: first 10 good and first 10 medium from N7150-N7100 added ring by selected_l7150_rank.",
+  "rows": 20,
+  "class_counts": {
+    "good": 10,
+    "medium": 10
+  },
+  "split_counts": {
+    "train": 16,
+    "test": 4
+  },
+  "original_region_counts": {
+    "clean_core": 10,
+    "outlier_low_confidence": 5,
+    "good_medium_overlap": 5
+  },
+  "ambiguous_type_counts": {
+    "clean_or_target": 10,
+    "good_medium_boundary": 5,
+    "good_medium_low_purity": 3,
+    "isolated_medium": 2
+  },
+  "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only; bad is not expanded."
+}

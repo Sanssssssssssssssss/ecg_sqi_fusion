@@ -1,0 +1,67 @@
+{
+  "created_at": "2026-06-13T11:19:03",
+  "rows": 8477,
+  "counts": [
+    {
+      "fix_state": "fixed_by_feature_rule",
+      "class_name": "bad",
+      "n": 77
+    },
+    {
+      "fix_state": "fixed_by_feature_rule",
+      "class_name": "good",
+      "n": 346
+    },
+    {
+      "fix_state": "fixed_by_feature_rule",
+      "class_name": "medium",
+      "n": 443
+    },
+    {
+      "fix_state": "regressed_by_feature_rule",
+      "class_name": "bad",
+      "n": 13
+    },
+    {
+      "fix_state": "regressed_by_feature_rule",
+      "class_name": "good",
+      "n": 146
+    },
+    {
+      "fix_state": "regressed_by_feature_rule",
+      "class_name": "medium",
+      "n": 105
+    },
+    {
+      "fix_state": "still_wrong",
+      "class_name": "bad",
+      "n": 202
+    },
+    {
+      "fix_state": "still_wrong",
+      "class_name": "good",
+      "n": 552
+    },
+    {
+      "fix_state": "still_wrong",
+      "class_name": "medium",
+      "n": 104
+    },
+    {
+      "fix_state": "unchanged",
+      "class_name": "bad",
+      "n": 119
+    },
+    {
+      "fix_state": "unchanged",
+      "class_name": "good",
+      "n": 2596
+    },
+    {
+      "fix_state": "unchanged",
+      "class_name": "medium",
+      "n": 3774
+    }
+  ],
+  "image": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\simple_feature_original_waveform_audit.png"
+}

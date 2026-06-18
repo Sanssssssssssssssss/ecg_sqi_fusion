@@ -2991,6 +2991,29 @@ WAVEFORM_HARD_TEACHER_COLUMNS = [
     "template_corr",
 ]
 
+QUALITY20_WAVEFORM_FACT_COLUMNS = [
+    "pca_margin",
+    "pc1",
+    "pc3",
+    "qrs_visibility",
+    "qrs_band_ratio",
+    "qrs_prom_p90",
+    "template_corr",
+    "detector_agreement",
+    "baseline_step",
+    "flatline_ratio",
+    "sqi_basSQI",
+    "sqi_bSQI",
+    "non_qrs_diff_p95",
+    "amplitude_entropy",
+    "low_amp_ratio",
+    "mean_abs",
+    "sample_entropy_proxy",
+    "higuchi_fd_proxy",
+    "band_15_30",
+    "band_30_45",
+]
+
 TOP25_QRS_GEOMETRY_FEATURE_COLUMNS = TOP20_INTERPRETABLE_FEATURE_COLUMNS + [
     "detector_agreement",
     "boundary_confidence",
@@ -4161,6 +4184,5740 @@ CANDIDATES["featurefirst_top20_hardrec_qfeatbin_qrsbase_a050"] = {
     "seed": 20261274,
 }
 
+CANDIDATES["featurefirst_top20_qrsbase_plateauaddon_conservative_a050"] = {
+    **CANDIDATES["featurefirst_top20_hardrec_qfeatbin_qrsbase_a050"],
+    # Keep the current best waveform-only good/medium surface fixed and learn
+    # only a small bad-stress add-on for the original-test long low-amplitude /
+    # contact-loss plateau bucket.  This tests coverage without rewriting the
+    # class geometry that gave the 0.856 original-test frontier.
+    "init_from_candidate": "featurefirst_top20_hardrec_qfeatbin_qrsbase_a050",
+    "init_skip_mismatch": True,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+    ],
+    "artifact_bad_only": True,
+    "artifact_bad_count": 18,
+    "artifact_bad_window": 181,
+    "artifact_bad_width": 64,
+    "artifact_bad_layers": 1,
+    "artifact_bad_heads": 4,
+    "artifact_bad_mix": 0.22,
+    "artifact_bad_bias_init": -1.40,
+    "artifact_veto_mix": 0.58,
+    "artifact_veto_bias_init": 0.42,
+    "artifact_veto_weight": 0.92,
+    "artifact_veto_pos_weight": 0.78,
+    "final_mode": "dual_bad_gm_mix",
+    "gate_logit_alpha": 0.18,
+    "bad_gate_bias_init": -1.22,
+    "aux_pretrain_epochs": 0,
+    "pretrain_classification_weight": 1.0,
+    "classification_weight": 0.95,
+    "gm_pair_weight": 0.00,
+    "aux_weight": 0.00,
+    "core_aux_weight": 0.00,
+    "hard_aux_weight": 0.00,
+    "top14_aux_weight": 0.00,
+    "critical_aux_weight": 0.00,
+    "quantile_aux_weight": 0.00,
+    "rank_weight": 0.00,
+    "supcon_weight": 0.00,
+    "recon_weight": 0.00,
+    "bad_aux_weight": 0.52,
+    "bad_aux_pos_weight": 2.95,
+    "bad_specificity_weight": 5.10,
+    "bad_specificity_margin": 1.18,
+    "bad_record111_motion_strength": 0.0,
+    "bad_record111_burst_dropout_strength": 1.70,
+    "bad_record111_burst_dropout_prob": 0.20,
+    "bad_impulse_reset_strength": 0.82,
+    "bad_impulse_reset_prob": 0.10,
+    "bad_intermittent_contact_strength": 1.18,
+    "bad_intermittent_contact_prob": 0.28,
+    "nonbad_hardneg_strength": 1.95,
+    "aug_aux_weight_nonbad": 0.35,
+    "selection_bad_stress_weight": 0.28,
+    "selection_stress_nonbad_hardneg_strength": 2.20,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.95,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.72,
+    "selection_stress_bad_impulse_reset_strength": 1.10,
+    "selection_stress_bad_impulse_reset_prob": 0.45,
+    "lr": 0.00008,
+    "seed": 20261420,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_plateauaddon_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_plateauaddon_conservative_a050"],
+    "artifact_bad_mix": 0.34,
+    "artifact_bad_bias_init": -1.28,
+    "artifact_veto_mix": 0.46,
+    "artifact_veto_weight": 0.76,
+    "gate_logit_alpha": 0.24,
+    "bad_aux_weight": 0.66,
+    "bad_aux_pos_weight": 3.45,
+    "bad_specificity_weight": 4.35,
+    "bad_specificity_margin": 1.02,
+    "bad_record111_burst_dropout_strength": 1.88,
+    "bad_record111_burst_dropout_prob": 0.28,
+    "bad_impulse_reset_strength": 1.04,
+    "bad_impulse_reset_prob": 0.16,
+    "bad_intermittent_contact_strength": 1.32,
+    "bad_intermittent_contact_prob": 0.36,
+    "nonbad_hardneg_strength": 1.70,
+    "selection_bad_stress_weight": 0.34,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.18,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.82,
+    "selection_stress_bad_impulse_reset_strength": 1.32,
+    "selection_stress_bad_impulse_reset_prob": 0.56,
+    "seed": 20261421,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_plateauaddon_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_plateauaddon_conservative_a050"],
+    "artifact_bad_mix": 0.48,
+    "artifact_bad_bias_init": -1.12,
+    "artifact_veto_mix": 0.32,
+    "artifact_veto_weight": 0.58,
+    "gate_logit_alpha": 0.31,
+    "bad_aux_weight": 0.82,
+    "bad_aux_pos_weight": 4.05,
+    "bad_specificity_weight": 3.55,
+    "bad_specificity_margin": 0.88,
+    "bad_record111_burst_dropout_strength": 2.08,
+    "bad_record111_burst_dropout_prob": 0.36,
+    "bad_impulse_reset_strength": 1.24,
+    "bad_impulse_reset_prob": 0.24,
+    "bad_intermittent_contact_strength": 1.48,
+    "bad_intermittent_contact_prob": 0.46,
+    "nonbad_hardneg_strength": 1.45,
+    "selection_bad_stress_weight": 0.42,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.38,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.92,
+    "selection_stress_bad_impulse_reset_strength": 1.55,
+    "selection_stress_bad_impulse_reset_prob": 0.68,
+    "seed": 20261422,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_plateauthr_conservative_a050"] = {
+    **CANDIDATES["featurefirst_top20_hardrec_qfeatbin_qrsbase_a050"],
+    # The plateau add-on improved calibrated bad stress but left raw bad logits
+    # almost unchanged.  This variant pushes waveform-computable plateau/contact
+    # primitive thresholds into the main classification head, while keeping the
+    # qrsbase encoder fixed.  It tests whether the blocker is late bad-head
+    # isolation rather than the Transformer representation.
+    "init_from_candidate": "featurefirst_top20_hardrec_qfeatbin_qrsbase_a050",
+    "init_skip_mismatch": True,
+    "primitive_bank": "qrs_stress_v5",
+    "primitive_threshold_fusion": True,
+    "primitive_threshold_values": [-4.0, -3.0, -2.25, -1.50, -0.75, -0.25, 0.25, 0.75, 1.50, 2.25, 3.0, 4.0],
+    "primitive_threshold_sharpness": 2.65,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "primitive_threshold_proj",
+        "class_head",
+        "feature_class_head",
+        "gm_pair_head",
+        "bad_head",
+    ],
+    "final_mode": "dual_bad_gm_mix",
+    "gate_logit_alpha": 0.18,
+    "bad_gate_bias_init": -1.26,
+    "aux_pretrain_epochs": 0,
+    "pretrain_classification_weight": 1.0,
+    "classification_weight": 1.18,
+    "gm_pair_weight": 0.92,
+    "aux_weight": 0.00,
+    "core_aux_weight": 0.00,
+    "hard_aux_weight": 0.00,
+    "top14_aux_weight": 0.00,
+    "critical_aux_weight": 0.00,
+    "quantile_aux_weight": 0.00,
+    "rank_weight": 0.00,
+    "supcon_weight": 0.00,
+    "recon_weight": 0.00,
+    "class_weight": [1.16, 1.72, 2.74],
+    "bad_aux_weight": 0.58,
+    "bad_aux_pos_weight": 3.10,
+    "bad_specificity_weight": 5.25,
+    "bad_specificity_margin": 1.16,
+    "bad_record111_motion_strength": 0.0,
+    "bad_record111_burst_dropout_strength": 1.80,
+    "bad_record111_burst_dropout_prob": 0.24,
+    "bad_impulse_reset_strength": 1.02,
+    "bad_impulse_reset_prob": 0.14,
+    "bad_intermittent_contact_strength": 1.24,
+    "bad_intermittent_contact_prob": 0.32,
+    "nonbad_hardneg_strength": 2.05,
+    "aug_aux_weight_nonbad": 0.40,
+    "selection_bad_stress_weight": 0.30,
+    "selection_stress_nonbad_hardneg_strength": 2.30,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.05,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.76,
+    "selection_stress_bad_impulse_reset_strength": 1.22,
+    "selection_stress_bad_impulse_reset_prob": 0.48,
+    "lr": 0.00009,
+    "seed": 20261430,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_plateauthr_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_plateauthr_conservative_a050"],
+    "gate_logit_alpha": 0.24,
+    "class_weight": [1.12, 1.66, 2.95],
+    "bad_aux_weight": 0.72,
+    "bad_aux_pos_weight": 3.60,
+    "bad_specificity_weight": 4.55,
+    "bad_specificity_margin": 1.02,
+    "bad_record111_burst_dropout_strength": 2.00,
+    "bad_record111_burst_dropout_prob": 0.32,
+    "bad_impulse_reset_strength": 1.24,
+    "bad_impulse_reset_prob": 0.20,
+    "bad_intermittent_contact_strength": 1.40,
+    "bad_intermittent_contact_prob": 0.40,
+    "nonbad_hardneg_strength": 1.82,
+    "selection_bad_stress_weight": 0.36,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.28,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.86,
+    "selection_stress_bad_impulse_reset_strength": 1.45,
+    "selection_stress_bad_impulse_reset_prob": 0.60,
+    "seed": 20261431,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_plateauthr_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_plateauthr_conservative_a050"],
+    "gate_logit_alpha": 0.32,
+    "class_weight": [1.08, 1.58, 3.22],
+    "bad_aux_weight": 0.88,
+    "bad_aux_pos_weight": 4.25,
+    "bad_specificity_weight": 3.85,
+    "bad_specificity_margin": 0.90,
+    "bad_record111_burst_dropout_strength": 2.24,
+    "bad_record111_burst_dropout_prob": 0.42,
+    "bad_impulse_reset_strength": 1.46,
+    "bad_impulse_reset_prob": 0.28,
+    "bad_intermittent_contact_strength": 1.58,
+    "bad_intermittent_contact_prob": 0.50,
+    "nonbad_hardneg_strength": 1.58,
+    "selection_bad_stress_weight": 0.44,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.50,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.94,
+    "selection_stress_bad_impulse_reset_strength": 1.70,
+    "selection_stress_bad_impulse_reset_prob": 0.72,
+    "seed": 20261432,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_primbadres_conservative_a050"] = {
+    **CANDIDATES["featurefirst_top20_hardrec_qfeatbin_qrsbase_a050"],
+    # Preserve the successful qrsbase class surface exactly and train only a
+    # qrs_stress_v5 primitive bad residual.  Unlike plateauthr, this does not
+    # reinitialize class_head, so any bad gain tells us the original plateau /
+    # contact-loss evidence can be integrated without sacrificing GM geometry.
+    "init_from_candidate": "featurefirst_top20_hardrec_qfeatbin_qrsbase_a050",
+    "init_skip_mismatch": True,
+    "primitive_bad_bank": "qrs_stress_v5",
+    "primitive_bad_mix": 0.38,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "primitive_bad_branch",
+        "primitive_bad_head",
+        "bad_head",
+    ],
+    "final_mode": "dual_bad_gm_mix",
+    "gate_logit_alpha": 0.20,
+    "bad_gate_bias_init": -1.26,
+    "aux_pretrain_epochs": 0,
+    "pretrain_classification_weight": 1.0,
+    "classification_weight": 1.05,
+    "gm_pair_weight": 0.00,
+    "aux_weight": 0.00,
+    "core_aux_weight": 0.00,
+    "hard_aux_weight": 0.00,
+    "top14_aux_weight": 0.00,
+    "critical_aux_weight": 0.00,
+    "quantile_aux_weight": 0.00,
+    "rank_weight": 0.00,
+    "supcon_weight": 0.00,
+    "recon_weight": 0.00,
+    "class_weight": [1.14, 1.68, 2.78],
+    "bad_aux_weight": 0.60,
+    "bad_aux_pos_weight": 3.05,
+    "stress_aux_weight": 0.44,
+    "stress_aux_pos_weight": 3.55,
+    "stress_bad_logit_mix": 0.00,
+    "bad_specificity_weight": 5.10,
+    "bad_specificity_margin": 1.14,
+    "bad_record111_motion_strength": 0.0,
+    "bad_record111_burst_dropout_strength": 1.78,
+    "bad_record111_burst_dropout_prob": 0.22,
+    "bad_impulse_reset_strength": 1.00,
+    "bad_impulse_reset_prob": 0.12,
+    "bad_intermittent_contact_strength": 1.20,
+    "bad_intermittent_contact_prob": 0.32,
+    "nonbad_hardneg_strength": 2.08,
+    "aug_aux_weight_nonbad": 0.40,
+    "selection_bad_stress_weight": 0.30,
+    "selection_stress_nonbad_hardneg_strength": 2.30,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.05,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.76,
+    "selection_stress_bad_impulse_reset_strength": 1.18,
+    "selection_stress_bad_impulse_reset_prob": 0.46,
+    "lr": 0.00008,
+    "seed": 20261440,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_primbadres_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_primbadres_conservative_a050"],
+    "primitive_bad_mix": 0.58,
+    "gate_logit_alpha": 0.27,
+    "class_weight": [1.10, 1.62, 3.02],
+    "bad_aux_weight": 0.74,
+    "bad_aux_pos_weight": 3.65,
+    "stress_aux_weight": 0.52,
+    "stress_aux_pos_weight": 4.00,
+    "bad_specificity_weight": 4.35,
+    "bad_specificity_margin": 1.00,
+    "bad_record111_burst_dropout_strength": 2.02,
+    "bad_record111_burst_dropout_prob": 0.32,
+    "bad_impulse_reset_strength": 1.24,
+    "bad_impulse_reset_prob": 0.20,
+    "bad_intermittent_contact_strength": 1.38,
+    "bad_intermittent_contact_prob": 0.42,
+    "nonbad_hardneg_strength": 1.82,
+    "selection_bad_stress_weight": 0.38,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.28,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.86,
+    "selection_stress_bad_impulse_reset_strength": 1.42,
+    "selection_stress_bad_impulse_reset_prob": 0.58,
+    "seed": 20261441,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_primbadres_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_primbadres_conservative_a050"],
+    "primitive_bad_mix": 0.84,
+    "gate_logit_alpha": 0.34,
+    "class_weight": [1.06, 1.54, 3.34],
+    "bad_aux_weight": 0.92,
+    "bad_aux_pos_weight": 4.35,
+    "stress_aux_weight": 0.62,
+    "stress_aux_pos_weight": 4.55,
+    "bad_specificity_weight": 3.55,
+    "bad_specificity_margin": 0.88,
+    "bad_record111_burst_dropout_strength": 2.28,
+    "bad_record111_burst_dropout_prob": 0.44,
+    "bad_impulse_reset_strength": 1.50,
+    "bad_impulse_reset_prob": 0.30,
+    "bad_intermittent_contact_strength": 1.62,
+    "bad_intermittent_contact_prob": 0.52,
+    "nonbad_hardneg_strength": 1.58,
+    "selection_bad_stress_weight": 0.46,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.55,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.94,
+    "selection_stress_bad_impulse_reset_strength": 1.72,
+    "selection_stress_bad_impulse_reset_prob": 0.72,
+    "seed": 20261442,
+}
+
+QRSBASE_BAD_FEATURE_HEAD_COLUMNS = [
+    "contact_loss_win_ratio",
+    "fatal_or_score",
+    "sqi_basSQI",
+    "baseline_step",
+    "flatline_ratio",
+    "qrs_visibility",
+    "detector_agreement",
+    "low_amp_ratio",
+    "non_qrs_diff_p95",
+    "pc2",
+    "pc3",
+]
+
+QRSBASE_BAD_FEATURE_CRITICAL_COLUMNS = QRSBASE_BAD_FEATURE_HEAD_COLUMNS + [
+    "contact_loss_win_ratio",
+    "contact_loss_win_ratio",
+    "fatal_or_score",
+    "fatal_or_score",
+    "sqi_basSQI",
+    "sqi_basSQI",
+    "baseline_step",
+    "baseline_step",
+    "qrs_visibility",
+    "detector_agreement",
+    "pc2",
+]
+
+RECORD111_PHYSIO_BAD_FEATURE_COLUMNS = [
+    "contact_loss_win_ratio",
+    "fatal_or_score",
+    "sqi_basSQI",
+    "baseline_step",
+    "flatline_ratio",
+    "qrs_visibility",
+    "detector_agreement",
+    "qrs_band_ratio",
+    "template_corr",
+    "low_amp_ratio",
+    "non_qrs_rms_ratio",
+    "non_qrs_diff_p95",
+    "band_15_30",
+    "band_30_45",
+]
+
+RECORD111_PHYSIO_BAD_CRITICAL_COLUMNS = [
+    "contact_loss_win_ratio",
+    "contact_loss_win_ratio",
+    "fatal_or_score",
+    "fatal_or_score",
+    "sqi_basSQI",
+    "sqi_basSQI",
+    "baseline_step",
+    "baseline_step",
+    "flatline_ratio",
+    "qrs_visibility",
+    "detector_agreement",
+    "qrs_band_ratio",
+    "template_corr",
+    "non_qrs_diff_p95",
+]
+
+CANDIDATES["featurefirst_top20_qrsbase_badfeatres_conservative_a050"] = {
+    **CANDIDATES["featurefirst_top20_hardrec_qfeatbin_qrsbase_a050"],
+    # Internal SQI-aware bad residual: the model first predicts waveform-
+    # computable contact/QRS/baseline features, then a tiny bad head consumes
+    # those predicted features.  Inference still receives waveform only.
+    "init_from_candidate": "featurefirst_top20_hardrec_qfeatbin_qrsbase_a050",
+    "init_skip_mismatch": True,
+    "bad_feature_head_columns": QRSBASE_BAD_FEATURE_HEAD_COLUMNS,
+    "bad_feature_mix": 0.34,
+    "bad_feature_bias_init": -1.32,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "aux_head",
+        "bad_feature_head",
+        "bad_head",
+    ],
+    "critical_aux_columns": QRSBASE_BAD_FEATURE_CRITICAL_COLUMNS,
+    "aux_pretrain_epochs": 0,
+    "pretrain_classification_weight": 1.0,
+    "classification_weight": 1.15,
+    "gm_pair_weight": 0.00,
+    "aux_weight": 0.34,
+    "core_aux_weight": 0.55,
+    "hard_aux_weight": 2.80,
+    "top14_aux_weight": 2.20,
+    "critical_aux_weight": 5.80,
+    "quantile_aux_columns": [
+        "contact_loss_win_ratio",
+        "fatal_or_score",
+        "sqi_basSQI",
+        "baseline_step",
+        "qrs_visibility",
+        "detector_agreement",
+        "pc2",
+        "pc3",
+    ],
+    "quantile_aux_weight": 1.85,
+    "rank_weight": 0.00,
+    "supcon_weight": 0.00,
+    "recon_weight": 0.00,
+    "final_mode": "dual_bad_gm_mix",
+    "gate_logit_alpha": 0.18,
+    "bad_gate_bias_init": -1.30,
+    "class_weight": [1.14, 1.70, 2.80],
+    "bad_aux_weight": 0.60,
+    "bad_aux_pos_weight": 3.15,
+    "bad_specificity_weight": 5.25,
+    "bad_specificity_margin": 1.16,
+    "bad_record111_motion_strength": 0.0,
+    "bad_record111_burst_dropout_strength": 1.86,
+    "bad_record111_burst_dropout_prob": 0.24,
+    "bad_impulse_reset_strength": 1.04,
+    "bad_impulse_reset_prob": 0.14,
+    "bad_intermittent_contact_strength": 1.30,
+    "bad_intermittent_contact_prob": 0.36,
+    "nonbad_hardneg_strength": 2.12,
+    "aug_aux_weight_nonbad": 0.46,
+    "selection_bad_stress_weight": 0.32,
+    "selection_stress_nonbad_hardneg_strength": 2.35,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.10,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.78,
+    "selection_stress_bad_impulse_reset_strength": 1.22,
+    "selection_stress_bad_impulse_reset_prob": 0.48,
+    "lr": 0.00008,
+    "seed": 20261450,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_badfeatres_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_badfeatres_conservative_a050"],
+    "bad_feature_mix": 0.52,
+    "bad_feature_bias_init": -1.18,
+    "gate_logit_alpha": 0.25,
+    "class_weight": [1.10, 1.64, 3.04],
+    "bad_aux_weight": 0.74,
+    "bad_aux_pos_weight": 3.70,
+    "bad_specificity_weight": 4.45,
+    "bad_specificity_margin": 1.02,
+    "bad_record111_burst_dropout_strength": 2.08,
+    "bad_record111_burst_dropout_prob": 0.34,
+    "bad_impulse_reset_strength": 1.26,
+    "bad_impulse_reset_prob": 0.22,
+    "bad_intermittent_contact_strength": 1.46,
+    "bad_intermittent_contact_prob": 0.46,
+    "nonbad_hardneg_strength": 1.88,
+    "selection_bad_stress_weight": 0.40,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.34,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.88,
+    "selection_stress_bad_impulse_reset_strength": 1.46,
+    "selection_stress_bad_impulse_reset_prob": 0.62,
+    "seed": 20261451,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_badfeatres_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_badfeatres_conservative_a050"],
+    "bad_feature_mix": 0.74,
+    "bad_feature_bias_init": -1.02,
+    "gate_logit_alpha": 0.34,
+    "class_weight": [1.06, 1.56, 3.36],
+    "bad_aux_weight": 0.92,
+    "bad_aux_pos_weight": 4.35,
+    "bad_specificity_weight": 3.65,
+    "bad_specificity_margin": 0.90,
+    "bad_record111_burst_dropout_strength": 2.34,
+    "bad_record111_burst_dropout_prob": 0.46,
+    "bad_impulse_reset_strength": 1.54,
+    "bad_impulse_reset_prob": 0.32,
+    "bad_intermittent_contact_strength": 1.68,
+    "bad_intermittent_contact_prob": 0.56,
+    "nonbad_hardneg_strength": 1.62,
+    "selection_bad_stress_weight": 0.48,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.60,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.96,
+    "selection_stress_bad_impulse_reset_strength": 1.76,
+    "selection_stress_bad_impulse_reset_prob": 0.74,
+    "seed": 20261452,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_encoderlite_conservative_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_badfeatres_conservative_a050"],
+    # Head-only bad-feature recovery barely moved the bad-outlier surface,
+    # which means the frozen qrsbase representation is missing part of the
+    # contact/fatal/baseline/QRS facts.  Unfreeze only the waveform encoder,
+    # projection and aux/bad heads; keep the class/feature-class heads fixed so
+    # this is a representation-learning test rather than another classifier
+    # sweep.
+    "freeze_trainable_name_contains": [
+        "encoder",
+        "project",
+        "aux_head",
+        "bad_feature_head",
+        "bad_head",
+    ],
+    "aux_pretrain_epochs": 2,
+    "pretrain_classification_weight": 0.10,
+    "pretrain_hard_aux_weight": 9.80,
+    "pretrain_top14_aux_weight": 4.80,
+    "pretrain_critical_aux_weight": 13.80,
+    "pretrain_quantile_aux_weight": 3.20,
+    "classification_weight": 0.86,
+    "aux_weight": 0.52,
+    "core_aux_weight": 0.78,
+    "hard_aux_weight": 4.20,
+    "top14_aux_weight": 2.30,
+    "critical_aux_weight": 7.20,
+    "quantile_aux_weight": 2.60,
+    "rank_weight": 0.18,
+    "bad_feature_mix": 0.38,
+    "bad_feature_bias_init": -1.28,
+    "gate_logit_alpha": 0.18,
+    "bad_aux_weight": 0.60,
+    "bad_aux_pos_weight": 3.20,
+    "bad_specificity_weight": 5.10,
+    "bad_specificity_margin": 1.12,
+    "selection_bad_stress_weight": 0.34,
+    "lr": 0.000025,
+    "seed": 20261460,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_encoderlite_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_encoderlite_conservative_a050"],
+    # Slightly more freedom for the encoder and bad residual, but still enough
+    # non-bad specificity pressure to avoid the usual false-bad explosion.
+    "pretrain_classification_weight": 0.14,
+    "classification_weight": 0.94,
+    "critical_aux_weight": 6.60,
+    "quantile_aux_weight": 2.20,
+    "bad_feature_mix": 0.52,
+    "bad_feature_bias_init": -1.16,
+    "gate_logit_alpha": 0.24,
+    "class_weight": [1.10, 1.62, 3.08],
+    "bad_aux_weight": 0.74,
+    "bad_aux_pos_weight": 3.80,
+    "bad_specificity_weight": 4.35,
+    "bad_specificity_margin": 1.02,
+    "selection_bad_stress_weight": 0.42,
+    "lr": 0.000035,
+    "seed": 20261461,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_encoderlite_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_encoderlite_conservative_a050"],
+    # Pressure-test whether encoder adaptation can finally lift record111-like
+    # bad outliers.  This arm is expected to be riskier for good/medium.
+    "pretrain_classification_weight": 0.18,
+    "classification_weight": 1.02,
+    "critical_aux_weight": 6.20,
+    "quantile_aux_weight": 2.10,
+    "bad_feature_mix": 0.68,
+    "bad_feature_bias_init": -1.04,
+    "gate_logit_alpha": 0.32,
+    "class_weight": [1.06, 1.54, 3.42],
+    "bad_aux_weight": 0.92,
+    "bad_aux_pos_weight": 4.45,
+    "bad_specificity_weight": 3.50,
+    "bad_specificity_margin": 0.90,
+    "selection_bad_stress_weight": 0.52,
+    "lr": 0.000045,
+    "seed": 20261462,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_auxphysio_conservative_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_badfeatres_conservative_a050"],
+    # Encoder-lite learned some contact/fatal axes but damaged the stable
+    # qrsbase QRS/baseline/PC surface.  This narrower test keeps the qrsbase
+    # waveform encoder and class/feature-class heads fixed, and injects
+    # waveform-computable PhysioSQI tokens only into the auxiliary feature
+    # recovery path.  Inference is still waveform-only; the 47-column sidecar
+    # remains a training target, not an input.
+    "aux_physio_context_fusion": True,
+    "physio_context_fusion": False,
+    "physio_context_width": 64,
+    "physio_context_layers": 2,
+    "physio_context_heads": 4,
+    "physio_context_hidden": 224,
+    "physio_context_artifact_count": 16,
+    "physio_context_artifact_window": 151,
+    "freeze_trainable_name_contains": [
+        "physio_context_encoder",
+        "physio_context_project",
+        "aux_head",
+        "bad_feature_head",
+        "bad_head",
+    ],
+    "wide_aux_head": True,
+    "aux_hidden": 256,
+    "aux_pretrain_epochs": 4,
+    "pretrain_classification_weight": 0.06,
+    "pretrain_hard_aux_weight": 10.80,
+    "pretrain_top14_aux_weight": 5.60,
+    "pretrain_critical_aux_weight": 15.20,
+    "pretrain_quantile_aux_weight": 5.20,
+    "classification_weight": 0.82,
+    "aux_weight": 0.60,
+    "core_aux_weight": 0.92,
+    "hard_aux_weight": 4.80,
+    "top14_aux_weight": 2.60,
+    "critical_aux_weight": 8.10,
+    "quantile_aux_weight": 3.20,
+    "rank_weight": 0.18,
+    "bad_feature_mix": 0.34,
+    "bad_feature_bias_init": -1.34,
+    "gate_logit_alpha": 0.16,
+    "bad_aux_weight": 0.56,
+    "bad_aux_pos_weight": 3.05,
+    "bad_specificity_weight": 5.20,
+    "bad_specificity_margin": 1.16,
+    "selection_bad_stress_weight": 0.32,
+    "lr": 0.000075,
+    "seed": 20261470,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_auxphysio_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_auxphysio_conservative_a050"],
+    # More class pressure through the frozen feature-first surface.  Useful only
+    # if PhysioSQI tokens raise hard-feature recovery without eating medium.
+    "pretrain_classification_weight": 0.08,
+    "classification_weight": 0.94,
+    "critical_aux_weight": 7.45,
+    "quantile_aux_weight": 2.80,
+    "bad_feature_mix": 0.48,
+    "bad_feature_bias_init": -1.20,
+    "gate_logit_alpha": 0.22,
+    "class_weight": [1.10, 1.64, 3.04],
+    "bad_aux_weight": 0.70,
+    "bad_aux_pos_weight": 3.65,
+    "bad_specificity_weight": 4.45,
+    "bad_specificity_margin": 1.02,
+    "selection_bad_stress_weight": 0.40,
+    "lr": 0.000085,
+    "seed": 20261471,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_auxphysio_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_auxphysio_conservative_a050"],
+    # Riskier endpoint: push bad-stress recovery after the PhysioSQI aux path
+    # has been added.  Reject if it repeats the false-bad or good/medium
+    # collapse seen in broader sweeps.
+    "pretrain_classification_weight": 0.10,
+    "classification_weight": 1.02,
+    "critical_aux_weight": 7.00,
+    "quantile_aux_weight": 2.60,
+    "bad_feature_mix": 0.64,
+    "bad_feature_bias_init": -1.08,
+    "gate_logit_alpha": 0.30,
+    "class_weight": [1.06, 1.56, 3.38],
+    "bad_aux_weight": 0.88,
+    "bad_aux_pos_weight": 4.30,
+    "bad_specificity_weight": 3.62,
+    "bad_specificity_margin": 0.90,
+    "selection_bad_stress_weight": 0.50,
+    "lr": 0.000095,
+    "seed": 20261472,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_eventroute_strict_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_plateauaddon_conservative_a050"],
+    # Preserve the best qrsbase good/medium surface and make bad recovery a
+    # narrow local-event routing problem. The artifact expert is supervised to
+    # name waveform-derived events, while a strong veto keeps non-bad hard
+    # negatives from being routed into the bad branch.
+    "init_from_candidate": "featurefirst_top20_hardrec_qfeatbin_qrsbase_a050",
+    "init_skip_mismatch": True,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+        "bad_router_head",
+    ],
+    "final_mode": "dual_bad_gm_routed_mix",
+    "gate_logit_alpha": 0.24,
+    "artifact_bad_count": 18,
+    "artifact_bad_window": 181,
+    "artifact_bad_width": 72,
+    "artifact_bad_mix": 0.30,
+    "artifact_bad_bias_init": -1.48,
+    "artifact_veto_mix": 0.66,
+    "artifact_veto_bias_init": 0.42,
+    "artifact_veto_weight": 1.02,
+    "artifact_veto_pos_weight": 0.76,
+    "pretrain_artifact_veto_weight": 0.24,
+    "artifact_event_local_weight": 0.70,
+    "pretrain_artifact_event_local_weight": 0.32,
+    "artifact_event_pos_weight": [1.55, 1.90, 1.55, 1.25, 1.45],
+    "artifact_event_bad_boost": 0.90,
+    "bad_router_target": "event",
+    "bad_router_weight": 0.82,
+    "pretrain_bad_router_weight": 0.22,
+    "bad_router_pos_weight": 4.20,
+    "bad_router_bias_init": -2.35,
+    "bad_router_event_boost": 1.25,
+    "aux_pretrain_epochs": 1,
+    "pretrain_classification_weight": 0.20,
+    "classification_weight": 0.98,
+    "gm_pair_weight": 0.00,
+    "aux_weight": 0.00,
+    "core_aux_weight": 0.00,
+    "hard_aux_weight": 0.00,
+    "top14_aux_weight": 0.00,
+    "critical_aux_weight": 0.00,
+    "quantile_aux_weight": 0.00,
+    "rank_weight": 0.00,
+    "supcon_weight": 0.00,
+    "bad_aux_weight": 0.62,
+    "bad_aux_pos_weight": 3.25,
+    "bad_specificity_weight": 5.80,
+    "bad_specificity_margin": 1.26,
+    "bad_record111_motion_strength": 0.0,
+    "bad_record111_motion_prob": 0.0,
+    "bad_record111_burst_dropout_strength": 2.15,
+    "bad_record111_burst_dropout_prob": 0.34,
+    "bad_impulse_reset_strength": 1.32,
+    "bad_impulse_reset_prob": 0.18,
+    "bad_intermittent_contact_strength": 1.45,
+    "bad_intermittent_contact_prob": 0.38,
+    "nonbad_hardneg_strength": 2.45,
+    "aug_aux_weight_nonbad": 0.50,
+    "selection_bad_stress_weight": 0.36,
+    "selection_stress_nonbad_hardneg_strength": 2.75,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.50,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.82,
+    "selection_stress_bad_impulse_reset_strength": 1.60,
+    "selection_stress_bad_impulse_reset_prob": 0.62,
+    "lr": 0.000075,
+    "seed": 20261480,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_eventroute_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_eventroute_strict_a050"],
+    # Slightly more permissive event route. Useful only if bad_outlier rises
+    # while the qrsbase good/medium surface stays near the current frontier.
+    "gate_logit_alpha": 0.32,
+    "artifact_bad_mix": 0.42,
+    "artifact_bad_bias_init": -1.34,
+    "artifact_veto_mix": 0.52,
+    "artifact_veto_weight": 0.82,
+    "artifact_event_local_weight": 0.78,
+    "artifact_event_bad_boost": 1.10,
+    "bad_router_weight": 0.94,
+    "bad_router_pos_weight": 4.75,
+    "bad_router_bias_init": -2.15,
+    "bad_router_event_boost": 1.55,
+    "bad_aux_weight": 0.74,
+    "bad_aux_pos_weight": 3.75,
+    "bad_specificity_weight": 4.80,
+    "bad_specificity_margin": 1.10,
+    "bad_record111_burst_dropout_strength": 2.40,
+    "bad_record111_burst_dropout_prob": 0.44,
+    "bad_impulse_reset_strength": 1.58,
+    "bad_impulse_reset_prob": 0.26,
+    "bad_intermittent_contact_strength": 1.62,
+    "bad_intermittent_contact_prob": 0.48,
+    "nonbad_hardneg_strength": 2.20,
+    "selection_bad_stress_weight": 0.42,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.75,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.92,
+    "selection_stress_bad_impulse_reset_strength": 1.85,
+    "selection_stress_bad_impulse_reset_prob": 0.72,
+    "seed": 20261481,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_eventroute_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_eventroute_strict_a050"],
+    # Recall endpoint for the same local-event hypothesis. Reject if it buys
+    # bad stress by routing broad medium/good artifacts into bad.
+    "gate_logit_alpha": 0.42,
+    "artifact_bad_mix": 0.56,
+    "artifact_bad_bias_init": -1.18,
+    "artifact_veto_mix": 0.38,
+    "artifact_veto_weight": 0.62,
+    "artifact_event_local_weight": 0.88,
+    "pretrain_artifact_event_local_weight": 0.36,
+    "artifact_event_bad_boost": 1.35,
+    "bad_router_weight": 1.08,
+    "bad_router_pos_weight": 5.45,
+    "bad_router_bias_init": -1.95,
+    "bad_router_event_boost": 1.95,
+    "bad_aux_weight": 0.92,
+    "bad_aux_pos_weight": 4.55,
+    "bad_specificity_weight": 3.80,
+    "bad_specificity_margin": 0.94,
+    "bad_record111_burst_dropout_strength": 2.70,
+    "bad_record111_burst_dropout_prob": 0.56,
+    "bad_impulse_reset_strength": 1.88,
+    "bad_impulse_reset_prob": 0.36,
+    "bad_intermittent_contact_strength": 1.85,
+    "bad_intermittent_contact_prob": 0.58,
+    "nonbad_hardneg_strength": 1.95,
+    "selection_bad_stress_weight": 0.50,
+    "selection_stress_nonbad_hardneg_strength": 2.45,
+    "selection_stress_bad_record111_burst_dropout_strength": 3.00,
+    "selection_stress_bad_record111_burst_dropout_prob": 1.00,
+    "selection_stress_bad_impulse_reset_strength": 2.15,
+    "selection_stress_bad_impulse_reset_prob": 0.82,
+    "seed": 20261482,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_eventres_guard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_eventroute_strict_a050"],
+    # Keep the qrsbase good/medium surface intact. The event/artifact branch
+    # can only add a positive, capped bad residual through a learned route.
+    "final_mode": "bad_residual_routed",
+    "artifact_context_fusion": False,
+    "aux_artifact_context_fusion": False,
+    "bad_logit_mix": 0.78,
+    "bad_residual_cap": 2.20,
+    "artifact_bad_mix": 0.34,
+    "artifact_bad_bias_init": -1.44,
+    "artifact_veto_mix": 0.70,
+    "artifact_veto_weight": 1.06,
+    "artifact_event_local_weight": 0.76,
+    "artifact_event_bad_boost": 1.05,
+    "bad_router_target": "event_or_bad",
+    "bad_router_weight": 0.94,
+    "pretrain_bad_router_weight": 0.24,
+    "bad_router_pos_weight": 4.40,
+    "bad_router_bias_init": -2.42,
+    "bad_router_event_boost": 1.45,
+    "classification_weight": 0.86,
+    "bad_aux_weight": 0.68,
+    "bad_aux_pos_weight": 3.45,
+    "bad_specificity_weight": 6.20,
+    "bad_specificity_margin": 1.32,
+    "selection_bad_stress_weight": 0.38,
+    "lr": 0.00007,
+    "seed": 20261483,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_eventres_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_eventres_guard_a050"],
+    # More permissive residual: target the regime where offline gating raised
+    # bad recall while preserving most of the qrsbase good/medium behavior.
+    "bad_logit_mix": 1.05,
+    "bad_residual_cap": 2.75,
+    "artifact_bad_mix": 0.46,
+    "artifact_bad_bias_init": -1.30,
+    "artifact_veto_mix": 0.54,
+    "artifact_veto_weight": 0.84,
+    "artifact_event_local_weight": 0.86,
+    "artifact_event_bad_boost": 1.30,
+    "bad_router_weight": 1.08,
+    "bad_router_pos_weight": 5.05,
+    "bad_router_bias_init": -2.18,
+    "bad_router_event_boost": 1.80,
+    "bad_aux_weight": 0.82,
+    "bad_aux_pos_weight": 4.00,
+    "bad_specificity_weight": 5.15,
+    "bad_specificity_margin": 1.16,
+    "selection_bad_stress_weight": 0.46,
+    "seed": 20261484,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_eventres_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_eventres_guard_a050"],
+    # Recall endpoint for the residual route. Reject if it repeats the medium
+    # false-bad rise seen in calibrated artifactdirect probes.
+    "bad_logit_mix": 1.34,
+    "bad_residual_cap": 3.20,
+    "artifact_bad_mix": 0.60,
+    "artifact_bad_bias_init": -1.16,
+    "artifact_veto_mix": 0.40,
+    "artifact_veto_weight": 0.66,
+    "artifact_event_local_weight": 0.96,
+    "artifact_event_bad_boost": 1.55,
+    "bad_router_weight": 1.20,
+    "bad_router_pos_weight": 5.80,
+    "bad_router_bias_init": -1.96,
+    "bad_router_event_boost": 2.10,
+    "bad_aux_weight": 0.98,
+    "bad_aux_pos_weight": 4.75,
+    "bad_specificity_weight": 4.20,
+    "bad_specificity_margin": 0.98,
+    "selection_bad_stress_weight": 0.54,
+    "seed": 20261485,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_eventveto_guard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_eventres_guard_a050"],
+    # Structured residual route: use local event evidence opened by a low
+    # non-bad veto. This directly tests the bad-gap diagnostic finding that
+    # true record111 outliers have much lower veto than medium false-bad rows.
+    "final_mode": "bad_event_veto_residual",
+    "bad_logit_mix": 3.40,
+    "bad_residual_cap": 2.10,
+    "bad_event_veto_power": 1.10,
+    "bad_event_veto_channels": [0, 1, 2],
+    "artifact_bad_mix": 0.30,
+    "artifact_veto_mix": 0.0,
+    "artifact_veto_weight": 1.28,
+    "artifact_veto_pos_weight": 0.72,
+    "artifact_event_local_weight": 0.84,
+    "artifact_event_bad_boost": 1.15,
+    "bad_aux_weight": 0.54,
+    "bad_aux_pos_weight": 3.10,
+    "bad_router_weight": 0.0,
+    "pretrain_bad_router_weight": 0.0,
+    "bad_specificity_weight": 5.90,
+    "bad_specificity_margin": 1.28,
+    "selection_bad_stress_weight": 0.42,
+    "seed": 20261486,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_eventveto_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_eventveto_guard_a050"],
+    # Higher residual scale; still relies on veto specificity rather than a
+    # learned free router, so good/medium should be less disturbed.
+    "bad_logit_mix": 4.80,
+    "bad_residual_cap": 2.85,
+    "bad_event_veto_power": 1.00,
+    "artifact_bad_mix": 0.36,
+    "artifact_veto_weight": 1.08,
+    "artifact_event_local_weight": 0.92,
+    "artifact_event_bad_boost": 1.35,
+    "bad_aux_weight": 0.66,
+    "bad_aux_pos_weight": 3.55,
+    "bad_specificity_weight": 5.10,
+    "bad_specificity_margin": 1.12,
+    "selection_bad_stress_weight": 0.50,
+    "seed": 20261487,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_eventveto_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_eventveto_guard_a050"],
+    # Recall endpoint. Useful only if bad_outlier rises faster than medium
+    # false-bad; otherwise the veto route is too broad.
+    "bad_logit_mix": 6.30,
+    "bad_residual_cap": 3.45,
+    "bad_event_veto_power": 0.85,
+    "artifact_bad_mix": 0.44,
+    "artifact_veto_weight": 0.92,
+    "artifact_event_local_weight": 1.02,
+    "artifact_event_bad_boost": 1.65,
+    "bad_aux_weight": 0.78,
+    "bad_aux_pos_weight": 4.10,
+    "bad_specificity_weight": 4.20,
+    "bad_specificity_margin": 0.98,
+    "selection_bad_stress_weight": 0.58,
+    "seed": 20261488,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_resid_strict_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_eventroute_strict_a050"],
+    # Test the two-expert hypothesis found in bad-gap analysis: preserve the
+    # qrsbase good/medium surface and let the artifact-bad head add only a
+    # positive, capped bad residual.  This is waveform-only; artifact_bad is
+    # predicted from local artifact tokens, not from sidecar SQI inputs.
+    "final_mode": "bad_artifact_residual",
+    "bad_logit_mix": 3.60,
+    "bad_residual_cap": 2.40,
+    "bad_artifact_floor": 0.50,
+    "bad_artifact_power": 1.40,
+    "bad_artifact_veto_power": 0.0,
+    "artifact_bad_mix": 0.52,
+    "artifact_bad_bias_init": -1.10,
+    "artifact_veto_mix": 0.0,
+    "artifact_veto_weight": 1.00,
+    "artifact_event_local_weight": 0.90,
+    "artifact_event_bad_boost": 1.45,
+    "bad_router_weight": 0.0,
+    "pretrain_bad_router_weight": 0.0,
+    "bad_aux_weight": 0.82,
+    "bad_aux_pos_weight": 4.10,
+    "bad_specificity_weight": 5.90,
+    "bad_specificity_margin": 1.28,
+    "selection_bad_stress_weight": 0.48,
+    "seed": 20261489,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_resid_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_resid_strict_a050"],
+    # Slightly more permissive artifact residual. Reject if it repeats the
+    # jointartifact false-bad medium pattern.
+    "bad_logit_mix": 4.80,
+    "bad_residual_cap": 3.05,
+    "bad_artifact_floor": 0.47,
+    "bad_artifact_power": 1.20,
+    "bad_aux_weight": 0.94,
+    "bad_aux_pos_weight": 4.65,
+    "bad_specificity_weight": 4.90,
+    "bad_specificity_margin": 1.10,
+    "selection_bad_stress_weight": 0.56,
+    "seed": 20261490,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_resid_veto_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_resid_balanced_a050"],
+    # Add a soft waveform-derived non-bad veto.  True bad stress should keep
+    # enough artifact-bad evidence to pass, while coherent medium artifacts
+    # should be suppressed.
+    "bad_logit_mix": 5.40,
+    "bad_residual_cap": 3.20,
+    "bad_artifact_floor": 0.45,
+    "bad_artifact_power": 1.05,
+    "bad_artifact_veto_power": 0.55,
+    "artifact_veto_weight": 1.24,
+    "artifact_veto_pos_weight": 0.72,
+    "bad_specificity_weight": 5.30,
+    "bad_specificity_margin": 1.18,
+    "selection_bad_stress_weight": 0.54,
+    "seed": 20261491,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_resid_marginqrs_strict_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_resid_balanced_a050"],
+    # Bad-outlier audit: the useful stress bad windows are low-margin/low-purity
+    # artifact cases, not all baseline/flatline segments. Keep the successful
+    # qrsbase GM surface and open the bad residual only when the waveform-predicted
+    # geometry says the sample is near/outside the learned target boundary.
+    "bad_margin_guard": True,
+    "bad_margin_alpha": 0.24,
+    "bad_purity_alpha": 0.16,
+    "bad_boundary_alpha": 0.10,
+    "bad_logit_mix": 4.95,
+    "bad_residual_cap": 3.15,
+    "bad_artifact_floor": 0.47,
+    "bad_artifact_power": 1.15,
+    "bad_aux_weight": 0.90,
+    "bad_aux_pos_weight": 4.50,
+    "bad_specificity_weight": 5.20,
+    "bad_specificity_margin": 1.16,
+    "selection_bad_stress_weight": 0.56,
+    "seed": 20261546,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_resid_marginqrs_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_resid_marginqrs_strict_a050"],
+    # More recall pressure, still coupled to predicted margin/purity. Accept only
+    # if bad_outlier rises faster than good/medium false-bad.
+    "bad_margin_alpha": 0.32,
+    "bad_purity_alpha": 0.22,
+    "bad_boundary_alpha": 0.14,
+    "bad_logit_mix": 5.65,
+    "bad_residual_cap": 3.55,
+    "bad_artifact_floor": 0.44,
+    "bad_artifact_power": 1.00,
+    "bad_aux_weight": 1.02,
+    "bad_aux_pos_weight": 5.10,
+    "bad_specificity_weight": 4.70,
+    "bad_specificity_margin": 1.04,
+    "selection_bad_stress_weight": 0.62,
+    "seed": 20261547,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_resid_marginqrs_badkeep_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_resid_marginqrs_strict_a050"],
+    # Recall endpoint for the same hypothesis. This is deliberately not a broad
+    # class-weight sweep: it still requires waveform-predicted low-margin evidence.
+    "bad_margin_alpha": 0.38,
+    "bad_purity_alpha": 0.28,
+    "bad_boundary_alpha": 0.18,
+    "bad_logit_mix": 6.35,
+    "bad_residual_cap": 3.90,
+    "bad_artifact_floor": 0.41,
+    "bad_artifact_power": 0.88,
+    "bad_aux_weight": 1.16,
+    "bad_aux_pos_weight": 5.80,
+    "bad_specificity_weight": 4.20,
+    "bad_specificity_margin": 0.92,
+    "selection_bad_stress_weight": 0.68,
+    "seed": 20261548,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_jointcopy_strict_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_resid_strict_a050"],
+    # Hybrid two-expert test: preserve the qrsbase good/medium surface, but
+    # initialize the isolated artifact-bad expert from the jointartifact
+    # bad-recall checkpoint that actually catches original bad outliers.  The
+    # copied expert is waveform-only; original BUT is still report-only.
+    "init_from_candidate": "featurefirst_top20_qrsbase_eventres_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_rawbeat_artifact_auxctx_jointartifact_badrecall_a050",
+    "init_skip_mismatch": True,
+    "artifact_bad_count": 16,
+    "artifact_bad_window": 151,
+    "artifact_bad_width": 64,
+    "artifact_bad_mix": 0.54,
+    "artifact_veto_mix": 0.14,
+    "bad_logit_mix": 4.60,
+    "bad_residual_cap": 3.05,
+    "bad_artifact_floor": 0.52,
+    "bad_artifact_power": 1.25,
+    "bad_artifact_veto_power": 0.0,
+    "freeze_trainable_name_contains": [
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+    ],
+    "classification_weight": 0.70,
+    "bad_aux_weight": 0.64,
+    "bad_aux_pos_weight": 3.65,
+    "bad_specificity_weight": 6.40,
+    "bad_specificity_margin": 1.36,
+    "selection_bad_stress_weight": 0.42,
+    "lr": 0.00005,
+    "seed": 20261492,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_jointcopy_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_jointcopy_strict_a050"],
+    # Slightly open the copied artifact expert.  Accept only if bad stress
+    # recall rises faster than false-bad errors in good/medium.
+    "bad_logit_mix": 5.70,
+    "bad_residual_cap": 3.45,
+    "bad_artifact_floor": 0.49,
+    "bad_artifact_power": 1.05,
+    "bad_aux_weight": 0.76,
+    "bad_aux_pos_weight": 4.15,
+    "bad_specificity_weight": 5.35,
+    "bad_specificity_margin": 1.18,
+    "selection_bad_stress_weight": 0.50,
+    "seed": 20261493,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_jointcopy_tune_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_jointcopy_balanced_a050"],
+    # Let the copied artifact expert adapt a little to the qrsbase residual
+    # surface.  This is still narrow: the main waveform encoder and GM/class
+    # surface remain frozen.
+    "freeze_trainable_name_contains": [
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+    ],
+    "bad_logit_mix": 5.20,
+    "bad_residual_cap": 3.30,
+    "bad_artifact_floor": 0.50,
+    "bad_artifact_power": 1.10,
+    "bad_specificity_weight": 5.70,
+    "bad_specificity_margin": 1.24,
+    "lr": 0.000035,
+    "seed": 20261494,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_rec111veto_freeze_strict_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_resid_strict_a050"],
+    # Bad-gap row audit showed the rec111 artifactdirect veto head already
+    # separates caught bad_outliers (low veto) from artifact false-bad medium
+    # rows (high veto). Copy that artifact branch but do not train the veto
+    # head; only calibrate the residual/bad heads against the stable qrsbase
+    # good/medium surface.
+    "init_from_candidate": "featurefirst_top20_qrsbase_eventres_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_rec111artifactdirect_recall_a050",
+    "init_skip_mismatch": True,
+    "final_mode": "bad_artifact_residual",
+    "freeze_trainable_name_contains": [
+        "artifact_bad_head",
+        "bad_head",
+    ],
+    "bad_logit_mix": 5.20,
+    "bad_residual_cap": 3.20,
+    "bad_artifact_floor": 0.46,
+    "bad_artifact_power": 1.05,
+    "bad_artifact_veto_power": 1.10,
+    "artifact_bad_mix": 0.60,
+    "artifact_veto_mix": 0.24,
+    "artifact_veto_weight": 1.35,
+    "bad_aux_weight": 0.72,
+    "bad_aux_pos_weight": 4.00,
+    "bad_specificity_weight": 6.40,
+    "bad_specificity_margin": 1.34,
+    "nonbad_hardneg_strength": 2.90,
+    "selection_bad_stress_weight": 0.50,
+    "classification_weight": 0.72,
+    "lr": 0.000040,
+    "seed": 20261549,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_rec111veto_freeze_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_rec111veto_freeze_strict_a050"],
+    # More residual gain while keeping the copied veto frozen. Accept only if
+    # bad_outlier improves without repeating the medium false-bad explosion.
+    "bad_logit_mix": 6.10,
+    "bad_residual_cap": 3.70,
+    "bad_artifact_floor": 0.42,
+    "bad_artifact_power": 0.92,
+    "bad_artifact_veto_power": 0.95,
+    "artifact_bad_mix": 0.68,
+    "bad_aux_weight": 0.90,
+    "bad_aux_pos_weight": 4.85,
+    "bad_specificity_weight": 5.55,
+    "bad_specificity_margin": 1.18,
+    "selection_bad_stress_weight": 0.58,
+    "seed": 20261550,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_rec111veto_freeze_badkeep_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_rec111veto_freeze_strict_a050"],
+    # Recall endpoint for the frozen-veto hypothesis.
+    "bad_logit_mix": 6.90,
+    "bad_residual_cap": 4.15,
+    "bad_artifact_floor": 0.38,
+    "bad_artifact_power": 0.82,
+    "bad_artifact_veto_power": 0.78,
+    "artifact_bad_mix": 0.76,
+    "bad_aux_weight": 1.08,
+    "bad_aux_pos_weight": 5.55,
+    "bad_specificity_weight": 4.80,
+    "bad_specificity_margin": 1.02,
+    "selection_bad_stress_weight": 0.66,
+    "seed": 20261551,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_rec111veto_hardgate_strict_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_rec111veto_freeze_badkeep_a050"],
+    # Row-level bad-outlier audit: caught bad stress has low artifact_veto,
+    # while false-bad medium rows have high artifact_veto.  Use a continuous
+    # threshold gate instead of the soft power gate so the copied veto can
+    # block coherent non-bad artifacts more decisively.
+    "bad_logit_mix": 7.05,
+    "bad_residual_cap": 4.25,
+    "bad_artifact_floor": 0.36,
+    "bad_artifact_power": 0.78,
+    "bad_artifact_veto_power": 0.0,
+    "bad_artifact_veto_threshold": 0.55,
+    "bad_artifact_veto_temperature": 0.08,
+    "selection_bad_stress_weight": 0.62,
+    "seed": 20261552,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_rec111veto_hardgate_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_rec111veto_hardgate_strict_a050"],
+    # Wider gate for bad-stress recall, still below the observed medium
+    # false-bad veto cluster.
+    "bad_logit_mix": 7.15,
+    "bad_residual_cap": 4.35,
+    "bad_artifact_floor": 0.35,
+    "bad_artifact_veto_threshold": 0.70,
+    "bad_artifact_veto_temperature": 0.10,
+    "selection_bad_stress_weight": 0.68,
+    "seed": 20261553,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_rec111veto_hardgate_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_rec111veto_hardgate_strict_a050"],
+    # Recall endpoint: admit higher-veto artifact rows. Reject if this recreates
+    # the artifactdirect medium false-bad failure mode.
+    "bad_logit_mix": 7.30,
+    "bad_residual_cap": 4.55,
+    "bad_artifact_floor": 0.34,
+    "bad_artifact_power": 0.72,
+    "bad_artifact_veto_threshold": 0.82,
+    "bad_artifact_veto_temperature": 0.12,
+    "selection_bad_stress_weight": 0.74,
+    "seed": 20261554,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_strict_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_rec111veto_hardgate_balanced_a050"],
+    # Split the bad evidence into two positive residuals: the artifact branch
+    # handles record111/outlier stress, while the regular bad head keeps the
+    # right-island/near-boundary core from being suppressed by the artifact veto.
+    "bad_logit_mix": 6.85,
+    "bad_residual_cap": 4.20,
+    "bad_artifact_floor": 0.36,
+    "bad_artifact_power": 0.80,
+    "bad_artifact_veto_threshold": 0.68,
+    "bad_artifact_veto_temperature": 0.10,
+    "bad_core_logit_mix": 0.80,
+    "bad_core_residual_cap": 1.15,
+    "bad_core_floor": 0.46,
+    "bad_core_power": 1.15,
+    "bad_specificity_weight": 5.35,
+    "selection_bad_stress_weight": 0.64,
+    "seed": 20261555,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_strict_a050"],
+    # Balanced endpoint: enough core residual to recover near-boundary bad,
+    # but a capped contribution so the good/medium surface remains qrsbase-like.
+    "bad_logit_mix": 6.95,
+    "bad_residual_cap": 4.35,
+    "bad_artifact_floor": 0.35,
+    "bad_artifact_veto_threshold": 0.70,
+    "bad_core_logit_mix": 1.25,
+    "bad_core_residual_cap": 1.55,
+    "bad_core_floor": 0.42,
+    "bad_core_power": 1.00,
+    "bad_specificity_weight": 5.05,
+    "selection_bad_stress_weight": 0.70,
+    "seed": 20261556,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_strict_a050"],
+    # Recall endpoint: more core residual plus a wider outlier gate. Reject if
+    # this trades the gain for medium false-bad errors.
+    "bad_logit_mix": 7.15,
+    "bad_residual_cap": 4.65,
+    "bad_artifact_floor": 0.34,
+    "bad_artifact_power": 0.72,
+    "bad_artifact_veto_threshold": 0.78,
+    "bad_artifact_veto_temperature": 0.12,
+    "bad_core_logit_mix": 1.75,
+    "bad_core_residual_cap": 2.05,
+    "bad_core_floor": 0.38,
+    "bad_core_power": 0.92,
+    "bad_specificity_weight": 4.55,
+    "selection_bad_stress_weight": 0.78,
+    "seed": 20261557,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_large7190_ft_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # Large-boundary probe: keep the current best waveform-only architecture
+    # and decision surface, then fine-tune on the wider N7190 PTB block set.
+    # This tests whether the current 0.864 wall is mostly synthetic coverage.
+    "variant_id": "nl_n7190_gm_trim_bad_boundaryblocks_pc1qrsprom_balanced_n_2bf28bdc948b",
+    "init_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "lr": 3.5e-5,
+    "class_weight": [1.04, 1.46, 2.35],
+    "classification_weight": 0.88,
+    "aux_weight": 0.20,
+    "core_aux_weight": 0.26,
+    "hard_aux_weight": 0.92,
+    "top14_aux_weight": 0.36,
+    "critical_aux_weight": 1.52,
+    "quantile_aux_weight": 0.36,
+    "gm_pair_weight": 0.72,
+    "bad_specificity_weight": 5.25,
+    "selection_bad_stress_weight": 0.70,
+    "seed": 20261610,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_large7190_ft_mediumguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_large7190_ft_balanced_a050"],
+    # Same wide data, but protect medium from the bad-threshold tradeoff that
+    # appeared in the ensemble probe.
+    "class_weight": [1.02, 1.62, 2.15],
+    "gm_pair_weight": 0.82,
+    "bad_core_logit_mix": 1.45,
+    "bad_core_residual_cap": 1.75,
+    "bad_specificity_weight": 5.85,
+    "selection_bad_stress_weight": 0.58,
+    "seed": 20261611,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_large7188_ft_badguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_large7190_ft_balanced_a050"],
+    # N7188 is the wider bad-outlier / visible-QRS-narrow shell.  Use it as a
+    # stress-specific contrast against the N7190 balanced block.
+    "variant_id": "nl_n7188_gm_trim_bad_boundaryblocks_badoutlier_visqrsnarr_a364001dc6cf",
+    "class_weight": [1.02, 1.48, 2.55],
+    "bad_core_logit_mix": 1.70,
+    "bad_core_residual_cap": 2.00,
+    "bad_specificity_weight": 5.60,
+    "selection_bad_stress_weight": 0.78,
+    "seed": 20261612,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_large7190_encoderlite_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_large7190_ft_balanced_a050"],
+    # The first large-boundary probes only opened bad/artifact heads.  This
+    # version lets the classifier, feature heads, SQI queries, stat tokenizers,
+    # and the final Transformer block adapt to the wider boundary without
+    # rewriting the whole encoder.
+    "freeze_trainable_name_contains": [
+        "class_head",
+        "feature_class_head",
+        "aux_head",
+        "primitive_bad_head",
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "encoder.sqi_queries",
+        "encoder.query_type_embed",
+        "encoder.global_stat",
+        "encoder.patch_stat_proj",
+        "encoder.scale_stat_proj",
+        "encoder.encoder.layers.3",
+    ],
+    "lr": 2.0e-5,
+    "classification_weight": 1.02,
+    "aux_weight": 0.24,
+    "core_aux_weight": 0.32,
+    "hard_aux_weight": 1.05,
+    "top14_aux_weight": 0.42,
+    "critical_aux_weight": 1.70,
+    "quantile_aux_weight": 0.42,
+    "gm_pair_weight": 0.88,
+    "bad_specificity_weight": 5.15,
+    "selection_bad_stress_weight": 0.70,
+    "seed": 20261613,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_large7190_encoderlite_mediumguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_large7190_encoderlite_balanced_a050"],
+    # Medium guard: the old best still loses many original medium rows to good.
+    # Keep bad expansion present, but bias the boundary head toward medium
+    # recovery rather than broad bad recall.
+    "class_weight": [1.04, 1.68, 2.18],
+    "gm_pair_weight": 1.02,
+    "bad_core_logit_mix": 1.35,
+    "bad_core_residual_cap": 1.60,
+    "bad_specificity_weight": 5.75,
+    "selection_bad_stress_weight": 0.58,
+    "seed": 20261614,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_large7188_encoderlite_badguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_large7190_encoderlite_balanced_a050"],
+    # Bad guard: use the controlled bad-outlier / visible-QRS-narrow block set
+    # while retaining enough GM supervision to reject a bad-heavy collapse.
+    "variant_id": "nl_n7188_gm_trim_bad_boundaryblocks_badoutlier_visqrsnarr_a364001dc6cf",
+    "class_weight": [1.04, 1.52, 2.58],
+    "bad_core_logit_mix": 1.68,
+    "bad_core_residual_cap": 1.98,
+    "bad_specificity_weight": 5.55,
+    "selection_bad_stress_weight": 0.76,
+    "seed": 20261615,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_n7100_cleangeom_encoderlite_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_large7190_encoderlite_balanced_a050"],
+    # Clean promoted boundary carrier: unlike N7190, N7100 already passed the
+    # node ladder gate.  Use it to expose the waveform model to more balanced
+    # good/medium/bad geometry without importing the failed large-shell labels.
+    "variant_id": "nl_n7100_gm_trim_bad_geom_addedring_n7000base_g006_m030_g_f414c5d4968a",
+    "class_weight": [1.05, 1.48, 1.88],
+    "classification_weight": 1.04,
+    "gm_pair_weight": 0.92,
+    "bad_specificity_weight": 5.20,
+    "selection_bad_stress_weight": 0.72,
+    "seed": 20261616,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_n7110_cleangeom_encoderlite_mediumguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_n7100_cleangeom_encoderlite_balanced_a050"],
+    # N7110 has the strongest ordinary non-rule boundary attempt.  Bias toward
+    # preserving medium rows, since the current original errors still include
+    # many confident medium->good mistakes.
+    "variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+    "class_weight": [1.04, 1.62, 1.82],
+    "gm_pair_weight": 1.08,
+    "bad_core_logit_mix": 1.45,
+    "bad_core_residual_cap": 1.75,
+    "bad_specificity_weight": 5.70,
+    "selection_bad_stress_weight": 0.64,
+    "seed": 20261617,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_n7000_cleangeom_encoderlite_badguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_n7100_cleangeom_encoderlite_balanced_a050"],
+    # N7000 is the strongest clean/node promoted normal checkpoint level.  Use a
+    # slightly higher bad guard to see if balanced clean geometry can lift
+    # original bad without reintroducing the N7190 label pollution.
+    "variant_id": "nl_n7000_gm_trim_bad_geom_pc1flat_g030_m038_g126_m168_b15_9160023afe86",
+    "class_weight": [1.05, 1.46, 2.08],
+    "bad_core_logit_mix": 1.62,
+    "bad_core_residual_cap": 1.92,
+    "bad_specificity_weight": 5.45,
+    "selection_bad_stress_weight": 0.76,
+    "seed": 20261618,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_gmres_strict_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # Remaining original-test errors are mostly good/medium.  This residual is
+    # still waveform-only: it consumes the Transformer's internally predicted
+    # GM geometry/SQI axes and moves only good/medium logits.
+    "freeze_trainable_name_contains": [
+        "artifact_bad_head",
+        "bad_head",
+        "gm_feature_residual_head",
+    ],
+    "gm_feature_residual_columns": [
+        "pc1",
+        "flatline_ratio",
+        "qrs_visibility",
+        "non_qrs_diff_p95",
+        "amplitude_entropy",
+        "low_amp_ratio",
+        "pca_margin",
+        "baseline_step",
+        "qrs_prom_p90",
+        "sqi_kSQI",
+    ],
+    "gm_feature_residual_mix": 0.45,
+    "gm_feature_residual_cap": 1.05,
+    "bad_specificity_weight": 4.75,
+    "selection_bad_stress_weight": 0.74,
+    "seed": 20261558,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_gmres_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_gmres_strict_a050"],
+    # More room for GM correction; reject if original good or medium degrades.
+    "gm_feature_residual_mix": 0.72,
+    "gm_feature_residual_cap": 1.45,
+    "bad_specificity_weight": 4.70,
+    "selection_bad_stress_weight": 0.76,
+    "seed": 20261559,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_gmres_mediumguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_gmres_strict_a050"],
+    # Bias toward preserving medium boundary rows; the current best still loses
+    # about 420 medium rows to good on original_test.
+    "gm_feature_residual_mix": 0.90,
+    "gm_feature_residual_cap": 1.65,
+    "class_weight": [1.08, 1.78, 2.85],
+    "bad_specificity_weight": 4.60,
+    "selection_bad_stress_weight": 0.76,
+    "seed": 20261560,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_headcal_goodguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # GM residual over-corrected.  Try a cleaner calibration: load the best
+    # dualcore/outlier checkpoint, freeze the encoder, and retrain only the
+    # normal class/feature heads plus bad heads.
+    "init_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "freeze_trainable_name_contains": [
+        "class_head",
+        "feature_class_head",
+        "artifact_bad_head",
+        "bad_head",
+    ],
+    "class_weight": [1.22, 1.56, 2.85],
+    "classification_weight": 1.02,
+    "bad_specificity_weight": 4.80,
+    "selection_bad_stress_weight": 0.72,
+    "lr": 0.000055,
+    "seed": 20261561,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_headcal_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_headcal_goodguard_a050"],
+    "class_weight": [1.14, 1.68, 2.85],
+    "classification_weight": 1.05,
+    "bad_specificity_weight": 4.65,
+    "selection_bad_stress_weight": 0.76,
+    "seed": 20261562,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_headcal_mediumguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_headcal_goodguard_a050"],
+    "class_weight": [1.08, 1.86, 2.85],
+    "classification_weight": 1.08,
+    "bad_specificity_weight": 4.55,
+    "selection_bad_stress_weight": 0.76,
+    "seed": 20261563,
+}
+
+CANDIDATES["featurefirst_wavecomp_dualcoreout_encoderlite_baselinegm_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # Original-error audit after dualcoreout: large good/medium/bad mistakes
+    # share high baseline/PC2-like shells that the model predicts as ordinary
+    # waveform.  This is not a head calibration test.  Keep the useful dual
+    # bad split, then unfreeze only tokenizer/stat/SQI-query/last-block paths
+    # and train the classifier on waveform-computable SQI targets, avoiding
+    # atlas-only purity/confidence as primary fused features.
+    "init_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_skip_mismatch": True,
+    "predicted_feature_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "feature_teacher_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "critical_aux_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS
+    + WAVEFORM_HARD_TEACHER_COLUMNS
+    + [
+        "sqi_basSQI",
+        "sqi_basSQI",
+        "baseline_step",
+        "baseline_step",
+        "qrs_band_ratio",
+        "qrs_visibility",
+        "detector_agreement",
+    ],
+    "quantile_aux_columns": [
+        "sqi_basSQI",
+        "baseline_step",
+        "flatline_ratio",
+        "qrs_band_ratio",
+        "qrs_visibility",
+        "detector_agreement",
+        "non_qrs_diff_p95",
+        "low_amp_ratio",
+    ],
+    "quantile_aux_quantiles": [0.12, 0.25, 0.40, 0.55, 0.70, 0.85, 0.94],
+    "quantile_aux_sharpness": 3.70,
+    "freeze_trainable_name_contains": [
+        "encoder.patch_proj",
+        "encoder.patch_stat_proj",
+        "encoder.scale_stat_proj",
+        "encoder.global_stat",
+        "encoder.sqi_queries",
+        "encoder.query_type_embed",
+        "encoder.encoder.layers.3",
+        "encoder.pool",
+        "project",
+        "aux_head",
+        "class_head",
+        "feature_class_head",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+    ],
+    "aux_pretrain_epochs": 2,
+    "pretrain_classification_weight": 0.06,
+    "pretrain_gm_pair_weight": 0.10,
+    "pretrain_aux_weight": 1.45,
+    "pretrain_core_aux_weight": 2.60,
+    "pretrain_hard_aux_weight": 7.40,
+    "pretrain_top14_aux_weight": 0.00,
+    "pretrain_critical_aux_weight": 12.80,
+    "pretrain_quantile_aux_weight": 8.60,
+    "pretrain_rank_weight": 1.20,
+    "aux_weight": 0.62,
+    "core_aux_weight": 1.05,
+    "hard_aux_weight": 4.40,
+    "top14_aux_weight": 0.00,
+    "critical_aux_weight": 6.20,
+    "quantile_aux_weight": 3.80,
+    "rank_weight": 0.18,
+    "classification_weight": 0.82,
+    "gm_pair_weight": 1.18,
+    "class_weight": [1.14, 1.72, 2.82],
+    "bad_aux_weight": 0.94,
+    "bad_aux_pos_weight": 4.95,
+    "bad_specificity_weight": 4.85,
+    "bad_specificity_margin": 1.12,
+    "selection_bad_stress_weight": 0.72,
+    "lr": 0.000018,
+    "seed": 20261564,
+}
+
+CANDIDATES["featurefirst_wavecomp_dualcoreout_encoderlite_mediumguard_a050"] = {
+    **CANDIDATES["featurefirst_wavecomp_dualcoreout_encoderlite_baselinegm_a050"],
+    # Same representation-learning test, but with stronger good/medium boundary
+    # pressure.  Accept only if it improves original medium without erasing the
+    # recovered bad core/outlier split.
+    "class_weight": [1.08, 1.94, 2.72],
+    "gm_pair_weight": 1.46,
+    "classification_weight": 0.88,
+    "pretrain_gm_pair_weight": 0.16,
+    "bad_specificity_weight": 4.95,
+    "selection_bad_stress_weight": 0.68,
+    "seed": 20261565,
+}
+
+CANDIDATES["featurefirst_wavecomp_dualcoreout_encoderlite_goodguard_a050"] = {
+    **CANDIDATES["featurefirst_wavecomp_dualcoreout_encoderlite_baselinegm_a050"],
+    # Guard endpoint: medium recovery attempts often eat good.  This run tests
+    # whether the baseline/SQI recovery path can help while keeping the good
+    # shell stable.
+    "class_weight": [1.28, 1.58, 2.78],
+    "gm_pair_weight": 1.04,
+    "classification_weight": 0.84,
+    "bad_specificity_weight": 5.05,
+    "selection_bad_stress_weight": 0.70,
+    "seed": 20261566,
+}
+
+CANDIDATES["featurefirst_wavecomp_record111physio_guard_a050"] = {
+    **CANDIDATES["featurefirst_wavecomp_dualcoreout_encoderlite_baselinegm_a050"],
+    # Clean record111-like bad experiment: generate contact/dropout/reset
+    # morphology, but align the auxiliary teacher only to waveform-computable
+    # QRS/baseline/flatline/detail facts.  This deliberately avoids pc/knn/
+    # boundary proxy targets so it can remain a formal waveform-SQI candidate.
+    "bad_feature_head_columns": RECORD111_PHYSIO_BAD_FEATURE_COLUMNS,
+    "critical_aux_columns": RECORD111_PHYSIO_BAD_CRITICAL_COLUMNS
+    + WAVEFORM_HARD_TEACHER_COLUMNS,
+    "quantile_aux_columns": [
+        "contact_loss_win_ratio",
+        "fatal_or_score",
+        "sqi_basSQI",
+        "baseline_step",
+        "flatline_ratio",
+        "qrs_visibility",
+        "detector_agreement",
+        "qrs_band_ratio",
+        "template_corr",
+        "non_qrs_rms_ratio",
+        "non_qrs_diff_p95",
+    ],
+    "aug_bad_aux_pseudo_geometry": True,
+    "aug_bad_aux_pseudo_mode": "physio_record111",
+    "aug_bad_aux_pseudo_mix": 0.70,
+    "bad_record111_motion_strength": 2.55,
+    "bad_record111_motion_prob": 0.50,
+    "bad_record111_burst_dropout_strength": 2.20,
+    "bad_record111_burst_dropout_prob": 0.46,
+    "bad_impulse_reset_strength": 1.70,
+    "bad_impulse_reset_prob": 0.34,
+    "bad_intermittent_contact_strength": 1.78,
+    "bad_intermittent_contact_prob": 0.54,
+    "bad_flatlowamp_shell_strength": 0.85,
+    "bad_flatlowamp_shell_prob": 0.42,
+    "nonbad_hardneg_strength": 2.75,
+    "aug_aux_weight_bad": 1.55,
+    "aug_aux_weight_nonbad": 0.55,
+    "pretrain_classification_weight": 0.08,
+    "pretrain_aux_weight": 1.70,
+    "pretrain_core_aux_weight": 2.80,
+    "pretrain_hard_aux_weight": 8.40,
+    "pretrain_critical_aux_weight": 14.40,
+    "pretrain_quantile_aux_weight": 9.80,
+    "classification_weight": 0.86,
+    "aux_weight": 0.68,
+    "core_aux_weight": 1.15,
+    "hard_aux_weight": 4.90,
+    "critical_aux_weight": 7.60,
+    "quantile_aux_weight": 4.40,
+    "class_weight": [1.12, 1.70, 3.05],
+    "gm_pair_weight": 1.12,
+    "bad_aux_weight": 1.05,
+    "bad_aux_pos_weight": 5.20,
+    "bad_specificity_weight": 5.35,
+    "bad_specificity_margin": 1.18,
+    "selection_bad_stress_weight": 0.76,
+    "selection_stress_aug_bad_aux_pseudo_geometry": True,
+    "selection_stress_aug_bad_aux_pseudo_mode": "physio_record111",
+    "selection_stress_aug_bad_aux_pseudo_mix": 0.80,
+    "selection_stress_bad_record111_motion_strength": 3.10,
+    "selection_stress_bad_record111_motion_prob": 1.00,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.65,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.94,
+    "selection_stress_bad_impulse_reset_strength": 2.05,
+    "selection_stress_bad_impulse_reset_prob": 0.82,
+    "selection_stress_bad_intermittent_contact_strength": 2.05,
+    "selection_stress_bad_intermittent_contact_prob": 0.80,
+    "selection_stress_nonbad_hardneg_strength": 3.05,
+    "lr": 0.000020,
+    "seed": 20261570,
+}
+
+CANDIDATES["featurefirst_wavecomp_record111physio_recall_a050"] = {
+    **CANDIDATES["featurefirst_wavecomp_record111physio_guard_a050"],
+    # Recall endpoint for the same clean teacher-alignment hypothesis.  Accept
+    # only if bad_outlier improves without the familiar non-bad false-bad surge.
+    "aug_bad_aux_pseudo_mix": 0.82,
+    "bad_record111_motion_strength": 3.05,
+    "bad_record111_motion_prob": 0.66,
+    "bad_record111_burst_dropout_strength": 2.65,
+    "bad_record111_burst_dropout_prob": 0.58,
+    "bad_impulse_reset_strength": 2.10,
+    "bad_impulse_reset_prob": 0.46,
+    "bad_intermittent_contact_strength": 2.15,
+    "bad_intermittent_contact_prob": 0.66,
+    "bad_flatlowamp_shell_strength": 1.05,
+    "bad_flatlowamp_shell_prob": 0.54,
+    "nonbad_hardneg_strength": 2.55,
+    "class_weight": [1.08, 1.62, 3.45],
+    "classification_weight": 0.94,
+    "critical_aux_weight": 8.20,
+    "quantile_aux_weight": 4.90,
+    "bad_aux_weight": 1.25,
+    "bad_aux_pos_weight": 6.10,
+    "bad_specificity_weight": 4.65,
+    "bad_specificity_margin": 1.02,
+    "selection_bad_stress_weight": 0.86,
+    "selection_stress_aug_bad_aux_pseudo_mix": 0.92,
+    "selection_stress_nonbad_hardneg_strength": 2.75,
+    "lr": 0.000024,
+    "seed": 20261571,
+}
+
+CANDIDATES["featurefirst_wavecomp_record111physio_guard_long_a050"] = {
+    **CANDIDATES["featurefirst_wavecomp_record111physio_guard_a050"],
+    # Same successful guard recipe, kept as a separate candidate so a longer
+    # run cannot overwrite the 2-epoch proof.  Lower LR slightly because epoch 2
+    # already reached very high synthetic/node accuracy.
+    "lr": 0.000016,
+    "classification_weight": 0.88,
+    "bad_specificity_weight": 5.45,
+    "selection_bad_stress_weight": 0.78,
+    "seed": 20261572,
+}
+
+CANDIDATES["featurefirst_wavecomp_record111physio_mildwide_a050"] = {
+    **CANDIDATES["featurefirst_wavecomp_record111physio_guard_a050"],
+    # Guard-long overfit the extreme synthetic stress slice and lost original
+    # record111 outlier recall.  This arm keeps the clean physio pseudo-targets
+    # but broadens the train/selection stress into milder record111 shells:
+    # baseline/contact drift, partial dropout, sparse reset, and low-amplitude
+    # spans.  The intent is to cover the recoverable bad-outlier morphology
+    # instead of only the synthetic worst-case events.
+    "aug_bad_aux_pseudo_mix": 0.66,
+    "bad_record111_motion_strength": 2.05,
+    "bad_record111_motion_prob": 0.62,
+    "bad_record111_burst_dropout_strength": 1.65,
+    "bad_record111_burst_dropout_prob": 0.54,
+    "bad_impulse_reset_strength": 1.20,
+    "bad_impulse_reset_prob": 0.42,
+    "bad_intermittent_contact_strength": 1.55,
+    "bad_intermittent_contact_prob": 0.66,
+    "bad_flatlowamp_shell_strength": 0.95,
+    "bad_flatlowamp_shell_prob": 0.62,
+    "bad_stress_shell_strength": 0.55,
+    "nonbad_hardneg_strength": 2.95,
+    "classification_weight": 0.86,
+    "class_weight": [1.12, 1.70, 3.00],
+    "bad_aux_weight": 0.98,
+    "bad_aux_pos_weight": 4.95,
+    "bad_specificity_weight": 5.60,
+    "bad_specificity_margin": 1.22,
+    "selection_bad_stress_weight": 0.82,
+    "selection_stress_aug_bad_aux_pseudo_mix": 0.76,
+    "selection_stress_bad_record111_motion_strength": 2.25,
+    "selection_stress_bad_record111_motion_prob": 0.96,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.85,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.90,
+    "selection_stress_bad_impulse_reset_strength": 1.42,
+    "selection_stress_bad_impulse_reset_prob": 0.84,
+    "selection_stress_bad_intermittent_contact_strength": 1.70,
+    "selection_stress_bad_intermittent_contact_prob": 0.92,
+    "selection_stress_bad_flatlowamp_shell_strength": 1.15,
+    "selection_stress_bad_flatlowamp_shell_prob": 1.00,
+    "selection_stress_nonbad_hardneg_strength": 3.10,
+    "lr": 0.000018,
+    "seed": 20261574,
+}
+
+CANDIDATES["featurefirst_wavecomp_record111physio_mildwide_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_wavecomp_record111physio_mildwide_a050"],
+    # Slightly more permissive bad endpoint for the mild/wide hypothesis.  This
+    # should improve bad_outlier only if the widened morphology is valid; reject
+    # on non-bad false-bad or medium collapse.
+    "aug_bad_aux_pseudo_mix": 0.74,
+    "class_weight": [1.08, 1.62, 3.32],
+    "bad_aux_weight": 1.14,
+    "bad_aux_pos_weight": 5.70,
+    "bad_specificity_weight": 4.95,
+    "bad_specificity_margin": 1.08,
+    "selection_bad_stress_weight": 0.88,
+    "selection_stress_aug_bad_aux_pseudo_mix": 0.84,
+    "lr": 0.000020,
+    "seed": 20261575,
+}
+
+CANDIDATES["featurefirst_wavecomp_record111physio_stressv4_a050"] = {
+    **CANDIDATES["featurefirst_wavecomp_record111physio_guard_a050"],
+    # Same target-aligned record111 recipe, but swap the primitive token bank
+    # toward low-frequency/baseline/contact statistics.  This tests whether the
+    # missing basSQI/baseline/qrs-band axes are a tokenizer problem.
+    "primitive_bank": "qrs_stress_v4",
+    "bad_record111_motion_strength": 2.35,
+    "bad_record111_motion_prob": 0.50,
+    "bad_flatlowamp_shell_strength": 0.92,
+    "bad_flatlowamp_shell_prob": 0.48,
+    "nonbad_hardneg_strength": 2.90,
+    "bad_specificity_weight": 5.50,
+    "selection_bad_stress_weight": 0.78,
+    "selection_stress_bad_record111_motion_strength": 2.80,
+    "selection_stress_bad_record111_motion_prob": 0.96,
+    "selection_stress_bad_flatlowamp_shell_strength": 1.25,
+    "selection_stress_bad_flatlowamp_shell_prob": 1.00,
+    "lr": 0.000020,
+    "seed": 20261576,
+}
+
+CANDIDATES["featurefirst_wavecomp_record111physio_stressv5_a050"] = {
+    **CANDIDATES["featurefirst_wavecomp_record111physio_stressv4_a050"],
+    # Richer sparse-event/contact bank.  Accept only if bad_outlier rises
+    # without the good/medium false-bad surge.
+    "primitive_bank": "qrs_stress_v5",
+    "bad_record111_motion_strength": 2.50,
+    "bad_record111_motion_prob": 0.56,
+    "bad_flatlowamp_shell_strength": 1.05,
+    "bad_flatlowamp_shell_prob": 0.54,
+    "class_weight": [1.10, 1.66, 3.12],
+    "bad_aux_weight": 1.08,
+    "bad_aux_pos_weight": 5.35,
+    "bad_specificity_weight": 5.35,
+    "selection_bad_stress_weight": 0.82,
+    "seed": 20261577,
+}
+
+CANDIDATES["featurefirst_wavecomp_record111physio_slowlr_a050"] = {
+    **CANDIDATES["featurefirst_wavecomp_record111physio_guard_a050"],
+    # Stability diagnostic for the best record111-physio recipe.  The 2-epoch
+    # guard model transferred best, while longer training overfit synthetic
+    # stress.  This arm lowers LR sharply and reduces stress selection pressure
+    # so feature recovery can mature without quickly committing to the stress
+    # shortcut.
+    "lr": 0.000004,
+    "aux_pretrain_epochs": 4,
+    "pretrain_classification_weight": 0.035,
+    "classification_weight": 0.78,
+    "aux_weight": 0.76,
+    "core_aux_weight": 1.30,
+    "hard_aux_weight": 5.20,
+    "critical_aux_weight": 8.20,
+    "quantile_aux_weight": 4.80,
+    "gm_pair_weight": 1.05,
+    "bad_aux_weight": 0.95,
+    "bad_aux_pos_weight": 4.80,
+    "bad_specificity_weight": 5.80,
+    "bad_specificity_margin": 1.24,
+    "selection_bad_stress_weight": 0.52,
+    "selection_stress_aug_bad_aux_pseudo_mix": 0.72,
+    "selection_stress_nonbad_hardneg_strength": 3.10,
+    "seed": 20261578,
+}
+
+CANDIDATES["featurefirst_wavecomp_record111physio_slowlr_stressguard_a050"] = {
+    **CANDIDATES["featurefirst_wavecomp_record111physio_guard_a050"],
+    # Same slow-LR hypothesis, but keeps stronger synthetic stress selection.
+    # This separates "LR instability" from "stress-score over-selection".
+    "lr": 0.000006,
+    "aux_pretrain_epochs": 3,
+    "pretrain_classification_weight": 0.045,
+    "classification_weight": 0.82,
+    "aux_weight": 0.72,
+    "core_aux_weight": 1.22,
+    "hard_aux_weight": 5.05,
+    "critical_aux_weight": 7.95,
+    "quantile_aux_weight": 4.65,
+    "gm_pair_weight": 1.10,
+    "bad_aux_weight": 1.00,
+    "bad_aux_pos_weight": 5.00,
+    "bad_specificity_weight": 5.65,
+    "bad_specificity_margin": 1.20,
+    "selection_bad_stress_weight": 0.74,
+    "selection_stress_aug_bad_aux_pseudo_mix": 0.80,
+    "seed": 20261579,
+}
+
+CANDIDATES["featurefirst_wavecomp_record111physio_slowlr_warm_a050"] = {
+    **CANDIDATES["featurefirst_wavecomp_record111physio_guard_a050"],
+    # More conservative warmup: emphasize waveform-computable SQI targets first,
+    # then let the class head catch up.  Reject if it recovers targets but loses
+    # original good/medium balance.
+    "lr": 0.000003,
+    "aux_pretrain_epochs": 5,
+    "pretrain_classification_weight": 0.018,
+    "pretrain_aux_weight": 1.90,
+    "pretrain_core_aux_weight": 3.10,
+    "pretrain_hard_aux_weight": 9.00,
+    "pretrain_critical_aux_weight": 15.20,
+    "pretrain_quantile_aux_weight": 10.40,
+    "classification_weight": 0.70,
+    "aux_weight": 0.84,
+    "core_aux_weight": 1.42,
+    "hard_aux_weight": 5.70,
+    "critical_aux_weight": 8.70,
+    "quantile_aux_weight": 5.20,
+    "gm_pair_weight": 0.98,
+    "bad_aux_weight": 0.90,
+    "bad_aux_pos_weight": 4.55,
+    "bad_specificity_weight": 6.05,
+    "bad_specificity_margin": 1.28,
+    "selection_bad_stress_weight": 0.46,
+    "selection_stress_aug_bad_aux_pseudo_mix": 0.70,
+    "selection_stress_nonbad_hardneg_strength": 3.18,
+    "seed": 20261580,
+}
+
+CANDIDATES["record111_primctx_goodprotect_a050"] = {
+    **CANDIDATES["featurefirst_wavecomp_record111physio_guard_a050"],
+    # Primitive-context follow-up for the hard original features.  The normal
+    # wavecomp guard transfers best, but learns basSQI/baseline/qrs-band poorly.
+    # This arm adds a waveform-derived qrs_stress_v5 context Transformer to both
+    # the auxiliary head and class head, while lowering medium/bad pressure so
+    # original good recall remains the primary guardrail.
+    "primitive_context_fusion": True,
+    "aux_primitive_context_fusion": True,
+    "primitive_context_bank": "qrs_stress_v5",
+    "primitive_context_chunk": 16,
+    "primitive_context_width": 56,
+    "primitive_context_layers": 1,
+    "primitive_context_heads": 4,
+    "primitive_context_hidden": 192,
+    "critical_aux_columns": RECORD111_PHYSIO_BAD_CRITICAL_COLUMNS
+    + WAVEFORM_HARD_TEACHER_COLUMNS
+    + [
+        "sqi_basSQI",
+        "sqi_basSQI",
+        "baseline_step",
+        "baseline_step",
+        "qrs_band_ratio",
+        "qrs_band_ratio",
+        "detector_agreement",
+        "detector_agreement",
+        "flatline_ratio",
+        "qrs_visibility",
+    ],
+    "quantile_aux_columns": [
+        "sqi_basSQI",
+        "baseline_step",
+        "qrs_band_ratio",
+        "detector_agreement",
+        "qrs_visibility",
+        "flatline_ratio",
+        "non_qrs_diff_p95",
+    ],
+    "quantile_aux_quantiles": [0.10, 0.25, 0.50, 0.75, 0.90],
+    "quantile_aux_sharpness": 3.00,
+    "aux_pretrain_epochs": 4,
+    "pretrain_classification_weight": 0.030,
+    "pretrain_aux_weight": 1.70,
+    "pretrain_core_aux_weight": 2.90,
+    "pretrain_hard_aux_weight": 11.80,
+    "pretrain_critical_aux_weight": 19.50,
+    "pretrain_quantile_aux_weight": 10.80,
+    "classification_weight": 0.84,
+    "aux_weight": 0.80,
+    "core_aux_weight": 1.40,
+    "hard_aux_weight": 6.10,
+    "critical_aux_weight": 9.10,
+    "quantile_aux_weight": 4.80,
+    "class_weight": [1.36, 1.46, 2.70],
+    "gm_pair_weight": 0.72,
+    "bad_aux_weight": 0.78,
+    "bad_aux_pos_weight": 4.10,
+    "bad_specificity_weight": 6.25,
+    "bad_specificity_margin": 1.30,
+    "selection_bad_stress_weight": 0.34,
+    "selection_stress_nonbad_hardneg_strength": 3.20,
+    "selection_stress_aug_bad_aux_pseudo_mix": 0.66,
+    "lr": 0.000007,
+    "seed": 20261642,
+}
+
+CANDIDATES["record111_wavecomp_warm_finetune_goodprotect_a050"] = {
+    **CANDIDATES["featurefirst_wavecomp_record111physio_slowlr_warm_a050"],
+    # The slow-warm arm learned qrs_band/flatline and kept original medium/bad
+    # relatively strong, but it lost too many original good rows.  Fine-tune the
+    # same waveform Transformer from that checkpoint with a good-protect class
+    # surface and much lower aux pressure.
+    "init_from_candidate": "featurefirst_wavecomp_record111physio_slowlr_warm_a050",
+    "init_skip_mismatch": True,
+    "aux_pretrain_epochs": 0,
+    "pretrain_classification_weight": 1.0,
+    "pretrain_aux_weight": 0.0,
+    "pretrain_core_aux_weight": 0.0,
+    "pretrain_hard_aux_weight": 0.0,
+    "pretrain_critical_aux_weight": 0.0,
+    "pretrain_quantile_aux_weight": 0.0,
+    "classification_weight": 1.18,
+    "aux_weight": 0.18,
+    "core_aux_weight": 0.22,
+    "hard_aux_weight": 0.90,
+    "critical_aux_weight": 1.20,
+    "quantile_aux_weight": 0.45,
+    "rank_weight": 0.08,
+    "class_weight": [1.64, 1.18, 2.68],
+    "gm_pair_weight": 0.18,
+    "bad_aux_weight": 0.64,
+    "bad_aux_pos_weight": 3.80,
+    "bad_specificity_weight": 6.55,
+    "bad_specificity_margin": 1.34,
+    "selection_bad_stress_weight": 0.36,
+    "selection_stress_nonbad_hardneg_strength": 3.20,
+    "lr": 0.000008,
+    "seed": 20261645,
+}
+
+CANDIDATES["record111_wavecomp_warm_finetune_balance_a050"] = {
+    **CANDIDATES["record111_wavecomp_warm_finetune_goodprotect_a050"],
+    # Slightly less aggressive good rescue.  This is the safer arm if the
+    # good-protect version simply flips medium rows into good.
+    "class_weight": [1.48, 1.34, 2.70],
+    "gm_pair_weight": 0.36,
+    "classification_weight": 1.08,
+    "aux_weight": 0.24,
+    "hard_aux_weight": 1.20,
+    "critical_aux_weight": 1.60,
+    "selection_bad_stress_weight": 0.42,
+    "lr": 0.000007,
+    "seed": 20261646,
+}
+
+CANDIDATES["record111_wavecomp_warm_stopgrad_balance_a050"] = {
+    **CANDIDATES["record111_wavecomp_warm_finetune_balance_a050"],
+    # Late-fusion control: let the classifier read predicted SQI/geometry, but
+    # stop class gradients from rewriting the auxiliary SQI recovery path.
+    # This tests whether warm-balance can preserve good without washing out the
+    # qrs/baseline features that slow-warm originally learned.
+    "detach_predicted_feature_fusion": True,
+    "classification_weight": 1.04,
+    "aux_weight": 0.34,
+    "core_aux_weight": 0.42,
+    "hard_aux_weight": 1.90,
+    "critical_aux_weight": 2.55,
+    "quantile_aux_weight": 0.95,
+    "class_weight": [1.42, 1.38, 2.76],
+    "gm_pair_weight": 0.42,
+    "selection_bad_stress_weight": 0.46,
+    "lr": 0.000005,
+    "seed": 20261647,
+}
+
+CANDIDATES["featurefirst_top20_dualcoreout_mediumshell_headlight_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # After the encoder-lite waveform-computable experiment, the safer path is
+    # to keep the dualcoreout representation fixed and expose the existing
+    # heads to a medium-specific high-baseline/low-QRS shell.  This targets
+    # original_test medium->good errors without rewriting the learned encoder.
+    "init_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "freeze_trainable_name_contains": [
+        "class_head",
+        "feature_class_head",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+    ],
+    "subject111_shift_strength": 1.42,
+    "subject111_good_shift_scale": 0.08,
+    "subject111_medium_shift_scale": 1.95,
+    "nonbad_hardneg_strength": 2.55,
+    "aug_aux_weight_nonbad": 0.72,
+    "selection_medium_stress_weight": 0.34,
+    "selection_medium_subject111_shift_strength": 1.44,
+    "selection_medium_subject111_good_shift_scale": 0.0,
+    "selection_medium_subject111_medium_shift_scale": 2.05,
+    "selection_medium_stress_nonbad_hardneg_strength": 1.05,
+    "selection_bad_stress_weight": 0.70,
+    "class_weight": [1.08, 1.86, 2.84],
+    "classification_weight": 0.86,
+    "bad_specificity_weight": 4.75,
+    "bad_specificity_margin": 1.10,
+    "lr": 0.000035,
+    "seed": 20261567,
+}
+
+CANDIDATES["featurefirst_top20_dualcoreout_mediumshell_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_dualcoreout_mediumshell_headlight_a050"],
+    # Slightly wider medium shell, but not the broad medium-only sweeps that
+    # previously collapsed good.
+    "subject111_shift_strength": 1.58,
+    "subject111_good_shift_scale": 0.14,
+    "subject111_medium_shift_scale": 2.18,
+    "selection_medium_subject111_shift_strength": 1.58,
+    "selection_medium_subject111_medium_shift_scale": 2.25,
+    "selection_medium_stress_weight": 0.42,
+    "class_weight": [1.12, 1.98, 2.76],
+    "classification_weight": 0.90,
+    "bad_specificity_weight": 4.65,
+    "selection_bad_stress_weight": 0.68,
+    "seed": 20261568,
+}
+
+CANDIDATES["featurefirst_top20_dualcoreout_mediumshell_goodguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_dualcoreout_mediumshell_headlight_a050"],
+    # Good guard for the same shell: if balanced eats good, this run tells us
+    # whether the medium-specific shell itself is useful.
+    "subject111_shift_strength": 1.34,
+    "subject111_good_shift_scale": 0.22,
+    "subject111_medium_shift_scale": 1.72,
+    "selection_medium_subject111_shift_strength": 1.36,
+    "selection_medium_subject111_medium_shift_scale": 1.82,
+    "selection_medium_stress_weight": 0.24,
+    "class_weight": [1.26, 1.68, 2.82],
+    "classification_weight": 0.84,
+    "bad_specificity_weight": 4.95,
+    "selection_bad_stress_weight": 0.72,
+    "seed": 20261569,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_tailfocus_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # Report-only original audit after dualcoreout found the shared misses in a
+    # high-PC2 / baseline / low-QRS shell.  This PTB-only candidate does not use
+    # Original rows; it upweights synthetic rows in the same teacher-target tail
+    # and uses a mild subject111-like waveform shift so the encoder cannot solve
+    # the task only from the easy SNR body.
+    "init_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_skip_mismatch": True,
+    "freeze_trainable_name_contains": [
+        "encoder.patch_proj",
+        "encoder.patch_stat_proj",
+        "encoder.scale_stat_proj",
+        "encoder.global_stat",
+        "encoder.sqi_queries",
+        "encoder.query_type_embed",
+        "encoder.encoder.layers.3",
+        "encoder.pool",
+        "project",
+        "aux_head",
+        "class_head",
+        "feature_class_head",
+        "gm_pair_head",
+    ],
+    "tail_focus_columns": [
+        "pc2",
+        "baseline_step",
+        "flatline_ratio",
+        "sqi_basSQI",
+        "qrs_band_ratio",
+        "qrs_visibility",
+        "detector_agreement",
+        "boundary_confidence",
+    ],
+    "tail_focus_directions": ["high", "high", "high", "low", "low", "low", "low", "low"],
+    "tail_focus_quantiles": [0.82, 0.82, 0.82, 0.82, 0.82, 0.78, 0.78, 0.72],
+    "tail_focus_min_hits": 2,
+    "tail_focus_weight": 3.20,
+    "tail_focus_labels": [0, 1, 2],
+    "classification_aux_weight_power": 0.55,
+    "subject111_shift_strength": 0.72,
+    "subject111_good_shift_scale": 0.16,
+    "subject111_medium_shift_scale": 1.24,
+    "nonbad_hardneg_strength": 1.18,
+    "aug_aux_weight_nonbad": 1.75,
+    "aux_pretrain_epochs": 1,
+    "pretrain_classification_weight": 0.18,
+    "pretrain_gm_pair_weight": 0.20,
+    "pretrain_core_aux_weight": 2.40,
+    "pretrain_hard_aux_weight": 5.20,
+    "pretrain_critical_aux_weight": 8.60,
+    "pretrain_quantile_aux_weight": 4.60,
+    "critical_aux_columns": [
+        "pc2",
+        "pc2",
+        "baseline_step",
+        "baseline_step",
+        "flatline_ratio",
+        "sqi_basSQI",
+        "qrs_band_ratio",
+        "qrs_visibility",
+        "detector_agreement",
+        "boundary_confidence",
+        "knn_label_purity",
+    ],
+    "quantile_aux_columns": [
+        "pc2",
+        "baseline_step",
+        "flatline_ratio",
+        "sqi_basSQI",
+        "qrs_band_ratio",
+        "qrs_visibility",
+        "detector_agreement",
+    ],
+    "quantile_aux_quantiles": [0.12, 0.25, 0.40, 0.60, 0.78, 0.90],
+    "quantile_aux_sharpness": 3.60,
+    "classification_weight": 0.94,
+    "gm_pair_weight": 1.22,
+    "aux_weight": 0.54,
+    "core_aux_weight": 0.96,
+    "hard_aux_weight": 3.20,
+    "critical_aux_weight": 5.60,
+    "quantile_aux_weight": 2.60,
+    "rank_weight": 0.26,
+    "bad_specificity_weight": 4.95,
+    "selection_bad_stress_weight": 0.76,
+    "selection_medium_stress_weight": 0.24,
+    "selection_medium_subject111_shift_strength": 0.88,
+    "selection_medium_subject111_good_shift_scale": 0.0,
+    "selection_medium_subject111_medium_shift_scale": 1.36,
+    "selection_medium_stress_nonbad_hardneg_strength": 0.84,
+    "lr": 0.000026,
+    "seed": 20261570,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_tailfocus_medium_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_tailfocus_balanced_a050"],
+    # Push the medium side of the same tail, but keep bad heads frozen.  Reject
+    # if it repeats the medium-shell pattern by losing too much bad/outlier.
+    "tail_focus_weight": 4.20,
+    "tail_focus_min_hits": 2,
+    "subject111_shift_strength": 0.86,
+    "subject111_good_shift_scale": 0.06,
+    "subject111_medium_shift_scale": 1.58,
+    "nonbad_hardneg_strength": 1.34,
+    "class_weight": [1.08, 1.86, 2.92],
+    "classification_weight": 0.98,
+    "gm_pair_weight": 1.46,
+    "classification_aux_weight_power": 0.65,
+    "critical_aux_weight": 6.20,
+    "quantile_aux_weight": 2.90,
+    "selection_medium_stress_weight": 0.34,
+    "selection_medium_subject111_shift_strength": 1.08,
+    "selection_medium_subject111_medium_shift_scale": 1.62,
+    "bad_specificity_weight": 4.85,
+    "selection_bad_stress_weight": 0.72,
+    "seed": 20261571,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_tailfocus_goodguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_tailfocus_balanced_a050"],
+    # Same tail attention, but less medium pressure.  This tests whether tail
+    # feature learning itself helps without trading away the good shell.
+    "tail_focus_weight": 2.80,
+    "subject111_shift_strength": 0.58,
+    "subject111_good_shift_scale": 0.22,
+    "subject111_medium_shift_scale": 1.08,
+    "nonbad_hardneg_strength": 1.00,
+    "class_weight": [1.22, 1.58, 2.92],
+    "classification_weight": 0.90,
+    "gm_pair_weight": 1.08,
+    "classification_aux_weight_power": 0.50,
+    "critical_aux_weight": 5.20,
+    "quantile_aux_weight": 2.30,
+    "selection_medium_stress_weight": 0.18,
+    "bad_specificity_weight": 5.15,
+    "selection_bad_stress_weight": 0.78,
+    "seed": 20261572,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_auxphysio_conservative_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # Capacity and endpoint audits now point at a record-111 low-QRS/high-LF
+    # shell.  Keep the current best waveform encoder and GM/bad surface mostly
+    # fixed, but give the auxiliary feature recovery head waveform-computable
+    # physiology/SQI tokens.  These tokens are computed from the waveform at
+    # inference time; the 47-column table remains a training target only.
+    "init_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_skip_mismatch": True,
+    "aux_physio_context_fusion": True,
+    "physio_context_fusion": False,
+    "physio_context_width": 72,
+    "physio_context_layers": 2,
+    "physio_context_heads": 4,
+    "physio_context_hidden": 256,
+    "physio_context_artifact_count": 20,
+    "physio_context_artifact_window": 181,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "physio_context_encoder",
+        "physio_context_project",
+        "aux_head",
+        "class_head",
+        "feature_class_head",
+        "bad_head",
+        "artifact_bad_head",
+        "artifact_veto_head",
+    ],
+    "wide_aux_head": True,
+    "aux_hidden": 320,
+    "critical_aux_columns": TOP20_INTERPRETABLE_FEATURE_COLUMNS
+    + [
+        "qrs_visibility",
+        "qrs_visibility",
+        "qrs_visibility",
+        "detector_agreement",
+        "detector_agreement",
+        "baseline_step",
+        "baseline_step",
+        "flatline_ratio",
+        "flatline_ratio",
+        "sqi_basSQI",
+        "sqi_basSQI",
+        "pc2",
+        "pc2",
+        "pc3",
+        "boundary_confidence",
+        "knn_label_purity",
+    ],
+    "quantile_aux_columns": [
+        "pc2",
+        "baseline_step",
+        "flatline_ratio",
+        "sqi_basSQI",
+        "qrs_visibility",
+        "detector_agreement",
+        "qrs_band_ratio",
+        "lf_ratio",
+        "diff_abs_p95",
+    ],
+    "quantile_aux_quantiles": [0.08, 0.16, 0.28, 0.42, 0.58, 0.72, 0.86, 0.94],
+    "quantile_aux_sharpness": 4.20,
+    "aux_pretrain_epochs": 3,
+    "pretrain_classification_weight": 0.04,
+    "pretrain_aux_weight": 1.18,
+    "pretrain_core_aux_weight": 2.20,
+    "pretrain_hard_aux_weight": 8.20,
+    "pretrain_top14_aux_weight": 5.40,
+    "pretrain_critical_aux_weight": 14.50,
+    "pretrain_quantile_aux_weight": 5.40,
+    "pretrain_rank_weight": 1.00,
+    "classification_weight": 0.56,
+    "aux_weight": 0.42,
+    "core_aux_weight": 0.72,
+    "hard_aux_weight": 3.80,
+    "top14_aux_weight": 1.90,
+    "critical_aux_weight": 6.20,
+    "quantile_aux_weight": 2.20,
+    "rank_weight": 0.14,
+    "class_weight": [1.12, 1.62, 3.02],
+    "subject111_shift_strength": 0.72,
+    "subject111_good_shift_scale": 0.26,
+    "subject111_medium_shift_scale": 1.14,
+    "bad_flatlowamp_shell_strength": 0.70,
+    "bad_flatlowamp_shell_prob": 0.22,
+    "bad_record111_burst_dropout_strength": 0.95,
+    "bad_record111_burst_dropout_prob": 0.16,
+    "nonbad_hardneg_strength": 2.20,
+    "bad_logit_mix": 6.20,
+    "bad_residual_cap": 4.10,
+    "bad_artifact_floor": 0.36,
+    "bad_artifact_power": 0.86,
+    "bad_core_logit_mix": 1.55,
+    "bad_core_residual_cap": 1.85,
+    "bad_core_floor": 0.40,
+    "bad_aux_weight": 0.86,
+    "bad_aux_pos_weight": 4.70,
+    "bad_specificity_weight": 5.70,
+    "bad_specificity_margin": 1.26,
+    "selection_bad_stress_weight": 0.62,
+    "selection_medium_stress_weight": 0.18,
+    "selection_stress_nonbad_hardneg_strength": 2.50,
+    "selection_subject111_shift_strength": 0.78,
+    "selection_subject111_good_shift_scale": 0.24,
+    "selection_subject111_medium_shift_scale": 1.18,
+    "selection_stress_bad_flatlowamp_shell_strength": 1.12,
+    "selection_stress_bad_flatlowamp_shell_prob": 0.85,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.30,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.72,
+    "lr": 0.000030,
+    "seed": 20261573,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_auxphysio_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_auxphysio_conservative_a050"],
+    # More class pressure once the physio-token auxiliary path has learned the
+    # low-QRS/baseline shell.  Reject if original-test medium false-bad rises.
+    "pretrain_classification_weight": 0.06,
+    "classification_weight": 0.72,
+    "critical_aux_weight": 5.50,
+    "quantile_aux_weight": 1.90,
+    "class_weight": [1.10, 1.68, 3.12],
+    "subject111_shift_strength": 0.86,
+    "bad_flatlowamp_shell_strength": 0.88,
+    "bad_flatlowamp_shell_prob": 0.28,
+    "bad_record111_burst_dropout_strength": 1.12,
+    "bad_record111_burst_dropout_prob": 0.20,
+    "nonbad_hardneg_strength": 2.45,
+    "bad_logit_mix": 6.55,
+    "bad_residual_cap": 4.30,
+    "bad_aux_weight": 0.98,
+    "bad_aux_pos_weight": 5.20,
+    "bad_specificity_weight": 5.20,
+    "bad_specificity_margin": 1.14,
+    "selection_bad_stress_weight": 0.70,
+    "lr": 0.000034,
+    "seed": 20261574,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_auxphysio_badguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_auxphysio_conservative_a050"],
+    # Stronger non-bad guard.  This tests whether the physio-token feature path
+    # can improve hard-feature recovery without opening the bad residual.
+    "classification_weight": 0.66,
+    "class_weight": [1.18, 1.72, 2.80],
+    "bad_logit_mix": 5.80,
+    "bad_residual_cap": 3.85,
+    "bad_aux_weight": 0.72,
+    "bad_aux_pos_weight": 3.80,
+    "bad_specificity_weight": 6.60,
+    "bad_specificity_margin": 1.42,
+    "selection_bad_stress_weight": 0.52,
+    "selection_stress_nonbad_hardneg_strength": 2.85,
+    "lr": 0.000028,
+    "seed": 20261575,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_physioctx_direct_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_auxphysio_conservative_a050"],
+    # Follow-up from the auxphysio failure: aux-only physio tokens learned the
+    # synthetic teacher surface but did not transfer to BUT.  Here the same
+    # waveform-derived PhysioSQI context is visible to the class/GM/bad heads.
+    # The sidecar features remain teacher-only; inference still consumes only
+    # waveform-derived tokens.
+    "physio_context_fusion": True,
+    "aux_physio_context_fusion": True,
+    "predicted_feature_fusion": "configured",
+    "predicted_feature_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "feature_teacher_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "critical_aux_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS
+    + WAVEFORM_HARD_TEACHER_COLUMNS
+    + [
+        "qrs_visibility",
+        "qrs_visibility",
+        "detector_agreement",
+        "detector_agreement",
+        "baseline_step",
+        "baseline_step",
+        "sqi_basSQI",
+        "flatline_ratio",
+        "non_qrs_diff_p95",
+    ],
+    "quantile_aux_columns": [
+        "qrs_visibility",
+        "detector_agreement",
+        "baseline_step",
+        "sqi_basSQI",
+        "flatline_ratio",
+        "low_amp_ratio",
+        "qrs_band_ratio",
+        "template_corr",
+        "non_qrs_diff_p95",
+        "band_15_30",
+        "band_30_45",
+    ],
+    "quantile_aux_quantiles": [0.10, 0.20, 0.35, 0.50, 0.65, 0.80, 0.90],
+    "aux_pretrain_epochs": 1,
+    "pretrain_classification_weight": 0.12,
+    "pretrain_aux_weight": 1.05,
+    "pretrain_core_aux_weight": 1.70,
+    "pretrain_hard_aux_weight": 7.80,
+    "pretrain_top14_aux_weight": 0.00,
+    "pretrain_critical_aux_weight": 12.50,
+    "pretrain_quantile_aux_weight": 4.60,
+    "classification_weight": 0.86,
+    "aux_weight": 0.34,
+    "core_aux_weight": 0.58,
+    "hard_aux_weight": 3.20,
+    "top14_aux_weight": 0.00,
+    "critical_aux_weight": 5.60,
+    "quantile_aux_weight": 1.95,
+    "class_weight": [1.12, 1.68, 2.95],
+    "gm_pair_weight": 1.18,
+    "bad_logit_mix": 6.35,
+    "bad_residual_cap": 4.15,
+    "bad_artifact_floor": 0.36,
+    "bad_artifact_power": 0.82,
+    "bad_core_logit_mix": 1.35,
+    "bad_core_residual_cap": 1.70,
+    "bad_core_floor": 0.42,
+    "bad_aux_weight": 0.88,
+    "bad_aux_pos_weight": 4.60,
+    "bad_specificity_weight": 5.35,
+    "bad_specificity_margin": 1.20,
+    "selection_bad_stress_weight": 0.62,
+    "selection_medium_stress_weight": 0.18,
+    "lr": 0.000026,
+    "seed": 20261576,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_physioctx_direct_goodguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_physioctx_direct_balanced_a050"],
+    # Specificity arm: preserve good/medium if direct physio tokens mainly open
+    # a bad residual.  Useful only if hard-feature recovery improves without
+    # spending non-bad precision.
+    "classification_weight": 0.92,
+    "class_weight": [1.22, 1.74, 2.62],
+    "gm_pair_weight": 1.34,
+    "bad_logit_mix": 5.75,
+    "bad_residual_cap": 3.75,
+    "bad_core_logit_mix": 1.12,
+    "bad_aux_weight": 0.68,
+    "bad_aux_pos_weight": 3.65,
+    "bad_specificity_weight": 6.35,
+    "bad_specificity_margin": 1.38,
+    "selection_bad_stress_weight": 0.48,
+    "lr": 0.000024,
+    "seed": 20261577,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_physioctx_direct_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_physioctx_direct_balanced_a050"],
+    # Recall arm: only modestly wider than balanced, because earlier bad-stress
+    # endpoints bought recall by eating coherent medium/good rows.
+    "classification_weight": 0.80,
+    "class_weight": [1.08, 1.60, 3.25],
+    "gm_pair_weight": 1.04,
+    "bad_logit_mix": 6.90,
+    "bad_residual_cap": 4.45,
+    "bad_artifact_floor": 0.34,
+    "bad_artifact_power": 0.74,
+    "bad_core_logit_mix": 1.70,
+    "bad_core_residual_cap": 2.00,
+    "bad_aux_weight": 1.05,
+    "bad_aux_pos_weight": 5.35,
+    "bad_specificity_weight": 4.65,
+    "bad_specificity_margin": 1.04,
+    "selection_bad_stress_weight": 0.74,
+    "lr": 0.000028,
+    "seed": 20261578,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_flatbadaddon_guard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # Direct-physio improved synthetic balance but did not beat the current
+    # original-test frontier.  This is narrower: keep the current GM surface and
+    # train only the waveform-local bad/artifact add-on for record111-style
+    # low-QRS, low-band/detail, baseline/contact bad outliers.
+    "init_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_skip_mismatch": True,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+    ],
+    "artifact_bad_only": True,
+    "artifact_bad_count": 18,
+    "artifact_bad_window": 181,
+    "artifact_bad_width": 72,
+    "artifact_bad_layers": 1,
+    "artifact_bad_heads": 4,
+    "artifact_bad_mix": 0.72,
+    "artifact_bad_bias_init": -1.12,
+    "artifact_veto_mix": 0.34,
+    "artifact_veto_bias_init": 0.42,
+    "artifact_veto_weight": 1.42,
+    "artifact_veto_pos_weight": 0.76,
+    "artifact_event_local_weight": 1.10,
+    "pretrain_artifact_event_local_weight": 0.28,
+    "artifact_event_pos_weight": [1.55, 1.95, 1.60, 1.25, 1.50],
+    "artifact_event_bad_boost": 1.55,
+    "aux_pretrain_epochs": 0,
+    "classification_weight": 0.72,
+    "gm_pair_weight": 0.00,
+    "aux_weight": 0.00,
+    "core_aux_weight": 0.00,
+    "hard_aux_weight": 0.00,
+    "top14_aux_weight": 0.00,
+    "critical_aux_weight": 0.00,
+    "rank_weight": 0.00,
+    "supcon_weight": 0.00,
+    "recon_weight": 0.00,
+    "bad_logit_mix": 6.35,
+    "bad_residual_cap": 4.05,
+    "bad_artifact_floor": 0.37,
+    "bad_artifact_power": 0.84,
+    "bad_core_logit_mix": 1.55,
+    "bad_core_residual_cap": 1.85,
+    "bad_core_floor": 0.40,
+    "bad_aux_weight": 0.84,
+    "bad_aux_pos_weight": 4.50,
+    "bad_specificity_weight": 6.15,
+    "bad_specificity_margin": 1.32,
+    "bad_flatlowamp_shell_strength": 1.35,
+    "bad_flatlowamp_shell_prob": 0.42,
+    "bad_record111_burst_dropout_strength": 1.58,
+    "bad_record111_burst_dropout_prob": 0.26,
+    "bad_impulse_reset_strength": 1.34,
+    "bad_impulse_reset_prob": 0.20,
+    "bad_intermittent_contact_strength": 1.46,
+    "bad_intermittent_contact_prob": 0.46,
+    "nonbad_hardneg_strength": 3.20,
+    "subject111_shift_strength": 0.92,
+    "subject111_good_shift_scale": 0.16,
+    "subject111_medium_shift_scale": 1.12,
+    "selection_bad_stress_weight": 0.58,
+    "selection_stress_nonbad_hardneg_strength": 3.35,
+    "selection_stress_bad_flatlowamp_shell_strength": 1.75,
+    "selection_stress_bad_flatlowamp_shell_prob": 0.95,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.85,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.86,
+    "selection_stress_bad_impulse_reset_strength": 1.55,
+    "selection_stress_bad_impulse_reset_prob": 0.68,
+    "selection_subject111_shift_strength": 0.98,
+    "lr": 0.000030,
+    "seed": 20261579,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_flatbadaddon_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_flatbadaddon_guard_a050"],
+    # Slightly more permissive bad-outlier add-on.  Reject if good/medium
+    # specificity falls faster than bad_outlier_stress rises.
+    "artifact_bad_mix": 0.84,
+    "artifact_veto_mix": 0.26,
+    "artifact_veto_weight": 1.16,
+    "bad_logit_mix": 6.95,
+    "bad_residual_cap": 4.45,
+    "bad_artifact_floor": 0.34,
+    "bad_artifact_power": 0.76,
+    "bad_aux_weight": 1.00,
+    "bad_aux_pos_weight": 5.20,
+    "bad_specificity_weight": 5.25,
+    "bad_specificity_margin": 1.12,
+    "bad_flatlowamp_shell_strength": 1.70,
+    "bad_flatlowamp_shell_prob": 0.55,
+    "bad_record111_burst_dropout_strength": 1.86,
+    "bad_record111_burst_dropout_prob": 0.34,
+    "bad_intermittent_contact_strength": 1.68,
+    "bad_intermittent_contact_prob": 0.56,
+    "nonbad_hardneg_strength": 2.85,
+    "selection_bad_stress_weight": 0.70,
+    "selection_stress_nonbad_hardneg_strength": 3.05,
+    "selection_stress_bad_flatlowamp_shell_strength": 2.10,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.15,
+    "lr": 0.000034,
+    "seed": 20261580,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_flatbadaddon_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_flatbadaddon_guard_a050"],
+    # Recall endpoint for the isolated add-on.  This deliberately keeps the main
+    # classifier frozen; if it fails, the missing bad signal is not recoverable
+    # by this local artifact module alone.
+    "artifact_bad_mix": 0.96,
+    "artifact_veto_mix": 0.18,
+    "artifact_veto_weight": 0.92,
+    "bad_logit_mix": 7.45,
+    "bad_residual_cap": 4.85,
+    "bad_artifact_floor": 0.31,
+    "bad_artifact_power": 0.68,
+    "bad_core_logit_mix": 1.85,
+    "bad_aux_weight": 1.18,
+    "bad_aux_pos_weight": 6.10,
+    "bad_specificity_weight": 4.45,
+    "bad_specificity_margin": 0.98,
+    "bad_flatlowamp_shell_strength": 2.05,
+    "bad_flatlowamp_shell_prob": 0.68,
+    "bad_record111_burst_dropout_strength": 2.18,
+    "bad_record111_burst_dropout_prob": 0.44,
+    "bad_impulse_reset_strength": 1.62,
+    "bad_impulse_reset_prob": 0.28,
+    "bad_intermittent_contact_strength": 1.95,
+    "bad_intermittent_contact_prob": 0.66,
+    "nonbad_hardneg_strength": 2.60,
+    "selection_bad_stress_weight": 0.82,
+    "selection_stress_nonbad_hardneg_strength": 2.82,
+    "selection_stress_bad_flatlowamp_shell_strength": 2.45,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.48,
+    "lr": 0.000038,
+    "seed": 20261581,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_v5badbranch_guard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # Keep the current best good/medium class surface intact and add only a
+    # qrs_stress_v5 primitive branch to the bad residual route.  This targets
+    # original bad-outlier stress rows that look like low-dynamic contact loss:
+    # flat/contact/low-amplitude windows with baseline movement, not high-noise
+    # bursts.  The normal class head input stays unchanged.
+    "init_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_skip_mismatch": True,
+    "primitive_bad_bank": "qrs_stress_v5",
+    "primitive_bad_mix": 0.42,
+    "primitive_threshold_fusion": False,
+    "freeze_trainable_name_contains": [
+        "primitive_bad_branch",
+        "primitive_bad_head",
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+    ],
+    "bad_flatlowamp_shell_strength": 1.05,
+    "bad_flatlowamp_shell_prob": 0.40,
+    "bad_record111_burst_dropout_strength": 0.92,
+    "bad_record111_burst_dropout_prob": 0.14,
+    "bad_record111_motion_strength": 0.0,
+    "nonbad_hardneg_strength": 3.35,
+    "selection_stress_nonbad_hardneg_strength": 3.55,
+    "selection_stress_bad_flatlowamp_shell_strength": 1.55,
+    "selection_stress_bad_flatlowamp_shell_prob": 1.00,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.18,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.72,
+    "bad_logit_mix": 6.65,
+    "bad_residual_cap": 4.35,
+    "bad_artifact_floor": 0.36,
+    "bad_artifact_power": 0.78,
+    "bad_core_logit_mix": 1.95,
+    "bad_core_residual_cap": 2.20,
+    "bad_core_floor": 0.35,
+    "bad_core_power": 0.86,
+    "bad_aux_weight": 0.96,
+    "bad_aux_pos_weight": 5.10,
+    "bad_specificity_weight": 5.45,
+    "bad_specificity_margin": 1.18,
+    "selection_bad_stress_weight": 0.66,
+    "selection_stress_precision_weight": 0.18,
+    "report_original_each_epoch": True,
+    "classification_weight": 0.70,
+    "lr": 0.000026,
+    "seed": 20261582,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_v5badbranch_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_v5badbranch_guard_a050"],
+    "primitive_bad_mix": 0.58,
+    "bad_flatlowamp_shell_strength": 1.38,
+    "bad_flatlowamp_shell_prob": 0.52,
+    "selection_stress_bad_flatlowamp_shell_strength": 1.95,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.38,
+    "bad_logit_mix": 7.05,
+    "bad_residual_cap": 4.55,
+    "bad_artifact_floor": 0.34,
+    "bad_artifact_power": 0.72,
+    "bad_core_logit_mix": 2.15,
+    "bad_core_residual_cap": 2.35,
+    "bad_specificity_weight": 4.90,
+    "bad_specificity_margin": 1.05,
+    "selection_bad_stress_weight": 0.74,
+    "selection_stress_precision_weight": 0.12,
+    "lr": 0.000030,
+    "seed": 20261583,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_v5badbranch_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_v5badbranch_guard_a050"],
+    "primitive_bad_mix": 0.76,
+    "bad_flatlowamp_shell_strength": 1.72,
+    "bad_flatlowamp_shell_prob": 0.64,
+    "selection_stress_bad_flatlowamp_shell_strength": 2.35,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.62,
+    "bad_logit_mix": 7.55,
+    "bad_residual_cap": 4.95,
+    "bad_artifact_floor": 0.30,
+    "bad_artifact_power": 0.66,
+    "bad_core_logit_mix": 2.35,
+    "bad_core_residual_cap": 2.55,
+    "bad_specificity_weight": 4.35,
+    "bad_specificity_margin": 0.94,
+    "selection_bad_stress_weight": 0.84,
+    "selection_stress_precision_weight": 0.06,
+    "lr": 0.000034,
+    "seed": 20261584,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_v5badbranch_preserveartifact_guard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_v5badbranch_guard_a050"],
+    # The first v5badbranch run learned the new primitive route but damaged the
+    # existing artifact bad evidence that caught about half of original
+    # bad-outlier stress rows.  This endpoint freezes artifact/class paths and
+    # trains only the new qrs_stress_v5 primitive bad add-on.
+    "freeze_trainable_name_contains": [
+        "primitive_bad_branch",
+        "primitive_bad_head",
+    ],
+    "primitive_bad_mix": 0.22,
+    "bad_logit_mix": 6.45,
+    "bad_residual_cap": 4.25,
+    "bad_core_logit_mix": 1.85,
+    "bad_core_residual_cap": 2.05,
+    "bad_specificity_weight": 6.45,
+    "bad_specificity_margin": 1.28,
+    "selection_bad_stress_weight": 0.58,
+    "selection_stress_precision_weight": 0.28,
+    "lr": 0.000042,
+    "seed": 20261585,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_v5badbranch_preserveartifact_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_v5badbranch_preserveartifact_guard_a050"],
+    "primitive_bad_mix": 0.36,
+    "bad_flatlowamp_shell_strength": 1.32,
+    "bad_flatlowamp_shell_prob": 0.50,
+    "selection_stress_bad_flatlowamp_shell_strength": 1.85,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.34,
+    "bad_logit_mix": 6.85,
+    "bad_residual_cap": 4.45,
+    "bad_core_logit_mix": 2.05,
+    "bad_core_residual_cap": 2.25,
+    "bad_specificity_weight": 5.55,
+    "bad_specificity_margin": 1.12,
+    "selection_bad_stress_weight": 0.68,
+    "selection_stress_precision_weight": 0.18,
+    "lr": 0.000046,
+    "seed": 20261586,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_v5badbranch_preserveartifact_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_v5badbranch_preserveartifact_guard_a050"],
+    "primitive_bad_mix": 0.50,
+    "bad_flatlowamp_shell_strength": 1.62,
+    "bad_flatlowamp_shell_prob": 0.62,
+    "selection_stress_bad_flatlowamp_shell_strength": 2.20,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.55,
+    "bad_logit_mix": 7.25,
+    "bad_residual_cap": 4.75,
+    "bad_core_logit_mix": 2.25,
+    "bad_core_residual_cap": 2.45,
+    "bad_specificity_weight": 4.85,
+    "bad_specificity_margin": 1.00,
+    "selection_bad_stress_weight": 0.78,
+    "selection_stress_precision_weight": 0.10,
+    "lr": 0.000050,
+    "seed": 20261587,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_badfeat_current_guard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # Current-best-preserving test: do not rewrite the good/medium surface.
+    # Let a tiny bad head read only internally predicted waveform-computable
+    # hard SQI axes, then add that evidence through the existing capped bad
+    # residual route.  Sidecar SQI/geometry columns remain teacher targets only.
+    "init_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_skip_mismatch": True,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "bad_feature_head",
+        "bad_head",
+        "artifact_bad_head",
+        "artifact_veto_head",
+    ],
+    "bad_feature_head_columns": QRSBASE_BAD_FEATURE_HEAD_COLUMNS,
+    "bad_feature_mix": 0.24,
+    "bad_feature_bias_init": -1.34,
+    "aux_pretrain_epochs": 0,
+    "classification_weight": 0.74,
+    "gm_pair_weight": 0.00,
+    "aux_weight": 0.00,
+    "core_aux_weight": 0.00,
+    "hard_aux_weight": 0.00,
+    "top14_aux_weight": 0.00,
+    "critical_aux_weight": 0.00,
+    "rank_weight": 0.00,
+    "supcon_weight": 0.00,
+    "recon_weight": 0.00,
+    "bad_logit_mix": 7.05,
+    "bad_residual_cap": 4.55,
+    "bad_artifact_floor": 0.35,
+    "bad_artifact_power": 0.76,
+    "bad_artifact_veto_threshold": 0.76,
+    "bad_artifact_veto_temperature": 0.11,
+    "bad_core_logit_mix": 1.85,
+    "bad_core_residual_cap": 2.10,
+    "bad_core_floor": 0.38,
+    "bad_core_power": 0.92,
+    "bad_aux_weight": 0.78,
+    "bad_aux_pos_weight": 4.20,
+    "bad_specificity_weight": 5.35,
+    "bad_specificity_margin": 1.14,
+    "bad_flatlowamp_shell_strength": 1.45,
+    "bad_flatlowamp_shell_prob": 0.46,
+    "bad_record111_burst_dropout_strength": 1.64,
+    "bad_record111_burst_dropout_prob": 0.30,
+    "bad_intermittent_contact_strength": 1.54,
+    "bad_intermittent_contact_prob": 0.48,
+    "nonbad_hardneg_strength": 3.25,
+    "subject111_shift_strength": 0.62,
+    "subject111_good_shift_scale": 0.08,
+    "subject111_medium_shift_scale": 1.02,
+    "selection_bad_stress_weight": 0.66,
+    "selection_stress_nonbad_hardneg_strength": 3.45,
+    "selection_stress_bad_flatlowamp_shell_strength": 1.95,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.05,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.90,
+    "selection_subject111_shift_strength": 0.74,
+    "selection_stress_precision_weight": 0.16,
+    "lr": 0.000044,
+    "seed": 20261588,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_badfeat_current_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_badfeat_current_guard_a050"],
+    "bad_feature_mix": 0.38,
+    "bad_feature_bias_init": -1.22,
+    "bad_logit_mix": 7.22,
+    "bad_residual_cap": 4.70,
+    "bad_artifact_floor": 0.34,
+    "bad_core_logit_mix": 2.05,
+    "bad_core_residual_cap": 2.30,
+    "bad_specificity_weight": 4.95,
+    "bad_specificity_margin": 1.04,
+    "bad_flatlowamp_shell_strength": 1.70,
+    "bad_flatlowamp_shell_prob": 0.56,
+    "bad_record111_burst_dropout_strength": 1.92,
+    "bad_record111_burst_dropout_prob": 0.40,
+    "bad_intermittent_contact_strength": 1.76,
+    "bad_intermittent_contact_prob": 0.58,
+    "nonbad_hardneg_strength": 3.00,
+    "selection_bad_stress_weight": 0.74,
+    "selection_stress_nonbad_hardneg_strength": 3.20,
+    "selection_stress_bad_flatlowamp_shell_strength": 2.20,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.34,
+    "selection_stress_precision_weight": 0.10,
+    "lr": 0.000050,
+    "seed": 20261589,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_badfeat_current_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_badfeat_current_guard_a050"],
+    "bad_feature_mix": 0.56,
+    "bad_feature_bias_init": -1.10,
+    "bad_logit_mix": 7.45,
+    "bad_residual_cap": 4.95,
+    "bad_artifact_floor": 0.32,
+    "bad_artifact_power": 0.70,
+    "bad_artifact_veto_threshold": 0.82,
+    "bad_core_logit_mix": 2.30,
+    "bad_core_residual_cap": 2.55,
+    "bad_specificity_weight": 4.45,
+    "bad_specificity_margin": 0.94,
+    "bad_flatlowamp_shell_strength": 2.05,
+    "bad_flatlowamp_shell_prob": 0.68,
+    "bad_record111_burst_dropout_strength": 2.20,
+    "bad_record111_burst_dropout_prob": 0.50,
+    "bad_intermittent_contact_strength": 2.00,
+    "bad_intermittent_contact_prob": 0.68,
+    "nonbad_hardneg_strength": 2.75,
+    "selection_bad_stress_weight": 0.84,
+    "selection_stress_nonbad_hardneg_strength": 2.95,
+    "selection_stress_bad_flatlowamp_shell_strength": 2.55,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.62,
+    "selection_stress_precision_weight": 0.06,
+    "lr": 0.000056,
+    "seed": 20261590,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_eventcontract_guard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_badfeat_current_guard_a050"],
+    # Current-best-preserving event-map contract: keep the shared GM/class
+    # surface frozen, but let the isolated bad expert learn deterministic
+    # waveform event targets (flat/dropout, baseline jump, impulse, detail
+    # burst, reset/asym). This tests whether bad-stress misses are local-event
+    # recovery failures rather than another scalar-SQI regression failure.
+    "freeze_trainable_name_contains": [
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_feature_head",
+        "bad_head",
+    ],
+    "bad_feature_mix": 0.30,
+    "bad_feature_bias_init": -1.28,
+    "artifact_event_local_weight": 1.05,
+    "pretrain_artifact_event_local_weight": 0.00,
+    "artifact_event_pos_weight": [1.70, 2.25, 1.70, 1.35, 1.70],
+    "artifact_event_bad_boost": 1.35,
+    "bad_logit_mix": 7.15,
+    "bad_residual_cap": 4.70,
+    "bad_artifact_floor": 0.34,
+    "bad_artifact_power": 0.74,
+    "bad_artifact_veto_threshold": 0.78,
+    "bad_core_logit_mix": 1.95,
+    "bad_core_residual_cap": 2.18,
+    "bad_aux_weight": 0.82,
+    "bad_aux_pos_weight": 4.35,
+    "bad_specificity_weight": 5.40,
+    "bad_specificity_margin": 1.16,
+    "selection_bad_stress_weight": 0.76,
+    "selection_stress_precision_weight": 0.18,
+    "lr": 0.000040,
+    "seed": 20261591,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_eventcontract_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_dualcoreout_eventcontract_guard_a050"],
+    # Recall endpoint: slightly more bad-event pressure and residual room. Reject
+    # if it repeats the known false-bad collapse on medium boundary rows.
+    "bad_feature_mix": 0.44,
+    "bad_feature_bias_init": -1.18,
+    "artifact_event_local_weight": 1.28,
+    "artifact_event_pos_weight": [1.85, 2.55, 1.90, 1.45, 1.90],
+    "artifact_event_bad_boost": 1.75,
+    "bad_logit_mix": 7.38,
+    "bad_residual_cap": 4.92,
+    "bad_artifact_floor": 0.32,
+    "bad_artifact_power": 0.70,
+    "bad_artifact_veto_threshold": 0.82,
+    "bad_core_logit_mix": 2.18,
+    "bad_core_residual_cap": 2.42,
+    "bad_aux_weight": 0.94,
+    "bad_aux_pos_weight": 4.80,
+    "bad_specificity_weight": 4.70,
+    "bad_specificity_margin": 1.02,
+    "selection_bad_stress_weight": 0.86,
+    "selection_stress_precision_weight": 0.10,
+    "lr": 0.000046,
+    "seed": 20261592,
+}
+
+CANDIDATES["featurefirst_quality20_currentbest_headreset_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # Current-best representation plus a cleaner ECG-quality feature surface.
+    # The old top20 fusion omitted template_corr / qrs_band_ratio / sqi_basSQI /
+    # detector_agreement, which are exactly the axes that separate the broad
+    # original good/medium and bad-stress mistakes.  Keep the encoder and
+    # artifact-bad expert; reset the fusion/class heads so same-shaped weights
+    # from the old top20 are not applied to different feature semantics.
+    "init_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_skip_mismatch": True,
+    "reset_on_init_name_contains": [
+        "class_head",
+        "feature_class_head",
+        "feature_gate_head",
+    ],
+    "freeze_trainable_name_contains": [
+        "aux_head",
+        "class_head",
+        "feature_class_head",
+        "feature_gate_head",
+        "artifact_bad_head",
+        "artifact_veto_head",
+    ],
+    "predicted_feature_fusion": "configured",
+    "predicted_feature_columns": QUALITY20_WAVEFORM_FACT_COLUMNS,
+    "critical_aux_columns": QUALITY20_WAVEFORM_FACT_COLUMNS
+    + [
+        "template_corr",
+        "template_corr",
+        "detector_agreement",
+        "qrs_visibility",
+        "qrs_band_ratio",
+        "sqi_basSQI",
+        "baseline_step",
+        "non_qrs_diff_p95",
+    ],
+    "pretrain_classification_weight": 0.16,
+    "pretrain_aux_weight": 1.05,
+    "pretrain_core_aux_weight": 1.65,
+    "pretrain_hard_aux_weight": 4.80,
+    "pretrain_critical_aux_weight": 7.20,
+    "aux_weight": 0.64,
+    "core_aux_weight": 1.10,
+    "hard_aux_weight": 3.95,
+    "critical_aux_weight": 5.60,
+    "classification_weight": 1.00,
+    "gm_pair_weight": 1.12,
+    "class_weight": [1.12, 1.66, 2.95],
+    "bad_aux_weight": 0.82,
+    "bad_aux_pos_weight": 4.30,
+    "bad_specificity_weight": 4.70,
+    "bad_specificity_margin": 1.00,
+    "selection_bad_stress_weight": 0.78,
+    "selection_stress_precision_weight": 0.08,
+    "lr": 0.000060,
+    "seed": 20261593,
+}
+
+CANDIDATES["featurefirst_quality20_currentbest_headreset_badkeep_a050"] = {
+    **CANDIDATES["featurefirst_quality20_currentbest_headreset_balanced_a050"],
+    # Slightly more bad-preserving endpoint.  Accept only if the original-test
+    # false-bad rate does not erase the non-bad gain.
+    "class_weight": [1.10, 1.60, 3.25],
+    "bad_logit_mix": 7.35,
+    "bad_residual_cap": 4.85,
+    "bad_artifact_floor": 0.32,
+    "bad_artifact_power": 0.70,
+    "bad_artifact_veto_threshold": 0.82,
+    "bad_core_logit_mix": 2.05,
+    "bad_core_residual_cap": 2.35,
+    "bad_aux_pos_weight": 4.75,
+    "bad_specificity_weight": 4.35,
+    "selection_bad_stress_weight": 0.86,
+    "selection_stress_precision_weight": 0.04,
+    "lr": 0.000060,
+    "seed": 20261594,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_primres_current_conservative_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # Preserve the current-best classification surface. Add only a small
+    # waveform-computed primitive residual head: QRS/band/baseline/event stats
+    # are computed inside forward() from the ECG, then used as a capped logit
+    # correction. This tests whether stable SQI facts help without replacing
+    # the Transformer's learned decision map.
+    "init_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_skip_mismatch": True,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "primitive_branch",
+        "primitive_class_residual_head",
+    ],
+    "primitive_bank": "qrs_stress_v5",
+    "primitive_class_residual_mix": 0.18,
+    "primitive_class_residual_cap": 0.55,
+    "classification_weight": 0.92,
+    "gm_pair_weight": 0.18,
+    "bad_aux_weight": 0.12,
+    "bad_specificity_weight": 5.10,
+    "bad_specificity_margin": 1.12,
+    "selection_bad_stress_weight": 0.76,
+    "selection_stress_precision_weight": 0.18,
+    "lr": 0.000070,
+    "seed": 20261595,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_primres_current_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_primres_current_conservative_a050"],
+    # More residual room. Reject if it repeats the known synthetic-router
+    # transfer failure or pushes many medium rows into bad.
+    "primitive_class_residual_mix": 0.32,
+    "primitive_class_residual_cap": 0.85,
+    "classification_weight": 1.00,
+    "gm_pair_weight": 0.32,
+    "bad_aux_weight": 0.18,
+    "bad_specificity_weight": 4.85,
+    "bad_specificity_margin": 1.04,
+    "selection_bad_stress_weight": 0.80,
+    "selection_stress_precision_weight": 0.12,
+    "lr": 0.000075,
+    "seed": 20261596,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_primres_current_badlean_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_primres_current_conservative_a050"],
+    # Let primitive event/QRS statistics help bad stress slightly more, but the
+    # residual is still capped so good/medium cannot collapse.
+    "primitive_class_residual_mix": 0.42,
+    "primitive_class_residual_cap": 1.05,
+    "class_weight": [1.08, 1.58, 3.10],
+    "classification_weight": 1.02,
+    "gm_pair_weight": 0.26,
+    "bad_aux_weight": 0.24,
+    "bad_specificity_weight": 4.55,
+    "bad_specificity_margin": 0.98,
+    "selection_bad_stress_weight": 0.86,
+    "selection_stress_precision_weight": 0.08,
+    "lr": 0.000080,
+    "seed": 20261597,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_auxprim_contract_featureonly_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # Module-level test: primitive waveform statistics are allowed to improve
+    # the auxiliary SQI/geometry recovery head, but they do not enter class
+    # logits directly. This checks whether the missing qrs/baseline/SQI axes
+    # can be recovered from waveform-computable primitives without moving the
+    # stable current-best decision surface.
+    "init_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_skip_mismatch": True,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "primitive_branch",
+        "aux_head",
+    ],
+    "aux_primitive_fusion": True,
+    "primitive_bank": "qrs_stress_v5",
+    "wide_aux_head": True,
+    "aux_hidden": 384,
+    "critical_aux_columns": TOP20_INTERPRETABLE_FEATURE_COLUMNS
+    + [
+        "qrs_visibility",
+        "qrs_visibility",
+        "detector_agreement",
+        "detector_agreement",
+        "baseline_step",
+        "baseline_step",
+        "sqi_basSQI",
+        "sqi_basSQI",
+        "qrs_band_ratio",
+        "template_corr",
+        "pc2",
+        "pc3",
+        "boundary_confidence",
+        "knn_label_purity",
+    ],
+    "quantile_aux_columns": [
+        "qrs_visibility",
+        "detector_agreement",
+        "baseline_step",
+        "sqi_basSQI",
+        "flatline_ratio",
+        "low_amp_ratio",
+        "qrs_band_ratio",
+        "template_corr",
+        "pc2",
+        "pc3",
+        "boundary_confidence",
+        "knn_label_purity",
+    ],
+    "quantile_aux_quantiles": [0.10, 0.25, 0.40, 0.55, 0.70, 0.85, 0.94],
+    "quantile_aux_sharpness": 4.20,
+    "aux_pretrain_epochs": 2,
+    "pretrain_classification_weight": 0.035,
+    "pretrain_gm_pair_weight": 0.035,
+    "pretrain_aux_weight": 1.35,
+    "pretrain_core_aux_weight": 1.65,
+    "pretrain_hard_aux_weight": 6.80,
+    "pretrain_critical_aux_weight": 10.50,
+    "pretrain_quantile_aux_weight": 6.80,
+    "aux_weight": 0.92,
+    "core_aux_weight": 1.20,
+    "hard_aux_weight": 4.80,
+    "critical_aux_weight": 6.80,
+    "quantile_aux_weight": 4.20,
+    "classification_weight": 0.26,
+    "gm_pair_weight": 0.26,
+    "bad_aux_weight": 0.20,
+    "bad_specificity_weight": 5.30,
+    "bad_specificity_margin": 1.08,
+    "selection_bad_stress_weight": 0.78,
+    "selection_stress_precision_weight": 0.16,
+    "lr": 0.000085,
+    "seed": 20261598,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_auxprim_contract_calibrated_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_auxprim_contract_featureonly_a050"],
+    # Allow only the feature-based classifier heads to adapt to the new aux
+    # recovery head. The waveform encoder/class surface remains otherwise
+    # frozen, so any gain must come from better recovered SQI facts.
+    "freeze_trainable_name_contains": [
+        "primitive_branch",
+        "aux_head",
+        "feature_class_head",
+        "feature_gate_head",
+    ],
+    "classification_weight": 0.58,
+    "gm_pair_weight": 0.42,
+    "pretrain_classification_weight": 0.060,
+    "aux_weight": 0.82,
+    "hard_aux_weight": 4.40,
+    "critical_aux_weight": 6.10,
+    "quantile_aux_weight": 3.80,
+    "bad_specificity_weight": 5.10,
+    "lr": 0.000075,
+    "seed": 20261599,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_auxprim_contract_badguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_auxprim_contract_calibrated_a050"],
+    # Same aux-only primitive contract, with a stronger bad specificity guard.
+    # Reject if it repeats the primitive-residual failure by losing medium.
+    "class_weight": [1.08, 1.58, 3.05],
+    "bad_aux_weight": 0.28,
+    "bad_aux_pos_weight": 4.70,
+    "bad_specificity_weight": 5.70,
+    "bad_specificity_margin": 1.18,
+    "selection_bad_stress_weight": 0.86,
+    "selection_stress_precision_weight": 0.10,
+    "lr": 0.000070,
+    "seed": 20261600,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_primauxres_current_featureonly_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # Preserve the current aux/class heads and learn only a tiny waveform-
+    # computed residual for hard auxiliary features. Unlike aux_primitive_fusion,
+    # this does not reset the current-best aux map.
+    "init_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_skip_mismatch": True,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "primitive_aux_residual_head",
+    ],
+    "primitive_bank": "qrs_stress_v5",
+    "primitive_aux_residual_columns": [
+        "qrs_visibility",
+        "detector_agreement",
+        "baseline_step",
+        "sqi_basSQI",
+        "qrs_band_ratio",
+        "template_corr",
+        "pc2",
+        "pc3",
+        "boundary_confidence",
+        "knn_label_purity",
+        "low_amp_ratio",
+    ],
+    "primitive_aux_residual_mix": 0.18,
+    "primitive_aux_residual_cap": 0.45,
+    "critical_aux_columns": TOP20_INTERPRETABLE_FEATURE_COLUMNS
+    + [
+        "qrs_visibility",
+        "qrs_visibility",
+        "detector_agreement",
+        "detector_agreement",
+        "baseline_step",
+        "baseline_step",
+        "sqi_basSQI",
+        "sqi_basSQI",
+        "qrs_band_ratio",
+        "template_corr",
+        "pc2",
+        "pc3",
+        "boundary_confidence",
+        "knn_label_purity",
+    ],
+    "quantile_aux_columns": [
+        "qrs_visibility",
+        "detector_agreement",
+        "baseline_step",
+        "sqi_basSQI",
+        "flatline_ratio",
+        "low_amp_ratio",
+        "qrs_band_ratio",
+        "template_corr",
+        "pc2",
+        "pc3",
+        "boundary_confidence",
+        "knn_label_purity",
+    ],
+    "quantile_aux_quantiles": [0.10, 0.25, 0.40, 0.55, 0.70, 0.85, 0.94],
+    "quantile_aux_sharpness": 4.20,
+    "aux_pretrain_epochs": 1,
+    "pretrain_classification_weight": 0.020,
+    "pretrain_gm_pair_weight": 0.025,
+    "pretrain_aux_weight": 0.92,
+    "pretrain_core_aux_weight": 1.20,
+    "pretrain_hard_aux_weight": 5.60,
+    "pretrain_critical_aux_weight": 8.80,
+    "pretrain_quantile_aux_weight": 5.80,
+    "aux_weight": 0.66,
+    "core_aux_weight": 0.92,
+    "hard_aux_weight": 3.80,
+    "critical_aux_weight": 5.20,
+    "quantile_aux_weight": 3.20,
+    "classification_weight": 0.30,
+    "gm_pair_weight": 0.24,
+    "bad_aux_weight": 0.16,
+    "bad_specificity_weight": 5.20,
+    "bad_specificity_margin": 1.08,
+    "selection_bad_stress_weight": 0.82,
+    "selection_stress_precision_weight": 0.14,
+    "lr": 0.000090,
+    "seed": 20261601,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_primauxres_current_calibrated_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_primauxres_current_featureonly_a050"],
+    # Let the feature classifier absorb the corrected hard-SQI coordinates,
+    # while still freezing the waveform encoder and main class head.
+    "freeze_trainable_name_contains": [
+        "primitive_aux_residual_head",
+        "feature_class_head",
+        "feature_gate_head",
+    ],
+    "primitive_aux_residual_mix": 0.24,
+    "primitive_aux_residual_cap": 0.55,
+    "classification_weight": 0.56,
+    "gm_pair_weight": 0.38,
+    "aux_weight": 0.58,
+    "hard_aux_weight": 3.40,
+    "critical_aux_weight": 4.80,
+    "quantile_aux_weight": 2.90,
+    "lr": 0.000075,
+    "seed": 20261602,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_primauxres_current_badguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_primauxres_current_calibrated_a050"],
+    # Slightly stronger correction and bad guard, only accepted if original
+    # medium recall stays near the current-best level.
+    "primitive_aux_residual_mix": 0.30,
+    "primitive_aux_residual_cap": 0.70,
+    "class_weight": [1.08, 1.58, 3.05],
+    "bad_aux_weight": 0.24,
+    "bad_aux_pos_weight": 4.70,
+    "bad_specificity_weight": 5.70,
+    "bad_specificity_margin": 1.16,
+    "selection_bad_stress_weight": 0.88,
+    "selection_stress_precision_weight": 0.10,
+    "lr": 0.000070,
+    "seed": 20261603,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_primauxres2_current_featureonly_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_primauxres_current_featureonly_a050"],
+    # Same residual idea, but use the current-best primitive bank so the
+    # primitive_branch weights load instead of being randomly reinitialized.
+    "primitive_bank": "qrs_enhanced",
+    "primitive_aux_residual_mix": 0.10,
+    "primitive_aux_residual_cap": 0.28,
+    "lr": 0.000070,
+    "seed": 20261604,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_primauxres2_current_calibrated_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_primauxres_current_calibrated_a050"],
+    "primitive_bank": "qrs_enhanced",
+    "primitive_aux_residual_mix": 0.14,
+    "primitive_aux_residual_cap": 0.34,
+    "lr": 0.000060,
+    "seed": 20261605,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_primauxres2_current_badguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_primauxres_current_badguard_a050"],
+    "primitive_bank": "qrs_enhanced",
+    "primitive_aux_residual_mix": 0.18,
+    "primitive_aux_residual_cap": 0.42,
+    "bad_specificity_weight": 5.85,
+    "bad_specificity_margin": 1.18,
+    "lr": 0.000058,
+    "seed": 20261606,
+}
+
+CANDIDATES["featurefirst_top20_detrawbeat_artifact_contract_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050"],
+    # Structured-token test: keep the current best feature-first/classifier
+    # contract, but add detector/RR/baseline/raw-beat/artifact tokens before
+    # attention.  This is still waveform-only at inference.  The hard aux
+    # pressure is shifted toward waveform-computable SQI facts rather than
+    # atlas-only geometry labels.
+    "arch": "detrawbeat_artifact_sqi_query_multiscale_patch_teacher_atlas",
+    "init_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "init_skip_mismatch": True,
+    "event_count": 14,
+    "event_window": 101,
+    "artifact_count": 12,
+    "artifact_window": 151,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "encoder.qrsbank_proj",
+        "encoder.detector_proj",
+        "encoder.rr_proj",
+        "encoder.baseline_proj",
+        "encoder.detbase_group_embed",
+        "encoder.raw_event_proj",
+        "encoder.event_scalar_proj",
+        "encoder.event_type_embed",
+        "encoder.event_rank_embed",
+        "encoder.raw_artifact_proj",
+        "encoder.artifact_scalar_proj",
+        "encoder.artifact_type_embed",
+        "encoder.artifact_rank_embed",
+        "encoder.sqi_queries",
+        "encoder.query_type_embed",
+        "encoder.encoder.layers.2",
+        "encoder.encoder.layers.3",
+        "encoder.pool",
+        "project",
+        "aux_head",
+        "class_head",
+        "feature_class_head",
+        "gm_pair_head",
+        "ordinal_head",
+        "bad_head",
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+    ],
+    "predicted_feature_columns": TOP20_INTERPRETABLE_FEATURE_COLUMNS,
+    "feature_teacher_columns": TOP20_INTERPRETABLE_FEATURE_COLUMNS,
+    "critical_aux_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS + WAVEFORM_HARD_TEACHER_COLUMNS,
+    "quantile_aux_columns": [
+        "qrs_visibility",
+        "detector_agreement",
+        "baseline_step",
+        "sqi_basSQI",
+        "flatline_ratio",
+        "low_amp_ratio",
+        "non_qrs_diff_p95",
+        "qrs_band_ratio",
+        "template_corr",
+    ],
+    "quantile_aux_quantiles": [0.10, 0.25, 0.40, 0.55, 0.70, 0.85, 0.94],
+    "quantile_aux_sharpness": 4.10,
+    "aux_pretrain_epochs": 1,
+    "pretrain_classification_weight": 0.08,
+    "pretrain_gm_pair_weight": 0.12,
+    "pretrain_aux_weight": 1.10,
+    "pretrain_core_aux_weight": 1.40,
+    "pretrain_hard_aux_weight": 5.80,
+    "pretrain_critical_aux_weight": 9.80,
+    "pretrain_quantile_aux_weight": 6.40,
+    "pretrain_rank_weight": 0.82,
+    "classification_weight": 0.86,
+    "gm_pair_weight": 1.24,
+    "aux_weight": 0.52,
+    "core_aux_weight": 0.70,
+    "hard_aux_weight": 3.80,
+    "critical_aux_weight": 5.20,
+    "quantile_aux_weight": 2.90,
+    "rank_weight": 0.16,
+    "class_weight": [1.14, 1.70, 2.92],
+    "bad_aux_weight": 0.82,
+    "bad_aux_pos_weight": 4.45,
+    "bad_specificity_weight": 5.40,
+    "bad_specificity_margin": 1.14,
+    "bad_logit_mix": 7.05,
+    "bad_residual_cap": 4.55,
+    "bad_artifact_floor": 0.35,
+    "bad_artifact_power": 0.76,
+    "bad_artifact_veto_threshold": 0.76,
+    "bad_artifact_veto_temperature": 0.11,
+    "bad_core_logit_mix": 1.85,
+    "bad_core_residual_cap": 2.10,
+    "bad_core_floor": 0.38,
+    "bad_core_power": 0.92,
+    "bad_flatlowamp_shell_strength": 1.54,
+    "bad_flatlowamp_shell_prob": 0.50,
+    "bad_record111_burst_dropout_strength": 1.88,
+    "bad_record111_burst_dropout_prob": 0.36,
+    "bad_intermittent_contact_strength": 1.72,
+    "bad_intermittent_contact_prob": 0.54,
+    "nonbad_hardneg_strength": 3.25,
+    "subject111_shift_strength": 0.68,
+    "subject111_good_shift_scale": 0.10,
+    "subject111_medium_shift_scale": 1.00,
+    "selection_bad_stress_weight": 0.70,
+    "selection_stress_precision_weight": 0.14,
+    "selection_stress_nonbad_hardneg_strength": 3.35,
+    "selection_stress_bad_flatlowamp_shell_strength": 2.10,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.22,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.90,
+    "selection_subject111_shift_strength": 0.78,
+    "lr": 0.000028,
+    "seed": 20261591,
+}
+
+CANDIDATES["featurefirst_top20_detrawbeat_artifact_contract_gmguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_detrawbeat_artifact_contract_balanced_a050"],
+    # Guard good/medium first.  This should tell us whether structured tokens
+    # can improve feature recovery without using bad recall as a shortcut.
+    "class_weight": [1.22, 1.64, 2.72],
+    "gm_pair_weight": 1.42,
+    "classification_weight": 0.90,
+    "bad_specificity_weight": 5.65,
+    "selection_bad_stress_weight": 0.62,
+    "selection_stress_precision_weight": 0.22,
+    "bad_logit_mix": 6.85,
+    "bad_residual_cap": 4.35,
+    "lr": 0.000026,
+    "seed": 20261592,
+}
+
+CANDIDATES["featurefirst_top20_detrawbeat_artifact_contract_badguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_detrawbeat_artifact_contract_balanced_a050"],
+    # Slightly wider bad-stress endpoint, but still with non-bad hard negatives
+    # and specificity loss so medium outliers are not swallowed by bad.
+    "class_weight": [1.10, 1.66, 3.18],
+    "gm_pair_weight": 1.16,
+    "classification_weight": 0.88,
+    "bad_specificity_weight": 5.10,
+    "bad_specificity_margin": 1.06,
+    "bad_logit_mix": 7.28,
+    "bad_residual_cap": 4.85,
+    "bad_artifact_floor": 0.32,
+    "bad_artifact_power": 0.70,
+    "bad_artifact_veto_threshold": 0.82,
+    "bad_core_logit_mix": 2.20,
+    "bad_core_residual_cap": 2.45,
+    "bad_flatlowamp_shell_strength": 1.92,
+    "bad_flatlowamp_shell_prob": 0.62,
+    "bad_record111_burst_dropout_strength": 2.30,
+    "bad_record111_burst_dropout_prob": 0.48,
+    "bad_intermittent_contact_strength": 2.02,
+    "bad_intermittent_contact_prob": 0.66,
+    "nonbad_hardneg_strength": 3.05,
+    "selection_bad_stress_weight": 0.82,
+    "selection_stress_precision_weight": 0.08,
+    "selection_stress_nonbad_hardneg_strength": 3.20,
+    "selection_stress_bad_flatlowamp_shell_strength": 2.55,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.70,
+    "lr": 0.000032,
+    "seed": 20261593,
+}
+
+CANDIDATES["featurefirst_top20_detrawbeat_featurecontract_auxfirst_a050"] = {
+    **CANDIDATES["featurefirst_top20_detrawbeat_artifact_contract_balanced_a050"],
+    # Second-pass contract: the first structured-token run kept synthetic
+    # accuracy high but did not improve qrs_visibility/detector/baseline
+    # recovery.  Here the first phase is almost pure waveform-fact recovery,
+    # with atlas/neighbor pressure damped, then classification is restored.
+    "aux_pretrain_epochs": 6,
+    "pretrain_classification_weight": 0.0,
+    "pretrain_gm_pair_weight": 0.0,
+    "pretrain_bad_aux_weight": 0.0,
+    "pretrain_bad_specificity_weight": 0.0,
+    "pretrain_stress_aux_weight": 0.0,
+    "pretrain_artifact_veto_weight": 0.0,
+    "pretrain_artifact_event_local_weight": 0.55,
+    "pretrain_atlas_distill_weight": 0.0,
+    "pretrain_neighbor_weight": 0.0,
+    "pretrain_supcon_weight": 0.0,
+    "pretrain_aux_weight": 2.20,
+    "pretrain_core_aux_weight": 2.80,
+    "pretrain_hard_aux_weight": 11.50,
+    "pretrain_top14_aux_weight": 0.0,
+    "pretrain_critical_aux_weight": 22.00,
+    "pretrain_quantile_aux_weight": 14.00,
+    "pretrain_rank_weight": 1.80,
+    "classification_weight": 0.72,
+    "gm_pair_weight": 1.10,
+    "aux_weight": 0.72,
+    "core_aux_weight": 1.00,
+    "hard_aux_weight": 5.60,
+    "critical_aux_weight": 8.80,
+    "quantile_aux_weight": 4.50,
+    "rank_weight": 0.22,
+    "atlas_distill_weight": 0.25,
+    "neighbor_weight": 0.24,
+    "class_weight": [1.16, 1.70, 2.85],
+    "bad_specificity_weight": 5.55,
+    "selection_bad_stress_weight": 0.62,
+    "selection_stress_precision_weight": 0.18,
+    "lr": 0.000034,
+    "seed": 20261594,
+}
+
+CANDIDATES["featurefirst_top20_detrawbeat_featurecontract_qrsdet_a050"] = {
+    **CANDIDATES["featurefirst_top20_detrawbeat_featurecontract_auxfirst_a050"],
+    # More aggressive QRS/detector recovery endpoint.  It repeats the exact
+    # columns that stayed weak in the audit and uses less bad-stress pressure.
+    "critical_aux_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS
+    + WAVEFORM_HARD_TEACHER_COLUMNS
+    + [
+        "qrs_visibility",
+        "qrs_visibility",
+        "qrs_visibility",
+        "detector_agreement",
+        "detector_agreement",
+        "detector_agreement",
+        "qrs_band_ratio",
+        "template_corr",
+        "sqi_basSQI",
+        "baseline_step",
+    ],
+    "quantile_aux_columns": [
+        "qrs_visibility",
+        "detector_agreement",
+        "qrs_band_ratio",
+        "template_corr",
+        "sqi_basSQI",
+        "baseline_step",
+        "flatline_ratio",
+        "non_qrs_diff_p95",
+    ],
+    "pretrain_hard_aux_weight": 14.50,
+    "pretrain_critical_aux_weight": 28.00,
+    "pretrain_quantile_aux_weight": 17.00,
+    "hard_aux_weight": 6.80,
+    "critical_aux_weight": 10.80,
+    "quantile_aux_weight": 5.30,
+    "class_weight": [1.18, 1.66, 2.72],
+    "bad_specificity_weight": 5.85,
+    "selection_bad_stress_weight": 0.54,
+    "selection_stress_precision_weight": 0.24,
+    "lr": 0.000030,
+    "seed": 20261595,
+}
+
+CANDIDATES["featurefirst_top20_detrawbeat_localhead_qrsbase_a050"] = {
+    **CANDIDATES["featurefirst_top20_detrawbeat_featurecontract_qrsdet_a050"],
+    # Third-pass contract: do not ask the pooled embedding alone to recover
+    # qrs_visibility/detector_agreement/baseline.  Local QRS and baseline
+    # tokens now have their own teacher heads, and the classifier sees a small
+    # residual from those waveform-predicted local facts.
+    "freeze_trainable_name_contains": CANDIDATES[
+        "featurefirst_top20_detrawbeat_featurecontract_qrsdet_a050"
+    ]["freeze_trainable_name_contains"]
+    + [
+        "encoder.qrs_local_head",
+        "encoder.baseline_local_head",
+    ],
+    "local_aux_residual_mix": 0.34,
+    "pretrain_local_qrs_aux_weight": 26.00,
+    "pretrain_local_baseline_aux_weight": 18.00,
+    "local_qrs_aux_weight": 7.50,
+    "local_baseline_aux_weight": 5.20,
+    "pretrain_classification_weight": 0.0,
+    "pretrain_gm_pair_weight": 0.0,
+    "pretrain_rank_weight": 1.40,
+    "classification_weight": 0.68,
+    "gm_pair_weight": 1.04,
+    "bad_specificity_weight": 6.10,
+    "selection_bad_stress_weight": 0.50,
+    "selection_stress_precision_weight": 0.30,
+    "lr": 0.000032,
+    "seed": 20261596,
+}
+
+CANDIDATES["featurefirst_top20_detrawbeat_localhead_conservative_a050"] = {
+    **CANDIDATES["featurefirst_top20_detrawbeat_localhead_qrsbase_a050"],
+    # Same local heads, but less residual injection.  This tests whether local
+    # feature recovery can improve without overwriting the already-good
+    # good/medium surface learned by the base checkpoint.
+    "local_aux_residual_mix": 0.18,
+    "pretrain_local_qrs_aux_weight": 20.00,
+    "pretrain_local_baseline_aux_weight": 14.00,
+    "local_qrs_aux_weight": 5.50,
+    "local_baseline_aux_weight": 4.20,
+    "classification_weight": 0.80,
+    "gm_pair_weight": 1.12,
+    "class_weight": [1.16, 1.70, 2.72],
+    "bad_specificity_weight": 6.35,
+    "selection_bad_stress_weight": 0.56,
+    "selection_stress_precision_weight": 0.34,
+    "lr": 0.000030,
+    "seed": 20261597,
+}
+
+CANDIDATES["featurefirst_localhead_record111physio_a050"] = {
+    **CANDIDATES["featurefirst_top20_detrawbeat_localhead_conservative_a050"],
+    # Local QRS/baseline-head version of the record111-physio target-alignment
+    # test.  This focuses on the features still weak after guard: basSQI,
+    # baseline_step, detector_agreement, and qrs_band_ratio.  It keeps formal
+    # teacher targets waveform-computable.
+    "predicted_feature_fusion": "configured",
+    "predicted_feature_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "feature_teacher_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "bad_feature_head_columns": RECORD111_PHYSIO_BAD_FEATURE_COLUMNS,
+    "critical_aux_columns": RECORD111_PHYSIO_BAD_CRITICAL_COLUMNS
+    + WAVEFORM_HARD_TEACHER_COLUMNS
+    + [
+        "qrs_visibility",
+        "qrs_visibility",
+        "detector_agreement",
+        "detector_agreement",
+        "sqi_basSQI",
+        "sqi_basSQI",
+        "baseline_step",
+        "baseline_step",
+    ],
+    "quantile_aux_columns": [
+        "contact_loss_win_ratio",
+        "fatal_or_score",
+        "sqi_basSQI",
+        "baseline_step",
+        "flatline_ratio",
+        "qrs_visibility",
+        "detector_agreement",
+        "qrs_band_ratio",
+        "template_corr",
+        "non_qrs_rms_ratio",
+        "non_qrs_diff_p95",
+    ],
+    "aug_bad_aux_pseudo_geometry": True,
+    "aug_bad_aux_pseudo_mode": "physio_record111",
+    "aug_bad_aux_pseudo_mix": 0.74,
+    "bad_record111_motion_strength": 2.55,
+    "bad_record111_motion_prob": 0.46,
+    "bad_record111_burst_dropout_strength": 2.15,
+    "bad_record111_burst_dropout_prob": 0.42,
+    "bad_impulse_reset_strength": 1.65,
+    "bad_impulse_reset_prob": 0.30,
+    "bad_intermittent_contact_strength": 1.70,
+    "bad_intermittent_contact_prob": 0.50,
+    "bad_flatlowamp_shell_strength": 0.90,
+    "bad_flatlowamp_shell_prob": 0.38,
+    "nonbad_hardneg_strength": 2.90,
+    "aug_aux_weight_bad": 1.55,
+    "aug_aux_weight_nonbad": 0.50,
+    "pretrain_classification_weight": 0.02,
+    "pretrain_local_qrs_aux_weight": 30.00,
+    "pretrain_local_baseline_aux_weight": 26.00,
+    "pretrain_critical_aux_weight": 16.00,
+    "pretrain_quantile_aux_weight": 10.50,
+    "local_qrs_aux_weight": 9.00,
+    "local_baseline_aux_weight": 8.20,
+    "critical_aux_weight": 8.80,
+    "quantile_aux_weight": 5.20,
+    "classification_weight": 0.82,
+    "class_weight": [1.14, 1.72, 3.05],
+    "gm_pair_weight": 1.16,
+    "bad_aux_weight": 1.00,
+    "bad_aux_pos_weight": 5.10,
+    "bad_specificity_weight": 5.55,
+    "bad_specificity_margin": 1.20,
+    "selection_bad_stress_weight": 0.78,
+    "selection_stress_aug_bad_aux_pseudo_geometry": True,
+    "selection_stress_aug_bad_aux_pseudo_mode": "physio_record111",
+    "selection_stress_aug_bad_aux_pseudo_mix": 0.84,
+    "selection_stress_bad_record111_motion_strength": 3.05,
+    "selection_stress_bad_record111_motion_prob": 1.00,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.60,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.92,
+    "selection_stress_bad_impulse_reset_strength": 2.00,
+    "selection_stress_bad_impulse_reset_prob": 0.80,
+    "selection_stress_bad_intermittent_contact_strength": 2.00,
+    "selection_stress_bad_intermittent_contact_prob": 0.78,
+    "selection_stress_nonbad_hardneg_strength": 3.10,
+    "lr": 0.000026,
+    "seed": 20261573,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_flatlowamp_guard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_jointcopy_tune_a050"],
+    # Original bad-outlier gap audit: high flat/contact/low-amp ratios and low
+    # derivative energy, not just record111 motion.  Guard endpoint keeps a
+    # narrow flat-low-amp bad shell plus strong non-bad hard negatives.
+    "bad_flatlowamp_shell_strength": 0.95,
+    "bad_flatlowamp_shell_prob": 0.32,
+    "bad_record111_burst_dropout_strength": 1.10,
+    "bad_record111_burst_dropout_prob": 0.16,
+    "bad_stress_shell_strength": 0.24,
+    "nonbad_hardneg_strength": 3.35,
+    "bad_logit_mix": 5.25,
+    "bad_residual_cap": 3.30,
+    "bad_artifact_floor": 0.50,
+    "bad_artifact_power": 1.05,
+    "bad_aux_weight": 0.82,
+    "bad_aux_pos_weight": 4.35,
+    "bad_specificity_weight": 6.25,
+    "bad_specificity_margin": 1.34,
+    "selection_bad_stress_weight": 0.44,
+    "selection_stress_bad_flatlowamp_shell_strength": 1.30,
+    "selection_stress_bad_flatlowamp_shell_prob": 1.00,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.30,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.88,
+    "selection_stress_nonbad_hardneg_strength": 3.45,
+    "seed": 20261530,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_flatlowamp_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_flatlowamp_guard_a050"],
+    # More persistent low-amplitude/contact shell.  Accept only if bad stress
+    # rises without turning medium outliers into false bad.
+    "bad_flatlowamp_shell_strength": 1.30,
+    "bad_flatlowamp_shell_prob": 0.46,
+    "bad_record111_burst_dropout_strength": 1.34,
+    "bad_record111_burst_dropout_prob": 0.22,
+    "bad_stress_shell_strength": 0.32,
+    "nonbad_hardneg_strength": 3.05,
+    "bad_logit_mix": 5.95,
+    "bad_residual_cap": 3.65,
+    "bad_artifact_floor": 0.47,
+    "bad_artifact_power": 0.96,
+    "bad_aux_weight": 0.94,
+    "bad_aux_pos_weight": 4.90,
+    "bad_specificity_weight": 5.20,
+    "bad_specificity_margin": 1.12,
+    "selection_bad_stress_weight": 0.52,
+    "selection_stress_bad_flatlowamp_shell_strength": 1.72,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.58,
+    "selection_stress_nonbad_hardneg_strength": 3.15,
+    "seed": 20261531,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_flatlowamp_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_flatlowamp_guard_a050"],
+    # Recall endpoint for the flat-low-amplitude hypothesis.  This should show
+    # whether the missing bad shell is learnable before specificity collapses.
+    "bad_flatlowamp_shell_strength": 1.70,
+    "bad_flatlowamp_shell_prob": 0.60,
+    "bad_record111_burst_dropout_strength": 1.62,
+    "bad_record111_burst_dropout_prob": 0.30,
+    "bad_stress_shell_strength": 0.42,
+    "nonbad_hardneg_strength": 2.75,
+    "bad_logit_mix": 6.85,
+    "bad_residual_cap": 4.10,
+    "bad_artifact_floor": 0.43,
+    "bad_artifact_power": 0.86,
+    "artifact_bad_mix": 0.70,
+    "bad_aux_weight": 1.08,
+    "bad_aux_pos_weight": 5.55,
+    "bad_specificity_weight": 4.15,
+    "bad_specificity_margin": 0.94,
+    "selection_bad_stress_weight": 0.62,
+    "selection_stress_bad_flatlowamp_shell_strength": 2.12,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.90,
+    "selection_stress_nonbad_hardneg_strength": 2.92,
+    "seed": 20261532,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_flatlowamp_headmix_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_flatlowamp_balanced_a050"],
+    # If branch evidence is present but raw logits stay conservative, allow the
+    # classifier heads to adapt at very low LR while keeping the encoder frozen.
+    "freeze_trainable_name_contains": [
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+        "class_head",
+        "feature_class_head",
+    ],
+    "bad_logit_mix": 5.70,
+    "bad_residual_cap": 3.55,
+    "bad_specificity_weight": 5.55,
+    "bad_specificity_margin": 1.20,
+    "classification_weight": 0.82,
+    "lr": 0.000025,
+    "seed": 20261533,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_v5bank_flatlowamp_guard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_flatlowamp_recall_a050"],
+    # Keep the qrsbase waveform encoder, but expose the full waveform-derived
+    # qrs_stress_v5 bank through primitive fusion and soft threshold features.
+    # This targets the hard feature failures directly: basSQI/low-amp/flatline,
+    # sparse reset events, baseline drift, and detector-agreement surrogates.
+    "primitive_bank": "qrs_stress_v5",
+    "primitive_bad_bank": "qrs_stress_v5",
+    "primitive_fusion": True,
+    "aux_primitive_fusion": True,
+    "primitive_threshold_fusion": True,
+    "primitive_threshold_values": [-2.25, -1.35, -0.65, 0.0, 0.65, 1.35, 2.25],
+    "primitive_threshold_sharpness": 2.40,
+    "freeze_trainable_name_contains": [
+        "primitive_branch",
+        "primitive_threshold_norm",
+        "primitive_threshold_proj",
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+        "class_head",
+        "feature_class_head",
+    ],
+    "classification_weight": 1.02,
+    "bad_logit_mix": 5.80,
+    "bad_residual_cap": 3.65,
+    "bad_artifact_floor": 0.45,
+    "bad_artifact_power": 0.92,
+    "bad_specificity_weight": 5.20,
+    "bad_specificity_margin": 1.12,
+    "selection_bad_stress_weight": 0.50,
+    "lr": 0.000025,
+    "seed": 20261534,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_v5bank_flatlowamp_auxlite_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_v5bank_flatlowamp_guard_a050"],
+    # Let the auxiliary feature head and compact projection adapt to the v5
+    # bank.  Still waveform-only at inference: these are predicted SQI targets,
+    # not sidecar feature inputs.
+    "freeze_trainable_name_contains": [
+        "primitive_branch",
+        "primitive_threshold_norm",
+        "primitive_threshold_proj",
+        "aux_head",
+        "project",
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+        "class_head",
+        "feature_class_head",
+    ],
+    "aux_weight": 0.24,
+    "core_aux_weight": 0.34,
+    "hard_aux_weight": 1.65,
+    "critical_aux_weight": 2.80,
+    "quantile_aux_weight": 0.42,
+    "classification_weight": 0.92,
+    "bad_specificity_weight": 5.55,
+    "bad_specificity_margin": 1.20,
+    "lr": 0.000020,
+    "seed": 20261535,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_v5bank_flatlowamp_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_v5bank_flatlowamp_auxlite_a050"],
+    # Recall endpoint: more permissive bad residual, but still more guarded
+    # than the old broad bad-stress sweeps.
+    "bad_logit_mix": 6.75,
+    "bad_residual_cap": 4.10,
+    "bad_artifact_floor": 0.40,
+    "bad_artifact_power": 0.82,
+    "artifact_bad_mix": 0.76,
+    "bad_aux_weight": 1.12,
+    "bad_aux_pos_weight": 5.65,
+    "bad_specificity_weight": 4.35,
+    "bad_specificity_margin": 0.96,
+    "selection_bad_stress_weight": 0.62,
+    "seed": 20261536,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_v5bank_encoderlite_auxfocus_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_v5bank_flatlowamp_guard_a050"],
+    # The v5bank/flat-low-amp heads improved synthetic stress but did not lower
+    # teacher_core_mae, so the missing waveform facts are still not entering
+    # the representation.  This opens only the tokenizer/stat/global path and
+    # final Transformer block, then puts most early pressure on hard SQI
+    # recovery.  The 47-column features remain training targets only.
+    "freeze_trainable_name_contains": [
+        "encoder.patch_proj",
+        "encoder.patch_stat_proj",
+        "encoder.scale_stat_proj",
+        "encoder.global_stat",
+        "encoder.sqi_queries",
+        "encoder.query_type_embed",
+        "encoder.encoder.layers.3",
+        "project",
+        "aux_head",
+        "primitive_branch",
+        "primitive_threshold_norm",
+        "primitive_threshold_proj",
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+        "class_head",
+        "feature_class_head",
+    ],
+    "aux_pretrain_epochs": 3,
+    "pretrain_classification_weight": 0.06,
+    "pretrain_aux_weight": 1.35,
+    "pretrain_core_aux_weight": 2.80,
+    "pretrain_hard_aux_weight": 13.50,
+    "pretrain_top14_aux_weight": 9.80,
+    "pretrain_critical_aux_weight": 22.00,
+    "pretrain_quantile_aux_weight": 7.20,
+    "pretrain_rank_weight": 1.35,
+    "pretrain_neighbor_weight": 0.35,
+    "aux_weight": 0.62,
+    "core_aux_weight": 0.86,
+    "hard_aux_weight": 5.80,
+    "top14_aux_weight": 2.40,
+    "critical_aux_weight": 8.80,
+    "quantile_aux_weight": 3.40,
+    "rank_weight": 0.22,
+    "classification_weight": 0.72,
+    "bad_logit_mix": 5.45,
+    "bad_residual_cap": 3.45,
+    "bad_artifact_floor": 0.48,
+    "bad_artifact_power": 1.00,
+    "artifact_bad_mix": 0.62,
+    "bad_aux_weight": 0.88,
+    "bad_aux_pos_weight": 4.65,
+    "bad_specificity_weight": 6.10,
+    "bad_specificity_margin": 1.30,
+    "selection_bad_stress_weight": 0.42,
+    "lr": 0.000018,
+    "seed": 20261537,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_v5bank_encoderlite_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_v5bank_encoderlite_auxfocus_a050"],
+    # If auxfocus learns the hard SQI axes but underfits class boundaries, this
+    # arm raises classification pressure while keeping specificity guardrails.
+    "pretrain_classification_weight": 0.12,
+    "classification_weight": 0.92,
+    "hard_aux_weight": 4.90,
+    "critical_aux_weight": 7.40,
+    "quantile_aux_weight": 2.80,
+    "rank_weight": 0.18,
+    "class_weight": [1.08, 1.62, 2.95],
+    "bad_logit_mix": 5.85,
+    "bad_residual_cap": 3.70,
+    "bad_artifact_floor": 0.45,
+    "bad_artifact_power": 0.92,
+    "artifact_bad_mix": 0.70,
+    "bad_aux_weight": 1.02,
+    "bad_aux_pos_weight": 5.20,
+    "bad_specificity_weight": 5.20,
+    "bad_specificity_margin": 1.12,
+    "selection_bad_stress_weight": 0.52,
+    "lr": 0.000022,
+    "seed": 20261538,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_v5bank_encoderlite_badguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_v5bank_encoderlite_balanced_a050"],
+    # Bad-recall pressure with an explicit false-bad guard.  Reject if it repeats
+    # the headmix failure mode where medium/good are eaten by bad routing.
+    "pretrain_classification_weight": 0.10,
+    "classification_weight": 0.88,
+    "class_weight": [1.12, 1.66, 3.15],
+    "bad_logit_mix": 6.10,
+    "bad_residual_cap": 3.85,
+    "bad_artifact_floor": 0.42,
+    "bad_artifact_power": 0.88,
+    "artifact_bad_mix": 0.74,
+    "bad_aux_weight": 1.12,
+    "bad_aux_pos_weight": 5.70,
+    "bad_specificity_weight": 5.70,
+    "bad_specificity_margin": 1.24,
+    "selection_bad_stress_weight": 0.56,
+    "selection_stress_precision_weight": 0.25,
+    "lr": 0.000020,
+    "seed": 20261539,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_physioctx_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_eventres_recall_a050"],
+    # Encoder-lite and v5 primitive banks did not improve hard-SQI recovery, so
+    # test the next structural hypothesis: the stable qrsbase encoder needs
+    # explicit waveform-derived physiological context tokens at the classifier
+    # boundary.  The 47-column sidecar is still teacher-only; inference remains
+    # waveform-only.
+    "init_from_candidate": "featurefirst_top20_qrsbase_eventres_recall_a050",
+    "init_skip_mismatch": True,
+    "physio_context_fusion": True,
+    "aux_physio_context_fusion": True,
+    "physio_context_width": 72,
+    "physio_context_layers": 2,
+    "physio_context_heads": 4,
+    "physio_context_hidden": 256,
+    "physio_context_artifact_count": 18,
+    "physio_context_artifact_window": 151,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "physio_context_encoder",
+        "physio_context_project",
+        "class_head",
+        "feature_class_head",
+        "gm_pair_head",
+        "bad_head",
+        "bad_router_head",
+        "aux_head",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "artifact_bad_expert",
+    ],
+    "wide_aux_head": True,
+    "aux_hidden": 256,
+    "aux_pretrain_epochs": 2,
+    "pretrain_classification_weight": 0.14,
+    "pretrain_aux_weight": 1.00,
+    "pretrain_core_aux_weight": 2.20,
+    "pretrain_hard_aux_weight": 8.80,
+    "pretrain_top14_aux_weight": 6.40,
+    "pretrain_critical_aux_weight": 13.00,
+    "pretrain_quantile_aux_weight": 5.00,
+    "pretrain_rank_weight": 0.70,
+    "classification_weight": 1.02,
+    "aux_weight": 0.34,
+    "core_aux_weight": 0.62,
+    "hard_aux_weight": 2.60,
+    "top14_aux_weight": 1.45,
+    "critical_aux_weight": 4.20,
+    "quantile_aux_weight": 1.55,
+    "rank_weight": 0.16,
+    "class_weight": [1.10, 1.62, 2.95],
+    "bad_logit_mix": 1.22,
+    "bad_residual_cap": 3.05,
+    "artifact_bad_mix": 0.54,
+    "artifact_veto_mix": 0.44,
+    "bad_router_weight": 1.05,
+    "bad_router_pos_weight": 5.40,
+    "bad_aux_weight": 0.88,
+    "bad_aux_pos_weight": 4.25,
+    "bad_specificity_weight": 4.85,
+    "bad_specificity_margin": 1.08,
+    "bad_flatlowamp_shell_strength": 0.85,
+    "bad_flatlowamp_shell_prob": 0.28,
+    "selection_stress_bad_flatlowamp_shell_strength": 1.35,
+    "selection_stress_bad_flatlowamp_shell_prob": 1.0,
+    "nonbad_hardneg_strength": 2.65,
+    "selection_stress_nonbad_hardneg_strength": 2.85,
+    "selection_bad_stress_weight": 0.42,
+    "lr": 0.00007,
+    "seed": 20261540,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_physioctx_goodguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_physioctx_balanced_a050"],
+    # Specificity arm: if physio tokens mostly help bad, this checks whether we
+    # can keep good/medium stable instead of repeating false-bad collapse.
+    "pretrain_classification_weight": 0.18,
+    "classification_weight": 1.12,
+    "class_weight": [1.18, 1.72, 2.65],
+    "bad_logit_mix": 1.06,
+    "bad_residual_cap": 2.82,
+    "artifact_bad_mix": 0.46,
+    "artifact_veto_mix": 0.52,
+    "bad_router_weight": 0.92,
+    "bad_aux_weight": 0.72,
+    "bad_aux_pos_weight": 3.65,
+    "bad_specificity_weight": 5.70,
+    "bad_specificity_margin": 1.24,
+    "bad_flatlowamp_shell_strength": 0.65,
+    "bad_flatlowamp_shell_prob": 0.20,
+    "selection_stress_bad_flatlowamp_shell_strength": 1.12,
+    "selection_bad_stress_weight": 0.32,
+    "lr": 0.000075,
+    "seed": 20261541,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_physioctx_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_physioctx_balanced_a050"],
+    # Recall arm: modestly expands controlled bad evidence while retaining the
+    # stable qrsbase good/medium surface and non-bad hard negatives.
+    "pretrain_classification_weight": 0.12,
+    "classification_weight": 0.96,
+    "class_weight": [1.06, 1.56, 3.25],
+    "bad_logit_mix": 1.46,
+    "bad_residual_cap": 3.35,
+    "artifact_bad_mix": 0.64,
+    "artifact_veto_mix": 0.34,
+    "bad_router_weight": 1.18,
+    "bad_aux_weight": 1.04,
+    "bad_aux_pos_weight": 5.05,
+    "bad_specificity_weight": 4.10,
+    "bad_specificity_margin": 0.96,
+    "bad_flatlowamp_shell_strength": 1.15,
+    "bad_flatlowamp_shell_prob": 0.40,
+    "selection_stress_bad_flatlowamp_shell_strength": 1.72,
+    "selection_bad_stress_weight": 0.54,
+    "lr": 0.000065,
+    "seed": 20261542,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_jointcopy_veto_strict_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_jointcopy_strict_a050"],
+    # Follow-up from the jointcopy audit: copied artifact expert can recover
+    # original bad stress, but calibration hurts non-bad specificity.  Keep the
+    # qrsbase GM surface frozen and train a stronger waveform veto so the bad
+    # residual only opens on high-confidence artifact windows.
+    "init_from_candidate": "featurefirst_top20_qrsbase_eventres_recall_a050",
+    "init_artifact_from_candidate": "featurefirst_top20_rawbeat_artifact_auxctx_jointartifact_badrecall_a050",
+    "init_skip_mismatch": True,
+    "freeze_trainable_name_contains": [
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+    ],
+    "final_mode": "bad_artifact_residual",
+    "bad_logit_mix": 5.85,
+    "bad_residual_cap": 3.25,
+    "bad_artifact_floor": 0.48,
+    "bad_artifact_power": 1.05,
+    "bad_artifact_veto_power": 0.72,
+    "artifact_bad_mix": 0.56,
+    "artifact_veto_mix": 0.28,
+    "artifact_veto_weight": 1.42,
+    "artifact_veto_pos_weight": 0.68,
+    "artifact_event_local_weight": 0.92,
+    "bad_aux_weight": 0.72,
+    "bad_aux_pos_weight": 4.00,
+    "bad_specificity_weight": 7.20,
+    "bad_specificity_margin": 1.48,
+    "nonbad_hardneg_strength": 3.20,
+    "selection_stress_nonbad_hardneg_strength": 3.35,
+    "bad_flatlowamp_shell_strength": 0.78,
+    "bad_flatlowamp_shell_prob": 0.24,
+    "selection_stress_bad_flatlowamp_shell_strength": 1.12,
+    "selection_stress_bad_flatlowamp_shell_prob": 1.00,
+    "selection_bad_stress_weight": 0.46,
+    "classification_weight": 0.68,
+    "lr": 0.000045,
+    "seed": 20261543,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_jointcopy_veto_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_jointcopy_veto_strict_a050"],
+    # Slightly more permissive residual with the same veto.  This should beat
+    # strict only if the veto actually separates stress bad from medium hard
+    # negatives.
+    "bad_logit_mix": 6.75,
+    "bad_residual_cap": 3.65,
+    "bad_artifact_floor": 0.45,
+    "bad_artifact_power": 0.92,
+    "bad_artifact_veto_power": 0.58,
+    "artifact_bad_mix": 0.62,
+    "artifact_veto_mix": 0.22,
+    "artifact_veto_weight": 1.28,
+    "bad_aux_weight": 0.86,
+    "bad_aux_pos_weight": 4.70,
+    "bad_specificity_weight": 6.25,
+    "bad_specificity_margin": 1.30,
+    "nonbad_hardneg_strength": 2.95,
+    "selection_bad_stress_weight": 0.54,
+    "lr": 0.000045,
+    "seed": 20261544,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_artbad_jointcopy_veto_badkeep_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_artbad_jointcopy_veto_strict_a050"],
+    # Recall endpoint, still guarded by a veto.  Reject if original_test gains
+    # are only bad recall bought by good/medium collapse.
+    "bad_logit_mix": 7.45,
+    "bad_residual_cap": 4.05,
+    "bad_artifact_floor": 0.42,
+    "bad_artifact_power": 0.84,
+    "bad_artifact_veto_power": 0.42,
+    "artifact_bad_mix": 0.70,
+    "artifact_veto_mix": 0.16,
+    "artifact_veto_weight": 1.08,
+    "bad_aux_weight": 1.02,
+    "bad_aux_pos_weight": 5.45,
+    "bad_specificity_weight": 5.35,
+    "bad_specificity_margin": 1.10,
+    "nonbad_hardneg_strength": 2.70,
+    "selection_bad_stress_weight": 0.62,
+    "lr": 0.000040,
+    "seed": 20261545,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_pseudoaux_strict_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_eventroute_strict_a050"],
+    # The event-route run exposed a teacher-target conflict: augmented
+    # record111-like bad windows kept the original PTB/core-ish aux target, so
+    # the aux head learned to pull bad outliers back toward neutral geometry.
+    # This variant keeps inference waveform-only, but gives augmented bad rows a
+    # synthetic train-quantile pseudo-geometry target during aux supervision.
+    "freeze_trainable_name_contains": [
+        "aux_head",
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+        "bad_router_head",
+    ],
+    "aug_bad_aux_pseudo_geometry": True,
+    "aug_bad_aux_pseudo_mix": 0.78,
+    "aux_weight": 0.20,
+    "core_aux_weight": 0.26,
+    "hard_aux_weight": 1.05,
+    "top14_aux_weight": 0.45,
+    "critical_aux_columns": QRSBASE_BAD_FEATURE_CRITICAL_COLUMNS,
+    "critical_aux_weight": 2.15,
+    "quantile_aux_columns": [
+        "contact_loss_win_ratio",
+        "fatal_or_score",
+        "baseline_step",
+        "flatline_ratio",
+        "sqi_basSQI",
+        "pc2",
+        "pca_margin",
+        "boundary_confidence",
+        "knn_label_purity",
+    ],
+    "quantile_aux_weight": 0.45,
+    "pretrain_aux_weight": 0.24,
+    "pretrain_core_aux_weight": 0.30,
+    "pretrain_hard_aux_weight": 1.20,
+    "pretrain_top14_aux_weight": 0.52,
+    "pretrain_critical_aux_weight": 2.45,
+    "pretrain_quantile_aux_weight": 0.52,
+    "classification_weight": 0.52,
+    "artifact_bad_mix": 0.34,
+    "artifact_veto_mix": 0.62,
+    "artifact_veto_weight": 0.94,
+    "bad_router_weight": 0.86,
+    "bad_router_pos_weight": 4.45,
+    "bad_aux_weight": 0.70,
+    "bad_aux_pos_weight": 3.55,
+    "bad_specificity_weight": 5.35,
+    "bad_specificity_margin": 1.18,
+    "bad_record111_burst_dropout_strength": 2.35,
+    "bad_record111_burst_dropout_prob": 0.42,
+    "bad_impulse_reset_strength": 1.52,
+    "bad_impulse_reset_prob": 0.24,
+    "bad_intermittent_contact_strength": 1.55,
+    "bad_intermittent_contact_prob": 0.46,
+    "nonbad_hardneg_strength": 2.70,
+    "selection_bad_stress_weight": 0.42,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.85,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.95,
+    "selection_stress_bad_impulse_reset_strength": 1.95,
+    "selection_stress_bad_impulse_reset_prob": 0.72,
+    "lr": 0.00007,
+    "seed": 20261490,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_pseudoaux_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_pseudoaux_strict_a050"],
+    # More aux pressure and a modestly more permissive route; reject if medium
+    # false-bad grows faster than bad_outlier recovery.
+    "aug_bad_aux_pseudo_mix": 0.86,
+    "aux_weight": 0.26,
+    "core_aux_weight": 0.32,
+    "hard_aux_weight": 1.35,
+    "top14_aux_weight": 0.58,
+    "critical_aux_weight": 2.70,
+    "quantile_aux_weight": 0.62,
+    "pretrain_aux_weight": 0.30,
+    "pretrain_core_aux_weight": 0.38,
+    "pretrain_hard_aux_weight": 1.58,
+    "pretrain_top14_aux_weight": 0.68,
+    "pretrain_critical_aux_weight": 3.10,
+    "pretrain_quantile_aux_weight": 0.72,
+    "classification_weight": 0.60,
+    "gate_logit_alpha": 0.34,
+    "artifact_bad_mix": 0.44,
+    "artifact_bad_bias_init": -1.30,
+    "artifact_veto_mix": 0.50,
+    "artifact_veto_weight": 0.80,
+    "bad_router_weight": 1.00,
+    "bad_router_pos_weight": 5.05,
+    "bad_router_bias_init": -2.10,
+    "bad_router_event_boost": 1.70,
+    "bad_aux_weight": 0.84,
+    "bad_aux_pos_weight": 4.10,
+    "bad_specificity_weight": 4.45,
+    "bad_specificity_margin": 1.02,
+    "bad_record111_burst_dropout_strength": 2.65,
+    "bad_record111_burst_dropout_prob": 0.52,
+    "bad_impulse_reset_strength": 1.82,
+    "bad_impulse_reset_prob": 0.34,
+    "bad_intermittent_contact_strength": 1.78,
+    "bad_intermittent_contact_prob": 0.56,
+    "nonbad_hardneg_strength": 2.35,
+    "selection_bad_stress_weight": 0.48,
+    "selection_stress_nonbad_hardneg_strength": 2.62,
+    "seed": 20261491,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_pseudoaux_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_pseudoaux_strict_a050"],
+    # Recall endpoint for the pseudo-geometry hypothesis.  This is the stress
+    # test: if it improves raw bad without medium collapse, the missing piece was
+    # teacher-target alignment rather than another head.
+    "aug_bad_aux_pseudo_mix": 0.92,
+    "aux_weight": 0.32,
+    "core_aux_weight": 0.38,
+    "hard_aux_weight": 1.80,
+    "top14_aux_weight": 0.75,
+    "critical_aux_weight": 3.35,
+    "quantile_aux_weight": 0.88,
+    "pretrain_aux_weight": 0.38,
+    "pretrain_core_aux_weight": 0.46,
+    "pretrain_hard_aux_weight": 2.05,
+    "pretrain_top14_aux_weight": 0.92,
+    "pretrain_critical_aux_weight": 3.85,
+    "pretrain_quantile_aux_weight": 1.00,
+    "classification_weight": 0.70,
+    "gate_logit_alpha": 0.42,
+    "artifact_bad_mix": 0.58,
+    "artifact_bad_bias_init": -1.14,
+    "artifact_veto_mix": 0.36,
+    "artifact_veto_weight": 0.62,
+    "artifact_event_local_weight": 0.92,
+    "bad_router_weight": 1.16,
+    "bad_router_pos_weight": 5.75,
+    "bad_router_bias_init": -1.88,
+    "bad_router_event_boost": 2.10,
+    "bad_aux_weight": 1.02,
+    "bad_aux_pos_weight": 4.80,
+    "bad_specificity_weight": 3.62,
+    "bad_specificity_margin": 0.88,
+    "bad_record111_burst_dropout_strength": 2.95,
+    "bad_record111_burst_dropout_prob": 0.62,
+    "bad_impulse_reset_strength": 2.08,
+    "bad_impulse_reset_prob": 0.44,
+    "bad_intermittent_contact_strength": 2.05,
+    "bad_intermittent_contact_prob": 0.64,
+    "nonbad_hardneg_strength": 2.05,
+    "selection_bad_stress_weight": 0.55,
+    "selection_stress_nonbad_hardneg_strength": 2.40,
+    "selection_stress_bad_record111_burst_dropout_strength": 3.15,
+    "selection_stress_bad_record111_burst_dropout_prob": 1.00,
+    "selection_stress_bad_impulse_reset_strength": 2.30,
+    "selection_stress_bad_impulse_reset_prob": 0.88,
+    "seed": 20261492,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_rec111motion_guard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_pseudoaux_strict_a050"],
+    # The pseudo-aux run moved raw bad_outlier only slightly.  The bad-gap
+    # primitive audit says the remaining mismatch is waveform composition:
+    # original record111 stress has channel-1 low/flat runs, channel-0 low-QRS
+    # smooth spans with sparse spikes, and a large channel-2 smooth drift.  This
+    # turns on that PTB-only generation block while keeping a strong non-bad
+    # guard and a frozen qrsbase class surface.
+    "bad_record111_motion_strength": 2.18,
+    "bad_record111_motion_prob": 0.38,
+    "bad_record111_burst_dropout_strength": 1.35,
+    "bad_record111_burst_dropout_prob": 0.22,
+    "bad_impulse_reset_strength": 1.18,
+    "bad_impulse_reset_prob": 0.18,
+    "bad_intermittent_contact_strength": 1.28,
+    "bad_intermittent_contact_prob": 0.34,
+    "nonbad_hardneg_strength": 2.95,
+    "aug_bad_aux_pseudo_mix": 0.84,
+    "classification_weight": 0.56,
+    "artifact_bad_mix": 0.38,
+    "artifact_veto_mix": 0.68,
+    "artifact_veto_weight": 1.08,
+    "bad_router_weight": 0.92,
+    "bad_router_pos_weight": 4.65,
+    "bad_specificity_weight": 5.70,
+    "bad_specificity_margin": 1.24,
+    "selection_bad_stress_weight": 0.44,
+    "selection_stress_bad_record111_motion_strength": 2.45,
+    "selection_stress_bad_record111_motion_prob": 0.88,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.55,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.72,
+    "selection_stress_bad_impulse_reset_strength": 1.35,
+    "selection_stress_bad_impulse_reset_prob": 0.62,
+    "selection_stress_nonbad_hardneg_strength": 3.05,
+    "seed": 20261500,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_rec111motion_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_rec111motion_guard_a050"],
+    # Balanced endpoint: more frequent record111-like composition, but still
+    # more non-bad hard negatives than bad stress so specificity is not bought
+    # by calling every artifact bad.
+    "bad_record111_motion_strength": 2.62,
+    "bad_record111_motion_prob": 0.52,
+    "bad_record111_burst_dropout_strength": 1.52,
+    "bad_record111_burst_dropout_prob": 0.30,
+    "bad_impulse_reset_strength": 1.42,
+    "bad_impulse_reset_prob": 0.26,
+    "bad_intermittent_contact_strength": 1.45,
+    "bad_intermittent_contact_prob": 0.42,
+    "nonbad_hardneg_strength": 2.65,
+    "aug_bad_aux_pseudo_mix": 0.90,
+    "aux_weight": 0.30,
+    "core_aux_weight": 0.36,
+    "hard_aux_weight": 1.62,
+    "top14_aux_weight": 0.66,
+    "critical_aux_weight": 3.00,
+    "quantile_aux_weight": 0.76,
+    "classification_weight": 0.66,
+    "gate_logit_alpha": 0.36,
+    "artifact_bad_mix": 0.50,
+    "artifact_bad_bias_init": -1.22,
+    "artifact_veto_mix": 0.52,
+    "artifact_veto_weight": 0.86,
+    "bad_router_weight": 1.08,
+    "bad_router_pos_weight": 5.25,
+    "bad_router_bias_init": -2.00,
+    "bad_router_event_boost": 1.82,
+    "bad_aux_weight": 0.92,
+    "bad_aux_pos_weight": 4.35,
+    "bad_specificity_weight": 4.62,
+    "bad_specificity_margin": 1.04,
+    "selection_bad_stress_weight": 0.52,
+    "selection_stress_bad_record111_motion_strength": 2.85,
+    "selection_stress_bad_record111_motion_prob": 0.96,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.80,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.82,
+    "selection_stress_bad_impulse_reset_strength": 1.60,
+    "selection_stress_bad_impulse_reset_prob": 0.72,
+    "selection_stress_nonbad_hardneg_strength": 2.80,
+    "seed": 20261501,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_rec111motion_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_rec111motion_guard_a050"],
+    # Recall endpoint for the record111 waveform-composition hypothesis.
+    "bad_record111_motion_strength": 3.05,
+    "bad_record111_motion_prob": 0.68,
+    "bad_record111_burst_dropout_strength": 1.78,
+    "bad_record111_burst_dropout_prob": 0.40,
+    "bad_impulse_reset_strength": 1.75,
+    "bad_impulse_reset_prob": 0.34,
+    "bad_intermittent_contact_strength": 1.68,
+    "bad_intermittent_contact_prob": 0.50,
+    "nonbad_hardneg_strength": 2.35,
+    "aug_bad_aux_pseudo_mix": 0.94,
+    "aux_weight": 0.36,
+    "core_aux_weight": 0.44,
+    "hard_aux_weight": 2.05,
+    "top14_aux_weight": 0.82,
+    "critical_aux_weight": 3.65,
+    "quantile_aux_weight": 1.00,
+    "classification_weight": 0.78,
+    "gate_logit_alpha": 0.46,
+    "artifact_bad_mix": 0.66,
+    "artifact_bad_bias_init": -1.06,
+    "artifact_veto_mix": 0.36,
+    "artifact_veto_weight": 0.66,
+    "artifact_event_local_weight": 1.00,
+    "bad_router_weight": 1.25,
+    "bad_router_pos_weight": 6.05,
+    "bad_router_bias_init": -1.78,
+    "bad_router_event_boost": 2.35,
+    "bad_aux_weight": 1.12,
+    "bad_aux_pos_weight": 5.10,
+    "bad_specificity_weight": 3.70,
+    "bad_specificity_margin": 0.88,
+    "selection_bad_stress_weight": 0.60,
+    "selection_stress_bad_record111_motion_strength": 3.20,
+    "selection_stress_bad_record111_motion_prob": 1.00,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.05,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.90,
+    "selection_stress_bad_impulse_reset_strength": 1.90,
+    "selection_stress_bad_impulse_reset_prob": 0.82,
+    "selection_stress_nonbad_hardneg_strength": 2.55,
+    "seed": 20261502,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_rec111artifactdirect_guard_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_rec111motion_guard_a050"],
+    # record111-motion made the local artifact expert respond on original
+    # bad-outlier rows, but the learned router kept raw bad probability low.
+    # This fixed-mix endpoint tests whether routing suppression is the blocker.
+    "final_mode": "dual_bad_gm_mix",
+    "gate_logit_alpha": 0.22,
+    "artifact_bad_mix": 0.82,
+    "artifact_veto_mix": 0.24,
+    "artifact_veto_weight": 0.70,
+    "bad_aux_weight": 0.74,
+    "bad_aux_pos_weight": 3.85,
+    "bad_specificity_weight": 5.15,
+    "bad_specificity_margin": 1.18,
+    "bad_router_weight": 0.0,
+    "classification_weight": 0.62,
+    "selection_bad_stress_weight": 0.40,
+    "seed": 20261510,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_rec111artifactdirect_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_rec111motion_balanced_a050"],
+    "final_mode": "dual_bad_gm_mix",
+    "gate_logit_alpha": 0.30,
+    "artifact_bad_mix": 1.02,
+    "artifact_veto_mix": 0.18,
+    "artifact_veto_weight": 0.58,
+    "bad_aux_weight": 0.92,
+    "bad_aux_pos_weight": 4.55,
+    "bad_specificity_weight": 4.25,
+    "bad_specificity_margin": 1.00,
+    "bad_router_weight": 0.0,
+    "classification_weight": 0.72,
+    "selection_bad_stress_weight": 0.50,
+    "seed": 20261511,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_rec111artifactdirect_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_rec111motion_recall_a050"],
+    "final_mode": "dual_bad_gm_mix",
+    "gate_logit_alpha": 0.38,
+    "artifact_bad_mix": 1.24,
+    "artifact_veto_mix": 0.12,
+    "artifact_veto_weight": 0.44,
+    "bad_aux_weight": 1.12,
+    "bad_aux_pos_weight": 5.40,
+    "bad_specificity_weight": 3.35,
+    "bad_specificity_margin": 0.84,
+    "bad_router_weight": 0.0,
+    "classification_weight": 0.84,
+    "selection_bad_stress_weight": 0.62,
+    "seed": 20261512,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_rec111encoderlite_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_rec111artifactdirect_balanced_a050"],
+    # If direct artifact routing helps only after calibration, the frozen
+    # qrsbase encoder likely lacks a separable representation for record111
+    # stress.  This unfreezes only tokenizer/global-stat projection, the last
+    # Transformer block, and the heads; it is still waveform-only and avoids a
+    # broad full-model drift.
+    "freeze_trainable_name_contains": [
+        "encoder.patch_proj",
+        "encoder.patch_stat_proj",
+        "encoder.scale_stat_proj",
+        "encoder.global_stat",
+        "encoder.encoder.layers.3",
+        "project",
+        "class_head",
+        "feature_class_head",
+        "gm_pair_head",
+        "aux_head",
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+    ],
+    "lr": 2.6e-5,
+    "classification_weight": 0.92,
+    "gm_pair_weight": 0.10,
+    "aux_weight": 0.26,
+    "core_aux_weight": 0.32,
+    "hard_aux_weight": 1.45,
+    "critical_aux_weight": 2.70,
+    "quantile_aux_weight": 0.62,
+    "bad_specificity_weight": 4.70,
+    "bad_specificity_margin": 1.08,
+    "selection_bad_stress_weight": 0.46,
+    "seed": 20261520,
+}
+
+CANDIDATES["featurefirst_top20_qrsbase_rec111encoderlite_recall_a050"] = {
+    **CANDIDATES["featurefirst_top20_qrsbase_rec111encoderlite_balanced_a050"],
+    "gate_logit_alpha": 0.34,
+    "artifact_bad_mix": 1.14,
+    "artifact_veto_mix": 0.14,
+    "bad_aux_weight": 1.08,
+    "bad_aux_pos_weight": 5.10,
+    "bad_specificity_weight": 3.75,
+    "bad_specificity_margin": 0.92,
+    "selection_bad_stress_weight": 0.58,
+    "lr": 2.2e-5,
+    "seed": 20261521,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_qfeatbin_a050"] = {
+    **CANDIDATES["featurefirst_top20_hardrec_qfeatbin_qrsbase_a050"],
+    # Same loss contract as the current waveform frontier, but replace compact
+    # event summaries with raw beat/RR sequence tokens.  This tests whether
+    # qrs_visibility and detector_agreement need event-level morphology rather
+    # than global primitive summaries.
+    "arch": "rawbeat_sqi_query_multiscale_patch_teacher_atlas",
+    "event_count": 18,
+    "event_window": 101,
+    "width": 96,
+    "layers": 4,
+    "heads": 4,
+    "seed": 20261281,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_qfeatbin_wide_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_qfeatbin_a050"],
+    # Slightly wider raw-beat token capacity; keep all other pressures fixed
+    # so any gain can be attributed mostly to event token representation.
+    "width": 128,
+    "stat_hidden": 256,
+    "event_count": 20,
+    "event_window": 121,
+    "lr": 0.00010,
+    "seed": 20261282,
+}
+
+CANDIDATES["featurefirst_top20_qfeatbin_record111_dual_a050"] = {
+    **CANDIDATES["featurefirst_top20_hardrec_qfeatbin_qrsbase_a050"],
+    # Start from the strongest QRS/detector recovery base, then attach a
+    # separate qrs_stress_v5 bad expert for record111-like outliers.  This
+    # avoids letting rawbeat/artifact tokens rewrite the good/medium surface.
+    "final_mode": "dual_bad_gm_mix",
+    "gate_logit_alpha": 0.36,
+    "bad_gate_bias_init": -1.16,
+    "primitive_bad_bank": "qrs_stress_v5",
+    "primitive_bad_mix": 0.82,
+    "class_weight": [1.12, 1.60, 3.05],
+    "gm_pair_weight": 1.08,
+    "bad_aux_weight": 0.78,
+    "bad_aux_pos_weight": 3.85,
+    "stress_aux_weight": 0.50,
+    "stress_aux_pos_weight": 3.8,
+    "pretrain_stress_aux_weight": 0.18,
+    "stress_bad_logit_mix": 0.045,
+    "bad_specificity_weight": 1.70,
+    "bad_specificity_margin": 0.62,
+    "bad_record111_motion_strength": 2.10,
+    "bad_record111_motion_prob": 0.16,
+    "bad_record111_burst_dropout_strength": 1.45,
+    "bad_record111_burst_dropout_prob": 0.12,
+    "bad_impulse_reset_strength": 1.45,
+    "bad_impulse_reset_prob": 0.12,
+    "bad_intermittent_contact_strength": 1.18,
+    "bad_intermittent_contact_prob": 0.36,
+    "nonbad_hardneg_strength": 1.18,
+    "subject111_shift_strength": 1.10,
+    "aug_aux_weight_nonbad": 0.22,
+    "selection_bad_stress_weight": 0.30,
+    "selection_stress_nonbad_hardneg_strength": 1.28,
+    "selection_subject111_shift_strength": 1.05,
+    "selection_stress_bad_record111_motion_strength": 2.25,
+    "selection_stress_bad_record111_motion_prob": 0.85,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.70,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.78,
+    "selection_stress_bad_impulse_reset_strength": 1.65,
+    "selection_stress_bad_impulse_reset_prob": 0.70,
+    "selection_stress_bad_intermittent_contact_strength": 1.38,
+    "selection_stress_bad_intermittent_contact_prob": 0.56,
+    "seed": 20261290,
+}
+
+CANDIDATES["featuregate_top20_artifactbadonly_guard_a050_bneg"] = {
+    **CANDIDATES["featuregate_top20_shift_stress_goodguard_a050_bneg"],
+    # Keep the strongest featuregate/QRS good-medium surface, but route local
+    # artifact-event evidence only into the bad gate.  This tests whether the
+    # record111 bad-outlier signal can be learned without contaminating GM.
+    "artifact_bad_only": True,
+    "artifact_bad_count": 12,
+    "artifact_bad_window": 151,
+    "artifact_bad_width": 64,
+    "artifact_bad_layers": 1,
+    "artifact_bad_heads": 4,
+    "artifact_bad_mix": 0.54,
+    "artifact_bad_bias_init": -1.55,
+    "gate_logit_alpha": 0.30,
+    "bad_gate_bias_init": -1.46,
+    "class_weight": [1.22, 1.50, 2.95],
+    "bad_aux_weight": 0.78,
+    "bad_aux_pos_weight": 4.15,
+    "stress_aux_weight": 0.56,
+    "stress_aux_pos_weight": 4.25,
+    "stress_bad_logit_mix": 0.075,
+    "bad_specificity_weight": 3.85,
+    "bad_specificity_margin": 0.88,
+    "selection_bad_stress_weight": 0.24,
+    "selection_stress_nonbad_hardneg_strength": 1.35,
+    "selection_stress_bad_record111_motion_strength": 2.30,
+    "selection_stress_bad_record111_motion_prob": 0.88,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.76,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.82,
+    "selection_stress_bad_impulse_reset_strength": 1.70,
+    "selection_stress_bad_impulse_reset_prob": 0.76,
+    "seed": 20261291,
+}
+
+CANDIDATES["featuregate_top20_artifactbadonly_artgate_a050_bneg"] = {
+    **CANDIDATES["featuregate_top20_artifactbadonly_guard_a050_bneg"],
+    # Report-only logit audit showed artifact_bad_logit carries the cleanest
+    # bad-outlier signal, while stress_logit creates most false-bad pressure.
+    # Make the final bad path artifact-dominant and keep stress as an auxiliary
+    # training target rather than a strong logit contributor.
+    "artifact_bad_mix": 1.45,
+    "artifact_bad_bias_init": -0.45,
+    "primitive_bad_mix": 0.35,
+    "stress_bad_logit_mix": 0.0,
+    "gate_logit_alpha": 0.36,
+    "bad_gate_bias_init": -1.34,
+    "bad_aux_weight": 0.74,
+    "bad_aux_pos_weight": 3.75,
+    "stress_aux_weight": 0.50,
+    "stress_aux_pos_weight": 3.7,
+    "bad_specificity_weight": 4.10,
+    "bad_specificity_margin": 0.92,
+    "selection_bad_stress_weight": 0.28,
+    "selection_stress_nonbad_hardneg_strength": 1.50,
+    "selection_subject111_shift_strength": 1.20,
+    "selection_stress_bad_record111_motion_strength": 2.42,
+    "selection_stress_bad_record111_motion_prob": 0.90,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.84,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.84,
+    "selection_stress_bad_impulse_reset_strength": 1.78,
+    "selection_stress_bad_impulse_reset_prob": 0.78,
+    "seed": 20261293,
+}
+
+CANDIDATES["featuregate_top20_artifactbadonly_midgate_mediumguard_a050"] = {
+    **CANDIDATES["featuregate_top20_artifactbadonly_guard_a050_bneg"],
+    # Middle point between conservative guard and artifact-dominant gate.  The
+    # dominant run improved bad_outlier but ate medium; this keeps artifact as
+    # the main stress evidence while explicitly strengthening GM/medium.
+    "artifact_bad_mix": 0.95,
+    "artifact_bad_bias_init": -0.82,
+    "primitive_bad_mix": 0.45,
+    "stress_bad_logit_mix": 0.015,
+    "gate_logit_alpha": 0.28,
+    "bad_gate_bias_init": -1.48,
+    "class_weight": [1.20, 1.68, 2.72],
+    "gm_pair_weight": 1.26,
+    "bad_aux_weight": 0.68,
+    "bad_aux_pos_weight": 3.35,
+    "stress_aux_weight": 0.48,
+    "stress_aux_pos_weight": 3.45,
+    "bad_specificity_weight": 4.35,
+    "bad_specificity_margin": 0.98,
+    "nonbad_hardneg_strength": 1.15,
+    "subject111_shift_strength": 1.50,
+    "aug_aux_weight_nonbad": 0.34,
+    "selection_bad_stress_weight": 0.22,
+    "selection_stress_nonbad_hardneg_strength": 1.70,
+    "selection_subject111_shift_strength": 1.45,
+    "selection_stress_bad_record111_motion_strength": 2.24,
+    "selection_stress_bad_record111_motion_prob": 0.78,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.62,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.68,
+    "selection_stress_bad_impulse_reset_strength": 1.58,
+    "selection_stress_bad_impulse_reset_prob": 0.62,
+    "seed": 20261294,
+}
+
+CANDIDATES["featuregate_top20_artifactbadonly_veto_guard_a050"] = {
+    **CANDIDATES["featuregate_top20_artifactbadonly_guard_a050_bneg"],
+    # Add an artifact-token non-bad veto head.  The bad expert sees local
+    # artifact windows, while the veto learns synthetic good/medium artifact
+    # hard negatives so bad expansion does not consume the GM boundary.
+    "artifact_bad_mix": 0.72,
+    "artifact_bad_bias_init": -1.20,
+    "artifact_veto_mix": 0.62,
+    "artifact_veto_bias_init": 0.30,
+    "artifact_veto_weight": 0.86,
+    "artifact_veto_pos_weight": 0.75,
+    "pretrain_artifact_veto_weight": 0.28,
+    "gate_logit_alpha": 0.30,
+    "bad_gate_bias_init": -1.42,
+    "class_weight": [1.20, 1.58, 2.88],
+    "gm_pair_weight": 1.18,
+    "bad_aux_weight": 0.72,
+    "bad_aux_pos_weight": 3.70,
+    "bad_specificity_weight": 4.25,
+    "bad_specificity_margin": 0.96,
+    "stress_bad_logit_mix": 0.035,
+    "nonbad_hardneg_strength": 1.45,
+    "subject111_shift_strength": 1.32,
+    "aug_aux_weight_nonbad": 0.32,
+    "selection_bad_stress_weight": 0.24,
+    "selection_stress_nonbad_hardneg_strength": 1.75,
+    "selection_subject111_shift_strength": 1.32,
+    "selection_stress_bad_record111_motion_strength": 2.34,
+    "selection_stress_bad_record111_motion_prob": 0.84,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.78,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.76,
+    "selection_stress_bad_impulse_reset_strength": 1.72,
+    "selection_stress_bad_impulse_reset_prob": 0.70,
+    "seed": 20261296,
+}
+
+CANDIDATES["featurefirst_top20_qfeatbin_artifactbadonly_a050"] = {
+    **CANDIDATES["featurefirst_top20_hardrec_qfeatbin_qrsbase_a050"],
+    # Control arm from the best QRS/detector-recovery base: no shared artifact
+    # tokens, only a separate event-artifact bad expert.
+    "final_mode": "dual_bad_gm_mix",
+    "gate_logit_alpha": 0.34,
+    "bad_gate_bias_init": -1.32,
+    "gm_pair_weight": 1.10,
+    "artifact_bad_only": True,
+    "artifact_bad_count": 14,
+    "artifact_bad_window": 151,
+    "artifact_bad_width": 64,
+    "artifact_bad_layers": 1,
+    "artifact_bad_heads": 4,
+    "artifact_bad_mix": 0.68,
+    "artifact_bad_bias_init": -1.48,
+    "class_weight": [1.12, 1.60, 3.00],
+    "bad_aux_weight": 0.84,
+    "bad_aux_pos_weight": 4.45,
+    "stress_aux_weight": 0.56,
+    "stress_aux_pos_weight": 4.35,
+    "pretrain_stress_aux_weight": 0.20,
+    "stress_bad_logit_mix": 0.070,
+    "bad_specificity_weight": 2.30,
+    "bad_specificity_margin": 0.72,
+    "bad_record111_motion_strength": 2.10,
+    "bad_record111_motion_prob": 0.16,
+    "bad_record111_burst_dropout_strength": 1.45,
+    "bad_record111_burst_dropout_prob": 0.12,
+    "bad_impulse_reset_strength": 1.45,
+    "bad_impulse_reset_prob": 0.12,
+    "bad_intermittent_contact_strength": 1.22,
+    "bad_intermittent_contact_prob": 0.36,
+    "nonbad_hardneg_strength": 1.20,
+    "subject111_shift_strength": 1.12,
+    "aug_aux_weight_nonbad": 0.22,
+    "selection_bad_stress_weight": 0.30,
+    "selection_stress_nonbad_hardneg_strength": 1.30,
+    "selection_subject111_shift_strength": 1.08,
+    "selection_stress_bad_record111_motion_strength": 2.35,
+    "selection_stress_bad_record111_motion_prob": 0.88,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.76,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.82,
+    "selection_stress_bad_impulse_reset_strength": 1.70,
+    "selection_stress_bad_impulse_reset_prob": 0.76,
+    "seed": 20261292,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_qfeatbin_a050"],
+    # Raw-beat solved core bad but missed original bad-outlier stress.  Add
+    # waveform-only artifact event tokens for jump/reset/flat/dropout windows,
+    # while keeping bad pressure moderate so good/medium do not collapse.
+    "arch": "rawbeat_artifact_sqi_query_multiscale_patch_teacher_atlas",
+    "event_count": 16,
+    "event_window": 101,
+    "artifact_count": 16,
+    "artifact_window": 151,
+    "class_weight": [1.08, 1.58, 3.05],
+    "bad_aux_weight": 0.86,
+    "bad_aux_pos_weight": 4.4,
+    "bad_specificity_weight": 3.05,
+    "bad_specificity_margin": 0.80,
+    "selection_bad_stress_weight": 0.22,
+    "seed": 20261283,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_badguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_balanced_a050"],
+    # Same tokenizer, stronger bad-stress pressure plus stronger non-bad
+    # specificity.  This tests whether stress recall can rise without the
+    # old failure mode of marking too many good/medium rows as bad.
+    "class_weight": [1.04, 1.50, 3.45],
+    "bad_aux_weight": 1.05,
+    "bad_aux_pos_weight": 5.2,
+    "bad_specificity_weight": 3.60,
+    "bad_specificity_margin": 0.88,
+    "bad_outlier_aug_strength": 1.20,
+    "bad_stress_shell_strength": 2.15,
+    "bad_intermittent_contact_strength": 1.85,
+    "selection_bad_stress_weight": 0.32,
+    "selection_stress_bad_stress_shell_strength": 2.25,
+    "selection_stress_bad_intermittent_contact_strength": 1.95,
+    "seed": 20261284,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_nonbadguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_balanced_a050"],
+    # Conservative artifact gate: keep a small set of artifact windows for
+    # stress visibility, but train harder on non-bad artifact/record111-like
+    # shifts so the model does not spend good/medium recall to buy bad recall.
+    "artifact_count": 10,
+    "artifact_window": 151,
+    "class_weight": [1.10, 1.62, 2.65],
+    "bad_aux_weight": 0.72,
+    "bad_aux_pos_weight": 3.4,
+    "bad_specificity_weight": 4.10,
+    "bad_specificity_margin": 0.92,
+    "nonbad_hardneg_strength": 1.45,
+    "subject111_shift_strength": 1.65,
+    "aug_aux_weight_nonbad": 0.34,
+    "bad_outlier_aug_strength": 0.65,
+    "bad_stress_shell_strength": 0.70,
+    "selection_bad_stress_weight": 0.12,
+    "selection_stress_nonbad_hardneg_strength": 1.70,
+    "selection_subject111_shift_strength": 1.55,
+    "seed": 20261285,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_dualstress_mix_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_balanced_a050"],
+    # Balanced artifact tokens can see original bad-stress, but the ordinary
+    # 3-class head spends too much good/medium precision to use it.  Split the
+    # decision into P(bad) and P(good/medium | non-bad), then mix it back
+    # conservatively while exposing a sparse record111-like reset/dropout slice.
+    "final_mode": "dual_bad_gm_mix",
+    "gate_logit_alpha": 0.52,
+    "bad_gate_bias_init": -0.92,
+    "artifact_count": 16,
+    "artifact_window": 151,
+    "class_weight": [1.08, 1.56, 3.10],
+    "gm_pair_weight": 1.08,
+    "bad_aux_weight": 0.84,
+    "bad_aux_pos_weight": 4.15,
+    "stress_aux_weight": 0.54,
+    "stress_aux_pos_weight": 4.0,
+    "pretrain_stress_aux_weight": 0.20,
+    "stress_bad_logit_mix": 0.055,
+    "bad_specificity_weight": 1.70,
+    "bad_specificity_margin": 0.60,
+    "bad_record111_motion_strength": 2.05,
+    "bad_record111_motion_prob": 0.16,
+    "bad_record111_burst_dropout_strength": 1.45,
+    "bad_record111_burst_dropout_prob": 0.12,
+    "bad_impulse_reset_strength": 1.45,
+    "bad_impulse_reset_prob": 0.12,
+    "bad_intermittent_contact_strength": 1.25,
+    "bad_intermittent_contact_prob": 0.38,
+    "nonbad_hardneg_strength": 1.18,
+    "subject111_shift_strength": 1.15,
+    "aug_aux_weight_nonbad": 0.22,
+    "selection_bad_stress_weight": 0.34,
+    "selection_stress_nonbad_hardneg_strength": 1.25,
+    "selection_subject111_shift_strength": 1.10,
+    "selection_stress_bad_record111_motion_strength": 2.25,
+    "selection_stress_bad_record111_motion_prob": 0.85,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.70,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.80,
+    "selection_stress_bad_impulse_reset_strength": 1.65,
+    "selection_stress_bad_impulse_reset_prob": 0.70,
+    "selection_stress_bad_intermittent_contact_strength": 1.45,
+    "selection_stress_bad_intermittent_contact_prob": 0.60,
+    "seed": 20261286,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_dualstress_replace_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_dualstress_mix_a050"],
+    # Hard composition control arm.  Only run this if the conservative mix
+    # underuses the bad expert; it is expected to be more brittle on non-bad.
+    "final_mode": "dual_bad_gm_replace",
+    "bad_gate_bias_init": -1.05,
+    "class_weight": [1.10, 1.58, 2.95],
+    "gm_pair_weight": 1.16,
+    "bad_aux_weight": 0.76,
+    "bad_aux_pos_weight": 3.75,
+    "bad_specificity_weight": 1.95,
+    "bad_specificity_margin": 0.66,
+    "stress_bad_logit_mix": 0.035,
+    "selection_bad_stress_weight": 0.30,
+    "selection_stress_nonbad_hardneg_strength": 1.38,
+    "seed": 20261287,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_primctx_dual_specific_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_dualstress_mix_a050"],
+    # Add a Transformer context over waveform-computable qrs_stress_v5
+    # primitives.  The previous artifact dual run learned pca_margin/detail but
+    # still weakly recovered qrs_visibility, detector_agreement, baseline_step
+    # and basSQI.  This feeds those waveform-derived summaries as internal
+    # tokens while narrowing the final bad gate for non-bad specificity.
+    "primitive_context_fusion": True,
+    "aux_primitive_context_fusion": True,
+    "primitive_context_bank": "qrs_stress_v5",
+    "primitive_context_width": 56,
+    "primitive_context_layers": 1,
+    "primitive_context_heads": 4,
+    "primitive_context_hidden": 192,
+    "primitive_context_chunk": 32,
+    "final_mode": "dual_bad_gm_mix",
+    "gate_logit_alpha": 0.36,
+    "bad_gate_bias_init": -1.18,
+    "class_weight": [1.12, 1.62, 2.85],
+    "gm_pair_weight": 1.18,
+    "bad_aux_weight": 0.72,
+    "bad_aux_pos_weight": 3.55,
+    "stress_aux_weight": 0.46,
+    "stress_aux_pos_weight": 3.6,
+    "pretrain_stress_aux_weight": 0.16,
+    "stress_bad_logit_mix": 0.035,
+    "bad_specificity_weight": 2.35,
+    "bad_specificity_margin": 0.74,
+    "bad_record111_motion_strength": 1.90,
+    "bad_record111_motion_prob": 0.14,
+    "bad_record111_burst_dropout_strength": 1.34,
+    "bad_record111_burst_dropout_prob": 0.10,
+    "bad_impulse_reset_strength": 1.32,
+    "bad_impulse_reset_prob": 0.10,
+    "bad_intermittent_contact_strength": 1.10,
+    "bad_intermittent_contact_prob": 0.32,
+    "nonbad_hardneg_strength": 1.38,
+    "subject111_shift_strength": 1.25,
+    "aug_aux_weight_nonbad": 0.28,
+    "selection_bad_stress_weight": 0.24,
+    "selection_stress_nonbad_hardneg_strength": 1.55,
+    "selection_subject111_shift_strength": 1.22,
+    "selection_stress_bad_record111_motion_strength": 2.05,
+    "selection_stress_bad_record111_motion_prob": 0.70,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.52,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.65,
+    "selection_stress_bad_impulse_reset_strength": 1.48,
+    "selection_stress_bad_impulse_reset_prob": 0.58,
+    "selection_stress_bad_intermittent_contact_strength": 1.25,
+    "selection_stress_bad_intermittent_contact_prob": 0.48,
+    "seed": 20261288,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_dual_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_dualstress_mix_a050"],
+    # Primitive context as teacher-side pressure only.  Direct primitive-context
+    # fusion improved some original_all morphology but shifted original_test
+    # medium into good; here the qrs_stress_v5 context can improve auxiliary
+    # recovery without being concatenated into the classification head.
+    "primitive_context_fusion": False,
+    "aux_primitive_context_fusion": True,
+    "primitive_context_bank": "qrs_stress_v5",
+    "primitive_context_width": 56,
+    "primitive_context_layers": 1,
+    "primitive_context_heads": 4,
+    "primitive_context_hidden": 192,
+    "primitive_context_chunk": 32,
+    "final_mode": "dual_bad_gm_mix",
+    "gate_logit_alpha": 0.44,
+    "bad_gate_bias_init": -1.02,
+    "class_weight": [1.10, 1.58, 3.00],
+    "gm_pair_weight": 1.12,
+    "bad_aux_weight": 0.78,
+    "bad_aux_pos_weight": 3.85,
+    "stress_aux_weight": 0.50,
+    "stress_aux_pos_weight": 3.8,
+    "pretrain_stress_aux_weight": 0.18,
+    "stress_bad_logit_mix": 0.045,
+    "bad_specificity_weight": 1.95,
+    "bad_specificity_margin": 0.66,
+    "bad_record111_motion_strength": 2.00,
+    "bad_record111_motion_prob": 0.15,
+    "bad_record111_burst_dropout_strength": 1.40,
+    "bad_record111_burst_dropout_prob": 0.11,
+    "bad_impulse_reset_strength": 1.40,
+    "bad_impulse_reset_prob": 0.11,
+    "bad_intermittent_contact_strength": 1.18,
+    "bad_intermittent_contact_prob": 0.35,
+    "nonbad_hardneg_strength": 1.28,
+    "subject111_shift_strength": 1.18,
+    "aug_aux_weight_nonbad": 0.24,
+    "selection_bad_stress_weight": 0.30,
+    "selection_stress_nonbad_hardneg_strength": 1.38,
+    "selection_subject111_shift_strength": 1.15,
+    "selection_stress_bad_record111_motion_strength": 2.18,
+    "selection_stress_bad_record111_motion_prob": 0.78,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.62,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.72,
+    "selection_stress_bad_impulse_reset_strength": 1.58,
+    "selection_stress_bad_impulse_reset_prob": 0.64,
+    "selection_stress_bad_intermittent_contact_strength": 1.36,
+    "selection_stress_bad_intermittent_contact_prob": 0.55,
+    "seed": 20261289,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_distill_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_dual_balanced_a050"],
+    # Best original-test structure so far used raw beat + artifact tokens with
+    # primitive context only in the auxiliary path. Add synthetic-only feature
+    # teacher KL so waveform logits learn the feature-space decision surface,
+    # not only independent SQI scalar regression.
+    "feature_teacher_columns": TOP20_INTERPRETABLE_FEATURE_COLUMNS,
+    "feature_teacher_distill_weight": 0.48,
+    "pretrain_feature_teacher_distill_weight": 0.90,
+    "feature_teacher_temperature": 1.8,
+    "primitive_teacher_distill_weight": 0.18,
+    "pretrain_primitive_teacher_distill_weight": 0.32,
+    "primitive_teacher_bank": "qrs_stress_v5",
+    "gm_pair_weight": 1.20,
+    "class_weight": [1.12, 1.62, 2.88],
+    "bad_aux_weight": 0.70,
+    "bad_aux_pos_weight": 3.45,
+    "bad_specificity_weight": 2.45,
+    "bad_specificity_margin": 0.76,
+    "selection_bad_stress_weight": 0.20,
+    "selection_stress_nonbad_hardneg_strength": 1.50,
+    "selection_subject111_shift_strength": 1.24,
+    "seed": 20261295,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_veto_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_dual_balanced_a050"],
+    # Preserve the strongest waveform-only GM balance, but give the artifact
+    # bad path an explicit non-bad veto instead of a feature-teacher KL.  This
+    # tests whether bad_outlier can rise without replaying the medium collapse.
+    "artifact_bad_only": True,
+    "artifact_bad_count": 16,
+    "artifact_bad_window": 151,
+    "artifact_bad_width": 64,
+    "artifact_bad_layers": 1,
+    "artifact_bad_heads": 4,
+    "artifact_bad_mix": 0.70,
+    "artifact_bad_bias_init": -1.18,
+    "artifact_veto_mix": 0.58,
+    "artifact_veto_bias_init": 0.28,
+    "artifact_veto_weight": 0.78,
+    "artifact_veto_pos_weight": 0.78,
+    "pretrain_artifact_veto_weight": 0.24,
+    "feature_teacher_distill_weight": 0.0,
+    "pretrain_feature_teacher_distill_weight": 0.0,
+    "primitive_teacher_distill_weight": 0.0,
+    "pretrain_primitive_teacher_distill_weight": 0.0,
+    "gate_logit_alpha": 0.40,
+    "bad_gate_bias_init": -1.10,
+    "class_weight": [1.12, 1.62, 2.92],
+    "gm_pair_weight": 1.20,
+    "bad_aux_weight": 0.74,
+    "bad_aux_pos_weight": 3.70,
+    "bad_specificity_weight": 2.65,
+    "bad_specificity_margin": 0.78,
+    "stress_bad_logit_mix": 0.030,
+    "nonbad_hardneg_strength": 1.45,
+    "subject111_shift_strength": 1.26,
+    "aug_aux_weight_nonbad": 0.30,
+    "selection_bad_stress_weight": 0.28,
+    "selection_stress_nonbad_hardneg_strength": 1.70,
+    "selection_subject111_shift_strength": 1.24,
+    "selection_stress_bad_record111_motion_strength": 2.18,
+    "selection_stress_bad_record111_motion_prob": 0.78,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.62,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.72,
+    "selection_stress_bad_impulse_reset_strength": 1.58,
+    "selection_stress_bad_impulse_reset_prob": 0.64,
+    "seed": 20261297,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_dual_finetune_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_dual_balanced_a050"],
+    # The prior rawbeat/aux-context model spent the whole 6-epoch search inside
+    # auxiliary pretrain.  This variant keeps the architecture but enters a real
+    # classifier fine-tune after two epochs so the waveform representation is
+    # forced to optimize the GM/bad decision surface.
+    "aux_pretrain_epochs": 2,
+    "pretrain_classification_weight": 0.08,
+    "pretrain_gm_pair_weight": 0.08,
+    "pretrain_bad_aux_weight": 0.20,
+    "pretrain_bad_specificity_weight": 0.35,
+    "pretrain_stress_aux_weight": 0.15,
+    "critical_aux_weight": 4.2,
+    "hard_aux_weight": 3.8,
+    "top14_aux_weight": 2.8,
+    "quantile_aux_weight": 1.2,
+    "classification_weight": 1.15,
+    "gm_pair_weight": 1.30,
+    "class_weight": [1.12, 1.70, 2.85],
+    "bad_aux_weight": 0.76,
+    "bad_aux_pos_weight": 3.65,
+    "bad_specificity_weight": 2.85,
+    "bad_specificity_margin": 0.82,
+    "stress_bad_logit_mix": 0.030,
+    "selection_bad_stress_weight": 0.26,
+    "selection_stress_nonbad_hardneg_strength": 1.65,
+    "selection_subject111_shift_strength": 1.24,
+    "seed": 20261298,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_veto_finetune_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_veto_balanced_a050"],
+    # Same non-bad veto structure, but shorter aux pretrain and lighter veto so
+    # the classifier can use artifact evidence without becoming medium-weak.
+    "aux_pretrain_epochs": 2,
+    "pretrain_classification_weight": 0.08,
+    "pretrain_gm_pair_weight": 0.08,
+    "pretrain_bad_aux_weight": 0.20,
+    "pretrain_bad_specificity_weight": 0.35,
+    "pretrain_artifact_veto_weight": 0.18,
+    "critical_aux_weight": 4.4,
+    "hard_aux_weight": 3.9,
+    "top14_aux_weight": 2.8,
+    "quantile_aux_weight": 1.3,
+    "classification_weight": 1.15,
+    "gm_pair_weight": 1.34,
+    "class_weight": [1.12, 1.72, 2.82],
+    "artifact_bad_mix": 0.58,
+    "artifact_veto_mix": 0.34,
+    "artifact_veto_weight": 0.48,
+    "artifact_veto_pos_weight": 0.80,
+    "gate_logit_alpha": 0.34,
+    "bad_gate_bias_init": -1.18,
+    "bad_aux_weight": 0.74,
+    "bad_aux_pos_weight": 3.55,
+    "bad_specificity_weight": 3.05,
+    "bad_specificity_margin": 0.86,
+    "stress_bad_logit_mix": 0.025,
+    "selection_bad_stress_weight": 0.24,
+    "selection_stress_nonbad_hardneg_strength": 1.72,
+    "selection_subject111_shift_strength": 1.24,
+    "seed": 20261299,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_veto_margin_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_veto_finetune_a050"],
+    # The veto-finetune model is the first waveform-only candidate to recover
+    # meaningful original bad recall, but it over-routes artifact-like non-bad
+    # windows into bad.  This keeps the waveform-only contract and lets the
+    # predicted geometry confidence suppress bad takeover where the learned
+    # map says the row is still near a stable non-bad region.
+    "bad_margin_guard": True,
+    "bad_margin_alpha": 0.42,
+    "bad_purity_alpha": 0.38,
+    "bad_boundary_alpha": 0.34,
+    "artifact_bad_mix": 0.50,
+    "artifact_veto_mix": 0.42,
+    "artifact_veto_weight": 0.56,
+    "gate_logit_alpha": 0.30,
+    "gm_pair_weight": 1.46,
+    "class_weight": [1.20, 1.78, 2.68],
+    "bad_specificity_weight": 3.35,
+    "bad_specificity_margin": 0.94,
+    "seed": 20261300,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_veto_margin_badkeep_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_veto_margin_a050"],
+    # Same guard, but keep more bad evidence.  This tells us whether the good
+    # collapse was mostly bad evidence strength or lack of a non-bad veto.
+    "artifact_bad_mix": 0.58,
+    "artifact_veto_mix": 0.36,
+    "artifact_veto_weight": 0.48,
+    "class_weight": [1.16, 1.74, 2.92],
+    "bad_aux_weight": 0.78,
+    "bad_aux_pos_weight": 3.75,
+    "bad_specificity_weight": 3.20,
+    "bad_margin_alpha": 0.34,
+    "bad_purity_alpha": 0.32,
+    "bad_boundary_alpha": 0.28,
+    "seed": 20261301,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_veto_margin_gmguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_veto_margin_a050"],
+    # Bias toward restoring good/medium specificity after the bad-stress expert
+    # has shown it can fire.  If this recovers good while retaining some bad,
+    # the next architecture should expose this guard as a first-class router.
+    "artifact_bad_mix": 0.42,
+    "artifact_veto_mix": 0.50,
+    "artifact_veto_weight": 0.64,
+    "gm_pair_weight": 1.58,
+    "class_weight": [1.26, 1.86, 2.52],
+    "bad_aux_weight": 0.66,
+    "bad_aux_pos_weight": 3.25,
+    "bad_specificity_weight": 3.55,
+    "bad_specificity_margin": 1.02,
+    "bad_margin_alpha": 0.48,
+    "bad_purity_alpha": 0.44,
+    "bad_boundary_alpha": 0.40,
+    "seed": 20261302,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_veto_finetune_a050"],
+    # Dynamic bad expert routing: the dual bad/GM path is no longer mixed into
+    # every row.  A waveform-only router must explicitly allow bad takeover.
+    "final_mode": "dual_bad_gm_routed_mix",
+    "gate_logit_alpha": 0.92,
+    "bad_router_weight": 0.96,
+    "bad_router_pos_weight": 4.2,
+    "pretrain_bad_router_weight": 0.22,
+    "bad_router_bias_init": -1.65,
+    "artifact_bad_mix": 0.64,
+    "artifact_veto_mix": 0.24,
+    "artifact_veto_weight": 0.34,
+    "gm_pair_weight": 1.42,
+    "class_weight": [1.16, 1.72, 2.92],
+    "bad_aux_weight": 0.82,
+    "bad_aux_pos_weight": 3.90,
+    "bad_specificity_weight": 2.75,
+    "bad_specificity_margin": 0.78,
+    "seed": 20261303,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_badkeep_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_balanced_a050"],
+    # More permissive bad route, to test whether the router can retain the bad
+    # recall gains without the good collapse seen in global logit mixing.
+    "bad_router_pos_weight": 4.8,
+    "bad_router_bias_init": -1.50,
+    "artifact_bad_mix": 0.72,
+    "artifact_veto_mix": 0.18,
+    "artifact_veto_weight": 0.28,
+    "class_weight": [1.12, 1.68, 3.12],
+    "bad_aux_weight": 0.88,
+    "bad_aux_pos_weight": 4.15,
+    "bad_specificity_weight": 2.55,
+    "bad_specificity_margin": 0.72,
+    "seed": 20261304,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_gmguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_balanced_a050"],
+    # Conservative route.  This should tell us whether bad can improve above
+    # the old 0.40-0.45 band while restoring the 0.86+ good/medium balance.
+    "bad_router_pos_weight": 3.6,
+    "bad_router_bias_init": -1.90,
+    "artifact_bad_mix": 0.54,
+    "artifact_veto_mix": 0.34,
+    "artifact_veto_weight": 0.44,
+    "gm_pair_weight": 1.56,
+    "class_weight": [1.22, 1.82, 2.66],
+    "bad_aux_weight": 0.72,
+    "bad_aux_pos_weight": 3.45,
+    "bad_specificity_weight": 3.15,
+    "bad_specificity_margin": 0.88,
+    "seed": 20261305,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_event_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_balanced_a050"],
+    # Router learns only event-like bad augmentation, not the whole bad class.
+    # This is closer to original_test bad_outlier_stress, while the class head
+    # and bad head still handle ordinary bad/core.
+    "bad_router_target": "event",
+    "bad_router_event_boost": 2.0,
+    "bad_router_pos_weight": 5.2,
+    "bad_router_bias_init": -2.05,
+    "artifact_bad_mix": 0.68,
+    "artifact_veto_mix": 0.26,
+    "artifact_veto_weight": 0.36,
+    "bad_record111_motion_strength": 2.25,
+    "bad_record111_motion_prob": 0.28,
+    "bad_record111_burst_dropout_strength": 1.75,
+    "bad_record111_burst_dropout_prob": 0.22,
+    "bad_impulse_reset_strength": 1.70,
+    "bad_impulse_reset_prob": 0.18,
+    "bad_intermittent_contact_strength": 1.34,
+    "bad_intermittent_contact_prob": 0.42,
+    "selection_stress_bad_record111_motion_strength": 2.55,
+    "selection_stress_bad_record111_motion_prob": 0.82,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.90,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.76,
+    "selection_stress_bad_impulse_reset_strength": 1.82,
+    "selection_stress_bad_impulse_reset_prob": 0.70,
+    "selection_stress_bad_intermittent_contact_strength": 1.45,
+    "selection_stress_bad_intermittent_contact_prob": 0.62,
+    "seed": 20261306,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_event_badkeep_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_event_balanced_a050"],
+    # More event-permissive, to see whether original bad_outlier_stress can be
+    # raised without recreating the broad good collapse.
+    "bad_router_pos_weight": 6.0,
+    "bad_router_bias_init": -1.85,
+    "bad_router_event_boost": 2.8,
+    "artifact_bad_mix": 0.76,
+    "artifact_veto_mix": 0.18,
+    "artifact_veto_weight": 0.30,
+    "class_weight": [1.12, 1.66, 3.18],
+    "bad_aux_weight": 0.92,
+    "bad_aux_pos_weight": 4.35,
+    "bad_specificity_weight": 2.80,
+    "bad_specificity_margin": 0.76,
+    "seed": 20261307,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_event_mediumguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_event_balanced_a050"],
+    # Event-balanced proves the waveform Transformer can catch original bad
+    # outliers, but it marks too many medium rows as bad.  Push harder on
+    # medium/non-bad hard negatives while keeping the event router narrow.
+    "gm_pair_weight": 1.76,
+    "class_weight": [1.18, 2.10, 2.74],
+    "nonbad_hardneg_strength": 1.95,
+    "subject111_shift_strength": 1.36,
+    "aug_aux_weight_nonbad": 0.38,
+    "artifact_bad_mix": 0.58,
+    "artifact_veto_mix": 0.38,
+    "artifact_veto_weight": 0.54,
+    "bad_router_pos_weight": 4.6,
+    "bad_router_bias_init": -2.25,
+    "bad_router_event_boost": 1.65,
+    "bad_aux_weight": 0.76,
+    "bad_aux_pos_weight": 3.55,
+    "bad_specificity_weight": 3.75,
+    "bad_specificity_margin": 1.02,
+    "selection_stress_nonbad_hardneg_strength": 2.20,
+    "selection_subject111_shift_strength": 1.38,
+    "seed": 20261308,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_event_mediumguard_badkeep_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_event_mediumguard_a050"],
+    # Slightly more permissive event route, for a middle point between
+    # event-balanced bad recall and mediumguard specificity.
+    "artifact_bad_mix": 0.64,
+    "artifact_veto_mix": 0.30,
+    "artifact_veto_weight": 0.44,
+    "bad_router_pos_weight": 5.0,
+    "bad_router_bias_init": -2.05,
+    "bad_router_event_boost": 2.10,
+    "class_weight": [1.16, 2.00, 2.92],
+    "bad_aux_weight": 0.84,
+    "bad_aux_pos_weight": 3.95,
+    "bad_specificity_weight": 3.35,
+    "bad_specificity_margin": 0.92,
+    "seed": 20261309,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_event_midgm_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_event_balanced_a050"],
+    # Narrow bracket between event-balanced (good bad-outlier recall, weak
+    # medium specificity) and mediumguard (better medium, weak bad-outlier).
+    "gm_pair_weight": 1.52,
+    "class_weight": [1.16, 1.88, 2.88],
+    "nonbad_hardneg_strength": 1.28,
+    "subject111_shift_strength": 1.24,
+    "aug_aux_weight_nonbad": 0.30,
+    "artifact_bad_mix": 0.64,
+    "artifact_veto_mix": 0.31,
+    "artifact_veto_weight": 0.43,
+    "bad_router_pos_weight": 4.9,
+    "bad_router_bias_init": -2.08,
+    "bad_router_event_boost": 1.95,
+    "bad_aux_weight": 0.82,
+    "bad_aux_pos_weight": 3.75,
+    "bad_specificity_weight": 3.18,
+    "bad_specificity_margin": 0.88,
+    "selection_stress_nonbad_hardneg_strength": 1.55,
+    "selection_subject111_shift_strength": 1.26,
+    "seed": 20261310,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_event_softveto_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_event_balanced_a050"],
+    # Keep the event route permissive but add a soft non-bad veto, testing
+    # whether false-bad can be reduced without suppressing record111-style bad.
+    "gm_pair_weight": 1.38,
+    "class_weight": [1.14, 1.82, 2.98],
+    "nonbad_hardneg_strength": 1.08,
+    "subject111_shift_strength": 1.18,
+    "aug_aux_weight_nonbad": 0.26,
+    "artifact_bad_mix": 0.70,
+    "artifact_veto_mix": 0.33,
+    "artifact_veto_weight": 0.50,
+    "bad_router_pos_weight": 5.15,
+    "bad_router_bias_init": -1.98,
+    "bad_router_event_boost": 2.20,
+    "bad_aux_weight": 0.88,
+    "bad_aux_pos_weight": 4.05,
+    "bad_specificity_weight": 3.05,
+    "bad_specificity_margin": 0.82,
+    "selection_stress_nonbad_hardneg_strength": 1.35,
+    "selection_subject111_shift_strength": 1.20,
+    "seed": 20261311,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_event_mediumrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_event_balanced_a050"],
+    # Medium-recall bracket: stronger GM/non-bad guard than softveto, but still
+    # less suppressive than the full mediumguard endpoint.
+    "gm_pair_weight": 1.66,
+    "class_weight": [1.17, 2.00, 2.78],
+    "nonbad_hardneg_strength": 1.58,
+    "subject111_shift_strength": 1.30,
+    "aug_aux_weight_nonbad": 0.34,
+    "artifact_bad_mix": 0.61,
+    "artifact_veto_mix": 0.35,
+    "artifact_veto_weight": 0.49,
+    "bad_router_pos_weight": 4.75,
+    "bad_router_bias_init": -2.18,
+    "bad_router_event_boost": 1.78,
+    "bad_aux_weight": 0.78,
+    "bad_aux_pos_weight": 3.65,
+    "bad_specificity_weight": 3.46,
+    "bad_specificity_margin": 0.96,
+    "selection_stress_nonbad_hardneg_strength": 1.85,
+    "selection_subject111_shift_strength": 1.32,
+    "seed": 20261312,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_jointartifact_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_router_event_balanced_a050"],
+    # Previous event-router runs proved the artifact branch can catch original
+    # bad-outlier stress, but using it only as a bad gate confused medium
+    # boundary rows.  Feed the artifact event embedding into the classifier and
+    # aux heads so bad-stress evidence is interpreted jointly with GM context.
+    "artifact_context_fusion": True,
+    "aux_artifact_context_fusion": True,
+    "artifact_bad_mix": 0.40,
+    "artifact_veto_mix": 0.18,
+    "artifact_veto_weight": 0.34,
+    "bad_router_pos_weight": 4.75,
+    "bad_router_event_boost": 1.85,
+    "bad_router_bias_init": -2.15,
+    "gm_pair_weight": 1.62,
+    "class_weight": [1.18, 1.90, 2.62],
+    "bad_aux_weight": 0.78,
+    "bad_aux_pos_weight": 3.70,
+    "bad_specificity_weight": 3.15,
+    "bad_specificity_margin": 0.88,
+    "nonbad_hardneg_strength": 1.25,
+    "selection_stress_nonbad_hardneg_strength": 1.55,
+    "seed": 20261313,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_jointartifact_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_jointartifact_a050"],
+    # More permissive bad-stress endpoint.  If this wins, the structure was
+    # bottlenecked by suppressed bad evidence; if it collapses, the next step is
+    # stricter medium hard-negative routing.
+    "artifact_bad_mix": 0.54,
+    "artifact_veto_mix": 0.14,
+    "bad_router_pos_weight": 5.15,
+    "bad_router_event_boost": 2.15,
+    "bad_router_bias_init": -1.98,
+    "gm_pair_weight": 1.48,
+    "class_weight": [1.12, 1.82, 2.95],
+    "bad_aux_weight": 0.88,
+    "bad_aux_pos_weight": 4.05,
+    "bad_specificity_weight": 2.75,
+    "bad_specificity_margin": 0.80,
+    "nonbad_hardneg_strength": 1.05,
+    "selection_stress_nonbad_hardneg_strength": 1.30,
+    "seed": 20261314,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_jointartifact_mediumguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_jointartifact_a050"],
+    # More conservative bad route with stronger GM/non-bad pressure.  This is
+    # the test for whether artifact context can preserve bad evidence while
+    # preventing the original medium boundary from becoming false bad.
+    "artifact_bad_mix": 0.34,
+    "artifact_veto_mix": 0.28,
+    "artifact_veto_weight": 0.46,
+    "bad_router_pos_weight": 4.35,
+    "bad_router_event_boost": 1.55,
+    "bad_router_bias_init": -2.28,
+    "gm_pair_weight": 1.78,
+    "class_weight": [1.20, 2.04, 2.48],
+    "bad_aux_weight": 0.70,
+    "bad_aux_pos_weight": 3.40,
+    "bad_specificity_weight": 3.70,
+    "bad_specificity_margin": 1.02,
+    "nonbad_hardneg_strength": 1.55,
+    "selection_stress_nonbad_hardneg_strength": 1.92,
+    "seed": 20261315,
+}
+
 CANDIDATES["featurefirst_top20_hardrec_qrsfocus_a050"] = {
     **CANDIDATES["featurefirst_top20_hardrec_a050"],
     # QRS/baseline-focused control arm for the features that remain weakest on
@@ -4999,6 +10756,1942 @@ CANDIDATES["predtop20_qrsbank_impulsebad_dual_p20"] = {
     "seed": 20261025,
 }
 
+CANDIDATES["predtop20_qrsbank_artifactctx_event_balanced"] = {
+    **CANDIDATES["predtop20_qrsbank_impulsebad_dual_p20"],
+    # QRS/stat tokens give the best original-domain recovery of waveform facts
+    # (pc1, pca_margin, flatline, baseline/detail), but miss record111
+    # bad-outlier events.  Add a small artifact-event Transformer as context,
+    # not as a hard replacement classifier, and allow classifier fine-tuning.
+    "aux_pretrain_epochs": 2,
+    "pretrain_classification_weight": 0.10,
+    "pretrain_gm_pair_weight": 0.10,
+    "artifact_bad_only": True,
+    "artifact_bad_count": 16,
+    "artifact_bad_window": 151,
+    "artifact_bad_width": 64,
+    "artifact_bad_layers": 1,
+    "artifact_bad_heads": 4,
+    "artifact_context_fusion": True,
+    "aux_artifact_context_fusion": True,
+    "artifact_bad_mix": 0.36,
+    "artifact_bad_bias_init": -1.35,
+    "artifact_veto_mix": 0.18,
+    "artifact_veto_bias_init": 0.28,
+    "artifact_veto_weight": 0.32,
+    "final_mode": "dual_bad_gm_routed_mix",
+    "bad_router_target": "event",
+    "bad_router_event_boost": 1.75,
+    "bad_router_pos_weight": 4.65,
+    "bad_router_bias_init": -2.15,
+    "gate_logit_alpha": 0.32,
+    "gm_pair_weight": 1.48,
+    "classification_weight": 1.12,
+    "class_weight": [1.15, 1.82, 2.58],
+    "bad_aux_weight": 0.74,
+    "bad_aux_pos_weight": 3.55,
+    "bad_specificity_weight": 2.55,
+    "bad_specificity_margin": 0.82,
+    "nonbad_hardneg_strength": 1.25,
+    "selection_stress_nonbad_hardneg_strength": 1.55,
+    "seed": 20261316,
+}
+
+CANDIDATES["predtop20_qrsbank_artifactctx_event_badrecall"] = {
+    **CANDIDATES["predtop20_qrsbank_artifactctx_event_balanced"],
+    # Bad-recall endpoint: keep the qrsbank GM structure but make artifact
+    # evidence more permissive to test whether bad_outlier can rise without
+    # the good collapse seen in the raw jointartifact model.
+    "artifact_bad_mix": 0.52,
+    "artifact_veto_mix": 0.12,
+    "bad_router_event_boost": 2.15,
+    "bad_router_pos_weight": 5.15,
+    "bad_router_bias_init": -1.95,
+    "gate_logit_alpha": 0.38,
+    "gm_pair_weight": 1.34,
+    "class_weight": [1.10, 1.72, 2.95],
+    "bad_aux_weight": 0.86,
+    "bad_aux_pos_weight": 4.05,
+    "bad_specificity_weight": 2.20,
+    "bad_specificity_margin": 0.72,
+    "nonbad_hardneg_strength": 1.05,
+    "selection_stress_nonbad_hardneg_strength": 1.28,
+    "seed": 20261317,
+}
+
+CANDIDATES["predtop20_qrsbank_artifactctx_event_mediumguard"] = {
+    **CANDIDATES["predtop20_qrsbank_artifactctx_event_balanced"],
+    # Specificity endpoint: stronger medium/non-bad pressure to see whether the
+    # qrsbank structure can preserve medium while still learning some
+    # bad-outlier stress.
+    "artifact_bad_mix": 0.30,
+    "artifact_veto_mix": 0.28,
+    "artifact_veto_weight": 0.44,
+    "bad_router_event_boost": 1.45,
+    "bad_router_pos_weight": 4.25,
+    "bad_router_bias_init": -2.32,
+    "gate_logit_alpha": 0.26,
+    "gm_pair_weight": 1.70,
+    "class_weight": [1.20, 2.00, 2.42],
+    "bad_aux_weight": 0.66,
+    "bad_aux_pos_weight": 3.25,
+    "bad_specificity_weight": 3.20,
+    "bad_specificity_margin": 0.96,
+    "nonbad_hardneg_strength": 1.55,
+    "selection_stress_nonbad_hardneg_strength": 1.90,
+    "seed": 20261318,
+}
+
+CANDIDATES["predtop20_qrsbank_qfeatbin_p20"] = {
+    **CANDIDATES["predtop20_qrsbank_impulsebad_dual_p20"],
+    # The qrsbank encoder best recovers waveform-computable axes, but
+    # qrs_visibility is still weak.  Add quantile-direction supervision for
+    # QRS/baseline reliability so the model learns low/mid/high ordering
+    # instead of only z-value regression.
+    "aux_pretrain_epochs": 2,
+    "pretrain_classification_weight": 0.10,
+    "pretrain_gm_pair_weight": 0.10,
+    "critical_aux_columns": TOP25_QRS_GEOMETRY_FEATURE_COLUMNS
+    + [
+        "qrs_visibility",
+        "qrs_visibility",
+        "qrs_visibility",
+        "detector_agreement",
+        "detector_agreement",
+        "baseline_step",
+        "baseline_step",
+        "sqi_basSQI",
+        "flatline_ratio",
+        "pc2",
+        "pc3",
+    ],
+    "quantile_aux_columns": [
+        "qrs_visibility",
+        "detector_agreement",
+        "baseline_step",
+        "sqi_basSQI",
+        "flatline_ratio",
+        "non_qrs_diff_p95",
+        "pc2",
+        "pc3",
+    ],
+    "quantile_aux_quantiles": [0.20, 0.35, 0.50, 0.65, 0.80],
+    "quantile_aux_sharpness": 3.00,
+    "pretrain_quantile_aux_weight": 5.80,
+    "quantile_aux_weight": 3.00,
+    "pretrain_critical_aux_weight": 8.80,
+    "critical_aux_weight": 4.80,
+    "gm_pair_weight": 1.52,
+    "classification_weight": 1.12,
+    "class_weight": [1.16, 1.86, 2.58],
+    "bad_specificity_weight": 1.55,
+    "bad_specificity_margin": 0.78,
+    "seed": 20261319,
+}
+
+CANDIDATES["predtop20_qrsbank_artifactctx_qfeatbin"] = {
+    **CANDIDATES["predtop20_qrsbank_artifactctx_event_balanced"],
+    # Same qrsbank quantile supervision, with artifact context kept weak and
+    # selective.  This checks whether improving QRS/baseline ordering also
+    # makes sparse bad evidence less destructive.
+    "critical_aux_columns": CANDIDATES["predtop20_qrsbank_qfeatbin_p20"]["critical_aux_columns"],
+    "quantile_aux_columns": CANDIDATES["predtop20_qrsbank_qfeatbin_p20"]["quantile_aux_columns"],
+    "quantile_aux_quantiles": [0.20, 0.35, 0.50, 0.65, 0.80],
+    "quantile_aux_sharpness": 3.00,
+    "pretrain_quantile_aux_weight": 5.80,
+    "quantile_aux_weight": 3.00,
+    "pretrain_critical_aux_weight": 8.80,
+    "critical_aux_weight": 4.80,
+    "artifact_bad_mix": 0.34,
+    "artifact_veto_mix": 0.20,
+    "bad_router_event_boost": 1.65,
+    "bad_router_pos_weight": 4.55,
+    "bad_router_bias_init": -2.18,
+    "gm_pair_weight": 1.58,
+    "class_weight": [1.16, 1.88, 2.56],
+    "bad_specificity_weight": 2.85,
+    "bad_specificity_margin": 0.88,
+    "seed": 20261320,
+}
+
+CANDIDATES["predtop20_qrsbank_artifactctx_qfeatbin_midbadft"] = {
+    **CANDIDATES["predtop20_qrsbank_artifactctx_qfeatbin"],
+    # If qfeatbin learned the right QRS/baseline ordering, a longer
+    # classifier-heavy fine-tune should recover original-test medium/bad
+    # without changing the waveform-only input contract.
+    "aux_pretrain_epochs": 3,
+    "classification_weight": 1.45,
+    "gm_pair_weight": 2.05,
+    "class_weight": [1.14, 2.22, 2.85],
+    "aux_weight": 0.58,
+    "core_aux_weight": 1.20,
+    "hard_aux_weight": 2.85,
+    "critical_aux_weight": 3.10,
+    "quantile_aux_weight": 1.70,
+    "artifact_bad_mix": 0.44,
+    "artifact_veto_mix": 0.18,
+    "bad_router_event_boost": 1.95,
+    "bad_router_pos_weight": 4.95,
+    "bad_router_bias_init": -2.05,
+    "bad_aux_weight": 0.86,
+    "bad_aux_pos_weight": 3.95,
+    "bad_specificity_weight": 2.35,
+    "bad_specificity_margin": 0.78,
+    "nonbad_hardneg_strength": 1.18,
+    "selection_stress_nonbad_hardneg_strength": 1.45,
+    "seed": 20261321,
+}
+
+CANDIDATES["predtop20_qrsbank_artifactctx_qfeatbin_mediumft"] = {
+    **CANDIDATES["predtop20_qrsbank_artifactctx_qfeatbin_midbadft"],
+    # Medium-specific endpoint: original-test misses are dominated by
+    # medium->good after qfeatbin.  Keep bad active but make GM correction more
+    # expensive than bad recall.
+    "gm_pair_weight": 2.35,
+    "class_weight": [1.18, 2.48, 2.55],
+    "artifact_bad_mix": 0.34,
+    "artifact_veto_mix": 0.24,
+    "bad_router_event_boost": 1.55,
+    "bad_router_pos_weight": 4.35,
+    "bad_router_bias_init": -2.24,
+    "bad_aux_weight": 0.68,
+    "bad_aux_pos_weight": 3.30,
+    "bad_specificity_weight": 3.05,
+    "bad_specificity_margin": 0.92,
+    "nonbad_hardneg_strength": 1.58,
+    "selection_stress_nonbad_hardneg_strength": 1.90,
+    "seed": 20261322,
+}
+
+DETBASE_QFEATBIN_COLUMNS = [
+    "detector_agreement",
+    "detector_agreement",
+    "detector_agreement",
+    "detector_agreement",
+    "sqi_basSQI",
+    "sqi_basSQI",
+    "sqi_basSQI",
+    "baseline_step",
+    "baseline_step",
+    "flatline_ratio",
+    "flatline_ratio",
+    "qrs_visibility",
+    "qrs_visibility",
+    "qrs_band_ratio",
+    "template_corr",
+    "non_qrs_diff_p95",
+    "pc1",
+    "pc2",
+    "pc3",
+    "pca_margin",
+]
+
+CANDIDATES["predtop20_qrsbank_detbase_qfeatbin_nobadctx"] = {
+    **CANDIDATES["predtop20_qrsbank_qfeatbin_p20"],
+    # Target the remaining hard waveform-computable facts.  The qrsbank
+    # qfeatbin family already learned qrs_visibility; this isolates whether
+    # detector/RR agreement and baseline SQI can improve without artifact
+    # context taking over the class decision.
+    "critical_aux_columns": TOP25_QRS_GEOMETRY_FEATURE_COLUMNS + DETBASE_QFEATBIN_COLUMNS,
+    "quantile_aux_columns": [
+        "detector_agreement",
+        "sqi_basSQI",
+        "baseline_step",
+        "flatline_ratio",
+        "qrs_visibility",
+        "qrs_band_ratio",
+        "template_corr",
+        "non_qrs_diff_p95",
+        "pc2",
+        "pc3",
+    ],
+    "quantile_aux_quantiles": [0.15, 0.30, 0.45, 0.60, 0.75, 0.90],
+    "quantile_aux_sharpness": 3.40,
+    "pretrain_quantile_aux_weight": 7.20,
+    "quantile_aux_weight": 3.60,
+    "pretrain_critical_aux_weight": 10.20,
+    "critical_aux_weight": 5.60,
+    "aux_pretrain_epochs": 3,
+    "pretrain_classification_weight": 0.08,
+    "pretrain_gm_pair_weight": 0.08,
+    "classification_weight": 1.12,
+    "gm_pair_weight": 1.62,
+    "class_weight": [1.18, 1.92, 2.52],
+    "bad_specificity_weight": 1.85,
+    "bad_specificity_margin": 0.82,
+    "seed": 20261323,
+}
+
+CANDIDATES["predtop20_qrsbank_artifactctx_detbase_qfeatbin"] = {
+    **CANDIDATES["predtop20_qrsbank_artifactctx_qfeatbin"],
+    # Same detector/baseline pressure, but with the narrow artifact context.
+    # If this improves bad stress without dropping detector/baseline recovery,
+    # it becomes the next branch to scale; otherwise the blocker is the event
+    # tokenizer rather than bad routing.
+    "critical_aux_columns": CANDIDATES["predtop20_qrsbank_detbase_qfeatbin_nobadctx"][
+        "critical_aux_columns"
+    ],
+    "quantile_aux_columns": CANDIDATES["predtop20_qrsbank_detbase_qfeatbin_nobadctx"][
+        "quantile_aux_columns"
+    ],
+    "quantile_aux_quantiles": [0.15, 0.30, 0.45, 0.60, 0.75, 0.90],
+    "quantile_aux_sharpness": 3.40,
+    "pretrain_quantile_aux_weight": 7.20,
+    "quantile_aux_weight": 3.60,
+    "pretrain_critical_aux_weight": 10.20,
+    "critical_aux_weight": 5.60,
+    "aux_pretrain_epochs": 3,
+    "pretrain_classification_weight": 0.08,
+    "pretrain_gm_pair_weight": 0.08,
+    "classification_weight": 1.12,
+    "gm_pair_weight": 1.66,
+    "class_weight": [1.18, 1.94, 2.54],
+    "artifact_bad_mix": 0.30,
+    "artifact_veto_mix": 0.24,
+    "bad_router_event_boost": 1.55,
+    "bad_router_pos_weight": 4.35,
+    "bad_router_bias_init": -2.22,
+    "bad_specificity_weight": 3.05,
+    "bad_specificity_margin": 0.94,
+    "nonbad_hardneg_strength": 1.48,
+    "selection_stress_nonbad_hardneg_strength": 1.82,
+    "seed": 20261324,
+}
+
+CANDIDATES["waveprimtoken_v5_detbase_qfeatbin"] = {
+    **CANDIDATES["predtop20_sqiquery_subject111_impulsebad_dual_p20"],
+    # Main-encoder primitive token test.  qrs_stress_v5 primitives are computed
+    # from the waveform inside the model, then chunked as Transformer tokens.
+    # This is the cleanest test of whether detector/RR and baseline facts need
+    # an explicit SQI-token space instead of being inferred from raw patches.
+    "arch": "primitive_token_teacher_atlas",
+    "width": 128,
+    "layers": 4,
+    "heads": 4,
+    "stat_hidden": 320,
+    "primitive_token_bank": "qrs_stress_v5",
+    "primitive_token_chunk": 16,
+    "predicted_feature_fusion": "configured",
+    "predicted_feature_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "feature_teacher_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "pretrain_aux_weight": 1.25,
+    "pretrain_core_aux_weight": 2.30,
+    "pretrain_hard_aux_weight": 5.40,
+    "pretrain_top14_aux_weight": 0.00,
+    "aux_weight": 0.86,
+    "core_aux_weight": 1.62,
+    "hard_aux_weight": 4.35,
+    "top14_aux_weight": 0.00,
+    "critical_aux_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS + DETBASE_QFEATBIN_COLUMNS,
+    "quantile_aux_columns": [
+        "detector_agreement",
+        "sqi_basSQI",
+        "baseline_step",
+        "flatline_ratio",
+        "qrs_visibility",
+        "qrs_band_ratio",
+        "template_corr",
+        "non_qrs_diff_p95",
+    ],
+    "quantile_aux_quantiles": [0.15, 0.30, 0.45, 0.60, 0.75, 0.90],
+    "quantile_aux_sharpness": 3.50,
+    "aux_pretrain_epochs": 3,
+    "pretrain_classification_weight": 0.08,
+    "pretrain_gm_pair_weight": 0.08,
+    "pretrain_quantile_aux_weight": 7.80,
+    "quantile_aux_weight": 3.80,
+    "pretrain_critical_aux_weight": 10.60,
+    "critical_aux_weight": 5.80,
+    "classification_weight": 1.10,
+    "gm_pair_weight": 1.52,
+    "class_weight": [1.18, 1.82, 2.46],
+    "bad_aux_weight": 0.58,
+    "bad_aux_pos_weight": 2.90,
+    "bad_specificity_weight": 1.95,
+    "bad_specificity_margin": 0.86,
+    "seed": 20261325,
+}
+
+CANDIDATES["p20_sqiquery_primctx_detbase_qfeatbin"] = {
+    **CANDIDATES["predtop20_sqiquery_subject111_impulsebad_dual_p20"],
+    # Patch/SQI-query main path plus qrs_stress_v5 primitive context.  This
+    # keeps raw morphology tokens in charge of classification while giving the
+    # aux path an explicit detector/baseline token space.
+    "primitive_context_fusion": True,
+    "aux_primitive_context_fusion": True,
+    "primitive_context_bank": "qrs_stress_v5",
+    "primitive_context_chunk": 16,
+    "primitive_context_width": 56,
+    "primitive_context_layers": 1,
+    "primitive_context_heads": 4,
+    "primitive_context_hidden": 192,
+    "predicted_feature_fusion": "configured",
+    "predicted_feature_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "feature_teacher_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "critical_aux_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS + DETBASE_QFEATBIN_COLUMNS,
+    "quantile_aux_columns": [
+        "detector_agreement",
+        "sqi_basSQI",
+        "baseline_step",
+        "flatline_ratio",
+        "qrs_visibility",
+        "qrs_band_ratio",
+        "template_corr",
+        "non_qrs_diff_p95",
+        "pc2",
+        "pc3",
+    ],
+    "quantile_aux_quantiles": [0.15, 0.30, 0.45, 0.60, 0.75, 0.90],
+    "quantile_aux_sharpness": 3.40,
+    "aux_pretrain_epochs": 3,
+    "pretrain_classification_weight": 0.08,
+    "pretrain_gm_pair_weight": 0.08,
+    "pretrain_quantile_aux_weight": 7.20,
+    "quantile_aux_weight": 3.50,
+    "pretrain_critical_aux_weight": 10.20,
+    "critical_aux_weight": 5.50,
+    "classification_weight": 1.12,
+    "gm_pair_weight": 1.70,
+    "class_weight": [1.18, 1.94, 2.50],
+    "bad_aux_weight": 0.62,
+    "bad_aux_pos_weight": 3.05,
+    "bad_specificity_weight": 2.00,
+    "bad_specificity_margin": 0.88,
+    "selection_bad_stress_weight": 0.22,
+    "seed": 20261326,
+}
+
+CANDIDATES["detbase_tokens_qfeatbin_balanced"] = {
+    **CANDIDATES["predtop20_sqiquery_subject111_impulsebad_dual_p20"],
+    # First-class detector/baseline tokens inside the SQI-query Transformer.
+    # This is the targeted structural test after det/base loss-only and
+    # primitive-only tokenization both failed to recover detector_agreement.
+    "arch": "detbase_token_sqi_query_multiscale_patch_teacher_atlas",
+    "predicted_feature_fusion": "configured",
+    "predicted_feature_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "feature_teacher_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "critical_aux_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS + DETBASE_QFEATBIN_COLUMNS,
+    "quantile_aux_columns": [
+        "detector_agreement",
+        "sqi_basSQI",
+        "baseline_step",
+        "flatline_ratio",
+        "qrs_visibility",
+        "qrs_band_ratio",
+        "template_corr",
+        "non_qrs_diff_p95",
+        "pc2",
+        "pc3",
+    ],
+    "quantile_aux_quantiles": [0.15, 0.30, 0.45, 0.60, 0.75, 0.90],
+    "quantile_aux_sharpness": 3.45,
+    "aux_pretrain_epochs": 3,
+    "pretrain_classification_weight": 0.08,
+    "pretrain_gm_pair_weight": 0.08,
+    "pretrain_quantile_aux_weight": 7.40,
+    "quantile_aux_weight": 3.70,
+    "pretrain_critical_aux_weight": 10.60,
+    "critical_aux_weight": 5.70,
+    "classification_weight": 1.14,
+    "gm_pair_weight": 1.72,
+    "class_weight": [1.16, 1.94, 2.58],
+    "bad_aux_weight": 0.70,
+    "bad_aux_pos_weight": 3.45,
+    "bad_specificity_weight": 2.35,
+    "bad_specificity_margin": 0.86,
+    "selection_bad_stress_weight": 0.26,
+    "seed": 20261327,
+}
+
+CANDIDATES["detbase_tokens_qfeatbin_badguard"] = {
+    **CANDIDATES["detbase_tokens_qfeatbin_balanced"],
+    # Conservative bad-stress endpoint.  If balanced raises bad but collapses
+    # non-bad, this tells us whether the detector/baseline token structure can
+    # still preserve good/medium specificity.
+    "gm_pair_weight": 1.86,
+    "class_weight": [1.22, 2.04, 2.44],
+    "bad_aux_weight": 0.62,
+    "bad_aux_pos_weight": 3.05,
+    "bad_specificity_weight": 2.85,
+    "bad_specificity_margin": 0.96,
+    "selection_bad_stress_weight": 0.20,
+    "seed": 20261328,
+}
+
+CANDIDATES["detbase_tokens_artifact_event_mediumguard"] = {
+    **CANDIDATES["detbase_tokens_qfeatbin_badguard"],
+    # Combine the medium-preserving detector/baseline token backbone with a
+    # narrow waveform-only artifact event router.  The router may mark sparse
+    # reset/dropout/contact events as bad, but the stronger medium/non-bad guard
+    # should prevent the broad false-bad collapse seen in older badrecall runs.
+    "artifact_bad_only": True,
+    "artifact_bad_count": 16,
+    "artifact_bad_window": 151,
+    "artifact_bad_width": 64,
+    "artifact_bad_layers": 1,
+    "artifact_bad_heads": 4,
+    "artifact_bad_mix": 0.56,
+    "artifact_bad_bias_init": -1.32,
+    "artifact_veto_mix": 0.38,
+    "artifact_veto_bias_init": 0.24,
+    "artifact_veto_weight": 0.56,
+    "artifact_veto_pos_weight": 0.82,
+    "pretrain_artifact_veto_weight": 0.18,
+    "final_mode": "dual_bad_gm_routed_mix",
+    "gate_logit_alpha": 0.70,
+    "bad_router_target": "event",
+    "bad_router_weight": 0.72,
+    "pretrain_bad_router_weight": 0.18,
+    "bad_router_pos_weight": 4.6,
+    "bad_router_bias_init": -2.10,
+    "bad_router_event_boost": 1.8,
+    "bad_record111_motion_strength": 2.20,
+    "bad_record111_motion_prob": 0.24,
+    "bad_record111_burst_dropout_strength": 1.65,
+    "bad_record111_burst_dropout_prob": 0.18,
+    "bad_impulse_reset_strength": 1.58,
+    "bad_impulse_reset_prob": 0.16,
+    "bad_intermittent_contact_strength": 1.25,
+    "bad_intermittent_contact_prob": 0.38,
+    "nonbad_hardneg_strength": 1.72,
+    "selection_stress_nonbad_hardneg_strength": 2.05,
+    "selection_subject111_shift_strength": 1.28,
+    "seed": 20261329,
+}
+
+CANDIDATES["detbase_tokens_artifact_event_badkeep"] = {
+    **CANDIDATES["detbase_tokens_artifact_event_mediumguard"],
+    # More permissive event route.  This should only be useful if the detbase
+    # backbone can keep good/medium specificity while allowing sparse bad
+    # evidence to fire.
+    "artifact_bad_mix": 0.68,
+    "artifact_veto_mix": 0.28,
+    "artifact_veto_weight": 0.42,
+    "bad_router_pos_weight": 5.3,
+    "bad_router_bias_init": -1.88,
+    "bad_router_event_boost": 2.4,
+    "gm_pair_weight": 1.78,
+    "class_weight": [1.16, 1.92, 2.72],
+    "bad_aux_weight": 0.78,
+    "bad_aux_pos_weight": 3.85,
+    "bad_specificity_weight": 2.45,
+    "bad_specificity_margin": 0.86,
+    "selection_bad_stress_weight": 0.30,
+    "selection_stress_nonbad_hardneg_strength": 1.86,
+    "seed": 20261330,
+}
+
+CANDIDATES["detbase_rrtokens_qfeatbin_badguard"] = {
+    **CANDIDATES["detbase_tokens_qfeatbin_badguard"],
+    # Same detbase-token candidate name-spaced after adding RR/event
+    # consistency tokens to the architecture.  This isolates whether the new
+    # RR proposal regularity stream improves detector_agreement without bad
+    # routing confounds.
+    "seed": 20261331,
+}
+
+CANDIDATES["detbase_rrtokens_artifact_event_mediumguard"] = {
+    **CANDIDATES["detbase_tokens_artifact_event_mediumguard"],
+    # RR/event consistency tokens plus the conservative artifact event router.
+    # This is the best current hypothesis for preserving good/medium while
+    # raising original bad recall above the old 0.3-0.4 band.
+    "bad_router_event_boost": 1.65,
+    "bad_router_pos_weight": 4.35,
+    "artifact_bad_mix": 0.52,
+    "artifact_veto_mix": 0.42,
+    "artifact_veto_weight": 0.60,
+    "gm_pair_weight": 1.92,
+    "class_weight": [1.22, 2.08, 2.42],
+    "bad_specificity_weight": 3.05,
+    "bad_specificity_margin": 1.00,
+    "selection_stress_nonbad_hardneg_strength": 2.20,
+    "seed": 20261332,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_frozen_badaddon_conservative_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_dual_balanced_a050"],
+    # Keep the best waveform GM surface fixed and learn only an isolated
+    # artifact-bad add-on.  This tests whether original bad-stress recovery can
+    # be improved without replaying the good/medium collapse of jointartifact.
+    "init_from_candidate": "featurefirst_top20_rawbeat_artifact_auxctx_dual_balanced_a050",
+    "freeze_main_except_artifact": True,
+    "artifact_bad_only": True,
+    "artifact_context_fusion": False,
+    "aux_artifact_context_fusion": False,
+    "artifact_bad_count": 16,
+    "artifact_bad_window": 151,
+    "artifact_bad_width": 64,
+    "artifact_bad_layers": 1,
+    "artifact_bad_heads": 4,
+    "artifact_bad_mix": 0.28,
+    "artifact_bad_bias_init": -1.22,
+    "artifact_veto_mix": 0.52,
+    "artifact_veto_bias_init": 0.35,
+    "artifact_veto_weight": 0.82,
+    "artifact_veto_pos_weight": 0.82,
+    "aux_pretrain_epochs": 0,
+    "classification_weight": 1.20,
+    "gm_pair_weight": 0.00,
+    "aux_weight": 0.00,
+    "core_aux_weight": 0.00,
+    "hard_aux_weight": 0.00,
+    "top14_aux_weight": 0.00,
+    "critical_aux_weight": 0.00,
+    "rank_weight": 0.00,
+    "supcon_weight": 0.00,
+    "recon_weight": 0.00,
+    "bad_aux_weight": 0.62,
+    "bad_aux_pos_weight": 3.10,
+    "stress_aux_weight": 0.00,
+    "stress_bad_logit_mix": 0.00,
+    "bad_specificity_weight": 4.40,
+    "bad_specificity_margin": 1.08,
+    "bad_record111_motion_strength": 2.05,
+    "bad_record111_motion_prob": 0.28,
+    "bad_record111_burst_dropout_strength": 1.70,
+    "bad_record111_burst_dropout_prob": 0.26,
+    "bad_impulse_reset_strength": 1.65,
+    "bad_impulse_reset_prob": 0.20,
+    "bad_intermittent_contact_strength": 1.28,
+    "bad_intermittent_contact_prob": 0.40,
+    "nonbad_hardneg_strength": 1.80,
+    "subject111_shift_strength": 1.22,
+    "aug_aux_weight_nonbad": 0.42,
+    "selection_bad_stress_weight": 0.30,
+    "selection_stress_nonbad_hardneg_strength": 2.10,
+    "selection_subject111_shift_strength": 1.24,
+    "selection_stress_bad_record111_motion_strength": 2.40,
+    "selection_stress_bad_record111_motion_prob": 0.82,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.95,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.78,
+    "selection_stress_bad_impulse_reset_strength": 1.80,
+    "selection_stress_bad_impulse_reset_prob": 0.70,
+    "seed": 20261340,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_frozen_badaddon_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_frozen_badaddon_conservative_a050"],
+    "artifact_bad_mix": 0.42,
+    "artifact_bad_bias_init": -1.12,
+    "artifact_veto_mix": 0.40,
+    "artifact_veto_weight": 0.64,
+    "bad_aux_weight": 0.72,
+    "bad_aux_pos_weight": 3.55,
+    "bad_specificity_weight": 3.80,
+    "bad_specificity_margin": 0.96,
+    "selection_bad_stress_weight": 0.34,
+    "seed": 20261341,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_frozen_badaddon_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_frozen_badaddon_conservative_a050"],
+    "artifact_bad_mix": 0.58,
+    "artifact_bad_bias_init": -1.02,
+    "artifact_veto_mix": 0.28,
+    "artifact_veto_weight": 0.48,
+    "bad_aux_weight": 0.82,
+    "bad_aux_pos_weight": 4.05,
+    "bad_specificity_weight": 3.15,
+    "bad_specificity_margin": 0.84,
+    "selection_bad_stress_weight": 0.38,
+    "seed": 20261342,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_frozen_badheadaddon_conservative_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_frozen_badaddon_conservative_a050"],
+    # The frozen artifact add-on moved bad signal mainly into calibrated
+    # thresholding, not raw logits.  Also train the existing bad head while
+    # keeping the GM/class surface fixed, so the model can internalize that
+    # threshold without collapsing non-bad rows.
+    "freeze_trainable_name_contains": [
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+        "bad_head",
+    ],
+    "lr": 0.00009,
+    "artifact_bad_mix": 0.30,
+    "artifact_veto_mix": 0.54,
+    "artifact_veto_weight": 0.84,
+    "bad_aux_weight": 0.74,
+    "bad_aux_pos_weight": 3.45,
+    "bad_specificity_weight": 4.65,
+    "bad_specificity_margin": 1.12,
+    "seed": 20261343,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_frozen_badheadaddon_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_frozen_badheadaddon_conservative_a050"],
+    "artifact_bad_mix": 0.44,
+    "artifact_veto_mix": 0.42,
+    "artifact_veto_weight": 0.66,
+    "bad_aux_weight": 0.82,
+    "bad_aux_pos_weight": 3.85,
+    "bad_specificity_weight": 4.05,
+    "bad_specificity_margin": 1.00,
+    "selection_bad_stress_weight": 0.36,
+    "seed": 20261344,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_frozen_badheadaddon_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_frozen_badheadaddon_conservative_a050"],
+    "artifact_bad_mix": 0.62,
+    "artifact_veto_mix": 0.30,
+    "artifact_veto_weight": 0.50,
+    "bad_aux_weight": 0.94,
+    "bad_aux_pos_weight": 4.40,
+    "bad_specificity_weight": 3.40,
+    "bad_specificity_margin": 0.88,
+    "selection_bad_stress_weight": 0.42,
+    "seed": 20261345,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_thresholdpiece_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_dual_balanced_a050"],
+    # Current best waveform base plus a differentiable threshold expansion over
+    # qrs_stress_v5 primitives.  This is the neural analogue of the bad-priority
+    # piecewise primitive rules: inference still sees waveform only, while the
+    # classifier gets thresholded primitive-token evidence instead of a single
+    # smooth bad score.
+    "init_from_candidate": "featurefirst_top20_rawbeat_artifact_auxctx_dual_balanced_a050",
+    "init_skip_mismatch": True,
+    "primitive_bank": "qrs_stress_v5",
+    "primitive_threshold_fusion": True,
+    "primitive_threshold_values": [-3.0, -2.25, -1.45, -0.75, -0.25, 0.25, 0.75, 1.45, 2.25, 3.0],
+    "primitive_threshold_sharpness": 2.8,
+    "aux_pretrain_epochs": 0,
+    "pretrain_classification_weight": 1.0,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "primitive_threshold_proj",
+        "class_head",
+        "feature_class_head",
+        "gm_pair_head",
+        "bad_head",
+        "artifact_bad_head",
+        "artifact_veto_head",
+    ],
+    "classification_weight": 1.35,
+    "bad_aux_weight": 0.78,
+    "bad_aux_pos_weight": 3.75,
+    "bad_specificity_weight": 4.35,
+    "bad_specificity_margin": 1.02,
+    "selection_bad_stress_weight": 0.36,
+    "lr": 0.00008,
+    "seed": 20261352,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_thresholdpiece_goodguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_thresholdpiece_balanced_a050"],
+    # Stronger non-bad guard for the known failure mode where low threshold bad
+    # evidence turns medium/good into false bad.
+    "class_weight": [1.16, 1.58, 2.82],
+    "bad_aux_weight": 0.70,
+    "bad_aux_pos_weight": 3.35,
+    "bad_specificity_weight": 5.10,
+    "bad_specificity_margin": 1.16,
+    "artifact_bad_mix": 0.36,
+    "artifact_veto_mix": 0.58,
+    "selection_bad_stress_weight": 0.30,
+    "seed": 20261353,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_thresholdpiece_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_thresholdpiece_balanced_a050"],
+    # More permissive bad setting.  It is accepted only if original_test bad
+    # recall rises without the broad false-bad collapse observed in earlier
+    # stress sweeps.
+    "class_weight": [1.08, 1.52, 3.18],
+    "bad_aux_weight": 0.92,
+    "bad_aux_pos_weight": 4.25,
+    "bad_specificity_weight": 3.65,
+    "bad_specificity_margin": 0.90,
+    "artifact_bad_mix": 0.52,
+    "artifact_veto_mix": 0.34,
+    "selection_bad_stress_weight": 0.42,
+    "seed": 20261354,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_eventlocal_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_frozen_badheadaddon_balanced_a050"],
+    # Local event supervision for the isolated artifact expert.  The targets are
+    # deterministic waveform-derived labels over selected artifact windows
+    # (flat/dropout, baseline jump, impulse/curvature, detail burst, reset/asym).
+    # This tests whether bad-stress transfer is blocked by token-level event
+    # recognition rather than by the final classifier.
+    "init_skip_mismatch": True,
+    "artifact_event_local_weight": 0.62,
+    "pretrain_artifact_event_local_weight": 0.28,
+    "artifact_event_pos_weight": [1.45, 1.75, 1.45, 1.20, 1.35],
+    "artifact_event_bad_boost": 1.10,
+    "artifact_bad_mix": 0.44,
+    "artifact_veto_mix": 0.42,
+    "artifact_veto_weight": 0.66,
+    "bad_aux_weight": 0.80,
+    "bad_aux_pos_weight": 3.75,
+    "bad_specificity_weight": 4.15,
+    "bad_specificity_margin": 1.02,
+    "selection_bad_stress_weight": 0.36,
+    "lr": 0.00008,
+    "seed": 20261358,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_eventlocal_goodguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_eventlocal_balanced_a050"],
+    # Stronger non-bad guard: accept less bad-stress recovery if it preserves the
+    # current best good/medium surface.
+    "artifact_event_local_weight": 0.54,
+    "artifact_event_bad_boost": 0.85,
+    "artifact_bad_mix": 0.36,
+    "artifact_veto_mix": 0.56,
+    "artifact_veto_weight": 0.82,
+    "bad_aux_weight": 0.68,
+    "bad_aux_pos_weight": 3.25,
+    "bad_specificity_weight": 5.05,
+    "bad_specificity_margin": 1.16,
+    "selection_bad_stress_weight": 0.28,
+    "seed": 20261359,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_eventlocal_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_eventlocal_balanced_a050"],
+    # More permissive endpoint: only useful if local-event labels raise bad
+    # recall without reproducing the broad false-bad collapse of prior stress
+    # sweeps.
+    "artifact_event_local_weight": 0.78,
+    "pretrain_artifact_event_local_weight": 0.34,
+    "artifact_event_pos_weight": [1.60, 2.05, 1.65, 1.30, 1.55],
+    "artifact_event_bad_boost": 1.55,
+    "artifact_bad_mix": 0.58,
+    "artifact_veto_mix": 0.30,
+    "artifact_veto_weight": 0.50,
+    "bad_aux_weight": 0.92,
+    "bad_aux_pos_weight": 4.25,
+    "bad_specificity_weight": 3.55,
+    "bad_specificity_margin": 0.90,
+    "selection_bad_stress_weight": 0.42,
+    "seed": 20261360,
+}
+
+CANDIDATES["physio_sqi_token_balanced_a050"] = {
+    **CANDIDATES["predtop20_sqiquery_subject111_impulsebad_dual_p20"],
+    # Transformer over waveform-derived physiological SQI tokens: local waveform
+    # stats, QRS morphology, stress bands, QRS visibility bank, detector
+    # agreement, RR consistency, baseline/frequency, and artifact event summaries.
+    # No atlas/SQI sidecar is an input at inference; teacher features supervise
+    # only the aux head during training.
+    "arch": "physio_sqi_token_teacher_atlas",
+    "width": 96,
+    "layers": 3,
+    "heads": 4,
+    "stat_hidden": 256,
+    "artifact_count": 16,
+    "artifact_window": 151,
+    "predicted_feature_fusion": "configured",
+    "predicted_feature_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "feature_teacher_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "critical_aux_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS + DETBASE_QFEATBIN_COLUMNS,
+    "quantile_aux_columns": [
+        "qrs_visibility",
+        "detector_agreement",
+        "baseline_step",
+        "sqi_basSQI",
+        "flatline_ratio",
+        "low_amp_ratio",
+        "non_qrs_diff_p95",
+        "pc2",
+        "pc3",
+    ],
+    "quantile_aux_quantiles": [0.15, 0.30, 0.50, 0.70, 0.85],
+    "quantile_aux_sharpness": 3.25,
+    "aux_pretrain_epochs": 2,
+    "pretrain_classification_weight": 0.05,
+    "pretrain_gm_pair_weight": 0.05,
+    "pretrain_aux_weight": 1.40,
+    "pretrain_core_aux_weight": 2.80,
+    "pretrain_hard_aux_weight": 9.50,
+    "pretrain_top14_aux_weight": 8.00,
+    "pretrain_critical_aux_weight": 13.50,
+    "pretrain_quantile_aux_weight": 6.60,
+    "aux_weight": 0.45,
+    "core_aux_weight": 1.15,
+    "hard_aux_weight": 4.80,
+    "top14_aux_weight": 3.80,
+    "critical_aux_weight": 6.20,
+    "quantile_aux_weight": 2.90,
+    "classification_weight": 1.12,
+    "gm_pair_weight": 1.55,
+    "final_mode": "dual_bad_gm_mix",
+    "gate_logit_alpha": 0.42,
+    "class_weight": [1.15, 1.82, 2.72],
+    "bad_aux_weight": 0.76,
+    "bad_aux_pos_weight": 3.65,
+    "bad_specificity_weight": 2.75,
+    "bad_specificity_margin": 0.92,
+    "selection_bad_stress_weight": 0.30,
+    "selection_medium_stress_weight": 0.18,
+    "lr": 0.00016,
+    "seed": 20261364,
+}
+
+CANDIDATES["physio_sqi_token_goodguard_a050"] = {
+    **CANDIDATES["physio_sqi_token_balanced_a050"],
+    "class_weight": [1.24, 1.92, 2.48],
+    "gm_pair_weight": 1.85,
+    "bad_aux_weight": 0.62,
+    "bad_aux_pos_weight": 3.05,
+    "bad_specificity_weight": 3.35,
+    "bad_specificity_margin": 1.04,
+    "selection_bad_stress_weight": 0.22,
+    "seed": 20261365,
+}
+
+CANDIDATES["physio_sqi_token_badrecall_a050"] = {
+    **CANDIDATES["physio_sqi_token_balanced_a050"],
+    "class_weight": [1.08, 1.72, 3.18],
+    "gm_pair_weight": 1.38,
+    "bad_aux_weight": 0.94,
+    "bad_aux_pos_weight": 4.45,
+    "bad_specificity_weight": 2.20,
+    "bad_specificity_margin": 0.78,
+    "selection_bad_stress_weight": 0.42,
+    "seed": 20261366,
+}
+
+PHYSIO_FACT_QUANTILE_COLUMNS = [
+    "qrs_visibility",
+    "detector_agreement",
+    "baseline_step",
+    "sqi_basSQI",
+    "flatline_ratio",
+    "low_amp_ratio",
+    "qrs_band_ratio",
+    "template_corr",
+    "non_qrs_diff_p95",
+    "diff_abs_p95",
+    "band_15_30",
+    "band_30_45",
+    "sqi_bSQI",
+    "sqi_fSQI",
+]
+
+PHYSIO_FACT_CRITICAL_COLUMNS = (
+    WAVEFORM_COMPUTABLE_TEACHER_COLUMNS
+    + WAVEFORM_HARD_TEACHER_COLUMNS
+    + [
+        "sqi_basSQI",
+        "sqi_basSQI",
+        "baseline_step",
+        "baseline_step",
+        "qrs_visibility",
+        "qrs_visibility",
+        "detector_agreement",
+        "detector_agreement",
+        "qrs_band_ratio",
+        "template_corr",
+        "non_qrs_diff_p95",
+        "diff_abs_p95",
+    ]
+)
+
+CANDIDATES["physiofact_sqi_token_balanced_a050"] = {
+    **CANDIDATES["physio_sqi_token_balanced_a050"],
+    # Official waveform-only physiology candidate: use the same PhysioSQI
+    # Transformer tokenization, but remove the teacher-atlas/prototype geometry
+    # path and train only on waveform-computable SQI/QRS/baseline/detail facts.
+    # PC/KNN/region-style axes remain diagnostic-only outside this candidate.
+    "arch": "physio_sqi_token",
+    "predicted_feature_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "feature_teacher_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "critical_aux_columns": PHYSIO_FACT_CRITICAL_COLUMNS,
+    "quantile_aux_columns": PHYSIO_FACT_QUANTILE_COLUMNS,
+    "waveform_atlas_prototypes_per_class": 0,
+    "waveform_proto_weight": 0.0,
+    "waveform_atlas_logit_mix": 0.0,
+    "atlas_distill_weight": 0.0,
+    "neighbor_weight": 0.0,
+    "pretrain_top14_aux_weight": 0.0,
+    "top14_aux_weight": 0.0,
+    "pretrain_classification_weight": 0.06,
+    "pretrain_gm_pair_weight": 0.06,
+    "pretrain_aux_weight": 1.35,
+    "pretrain_core_aux_weight": 0.0,
+    "pretrain_hard_aux_weight": 8.80,
+    "pretrain_critical_aux_weight": 13.20,
+    "pretrain_quantile_aux_weight": 7.20,
+    "aux_weight": 0.42,
+    "core_aux_weight": 0.0,
+    "hard_aux_weight": 4.80,
+    "critical_aux_weight": 6.40,
+    "quantile_aux_weight": 3.25,
+    "classification_weight": 1.08,
+    "gm_pair_weight": 1.50,
+    "class_weight": [1.14, 1.82, 2.78],
+    "bad_aux_weight": 0.78,
+    "bad_aux_pos_weight": 3.75,
+    "bad_specificity_weight": 3.10,
+    "bad_specificity_margin": 0.96,
+    "selection_bad_stress_weight": 0.32,
+    "lr": 0.00015,
+    "seed": 20261610,
+}
+
+CANDIDATES["physiofact_sqi_token_goodguard_a050"] = {
+    **CANDIDATES["physiofact_sqi_token_balanced_a050"],
+    # Good/medium specificity arm: keep the same interpretable feature targets,
+    # but reject any gain that comes from turning easy good rows into medium/bad.
+    "class_weight": [1.26, 1.88, 2.54],
+    "gm_pair_weight": 1.82,
+    "bad_aux_weight": 0.64,
+    "bad_aux_pos_weight": 3.15,
+    "bad_specificity_weight": 3.85,
+    "bad_specificity_margin": 1.08,
+    "selection_bad_stress_weight": 0.24,
+    "seed": 20261611,
+}
+
+CANDIDATES["physiofact_sqi_token_badrecall_a050"] = {
+    **CANDIDATES["physiofact_sqi_token_balanced_a050"],
+    # Controlled bad-recall arm: modestly widen bad pressure while preserving
+    # a strong specificity loss, because previous bad-stress heads over-fired.
+    "class_weight": [1.08, 1.70, 3.18],
+    "gm_pair_weight": 1.34,
+    "bad_aux_weight": 0.96,
+    "bad_aux_pos_weight": 4.40,
+    "bad_specificity_weight": 2.65,
+    "bad_specificity_margin": 0.84,
+    "selection_bad_stress_weight": 0.44,
+    "seed": 20261612,
+}
+
+CANDIDATES["physiofact_detbase_token_balanced_a050"] = {
+    **CANDIDATES["physiofact_sqi_token_balanced_a050"],
+    # Same no-atlas / no-PC official contract, but use first-class QRS,
+    # detector-agreement, RR-consistency and baseline-frequency tokens before
+    # patch attention. This targets the current weak recovery axes:
+    # qrs_visibility, detector_agreement, baseline_step, and sqi_basSQI.
+    "arch": "detbase_token_sqi_query_multiscale_patch",
+    "width": 112,
+    "layers": 4,
+    "heads": 4,
+    "stat_hidden": 288,
+    "aux_pretrain_epochs": 3,
+    "pretrain_classification_weight": 0.05,
+    "pretrain_gm_pair_weight": 0.05,
+    "pretrain_hard_aux_weight": 9.60,
+    "pretrain_critical_aux_weight": 14.40,
+    "pretrain_quantile_aux_weight": 8.40,
+    "hard_aux_weight": 5.30,
+    "critical_aux_weight": 7.20,
+    "quantile_aux_weight": 3.90,
+    "classification_weight": 1.08,
+    "class_weight": [1.14, 1.84, 2.76],
+    "gm_pair_weight": 1.58,
+    "bad_aux_weight": 0.78,
+    "bad_specificity_weight": 3.25,
+    "seed": 20261620,
+}
+
+CANDIDATES["physiofact_detbase_token_mediumguard_a050"] = {
+    **CANDIDATES["physiofact_detbase_token_balanced_a050"],
+    # Medium guard arm: original-test false errors are still dominated by
+    # medium/good boundary and baseline-heavy medium rows.
+    "class_weight": [1.08, 2.02, 2.68],
+    "gm_pair_weight": 1.88,
+    "classification_weight": 1.12,
+    "bad_specificity_weight": 3.55,
+    "selection_bad_stress_weight": 0.30,
+    "seed": 20261621,
+}
+
+CANDIDATES["physiofact_detbase_token_badrecall_a050"] = {
+    **CANDIDATES["physiofact_detbase_token_balanced_a050"],
+    # Bad-stress arm: slightly more bad pressure, but keep the same det/base
+    # token structure and a specificity guard to avoid false-bad collapse.
+    "class_weight": [1.08, 1.72, 3.22],
+    "gm_pair_weight": 1.34,
+    "bad_aux_weight": 1.00,
+    "bad_aux_pos_weight": 4.50,
+    "bad_specificity_weight": 2.85,
+    "bad_specificity_margin": 0.86,
+    "selection_bad_stress_weight": 0.46,
+    "seed": 20261622,
+}
+
+CANDIDATES["record111_detbase_goodprotect_a050"] = {
+    **CANDIDATES["physiofact_detbase_token_balanced_a050"],
+    # Hard-feature follow-up: det/base tokens are the first structure that
+    # recovered qrs_band_ratio, baseline_step, flatline_ratio, and part of
+    # detector_agreement on original.  This arm adds the record111 morphology
+    # target, but explicitly protects original good by reducing GM/bad pressure.
+    "bad_feature_head_columns": RECORD111_PHYSIO_BAD_FEATURE_COLUMNS,
+    "predicted_feature_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "feature_teacher_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "critical_aux_columns": RECORD111_PHYSIO_BAD_CRITICAL_COLUMNS
+    + WAVEFORM_HARD_TEACHER_COLUMNS
+    + [
+        "sqi_basSQI",
+        "sqi_basSQI",
+        "baseline_step",
+        "baseline_step",
+        "qrs_band_ratio",
+        "qrs_band_ratio",
+        "detector_agreement",
+        "detector_agreement",
+        "qrs_visibility",
+        "flatline_ratio",
+    ],
+    "quantile_aux_columns": [
+        "sqi_basSQI",
+        "baseline_step",
+        "qrs_band_ratio",
+        "detector_agreement",
+        "qrs_visibility",
+        "flatline_ratio",
+        "non_qrs_diff_p95",
+    ],
+    "quantile_aux_quantiles": [0.10, 0.25, 0.50, 0.75, 0.90],
+    "quantile_aux_sharpness": 3.20,
+    "aug_bad_aux_pseudo_geometry": True,
+    "aug_bad_aux_pseudo_mode": "physio_record111",
+    "aug_bad_aux_pseudo_mix": 0.62,
+    "bad_record111_motion_strength": 1.65,
+    "bad_record111_motion_prob": 0.34,
+    "bad_record111_burst_dropout_strength": 1.42,
+    "bad_record111_burst_dropout_prob": 0.38,
+    "bad_impulse_reset_strength": 1.12,
+    "bad_impulse_reset_prob": 0.24,
+    "bad_flatlowamp_shell_strength": 0.70,
+    "bad_flatlowamp_shell_prob": 0.44,
+    "bad_intermittent_contact_strength": 1.05,
+    "bad_intermittent_contact_prob": 0.32,
+    "selection_stress_bad_record111_burst_dropout_strength": 1.75,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.78,
+    "selection_stress_bad_impulse_reset_strength": 1.32,
+    "selection_stress_bad_impulse_reset_prob": 0.54,
+    "selection_stress_bad_flatlowamp_shell_strength": 0.92,
+    "selection_stress_bad_flatlowamp_shell_prob": 0.82,
+    "selection_stress_nonbad_hardneg_strength": 3.10,
+    "aux_pretrain_epochs": 4,
+    "pretrain_classification_weight": 0.035,
+    "pretrain_aux_weight": 1.55,
+    "pretrain_core_aux_weight": 2.55,
+    "pretrain_hard_aux_weight": 10.80,
+    "pretrain_critical_aux_weight": 18.20,
+    "pretrain_quantile_aux_weight": 9.80,
+    "classification_weight": 0.88,
+    "class_weight": [1.34, 1.48, 2.72],
+    "gm_pair_weight": 0.84,
+    "bad_aux_weight": 0.82,
+    "bad_aux_pos_weight": 4.20,
+    "bad_specificity_weight": 6.10,
+    "bad_specificity_margin": 1.28,
+    "selection_bad_stress_weight": 0.38,
+    "lr": 0.000010,
+    "seed": 20261640,
+}
+
+CANDIDATES["record111_detbase_hardaux_goodprotect_a050"] = {
+    **CANDIDATES["record111_detbase_goodprotect_a050"],
+    # Same tokenization, but push the hard-feature heads harder and delay class
+    # commitment.  This tests whether the missing basSQI/detector axes need a
+    # longer aux-first phase while good recall is protected by class weights.
+    "aux_pretrain_epochs": 5,
+    "pretrain_classification_weight": 0.018,
+    "pretrain_aux_weight": 1.90,
+    "pretrain_core_aux_weight": 3.20,
+    "pretrain_hard_aux_weight": 13.20,
+    "pretrain_critical_aux_weight": 22.00,
+    "pretrain_quantile_aux_weight": 12.80,
+    "classification_weight": 0.76,
+    "hard_aux_weight": 6.40,
+    "critical_aux_weight": 9.40,
+    "quantile_aux_weight": 5.10,
+    "class_weight": [1.38, 1.42, 2.66],
+    "gm_pair_weight": 0.66,
+    "bad_aux_weight": 0.72,
+    "bad_specificity_weight": 6.55,
+    "selection_bad_stress_weight": 0.30,
+    "lr": 0.000006,
+    "seed": 20261641,
+}
+
+CANDIDATES["record111_detbase_hardaux_finetune_goodprotect_a050"] = {
+    **CANDIDATES["record111_detbase_hardaux_goodprotect_a050"],
+    # Two-stage test: the hard-aux checkpoint is the first arm that recovered
+    # basSQI/detector/qrs-visibility on original, but its class surface was too
+    # medium/bad heavy.  Start from that encoder and lower aux pressure so the
+    # classifier can relearn a good-preserving boundary.
+    "init_from_candidate": "record111_detbase_hardaux_goodprotect_a050",
+    "init_skip_mismatch": True,
+    "aux_pretrain_epochs": 0,
+    "pretrain_classification_weight": 1.0,
+    "pretrain_aux_weight": 0.0,
+    "pretrain_core_aux_weight": 0.0,
+    "pretrain_hard_aux_weight": 0.0,
+    "pretrain_critical_aux_weight": 0.0,
+    "pretrain_quantile_aux_weight": 0.0,
+    "classification_weight": 1.20,
+    "aux_weight": 0.22,
+    "core_aux_weight": 0.25,
+    "hard_aux_weight": 1.35,
+    "critical_aux_weight": 1.80,
+    "quantile_aux_weight": 0.70,
+    "rank_weight": 0.18,
+    "supcon_weight": 0.08,
+    "class_weight": [1.52, 1.30, 2.42],
+    "gm_pair_weight": 0.32,
+    "bad_aux_weight": 0.58,
+    "bad_aux_pos_weight": 3.60,
+    "bad_specificity_weight": 7.10,
+    "bad_specificity_margin": 1.42,
+    "selection_bad_stress_weight": 0.24,
+    "selection_stress_nonbad_hardneg_strength": 3.45,
+    "lr": 0.000008,
+    "seed": 20261643,
+}
+
+CANDIDATES["record111_detbase_featpre_goodprotect_a050"] = {
+    **CANDIDATES["record111_detbase_goodprotect_a050"],
+    # Alternative two-stage test: use the older detbase-balanced encoder because
+    # it had the best original recovery for qrs_band_ratio/baseline/flatline.
+    # Then apply the record111 morphology recipe with a good-preserving class
+    # surface.  This separates "feature pretraining helps" from "hardaux
+    # overfit to bad/medium".
+    "init_from_candidate": "physiofact_detbase_token_balanced_a050",
+    "init_skip_mismatch": True,
+    "aux_pretrain_epochs": 1,
+    "pretrain_classification_weight": 0.35,
+    "pretrain_aux_weight": 0.80,
+    "pretrain_core_aux_weight": 1.20,
+    "pretrain_hard_aux_weight": 4.20,
+    "pretrain_critical_aux_weight": 7.20,
+    "pretrain_quantile_aux_weight": 4.40,
+    "classification_weight": 1.02,
+    "aux_weight": 0.36,
+    "core_aux_weight": 0.55,
+    "hard_aux_weight": 2.40,
+    "critical_aux_weight": 3.20,
+    "quantile_aux_weight": 1.40,
+    "class_weight": [1.42, 1.38, 2.54],
+    "gm_pair_weight": 0.54,
+    "bad_aux_weight": 0.66,
+    "bad_aux_pos_weight": 3.80,
+    "bad_specificity_weight": 6.80,
+    "bad_specificity_margin": 1.36,
+    "selection_bad_stress_weight": 0.28,
+    "selection_stress_nonbad_hardneg_strength": 3.35,
+    "lr": 0.000007,
+    "seed": 20261644,
+}
+
+CANDIDATES["record111_detbase_featpre_stopgrad_goodprotect_a050"] = {
+    **CANDIDATES["record111_detbase_featpre_goodprotect_a050"],
+    # Detbase had the clearest original recovery of qrs_band/baseline/flatline.
+    # Keep that aux path insulated from the class head, then ask the classifier
+    # to protect good with a slightly softer medium/bad balance.
+    "detach_predicted_feature_fusion": True,
+    "classification_weight": 1.00,
+    "aux_weight": 0.52,
+    "core_aux_weight": 0.80,
+    "hard_aux_weight": 3.10,
+    "critical_aux_weight": 4.40,
+    "quantile_aux_weight": 2.05,
+    "class_weight": [1.46, 1.34, 2.62],
+    "gm_pair_weight": 0.46,
+    "bad_aux_weight": 0.68,
+    "bad_specificity_weight": 6.95,
+    "selection_bad_stress_weight": 0.34,
+    "lr": 0.000006,
+    "seed": 20261648,
+}
+
+CANDIDATES["record111_detbase_frozenbridge_goodprotect_a050"] = {
+    **CANDIDATES["record111_detbase_goodprotect_a050"],
+    # Classifier-bridge probe: keep the det/base encoder and aux SQI path from
+    # the feature-learning arm frozen.  Only train the bridge/class/bad heads so
+    # record111 fine-tuning cannot reverse basSQI/baseline recovery.
+    "init_from_candidate": "physiofact_detbase_token_balanced_a050",
+    "init_skip_mismatch": True,
+    "detach_predicted_feature_fusion": True,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "class_head",
+        "feature_class_head",
+        "feature_gate_head",
+        "gm_pair_head",
+        "gm_feature_residual_head",
+        "bad_head",
+        "bad_feature_head",
+        "stress_head",
+        "bad_router_head",
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+    ],
+    "aux_pretrain_epochs": 0,
+    "classification_weight": 1.18,
+    "aux_weight": 0.0,
+    "core_aux_weight": 0.0,
+    "hard_aux_weight": 0.0,
+    "critical_aux_weight": 0.0,
+    "quantile_aux_weight": 0.0,
+    "rank_weight": 0.0,
+    "supcon_weight": 0.0,
+    "feature_first_logits": True,
+    "feature_residual_alpha": 0.45,
+    "class_weight": [1.58, 1.24, 2.62],
+    "gm_pair_weight": 0.34,
+    "bad_aux_weight": 0.70,
+    "bad_aux_pos_weight": 3.80,
+    "bad_specificity_weight": 7.40,
+    "bad_specificity_margin": 1.46,
+    "selection_bad_stress_weight": 0.36,
+    "lr": 0.000020,
+    "seed": 20261649,
+}
+
+CANDIDATES["record111_detbase_frozenbridge_balance_a050"] = {
+    **CANDIDATES["record111_detbase_frozenbridge_goodprotect_a050"],
+    # Balanced bridge: allow more medium/bad pressure while still freezing the
+    # SQI recovery path.  This is the paired control for the good-protect arm.
+    "class_weight": [1.38, 1.42, 2.74],
+    "gm_pair_weight": 0.58,
+    "bad_aux_weight": 0.82,
+    "bad_specificity_weight": 6.85,
+    "selection_bad_stress_weight": 0.46,
+    "feature_residual_alpha": 0.55,
+    "lr": 0.000018,
+    "seed": 20261650,
+}
+
+CANDIDATES["record111_detbase_frozenbridge_artifact_a050"] = {
+    **CANDIDATES["record111_detbase_frozenbridge_balance_a050"],
+    # Composition probe: freeze the det/base SQI representation for good/medium,
+    # but add the local artifact residual branch that previously helped
+    # record111 bad_outlier.  This keeps the model waveform-only and avoids
+    # rewriting the SQI encoder while giving bad stress a dedicated path.
+    "final_mode": "bad_artifact_residual",
+    "artifact_bad_only": True,
+    "artifact_context_fusion": True,
+    "aux_artifact_context_fusion": False,
+    "artifact_bad_count": 18,
+    "artifact_bad_window": 181,
+    "artifact_bad_width": 72,
+    "artifact_bad_layers": 1,
+    "artifact_bad_heads": 4,
+    "artifact_bad_mix": 0.70,
+    "artifact_bad_bias_init": -1.12,
+    "artifact_veto_mix": 0.24,
+    "artifact_veto_bias_init": 0.42,
+    "artifact_veto_weight": 1.10,
+    "artifact_veto_pos_weight": 0.78,
+    "artifact_event_local_weight": 0.78,
+    "artifact_event_bad_boost": 1.35,
+    "artifact_event_pos_weight": [1.55, 1.90, 1.55, 1.25, 1.45],
+    "bad_logit_mix": 5.80,
+    "bad_residual_cap": 3.90,
+    "bad_artifact_floor": 0.30,
+    "bad_artifact_power": 0.78,
+    "bad_artifact_veto_threshold": 0.78,
+    "bad_artifact_veto_temperature": 0.12,
+    "bad_core_logit_mix": 1.35,
+    "bad_core_residual_cap": 1.85,
+    "bad_core_floor": 0.35,
+    "bad_core_power": 0.92,
+    "init_artifact_from_candidate": "featurefirst_top20_qrsbase_artbad_dualcoreout_recall_a050",
+    "bad_record111_motion_strength": 2.65,
+    "bad_record111_motion_prob": 0.52,
+    "bad_record111_burst_dropout_strength": 2.25,
+    "bad_record111_burst_dropout_prob": 0.48,
+    "bad_impulse_reset_strength": 1.75,
+    "bad_impulse_reset_prob": 0.36,
+    "bad_intermittent_contact_strength": 1.70,
+    "bad_intermittent_contact_prob": 0.56,
+    "selection_stress_bad_record111_motion_strength": 3.05,
+    "selection_stress_bad_record111_motion_prob": 1.0,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.70,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.94,
+    "selection_stress_bad_impulse_reset_strength": 2.05,
+    "selection_stress_bad_impulse_reset_prob": 0.82,
+    "selection_stress_bad_intermittent_contact_prob": 0.82,
+    "selection_bad_stress_weight": 0.62,
+    "class_weight": [1.42, 1.36, 2.92],
+    "bad_aux_weight": 0.92,
+    "bad_specificity_weight": 7.15,
+    "feature_residual_alpha": 0.50,
+    "lr": 0.000016,
+    "seed": 20261651,
+}
+
+PHYSIO_EXPLAINABLE_GEOMETRY_COLUMNS = [
+    # PCA axes are only retained when their loadings map back to signal facts:
+    # PC1/detail-noise, PC2/baseline-low-frequency, PC3/QRS/flatline shell.
+    # Dataset-neighborhood proxies such as knn_label_purity, region_confidence,
+    # and boundary_confidence are deliberately excluded from this formal branch.
+    "pc1",
+    "pc2",
+    "pc3",
+    "pca_margin",
+    "qrs_visibility",
+    "qrs_band_ratio",
+    "qrs_prom_p90",
+    "template_corr",
+    "detector_agreement",
+    "baseline_step",
+    "flatline_ratio",
+    "sqi_basSQI",
+    "sqi_bSQI",
+    "sqi_pSQI",
+    "sqi_sSQI",
+    "sqi_kSQI",
+    "sqi_fSQI",
+    "non_qrs_rms_ratio",
+    "non_qrs_diff_p95",
+    "diff_abs_p95",
+    "ptp_p99_p01",
+    "amplitude_entropy",
+    "low_amp_ratio",
+    "mean_abs",
+    "rms",
+    "sample_entropy_proxy",
+    "higuchi_fd_proxy",
+    "hjorth_activity",
+    "hjorth_mobility",
+    "hjorth_complexity",
+    "band_15_30",
+    "band_30_45",
+    "wavelet_e2",
+    "wavelet_e3",
+    "wavelet_e4",
+]
+
+PHYSIO_EXPLAINABLE_QUANTILE_COLUMNS = [
+    "qrs_visibility",
+    "detector_agreement",
+    "baseline_step",
+    "sqi_basSQI",
+    "sqi_pSQI",
+    "flatline_ratio",
+    "low_amp_ratio",
+    "non_qrs_diff_p95",
+    "diff_abs_p95",
+    "amplitude_entropy",
+    "hjorth_mobility",
+    "hjorth_complexity",
+    "wavelet_e3",
+    "wavelet_e4",
+]
+
+CANDIDATES["physiofact_detrawbeat_localhead_balanced_a050"] = {
+    **CANDIDATES["physiofact_detbase_token_balanced_a050"],
+    # Literature-aligned waveform Transformer: detector/RR/baseline tokens plus
+    # raw beat and sparse artifact windows.  The local QRS/baseline heads force
+    # the encoder to recover waveform-computable SQI facts instead of relying on
+    # atlas/KNN geometry.  Inference remains waveform-only.
+    "arch": "detrawbeat_artifact_sqi_query_multiscale_patch",
+    "width": 96,
+    "layers": 4,
+    "heads": 4,
+    "stat_hidden": 256,
+    "event_count": 14,
+    "event_window": 101,
+    "artifact_count": 12,
+    "artifact_window": 151,
+    "predicted_feature_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "feature_teacher_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "critical_aux_columns": PHYSIO_FACT_CRITICAL_COLUMNS,
+    "quantile_aux_columns": PHYSIO_FACT_QUANTILE_COLUMNS,
+    "waveform_atlas_prototypes_per_class": 0,
+    "waveform_proto_weight": 0.0,
+    "waveform_atlas_logit_mix": 0.0,
+    "atlas_distill_weight": 0.0,
+    "neighbor_weight": 0.0,
+    "pretrain_atlas_distill_weight": 0.0,
+    "pretrain_neighbor_weight": 0.0,
+    "local_aux_residual_mix": 0.22,
+    "aux_pretrain_epochs": 3,
+    "pretrain_classification_weight": 0.04,
+    "pretrain_gm_pair_weight": 0.04,
+    "pretrain_aux_weight": 1.30,
+    "pretrain_core_aux_weight": 0.0,
+    "pretrain_hard_aux_weight": 10.80,
+    "pretrain_critical_aux_weight": 16.40,
+    "pretrain_quantile_aux_weight": 9.60,
+    "pretrain_local_qrs_aux_weight": 16.00,
+    "pretrain_local_baseline_aux_weight": 18.00,
+    "aux_weight": 0.44,
+    "core_aux_weight": 0.0,
+    "hard_aux_weight": 5.20,
+    "critical_aux_weight": 7.60,
+    "quantile_aux_weight": 4.10,
+    "local_qrs_aux_weight": 4.20,
+    "local_baseline_aux_weight": 5.20,
+    "classification_weight": 1.04,
+    "gm_pair_weight": 1.55,
+    "class_weight": [1.14, 1.86, 2.82],
+    "bad_aux_weight": 0.82,
+    "bad_aux_pos_weight": 3.95,
+    "bad_specificity_weight": 3.35,
+    "bad_specificity_margin": 0.96,
+    "selection_bad_stress_weight": 0.34,
+    "lr": 0.00012,
+    "seed": 20261630,
+}
+
+CANDIDATES["physiofact_detrawbeat_localhead_badstress_a050"] = {
+    **CANDIDATES["physiofact_detrawbeat_localhead_balanced_a050"],
+    # Bad arm: same interpretable token structure, modestly stronger artifact
+    # and bad pressure, but keep specificity so medium/baseline rows are not
+    # swallowed as bad.
+    "class_weight": [1.08, 1.78, 3.28],
+    "gm_pair_weight": 1.36,
+    "bad_aux_weight": 1.05,
+    "bad_aux_pos_weight": 4.85,
+    "bad_specificity_weight": 3.05,
+    "bad_specificity_margin": 0.88,
+    "selection_bad_stress_weight": 0.50,
+    "local_aux_residual_mix": 0.18,
+    "seed": 20261631,
+}
+
+CANDIDATES["quality20_detrawbeat_localhead_atlaslite_a050"] = {
+    **CANDIDATES["physiofact_detrawbeat_localhead_balanced_a050"],
+    # Explainable-geometry ablation: add PC/detail/baseline axes and wavelet /
+    # Hjorth targets that are interpretable from loadings or signal processing.
+    # KNN/region/boundary-confidence proxies remain excluded.
+    "predicted_feature_columns": PHYSIO_EXPLAINABLE_GEOMETRY_COLUMNS,
+    "feature_teacher_columns": PHYSIO_EXPLAINABLE_GEOMETRY_COLUMNS,
+    "critical_aux_columns": PHYSIO_EXPLAINABLE_GEOMETRY_COLUMNS,
+    "quantile_aux_columns": PHYSIO_EXPLAINABLE_QUANTILE_COLUMNS,
+    "feature_first_logits": True,
+    "feature_residual_alpha": 0.42,
+    "pretrain_hard_aux_weight": 9.80,
+    "pretrain_critical_aux_weight": 15.20,
+    "pretrain_quantile_aux_weight": 9.20,
+    "hard_aux_weight": 4.90,
+    "critical_aux_weight": 7.20,
+    "quantile_aux_weight": 4.00,
+    "class_weight": [1.12, 1.86, 2.92],
+    "bad_specificity_weight": 3.45,
+    "selection_bad_stress_weight": 0.38,
+    "seed": 20261632,
+}
+
+CANDIDATES["physiofact_detrawbeat_v5sparse_badoutlier_a050"] = {
+    **CANDIDATES["physiofact_detrawbeat_localhead_badstress_a050"],
+    # Literature-aligned sparse bad-stress probe.  This keeps inference
+    # waveform-only, uses only waveform-computable SQI/shape/RR features in the
+    # classifier fusion, and teaches interpretable geometry axes only as aux
+    # recovery targets.  qrs_stress_v5 supplies local contact-loss, reset,
+    # dropout, and detail-burst primitives; KNN/region/boundary-confidence
+    # dataset proxies are deliberately excluded.
+    "predicted_feature_fusion": "configured",
+    "predicted_feature_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "feature_teacher_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "critical_aux_columns": PHYSIO_EXPLAINABLE_GEOMETRY_COLUMNS,
+    "quantile_aux_columns": PHYSIO_EXPLAINABLE_QUANTILE_COLUMNS,
+    "feature_first_logits": False,
+    "primitive_bank": "qrs_stress_v5",
+    "primitive_bad_bank": "qrs_stress_v5",
+    "primitive_context_fusion": True,
+    "aux_primitive_context_fusion": True,
+    "primitive_context_bank": "qrs_stress_v5",
+    "primitive_context_width": 56,
+    "primitive_context_layers": 1,
+    "primitive_context_heads": 4,
+    "primitive_context_hidden": 176,
+    "primitive_context_chunk": 16,
+    "primitive_bad_expert": True,
+    "primitive_bad_mix": 0.62,
+    "artifact_bad_only": True,
+    "artifact_bad_count": 16,
+    "artifact_bad_window": 181,
+    "artifact_bad_width": 64,
+    "artifact_bad_layers": 1,
+    "artifact_bad_heads": 4,
+    "artifact_context_fusion": True,
+    "aux_artifact_context_fusion": True,
+    "artifact_bad_mix": 0.44,
+    "artifact_bad_bias_init": -1.22,
+    "artifact_veto_mix": 0.32,
+    "artifact_veto_bias_init": 0.46,
+    "artifact_veto_weight": 0.70,
+    "artifact_veto_pos_weight": 0.82,
+    "artifact_event_local_weight": 0.38,
+    "artifact_event_bad_boost": 1.55,
+    "artifact_event_pos_weight": [1.55, 1.95, 1.55, 1.35, 1.70],
+    "final_mode": "dual_bad_gm_mix",
+    "gate_logit_alpha": 0.26,
+    "bad_gate_bias_init": -1.30,
+    "class_weight": [1.08, 1.86, 3.18],
+    "gm_pair_weight": 1.58,
+    "bad_aux_weight": 1.12,
+    "bad_aux_pos_weight": 4.95,
+    "stress_aux_weight": 0.46,
+    "stress_aux_pos_weight": 3.85,
+    "stress_bad_logit_mix": 0.035,
+    "bad_specificity_weight": 3.75,
+    "bad_specificity_margin": 1.02,
+    "selection_bad_stress_weight": 0.56,
+    "bad_record111_motion_strength": 0.0,
+    "bad_record111_motion_prob": 0.0,
+    "bad_record111_burst_dropout_strength": 1.65,
+    "bad_record111_burst_dropout_prob": 0.34,
+    "bad_impulse_reset_strength": 1.34,
+    "bad_impulse_reset_prob": 0.28,
+    "bad_flatlowamp_shell_strength": 0.72,
+    "bad_flatlowamp_shell_prob": 0.44,
+    "bad_intermittent_contact_strength": 1.42,
+    "bad_intermittent_contact_prob": 0.44,
+    "nonbad_hardneg_strength": 1.70,
+    "aug_aux_weight_nonbad": 0.46,
+    "selection_stress_nonbad_hardneg_strength": 1.95,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.10,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.84,
+    "selection_stress_bad_impulse_reset_strength": 1.62,
+    "selection_stress_bad_impulse_reset_prob": 0.72,
+    "selection_stress_bad_intermittent_contact_strength": 1.72,
+    "selection_stress_bad_intermittent_contact_prob": 0.66,
+    "lr": 0.00011,
+    "seed": 20261633,
+}
+
+CANDIDATES["physiofact_detrawbeat_v5sparse_mediumveto_a050"] = {
+    **CANDIDATES["physiofact_detrawbeat_v5sparse_badoutlier_a050"],
+    # Same sparse bad event evidence, but with a stronger medium/non-bad veto.
+    # This directly tests the observed failure mode of earlier v5 branches:
+    # bad-outlier recall improves, while medium detail/baseline rows are
+    # falsely swallowed as bad.
+    "class_weight": [1.10, 2.04, 2.92],
+    "gm_pair_weight": 1.86,
+    "bad_aux_weight": 0.94,
+    "bad_aux_pos_weight": 4.20,
+    "bad_specificity_weight": 4.45,
+    "bad_specificity_margin": 1.14,
+    "selection_bad_stress_weight": 0.42,
+    "primitive_bad_mix": 0.46,
+    "artifact_bad_mix": 0.34,
+    "artifact_veto_mix": 0.48,
+    "artifact_veto_weight": 0.92,
+    "artifact_event_bad_boost": 1.25,
+    "gate_logit_alpha": 0.20,
+    "bad_gate_bias_init": -1.42,
+    "stress_bad_logit_mix": 0.020,
+    "nonbad_hardneg_strength": 2.05,
+    "aug_aux_weight_nonbad": 0.58,
+    "selection_stress_nonbad_hardneg_strength": 2.35,
+    "seed": 20261634,
+}
+
+CANDIDATES["physiofact_detrawbeat_v5residual_guard_a050"] = {
+    **CANDIDATES["physiofact_detrawbeat_localhead_badstress_a050"],
+    # Preserve the current good/medium waveform Transformer surface and learn
+    # only a capped local-artifact bad residual.  This is the narrow follow-up
+    # to the v5 sparse probe: record111-like bad outliers may open the residual,
+    # while the artifact veto suppresses coherent non-bad baseline/detail rows.
+    "init_from_candidate": "physiofact_detrawbeat_localhead_badstress_a050",
+    "init_skip_mismatch": True,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "artifact_bad_expert",
+        "artifact_bad_head",
+        "artifact_veto_head",
+    ],
+    "predicted_feature_fusion": "configured",
+    "predicted_feature_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "feature_teacher_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "critical_aux_columns": PHYSIO_EXPLAINABLE_GEOMETRY_COLUMNS,
+    "quantile_aux_columns": PHYSIO_EXPLAINABLE_QUANTILE_COLUMNS,
+    "feature_first_logits": False,
+    "primitive_bank": "qrs_stress_v5",
+    "primitive_bad_bank": "qrs_stress_v5",
+    "artifact_bad_only": True,
+    "artifact_bad_count": 18,
+    "artifact_bad_window": 181,
+    "artifact_bad_width": 64,
+    "artifact_bad_layers": 1,
+    "artifact_bad_heads": 4,
+    "artifact_bad_mix": 0.0,
+    "artifact_bad_bias_init": -1.18,
+    "artifact_veto_mix": 0.0,
+    "artifact_veto_bias_init": 0.48,
+    "artifact_veto_weight": 1.10,
+    "artifact_veto_pos_weight": 0.80,
+    "artifact_event_local_weight": 0.56,
+    "artifact_event_bad_boost": 1.35,
+    "artifact_event_pos_weight": [1.55, 2.05, 1.60, 1.35, 1.75],
+    "final_mode": "bad_artifact_residual",
+    "bad_logit_mix": 3.40,
+    "bad_residual_cap": 2.15,
+    "bad_artifact_floor": 0.52,
+    "bad_artifact_power": 1.28,
+    "bad_artifact_veto_power": 1.25,
+    "bad_artifact_veto_threshold": 0.66,
+    "bad_artifact_veto_temperature": 0.10,
+    "bad_core_logit_mix": 0.0,
+    "bad_aux_weight": 0.72,
+    "bad_aux_pos_weight": 3.65,
+    "bad_specificity_weight": 6.10,
+    "bad_specificity_margin": 1.28,
+    "classification_weight": 0.82,
+    "gm_pair_weight": 0.0,
+    "stress_aux_weight": 0.34,
+    "stress_aux_pos_weight": 3.30,
+    "stress_bad_logit_mix": 0.0,
+    "selection_bad_stress_weight": 0.34,
+    "bad_record111_motion_strength": 0.0,
+    "bad_record111_motion_prob": 0.0,
+    "bad_record111_burst_dropout_strength": 1.72,
+    "bad_record111_burst_dropout_prob": 0.32,
+    "bad_impulse_reset_strength": 1.24,
+    "bad_impulse_reset_prob": 0.24,
+    "bad_flatlowamp_shell_strength": 0.64,
+    "bad_flatlowamp_shell_prob": 0.38,
+    "bad_intermittent_contact_strength": 1.34,
+    "bad_intermittent_contact_prob": 0.38,
+    "nonbad_hardneg_strength": 2.10,
+    "aug_aux_weight_nonbad": 0.55,
+    "selection_stress_nonbad_hardneg_strength": 2.50,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.12,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.82,
+    "selection_stress_bad_impulse_reset_strength": 1.52,
+    "selection_stress_bad_impulse_reset_prob": 0.66,
+    "selection_stress_bad_intermittent_contact_strength": 1.62,
+    "selection_stress_bad_intermittent_contact_prob": 0.60,
+    "lr": 0.00008,
+    "seed": 20261635,
+}
+
+CANDIDATES["physiofact_detrawbeat_v5residual_recall_a050"] = {
+    **CANDIDATES["physiofact_detrawbeat_v5residual_guard_a050"],
+    # Recall endpoint for the same residual path.  Reject if original_all
+    # good/medium collapses or hard-test medium false-bad rises sharply.
+    "bad_logit_mix": 4.70,
+    "bad_residual_cap": 2.85,
+    "bad_artifact_floor": 0.46,
+    "bad_artifact_power": 1.05,
+    "bad_artifact_veto_power": 0.92,
+    "bad_artifact_veto_threshold": 0.72,
+    "artifact_event_local_weight": 0.68,
+    "artifact_event_bad_boost": 1.70,
+    "artifact_veto_weight": 0.88,
+    "bad_aux_weight": 0.86,
+    "bad_aux_pos_weight": 4.20,
+    "bad_specificity_weight": 4.95,
+    "bad_specificity_margin": 1.08,
+    "selection_bad_stress_weight": 0.46,
+    "bad_record111_burst_dropout_strength": 1.95,
+    "bad_record111_burst_dropout_prob": 0.42,
+    "bad_impulse_reset_strength": 1.48,
+    "bad_impulse_reset_prob": 0.32,
+    "bad_intermittent_contact_strength": 1.54,
+    "bad_intermittent_contact_prob": 0.48,
+    "selection_stress_bad_record111_burst_dropout_strength": 2.38,
+    "selection_stress_bad_record111_burst_dropout_prob": 0.90,
+    "selection_stress_bad_impulse_reset_strength": 1.76,
+    "selection_stress_bad_impulse_reset_prob": 0.74,
+    "selection_stress_bad_intermittent_contact_strength": 1.82,
+    "selection_stress_bad_intermittent_contact_prob": 0.68,
+    "seed": 20261636,
+}
+
+CANDIDATES["stattoken_v2_badstress_physioctx_guard_a050"] = {
+    **CANDIDATES["stattoken_v2_badstress"],
+    # Literature-aligned context add-on over the strongest waveform-only
+    # frontier.  Keep StatTokenV2's good/medium surface intact and add only a
+    # small waveform-computable PhysioSQI context Transformer for QRS/RR,
+    # baseline, flatline/contact, and detail evidence.  No atlas/KNN/region
+    # proxies enter the classifier.
+    "init_from_candidate": "stattoken_v2_badstress",
+    "init_skip_mismatch": True,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "physio_context_encoder",
+        "physio_context_project",
+        "class_head",
+        "gm_pair_head",
+        "bad_head",
+        "aux_head",
+        "stress_head",
+    ],
+    "physio_context_fusion": True,
+    "aux_physio_context_fusion": True,
+    "physio_context_width": 56,
+    "physio_context_layers": 1,
+    "physio_context_heads": 4,
+    "physio_context_hidden": 176,
+    "physio_context_artifact_count": 14,
+    "physio_context_artifact_window": 151,
+    "predicted_feature_fusion": "configured",
+    "predicted_feature_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "feature_teacher_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "critical_aux_columns": PHYSIO_FACT_CRITICAL_COLUMNS,
+    "quantile_aux_columns": PHYSIO_FACT_QUANTILE_COLUMNS,
+    "aux_pretrain_epochs": 0,
+    "classification_weight": 1.06,
+    "gm_pair_weight": 1.28,
+    "aux_weight": 0.30,
+    "core_aux_weight": 0.0,
+    "hard_aux_weight": 2.60,
+    "critical_aux_weight": 3.60,
+    "quantile_aux_weight": 1.80,
+    "class_weight": [1.04, 1.42, 2.82],
+    "bad_aux_weight": 0.76,
+    "bad_aux_pos_weight": 3.75,
+    "bad_specificity_weight": 3.40,
+    "bad_specificity_margin": 0.92,
+    "selection_bad_stress_weight": 0.34,
+    "lr": 0.00008,
+    "seed": 20261637,
+}
+
+CANDIDATES["stattoken_v2_badstress_physioctx_recall_a050"] = {
+    **CANDIDATES["stattoken_v2_badstress_physioctx_guard_a050"],
+    # Same context structure, but a modest bad-stress recall endpoint.  Reject
+    # if it buys bad outlier recall by spending good/medium specificity.
+    "class_weight": [1.02, 1.34, 3.18],
+    "gm_pair_weight": 1.05,
+    "bad_aux_weight": 0.98,
+    "bad_aux_pos_weight": 4.40,
+    "bad_specificity_weight": 2.70,
+    "bad_specificity_margin": 0.78,
+    "selection_bad_stress_weight": 0.46,
+    "seed": 20261638,
+}
+
+CANDIDATES["stattoken_v2_badstress_threshold_guard_a050"] = {
+    **CANDIDATES["stattoken_v2_badstress"],
+    # Differentiable threshold evidence over waveform-computable primitive
+    # stats.  This is the neural analogue of simple SQI cut points: the head
+    # sees whether QRS/RR, baseline, flatline/contact, and sparse reset/detail
+    # primitives cross interpretable z-levels.  It is still waveform-only
+    # inference and excludes dataset-neighborhood proxies.
+    "init_from_candidate": "stattoken_v2_badstress",
+    "init_skip_mismatch": True,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "primitive_branch",
+        "primitive_threshold_norm",
+        "primitive_threshold_proj",
+        "class_head",
+        "gm_pair_head",
+        "bad_head",
+        "aux_head",
+        "stress_head",
+    ],
+    "primitive_bank": "qrs_stress_v5",
+    "primitive_threshold_fusion": True,
+    "primitive_threshold_values": [-3.0, -2.25, -1.45, -0.75, -0.25, 0.25, 0.75, 1.45, 2.25, 3.0],
+    "primitive_threshold_sharpness": 2.8,
+    "predicted_feature_fusion": "configured",
+    "predicted_feature_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "feature_teacher_columns": WAVEFORM_COMPUTABLE_TEACHER_COLUMNS,
+    "critical_aux_columns": PHYSIO_FACT_CRITICAL_COLUMNS,
+    "quantile_aux_columns": PHYSIO_FACT_QUANTILE_COLUMNS,
+    "aux_pretrain_epochs": 0,
+    "classification_weight": 1.05,
+    "gm_pair_weight": 1.24,
+    "aux_weight": 0.28,
+    "core_aux_weight": 0.0,
+    "hard_aux_weight": 2.45,
+    "critical_aux_weight": 3.40,
+    "quantile_aux_weight": 1.70,
+    "class_weight": [1.04, 1.44, 2.86],
+    "bad_aux_weight": 0.78,
+    "bad_aux_pos_weight": 3.80,
+    "bad_specificity_weight": 3.55,
+    "bad_specificity_margin": 0.96,
+    "selection_bad_stress_weight": 0.34,
+    "lr": 0.00008,
+    "seed": 20261639,
+}
+
+CANDIDATES["stattoken_v2_badstress_threshold_recall_a050"] = {
+    **CANDIDATES["stattoken_v2_badstress_threshold_guard_a050"],
+    # Bad-stress endpoint for the threshold branch.  Keep it paired with guard
+    # so we can reject recall gains that are just non-bad false positives.
+    "class_weight": [1.02, 1.36, 3.20],
+    "gm_pair_weight": 1.02,
+    "bad_aux_weight": 1.00,
+    "bad_aux_pos_weight": 4.45,
+    "bad_specificity_weight": 2.75,
+    "bad_specificity_margin": 0.80,
+    "selection_bad_stress_weight": 0.46,
+    "seed": 20261640,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_physioctx_balanced_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_dual_balanced_a050"],
+    # Hybrid waveform-only model: keep the best rawbeat/artifact encoder fixed
+    # and add a PhysioSQI context Transformer to the classification/aux heads.
+    # This tests whether detector/baseline/RR facts help only when raw morphology
+    # remains the main representation.
+    "init_from_candidate": "featurefirst_top20_rawbeat_artifact_auxctx_dual_balanced_a050",
+    "init_skip_mismatch": True,
+    "physio_context_fusion": True,
+    "aux_physio_context_fusion": True,
+    "physio_context_width": 64,
+    "physio_context_layers": 2,
+    "physio_context_heads": 4,
+    "physio_context_hidden": 224,
+    "physio_context_artifact_count": 16,
+    "physio_context_artifact_window": 151,
+    "freeze_main_except_artifact": True,
+    "freeze_trainable_name_contains": [
+        "physio_context_encoder",
+        "physio_context_project",
+        "class_head",
+        "feature_class_head",
+        "gm_pair_head",
+        "bad_head",
+        "aux_head",
+        "artifact_bad_head",
+        "artifact_veto_head",
+    ],
+    "aux_pretrain_epochs": 0,
+    "pretrain_classification_weight": 1.0,
+    "pretrain_gm_pair_weight": 1.0,
+    "classification_weight": 1.22,
+    "gm_pair_weight": 1.05,
+    "aux_weight": 0.22,
+    "core_aux_weight": 0.55,
+    "hard_aux_weight": 1.90,
+    "top14_aux_weight": 1.50,
+    "critical_aux_weight": 2.40,
+    "class_weight": [1.12, 1.68, 2.82],
+    "bad_aux_weight": 0.74,
+    "bad_aux_pos_weight": 3.55,
+    "bad_specificity_weight": 3.80,
+    "bad_specificity_margin": 0.98,
+    "selection_bad_stress_weight": 0.34,
+    "lr": 0.00009,
+    "seed": 20261368,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_physioctx_goodguard_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_physioctx_balanced_a050"],
+    "class_weight": [1.20, 1.78, 2.50],
+    "gm_pair_weight": 1.28,
+    "bad_aux_weight": 0.62,
+    "bad_aux_pos_weight": 3.10,
+    "bad_specificity_weight": 4.60,
+    "bad_specificity_margin": 1.14,
+    "selection_bad_stress_weight": 0.26,
+    "seed": 20261369,
+}
+
+CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_physioctx_badrecall_a050"] = {
+    **CANDIDATES["featurefirst_top20_rawbeat_artifact_auxctx_physioctx_balanced_a050"],
+    "class_weight": [1.06, 1.58, 3.20],
+    "gm_pair_weight": 0.88,
+    "bad_aux_weight": 0.90,
+    "bad_aux_pos_weight": 4.25,
+    "bad_specificity_weight": 3.05,
+    "bad_specificity_margin": 0.84,
+    "selection_bad_stress_weight": 0.44,
+    "seed": 20261370,
+}
+
 CANDIDATES["predfailaxis_sqiquery_subject111_impulsebad_dual_p20"] = {
     **CANDIDATES["predtop20_sqiquery_subject111_impulsebad_dual_p20"],
     # P20 original-test failure audit: the large errors are separable by a
@@ -5232,11 +12925,53 @@ def load_arch_module() -> Any:
 
 ARCH = load_arch_module()
 GEOM = ARCH.GEOM
+DEFAULT_ARCH_VARIANT_ID = str(ARCH.VARIANT_ID)
 FEATURE_COLUMNS = list(ARCH.FEATURE_COLUMNS)
 TEACHER_IDX = [FEATURE_COLUMNS.index(c) for c in TEACHER_COLUMNS if c in FEATURE_COLUMNS]
 CORE_IDX = [FEATURE_COLUMNS.index(c) for c in CORE_COLUMNS if c in FEATURE_COLUMNS]
 HARD_IDX = [FEATURE_COLUMNS.index(c) for c in HARD_FEATURE_COLUMNS if c in FEATURE_COLUMNS]
 TOP14_IDX = [FEATURE_COLUMNS.index(c) for c in TOP14_FEATURE_COLUMNS if c in FEATURE_COLUMNS]
+LOCAL_QRS_AUX_COLUMNS = [
+    "qrs_visibility",
+    "detector_agreement",
+    "qrs_band_ratio",
+    "template_corr",
+    "qrs_prom_p90",
+]
+LOCAL_BASELINE_AUX_COLUMNS = [
+    "baseline_step",
+    "sqi_basSQI",
+    "flatline_ratio",
+    "low_amp_ratio",
+    "non_qrs_diff_p95",
+]
+
+
+def configure_arch_variant(variant_id: str | None) -> str:
+    """Point the shared architecture loader at a synthetic variant.
+
+    The architecture module keeps DATA_DIR as a module-level constant.  Most
+    historical candidates use the default N17043 variant; a few large-boundary
+    probes need to swap in a different external synthetic dataset.  This does
+    not change the model contract: features remain training-only teacher
+    targets and inference remains waveform-only.
+    """
+
+    chosen = str(variant_id or DEFAULT_ARCH_VARIANT_ID).strip() or DEFAULT_ARCH_VARIANT_ID
+    data_dir = OUT_ROOT / "synthetic_variants" / chosen / "datasets"
+    required = [
+        data_dir / "synth_10s_125hz_labels_with_level.csv",
+        data_dir / "synth_10s_125hz_noisy.npz",
+        data_dir / "tabular_features.npz",
+    ]
+    missing = [str(p) for p in required if not p.exists()]
+    if missing:
+        raise FileNotFoundError(f"variant {chosen} is missing required waveform-student files: {missing}")
+    ARCH.VARIANT_ID = chosen
+    ARCH.DATA_DIR = data_dir
+    return chosen
+LOCAL_QRS_AUX_IDX = [FEATURE_COLUMNS.index(c) for c in LOCAL_QRS_AUX_COLUMNS if c in FEATURE_COLUMNS]
+LOCAL_BASELINE_AUX_IDX = [FEATURE_COLUMNS.index(c) for c in LOCAL_BASELINE_AUX_COLUMNS if c in FEATURE_COLUMNS]
 
 
 class FeatureLogitTeacher:
@@ -5809,6 +13544,269 @@ def qrs_event_patch_features(x: torch.Tensor, event_count: int = 12, window: int
     )
 
 
+def qrs_event_raw_windows_and_features(
+    x: torch.Tensor, event_count: int = 18, window: int = 101
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return local raw beat/event windows plus per-event RR/context features.
+
+    Previous event-QRS variants exposed only compact event summaries.  This
+    helper keeps the local waveform shape as a token so the Transformer can
+    learn QRS visibility and detector agreement from the beat window itself.
+    Event selection is waveform-only: high-pass peak evidence plus slope and
+    curvature evidence.  No external detector/SQI sidecar is used.
+    """
+
+    eps = 1e-6
+    b, c, n = x.shape
+    k = max(1, min(int(event_count), int(n)))
+    w = max(11, int(window))
+    if w % 2 == 0:
+        w += 1
+    pad = w // 2
+
+    smooth51 = F.avg_pool1d(x, kernel_size=51, stride=1, padding=25)
+    high = x - smooth51
+    slope = F.pad(high[:, :, 1:] - high[:, :, :-1], (1, 0))
+    curv = F.pad(high[:, :, 2:] - 2.0 * high[:, :, 1:-1] + high[:, :, :-2], (1, 1))
+    score = high.abs() + 0.45 * slope.abs() + 0.25 * curv.abs()
+    idx = torch.topk(score, k=k, dim=2).indices
+
+    offsets = torch.arange(-pad, pad + 1, device=x.device).view(1, 1, 1, w)
+    gather_idx = (idx.unsqueeze(-1) + offsets + pad).clamp(0, n + 2 * pad - 1)
+    xp = F.pad(x, (pad, pad), mode="replicate")
+    hp = F.pad(high, (pad, pad), mode="replicate")
+    sp = F.pad(slope, (pad, pad), mode="replicate")
+    cp = F.pad(curv, (pad, pad), mode="replicate")
+    xw = torch.gather(xp.unsqueeze(2).expand(-1, -1, k, -1), 3, gather_idx)
+    hw = torch.gather(hp.unsqueeze(2).expand(-1, -1, k, -1), 3, gather_idx)
+    sw = torch.gather(sp.unsqueeze(2).expand(-1, -1, k, -1), 3, gather_idx)
+    cw = torch.gather(cp.unsqueeze(2).expand(-1, -1, k, -1), 3, gather_idx)
+
+    # Normalize each local window gently; keep amplitude evidence separately in
+    # scalar features so the raw token focuses on shape and timing.
+    win_med = xw.median(dim=3, keepdim=True).values
+    win_scale = xw.std(dim=3, keepdim=True).clamp_min(0.05)
+    raw_window = ((xw - win_med) / win_scale).clamp(-8.0, 8.0)
+
+    dw = xw[:, :, :, 1:] - xw[:, :, :, :-1]
+    abs_w = xw.abs()
+    abs_d = dw.abs()
+    mean_abs = abs_w.mean(dim=3)
+    rms = torch.sqrt((xw * xw).mean(dim=3) + eps)
+    ptp = xw.amax(dim=3) - xw.amin(dim=3)
+    high_rms = torch.sqrt((hw * hw).mean(dim=3) + eps)
+    slope_rms = torch.sqrt((sw * sw).mean(dim=3) + eps)
+    curv_rms = torch.sqrt((cw * cw).mean(dim=3) + eps)
+    diff_rms = torch.sqrt((dw * dw).mean(dim=3) + eps)
+    flat_ratio = (abs_d < 0.015).float().mean(dim=3)
+    low_amp_ratio = (abs_w < 0.050).float().mean(dim=3)
+    center_abs = xw[:, :, :, pad].abs()
+    prom_ratio = center_abs / (mean_abs + eps)
+    left = xw[:, :, :, :pad]
+    right = xw[:, :, :, pad + 1 :]
+    asym = (left.abs().mean(dim=3) - right.abs().mean(dim=3)).abs() / (mean_abs + eps)
+    pos = idx.float() / max(1.0, float(n - 1))
+
+    sorted_pos, order = torch.sort(pos, dim=2)
+    prev_gap_sorted = sorted_pos - F.pad(sorted_pos[:, :, :-1], (1, 0), value=0.0)
+    next_gap_sorted = F.pad(sorted_pos[:, :, 1:], (0, 1), value=1.0) - sorted_pos
+    inv_order = torch.empty_like(order)
+    inv_order.scatter_(2, order, torch.arange(k, device=x.device).view(1, 1, k).expand_as(order))
+    prev_gap = torch.gather(prev_gap_sorted, 2, inv_order)
+    next_gap = torch.gather(next_gap_sorted, 2, inv_order)
+    rr_min = torch.minimum(prev_gap, next_gap)
+    rr_max = torch.maximum(prev_gap, next_gap)
+    rr_ratio = rr_min / (rr_max + eps)
+
+    scalar = torch.stack(
+        [
+            mean_abs,
+            rms,
+            ptp,
+            high_rms,
+            slope_rms,
+            curv_rms,
+            diff_rms,
+            flat_ratio,
+            low_amp_ratio,
+            prom_ratio,
+            asym,
+            pos,
+            prev_gap,
+            next_gap,
+            rr_min,
+            rr_max,
+            rr_ratio,
+        ],
+        dim=3,
+    )
+    return raw_window, scalar
+
+
+def artifact_event_raw_windows_and_features(
+    x: torch.Tensor, artifact_count: int = 16, window: int = 151
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return local raw artifact windows plus stress-context features.
+
+    Raw-beat tokens helped the model recover bad core/right-island cases, but
+    original bad-outlier stress still failed.  Those failures are often not
+    beat-centered; they are intermittent contact, reset, plateau/dropout, or
+    abrupt baseline/detail changes.  This tokenization is still waveform-only:
+    it selects windows by jump, curvature, baseline-reset, flatline, low-amplitude
+    and short high-frequency burst evidence computed from the input trace.
+    """
+
+    eps = 1e-6
+    b, c, n = x.shape
+    k = max(1, min(int(artifact_count), int(n)))
+    w = max(21, int(window))
+    if w % 2 == 0:
+        w += 1
+    pad = w // 2
+
+    smooth101 = F.avg_pool1d(x, kernel_size=101, stride=1, padding=50)
+    smooth31 = F.avg_pool1d(x, kernel_size=31, stride=1, padding=15)
+    high = x - smooth31
+    diff = F.pad(x[:, :, 1:] - x[:, :, :-1], (1, 0))
+    curv = F.pad(x[:, :, 2:] - 2.0 * x[:, :, 1:-1] + x[:, :, :-2], (1, 1))
+    base_jump = F.pad(smooth101[:, :, 1:] - smooth101[:, :, :-1], (1, 0))
+    local_diff = F.avg_pool1d(diff.abs(), kernel_size=21, stride=1, padding=10)
+    local_curv = F.avg_pool1d(curv.abs(), kernel_size=21, stride=1, padding=10)
+    local_high = F.avg_pool1d(high.abs(), kernel_size=31, stride=1, padding=15)
+    flat_run = F.avg_pool1d((diff.abs() < 0.006).float(), kernel_size=61, stride=1, padding=30)
+    low_amp_run = F.avg_pool1d((x.abs() < 0.045).float(), kernel_size=61, stride=1, padding=30)
+
+    def norm(v: torch.Tensor) -> torch.Tensor:
+        return v / (v.mean(dim=2, keepdim=True) + eps)
+
+    score = (
+        1.30 * norm(diff.abs())
+        + 1.10 * norm(base_jump.abs())
+        + 0.95 * norm(local_curv)
+        + 0.85 * norm(local_diff)
+        + 0.60 * norm(local_high)
+        + 0.55 * flat_run
+        + 0.45 * low_amp_run
+    )
+    idx = torch.topk(score, k=k, dim=2).indices
+
+    offsets = torch.arange(-pad, pad + 1, device=x.device).view(1, 1, 1, w)
+    gather_idx = (idx.unsqueeze(-1) + offsets + pad).clamp(0, n + 2 * pad - 1)
+    xp = F.pad(x, (pad, pad), mode="replicate")
+    hp = F.pad(high, (pad, pad), mode="replicate")
+    dp = F.pad(diff, (pad, pad), mode="replicate")
+    cp = F.pad(curv, (pad, pad), mode="replicate")
+    bp = F.pad(base_jump, (pad, pad), mode="replicate")
+    sp = F.pad(score, (pad, pad), mode="replicate")
+    xw = torch.gather(xp.unsqueeze(2).expand(-1, -1, k, -1), 3, gather_idx)
+    hw = torch.gather(hp.unsqueeze(2).expand(-1, -1, k, -1), 3, gather_idx)
+    dw = torch.gather(dp.unsqueeze(2).expand(-1, -1, k, -1), 3, gather_idx)
+    cw = torch.gather(cp.unsqueeze(2).expand(-1, -1, k, -1), 3, gather_idx)
+    bw = torch.gather(bp.unsqueeze(2).expand(-1, -1, k, -1), 3, gather_idx)
+    sw = torch.gather(sp.unsqueeze(2).expand(-1, -1, k, -1), 3, gather_idx)
+
+    win_med = xw.median(dim=3, keepdim=True).values
+    win_scale = xw.std(dim=3, keepdim=True).clamp_min(0.04)
+    raw_window = ((xw - win_med) / win_scale).clamp(-9.0, 9.0)
+
+    abs_w = xw.abs()
+    abs_d = dw.abs()
+    abs_c = cw.abs()
+    abs_b = bw.abs()
+    mean_abs = abs_w.mean(dim=3)
+    rms = torch.sqrt((xw * xw).mean(dim=3) + eps)
+    ptp = xw.amax(dim=3) - xw.amin(dim=3)
+    high_rms = torch.sqrt((hw * hw).mean(dim=3) + eps)
+    diff_rms = torch.sqrt((dw * dw).mean(dim=3) + eps)
+    curv_rms = torch.sqrt((cw * cw).mean(dim=3) + eps)
+    base_rms = torch.sqrt((bw * bw).mean(dim=3) + eps)
+    flat_ratio = (abs_d < 0.006).float().mean(dim=3)
+    low_amp_ratio = (abs_w < 0.045).float().mean(dim=3)
+    jump_max = abs_d.amax(dim=3)
+    curv_max = abs_c.amax(dim=3)
+    base_jump_max = abs_b.amax(dim=3)
+    score_mean = sw.mean(dim=3)
+    score_max = sw.amax(dim=3)
+    line_length = abs_d.sum(dim=3) / float(max(1, w))
+    local_range_left = xw[:, :, :, :pad].amax(dim=3) - xw[:, :, :, :pad].amin(dim=3)
+    local_range_right = xw[:, :, :, pad + 1 :].amax(dim=3) - xw[:, :, :, pad + 1 :].amin(dim=3)
+    range_asym = (local_range_left - local_range_right).abs() / (ptp + eps)
+    pos = idx.float() / max(1.0, float(n - 1))
+
+    scalar = torch.stack(
+        [
+            mean_abs,
+            rms,
+            ptp,
+            high_rms,
+            diff_rms,
+            curv_rms,
+            base_rms,
+            flat_ratio,
+            low_amp_ratio,
+            jump_max,
+            curv_max,
+            base_jump_max,
+            score_mean,
+            score_max,
+            line_length,
+            range_asym,
+            pos,
+        ],
+        dim=3,
+    )
+    return raw_window, scalar
+
+
+def artifact_event_soft_targets(scalar: torch.Tensor) -> torch.Tensor:
+    """Waveform-derived local artifact targets for event-token supervision.
+
+    These targets are computed only from the local event-window scalars above.
+    They are not atlas/SQI sidecar labels; they force the artifact expert to
+    name the local waveform event it is attending to before that evidence is
+    routed into the bad decision.
+    """
+
+    eps = 1e-6
+    rms = scalar[..., 1]
+    high_rms = scalar[..., 3]
+    diff_rms = scalar[..., 4]
+    curv_rms = scalar[..., 5]
+    base_rms = scalar[..., 6]
+    flat_ratio = scalar[..., 7]
+    low_amp_ratio = scalar[..., 8]
+    jump_max = scalar[..., 9]
+    curv_max = scalar[..., 10]
+    base_jump_max = scalar[..., 11]
+    score_max = scalar[..., 13]
+    range_asym = scalar[..., 15]
+
+    flat_dropout = torch.maximum(
+        torch.sigmoid((flat_ratio - 0.32) * 9.0),
+        torch.sigmoid((low_amp_ratio - 0.42) * 8.0),
+    )
+    base_ratio = base_jump_max / (base_rms + 0.015)
+    baseline_jump = torch.sigmoid((base_ratio - 2.35) * 1.15)
+    impulse_ratio = torch.maximum(jump_max / (diff_rms + 0.020), curv_max / (curv_rms + 0.020))
+    impulse_curvature = torch.sigmoid((impulse_ratio - 3.10) * 0.85)
+    detail_ratio = high_rms / (rms + eps)
+    detail_burst = torch.sigmoid((detail_ratio - 0.38) * 7.0)
+    asym_reset = torch.maximum(
+        torch.sigmoid((range_asym - 0.42) * 8.5),
+        torch.sigmoid((score_max - 4.75) * 0.55),
+    )
+    return torch.stack(
+        [
+            flat_dropout.clamp(0.0, 1.0),
+            baseline_jump.clamp(0.0, 1.0),
+            impulse_curvature.clamp(0.0, 1.0),
+            detail_burst.clamp(0.0, 1.0),
+            asym_reset.clamp(0.0, 1.0),
+        ],
+        dim=-1,
+    ).detach()
+
+
 class EventQRSQueryMultiScaleTransformer(SQIQueryMultiScaleTransformer):
     """SQI-query Transformer with explicit local QRS/event tokens."""
 
@@ -5843,6 +13841,416 @@ class EventQRSQueryMultiScaleTransformer(SQIQueryMultiScaleTransformer):
         # can attend to localized QRS evidence before the dense patch body.
         q_end = 2 + len(self.query_names)
         return torch.cat([base_tokens[:, :q_end, :], event_tokens, base_tokens[:, q_end:, :]], dim=1)
+
+
+class DetectorBaselineSQIQueryTransformer(SQIQueryMultiScaleTransformer):
+    """SQI-query Transformer with explicit QRS-detector and baseline tokens.
+
+    The hard-feature audits showed that increasing auxiliary loss does not make
+    a patch encoder reliably recover detector_agreement or basSQI.  This encoder
+    keeps inference waveform-only, but exposes three waveform-computable token
+    groups: QRS visibility, detector proposal agreement, and baseline/frequency
+    evidence.  These are not sidecar features; they are deterministic views of
+    the input waveform inserted before the dense patch body.
+    """
+
+    def __init__(
+        self,
+        in_ch: int,
+        width: int,
+        layers: int,
+        heads: int,
+        patch: int,
+        stat_hidden: int,
+        scales: list[int],
+    ):
+        super().__init__(in_ch, width, layers, heads, patch, stat_hidden, scales)
+        self.qrsbank_proj = nn.Sequential(nn.LayerNorm(19), nn.Linear(19, width), nn.GELU(), nn.Linear(width, width))
+        self.detector_proj = nn.Sequential(nn.LayerNorm(16), nn.Linear(16, width), nn.GELU(), nn.Linear(width, width))
+        self.rr_proj = nn.Sequential(nn.LayerNorm(24), nn.Linear(24, width), nn.GELU(), nn.Linear(width, width))
+        self.baseline_proj = nn.Sequential(nn.LayerNorm(24), nn.Linear(24, width), nn.GELU(), nn.Linear(width, width))
+        self.detbase_group_embed = nn.Parameter(torch.randn(4, width) * 0.02)
+
+    def tokenize(self, x: torch.Tensor) -> torch.Tensor:
+        base_tokens = super().tokenize(x)
+        b = x.shape[0]
+        qrs = qrs_visibility_bank_stats(x).reshape(b, self.in_ch, 19)
+        det = qrs_detector_agreement_stats(x).reshape(b, self.in_ch, 16)
+        rr = rr_consistency_stats(x).reshape(b, self.in_ch, 24)
+        base = baseline_frequency_stats(x).reshape(b, self.in_ch, 24)
+        ch = self._channel_tokens(1)
+        qrs_tokens = self.qrsbank_proj(qrs) + ch + self.detbase_group_embed[0].view(1, 1, -1)
+        det_tokens = self.detector_proj(det) + ch + self.detbase_group_embed[1].view(1, 1, -1)
+        rr_tokens = self.rr_proj(rr) + ch + self.detbase_group_embed[2].view(1, 1, -1)
+        base_tokens_extra = self.baseline_proj(base) + ch + self.detbase_group_embed[3].view(1, 1, -1)
+        detbase_tokens = torch.cat([qrs_tokens, det_tokens, rr_tokens, base_tokens_extra], dim=1)
+        q_end = 2 + len(self.query_names)
+        return torch.cat([base_tokens[:, :q_end, :], detbase_tokens, base_tokens[:, q_end:, :]], dim=1)
+
+
+class RawBeatReliabilitySQITransformer(SQIQueryMultiScaleTransformer):
+    """SQI-query Transformer with raw beat/RR sequence tokens.
+
+    This is a stricter test than the earlier event-QRS summary tokens.  Each
+    selected event contributes a local waveform window token plus RR/context
+    features, letting SQI query tokens attend to actual beat morphology.
+    """
+
+    def __init__(
+        self,
+        in_ch: int,
+        width: int,
+        layers: int,
+        heads: int,
+        patch: int,
+        stat_hidden: int,
+        scales: list[int],
+        event_count: int = 18,
+        event_window: int = 101,
+    ):
+        super().__init__(in_ch, width, layers, heads, patch, stat_hidden, scales)
+        self.event_count = int(event_count)
+        self.event_window = int(event_window)
+        if self.event_window % 2 == 0:
+            self.event_window += 1
+        self.raw_event_proj = nn.Sequential(
+            nn.LayerNorm(self.event_window),
+            nn.Linear(self.event_window, width),
+            nn.GELU(),
+            nn.Dropout(0.06),
+            nn.Linear(width, width),
+        )
+        self.event_scalar_proj = nn.Sequential(nn.LayerNorm(17), nn.Linear(17, width), nn.GELU(), nn.Linear(width, width))
+        self.event_type_embed = nn.Parameter(torch.randn(1, 1, width) * 0.02)
+        self.event_rank_embed = nn.Parameter(torch.randn(1, max(1, self.event_count), width) * 0.02)
+
+    def tokenize(self, x: torch.Tensor) -> torch.Tensor:
+        base_tokens = super().tokenize(x)
+        b = x.shape[0]
+        raw_window, scalar = qrs_event_raw_windows_and_features(x, self.event_count, self.event_window)
+        raw_tokens = self.raw_event_proj(raw_window).reshape(b, self.in_ch * self.event_count, -1)
+        scalar_tokens = self.event_scalar_proj(scalar).reshape(b, self.in_ch * self.event_count, -1)
+        event_tokens = raw_tokens + scalar_tokens + self._channel_tokens(self.event_count) + self.event_type_embed
+        rank = self.event_rank_embed[:, : self.event_count, :].repeat(1, self.in_ch, 1)
+        event_tokens = event_tokens + rank
+        q_end = 2 + len(self.query_names)
+        return torch.cat([base_tokens[:, :q_end, :], event_tokens, base_tokens[:, q_end:, :]], dim=1)
+
+
+class RawBeatArtifactSQITransformer(RawBeatReliabilitySQITransformer):
+    """SQI-query Transformer with both beat/RR and local artifact tokens."""
+
+    def __init__(
+        self,
+        in_ch: int,
+        width: int,
+        layers: int,
+        heads: int,
+        patch: int,
+        stat_hidden: int,
+        scales: list[int],
+        event_count: int = 16,
+        event_window: int = 101,
+        artifact_count: int = 16,
+        artifact_window: int = 151,
+    ):
+        super().__init__(in_ch, width, layers, heads, patch, stat_hidden, scales, event_count, event_window)
+        self.artifact_count = int(artifact_count)
+        self.artifact_window = int(artifact_window)
+        if self.artifact_window % 2 == 0:
+            self.artifact_window += 1
+        self.raw_artifact_proj = nn.Sequential(
+            nn.LayerNorm(self.artifact_window),
+            nn.Linear(self.artifact_window, width),
+            nn.GELU(),
+            nn.Dropout(0.06),
+            nn.Linear(width, width),
+        )
+        self.artifact_scalar_proj = nn.Sequential(
+            nn.LayerNorm(17), nn.Linear(17, width), nn.GELU(), nn.Linear(width, width)
+        )
+        self.artifact_type_embed = nn.Parameter(torch.randn(1, 1, width) * 0.02)
+        self.artifact_rank_embed = nn.Parameter(torch.randn(1, max(1, self.artifact_count), width) * 0.02)
+
+    def tokenize(self, x: torch.Tensor) -> torch.Tensor:
+        beat_tokens = super().tokenize(x)
+        b = x.shape[0]
+        raw_window, scalar = artifact_event_raw_windows_and_features(x, self.artifact_count, self.artifact_window)
+        raw_tokens = self.raw_artifact_proj(raw_window).reshape(b, self.in_ch * self.artifact_count, -1)
+        scalar_tokens = self.artifact_scalar_proj(scalar).reshape(b, self.in_ch * self.artifact_count, -1)
+        artifact_tokens = raw_tokens + scalar_tokens + self._channel_tokens(self.artifact_count) + self.artifact_type_embed
+        rank = self.artifact_rank_embed[:, : self.artifact_count, :].repeat(1, self.in_ch, 1)
+        artifact_tokens = artifact_tokens + rank
+        q_end = 2 + len(self.query_names)
+        beat_end = q_end + self.in_ch * self.event_count
+        return torch.cat([beat_tokens[:, :beat_end, :], artifact_tokens, beat_tokens[:, beat_end:, :]], dim=1)
+
+
+class DetectorRawBeatArtifactSQITransformer(SQIQueryMultiScaleTransformer):
+    """Structured SQI-query Transformer with detector, beat, baseline, and artifact tokens.
+
+    The hard-feature audits showed that the missing signal is not a generic
+    "47 feature" problem.  qrs_visibility, detector_agreement, baseline_step,
+    basSQI, and sparse bad stress require different waveform views.  This
+    tokenizer keeps inference waveform-only while exposing those views as
+    deterministic token groups before attention:
+
+    * detector/baseline tokens: QRS visibility bank, detector agreement, RR
+      consistency, and baseline/frequency evidence;
+    * raw beat tokens: selected local beat windows plus RR/context scalars;
+    * artifact tokens: sparse dropout/reset/detail-burst windows plus scalars.
+
+    The classifier still sees only the Transformer embedding.  Teacher SQI
+    columns are used by losses outside this encoder, not as inference inputs.
+    """
+
+    def __init__(
+        self,
+        in_ch: int,
+        width: int,
+        layers: int,
+        heads: int,
+        patch: int,
+        stat_hidden: int,
+        scales: list[int],
+        event_count: int = 16,
+        event_window: int = 101,
+        artifact_count: int = 12,
+        artifact_window: int = 151,
+    ):
+        super().__init__(in_ch, width, layers, heads, patch, stat_hidden, scales)
+        self.event_count = int(event_count)
+        self.event_window = int(event_window)
+        if self.event_window % 2 == 0:
+            self.event_window += 1
+        self.artifact_count = int(artifact_count)
+        self.artifact_window = int(artifact_window)
+        if self.artifact_window % 2 == 0:
+            self.artifact_window += 1
+
+        self.qrsbank_proj = nn.Sequential(nn.LayerNorm(19), nn.Linear(19, width), nn.GELU(), nn.Linear(width, width))
+        self.detector_proj = nn.Sequential(nn.LayerNorm(16), nn.Linear(16, width), nn.GELU(), nn.Linear(width, width))
+        self.rr_proj = nn.Sequential(nn.LayerNorm(24), nn.Linear(24, width), nn.GELU(), nn.Linear(width, width))
+        self.baseline_proj = nn.Sequential(nn.LayerNorm(24), nn.Linear(24, width), nn.GELU(), nn.Linear(width, width))
+        self.detbase_group_embed = nn.Parameter(torch.randn(4, width) * 0.02)
+
+        self.raw_event_proj = nn.Sequential(
+            nn.LayerNorm(self.event_window),
+            nn.Linear(self.event_window, width),
+            nn.GELU(),
+            nn.Dropout(0.06),
+            nn.Linear(width, width),
+        )
+        self.event_scalar_proj = nn.Sequential(nn.LayerNorm(17), nn.Linear(17, width), nn.GELU(), nn.Linear(width, width))
+        self.event_type_embed = nn.Parameter(torch.randn(1, 1, width) * 0.02)
+        self.event_rank_embed = nn.Parameter(torch.randn(1, max(1, self.event_count), width) * 0.02)
+
+        self.raw_artifact_proj = nn.Sequential(
+            nn.LayerNorm(self.artifact_window),
+            nn.Linear(self.artifact_window, width),
+            nn.GELU(),
+            nn.Dropout(0.06),
+            nn.Linear(width, width),
+        )
+        self.artifact_scalar_proj = nn.Sequential(
+            nn.LayerNorm(17), nn.Linear(17, width), nn.GELU(), nn.Linear(width, width)
+        )
+        self.artifact_type_embed = nn.Parameter(torch.randn(1, 1, width) * 0.02)
+        self.artifact_rank_embed = nn.Parameter(torch.randn(1, max(1, self.artifact_count), width) * 0.02)
+        self.qrs_local_head = nn.Sequential(
+            nn.LayerNorm(width * 6),
+            nn.Linear(width * 6, width * 2),
+            nn.GELU(),
+            nn.Dropout(0.08),
+            nn.Linear(width * 2, len(LOCAL_QRS_AUX_IDX)),
+        )
+        self.baseline_local_head = nn.Sequential(
+            nn.LayerNorm(width * 5),
+            nn.Linear(width * 5, width * 2),
+            nn.GELU(),
+            nn.Dropout(0.08),
+            nn.Linear(width * 2, len(LOCAL_BASELINE_AUX_IDX)),
+        )
+        self.last_qrs_aux_pred = None
+        self.last_baseline_aux_pred = None
+
+    def tokenize(self, x: torch.Tensor) -> torch.Tensor:
+        base_tokens = super().tokenize(x)
+        b = x.shape[0]
+        q_end = 2 + len(self.query_names)
+
+        qrs = qrs_visibility_bank_stats(x).reshape(b, self.in_ch, 19)
+        det = qrs_detector_agreement_stats(x).reshape(b, self.in_ch, 16)
+        rr = rr_consistency_stats(x).reshape(b, self.in_ch, 24)
+        base = baseline_frequency_stats(x).reshape(b, self.in_ch, 24)
+        ch1 = self._channel_tokens(1)
+        qrs_tokens = self.qrsbank_proj(qrs) + ch1 + self.detbase_group_embed[0].view(1, 1, -1)
+        det_tokens = self.detector_proj(det) + ch1 + self.detbase_group_embed[1].view(1, 1, -1)
+        rr_tokens = self.rr_proj(rr) + ch1 + self.detbase_group_embed[2].view(1, 1, -1)
+        base_tokens_extra = self.baseline_proj(base) + ch1 + self.detbase_group_embed[3].view(1, 1, -1)
+        detbase_tokens = torch.cat([qrs_tokens, det_tokens, rr_tokens, base_tokens_extra], dim=1)
+
+        raw_event, event_scalar = qrs_event_raw_windows_and_features(x, self.event_count, self.event_window)
+        beat_raw_tokens = self.raw_event_proj(raw_event).reshape(b, self.in_ch * self.event_count, -1)
+        beat_scalar_tokens = self.event_scalar_proj(event_scalar).reshape(b, self.in_ch * self.event_count, -1)
+        beat_tokens = beat_raw_tokens + beat_scalar_tokens + self._channel_tokens(self.event_count) + self.event_type_embed
+        beat_rank = self.event_rank_embed[:, : self.event_count, :].repeat(1, self.in_ch, 1)
+        beat_tokens = beat_tokens + beat_rank
+
+        raw_artifact, artifact_scalar = artifact_event_raw_windows_and_features(x, self.artifact_count, self.artifact_window)
+        artifact_raw_tokens = self.raw_artifact_proj(raw_artifact).reshape(b, self.in_ch * self.artifact_count, -1)
+        artifact_scalar_tokens = self.artifact_scalar_proj(artifact_scalar).reshape(b, self.in_ch * self.artifact_count, -1)
+        artifact_tokens = (
+            artifact_raw_tokens
+            + artifact_scalar_tokens
+            + self._channel_tokens(self.artifact_count)
+            + self.artifact_type_embed
+        )
+        artifact_rank = self.artifact_rank_embed[:, : self.artifact_count, :].repeat(1, self.in_ch, 1)
+        artifact_tokens = artifact_tokens + artifact_rank
+
+        return torch.cat(
+            [
+                base_tokens[:, :q_end, :],
+                detbase_tokens,
+                beat_tokens,
+                artifact_tokens,
+                base_tokens[:, q_end:, :],
+            ],
+            dim=1,
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        tokens = self.encoder(self.pos(self.tokenize(x)))
+        cls = tokens[:, 0, :]
+        global_token = tokens[:, 1, :]
+        query_tokens = tokens[:, 2 : 2 + len(self.query_names), :]
+        q_end = 2 + len(self.query_names)
+
+        detbase_end = q_end + 4 * self.in_ch
+        detbase_tokens = tokens[:, q_end:detbase_end, :]
+        qrs_det_tokens = detbase_tokens[:, : 2 * self.in_ch, :]
+        baseline_tokens = detbase_tokens[:, 3 * self.in_ch : 4 * self.in_ch, :]
+
+        beat_start = detbase_end
+        beat_end = beat_start + self.in_ch * self.event_count
+        beat_tokens = tokens[:, beat_start:beat_end, :]
+
+        artifact_start = beat_end
+        artifact_end = artifact_start + self.in_ch * self.artifact_count
+        artifact_tokens = tokens[:, artifact_start:artifact_end, :]
+        body = tokens[:, artifact_end:, :]
+
+        def safe_max(v: torch.Tensor) -> torch.Tensor:
+            return v.amax(dim=1) if v.shape[1] else torch.zeros(v.shape[0], v.shape[2], device=v.device, dtype=v.dtype)
+
+        def safe_mean(v: torch.Tensor) -> torch.Tensor:
+            return v.mean(dim=1) if v.shape[1] else torch.zeros(v.shape[0], v.shape[2], device=v.device, dtype=v.dtype)
+
+        qrs_summary = torch.cat(
+            [
+                query_tokens[:, 0, :],
+                query_tokens[:, 1, :],
+                safe_mean(qrs_det_tokens),
+                safe_max(qrs_det_tokens),
+                safe_mean(beat_tokens),
+                safe_max(beat_tokens),
+            ],
+            dim=1,
+        )
+        baseline_summary = torch.cat(
+            [
+                query_tokens[:, 2, :],
+                query_tokens[:, 4, :],
+                safe_mean(baseline_tokens),
+                safe_max(baseline_tokens),
+                safe_max(artifact_tokens),
+            ],
+            dim=1,
+        )
+        self.last_qrs_aux_pred = self.qrs_local_head(qrs_summary)
+        self.last_baseline_aux_pred = self.baseline_local_head(baseline_summary)
+
+        query = query_tokens.reshape(x.shape[0], -1)
+        max_pool = body.amax(dim=1)
+        return torch.cat([cls, global_token, query, self.pool(body), body.mean(dim=1), max_pool], dim=1)
+
+
+class ArtifactBadOnlyExpert(nn.Module):
+    """Waveform-only artifact event expert routed only into the bad decision.
+
+    Raw artifact tokens helped expose record111-like bad stress, but putting
+    them into the shared encoder distorted the good/medium surface.  This expert
+    keeps those event windows isolated: its embedding is never concatenated into
+    the main class head or GM pair head.
+    """
+
+    def __init__(
+        self,
+        in_ch: int,
+        width: int = 64,
+        layers: int = 1,
+        heads: int = 4,
+        artifact_count: int = 14,
+        artifact_window: int = 151,
+    ):
+        super().__init__()
+        self.in_ch = int(in_ch)
+        self.width = int(width)
+        self.artifact_count = int(artifact_count)
+        self.artifact_window = int(artifact_window)
+        if self.artifact_window % 2 == 0:
+            self.artifact_window += 1
+        self.raw_proj = nn.Sequential(
+            nn.LayerNorm(self.artifact_window),
+            nn.Linear(self.artifact_window, self.width),
+            nn.GELU(),
+            nn.Dropout(0.06),
+            nn.Linear(self.width, self.width),
+        )
+        self.scalar_proj = nn.Sequential(
+            nn.LayerNorm(17),
+            nn.Linear(17, self.width),
+            nn.GELU(),
+            nn.Linear(self.width, self.width),
+        )
+        self.channel_embed = nn.Parameter(torch.randn(1, self.in_ch, 1, self.width) * 0.02)
+        self.rank_embed = nn.Parameter(torch.randn(1, 1, max(1, self.artifact_count), self.width) * 0.02)
+        self.type_embed = nn.Parameter(torch.randn(1, 1, 1, self.width) * 0.02)
+        self.pos = PositionalEncoding(self.width, max_len=max(128, self.in_ch * self.artifact_count + 4))
+        self.encoder = nn.TransformerEncoder(make_encoder_layer(self.width, heads), num_layers=layers)
+        self.pool = AttentionPool(self.width)
+        self.project = nn.Sequential(
+            nn.LayerNorm(self.width * 3),
+            nn.Linear(self.width * 3, 96),
+            nn.GELU(),
+            nn.Dropout(0.08),
+        )
+        self.local_event_head = nn.Sequential(
+            nn.LayerNorm(self.width),
+            nn.Linear(self.width, 48),
+            nn.GELU(),
+            nn.Dropout(0.05),
+            nn.Linear(48, 5),
+        )
+        self.last_event_logits = None
+        self.last_event_targets = None
+        self.out_dim = 96
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        b = x.shape[0]
+        raw_window, scalar = artifact_event_raw_windows_and_features(
+            x, self.artifact_count, self.artifact_window
+        )
+        raw_tokens = self.raw_proj(raw_window)
+        scalar_tokens = self.scalar_proj(scalar)
+        tokens = raw_tokens + scalar_tokens + self.channel_embed + self.rank_embed + self.type_embed
+        tokens = tokens.reshape(b, self.in_ch * self.artifact_count, self.width)
+        tokens = self.encoder(self.pos(tokens))
+        self.last_event_logits = self.local_event_head(tokens)
+        self.last_event_targets = artifact_event_soft_targets(scalar).reshape(b, self.in_ch * self.artifact_count, 5)
+        topk = torch.topk(tokens, k=max(1, min(4, tokens.shape[1])), dim=1).values.mean(dim=1)
+        return self.project(torch.cat([self.pool(tokens), tokens.mean(dim=1), topk], dim=1))
 
 
 class StatBankTokenTransformer(nn.Module):
@@ -5954,6 +14362,93 @@ class QRSBankStatTokenTransformer(nn.Module):
         summary = self.summary(primitive_waveform_stats(x, "qrs_enhanced"))
         body = tokens[:, 1:, :]
         return torch.cat([tokens[:, 0, :], self.pool(body), body.mean(dim=1), summary], dim=1)
+
+
+class PhysioSQITokenTransformer(nn.Module):
+    """Transformer over waveform-derived physiological SQI tokens.
+
+    The hard-feature audit says the raw patch encoder is weak at recovering
+    qrs_visibility, detector_agreement, baseline_step, basSQI and RR-style
+    reliability.  This encoder keeps inference waveform-only, but makes those
+    waveform-computable subproblems explicit as token groups before attention.
+    It is a Transformer over deterministic views of the ECG, not a sidecar
+    feature classifier.
+    """
+
+    def __init__(self, in_ch: int, width: int, layers: int, heads: int, stat_hidden: int, artifact_count: int = 16, artifact_window: int = 151):
+        super().__init__()
+        self.in_ch = int(in_ch)
+        self.artifact_count = int(artifact_count)
+        self.artifact_window = int(artifact_window)
+        self.wave_proj = nn.Sequential(nn.LayerNorm(16), nn.Linear(16, width), nn.GELU())
+        self.qrs_proj = nn.Sequential(nn.LayerNorm(15), nn.Linear(15, width), nn.GELU())
+        self.stress_proj = nn.Sequential(nn.LayerNorm(24), nn.Linear(24, width), nn.GELU())
+        self.qrsbank_proj = nn.Sequential(nn.LayerNorm(19), nn.Linear(19, width), nn.GELU())
+        self.detector_proj = nn.Sequential(nn.LayerNorm(16), nn.Linear(16, width), nn.GELU())
+        self.rr_proj = nn.Sequential(nn.LayerNorm(24), nn.Linear(24, width), nn.GELU())
+        self.baseline_proj = nn.Sequential(nn.LayerNorm(24), nn.Linear(24, width), nn.GELU())
+        self.artifact_proj = nn.Sequential(nn.LayerNorm(51), nn.Linear(51, width), nn.GELU())
+        self.channel_embed = nn.Parameter(torch.randn(in_ch, width) * 0.02)
+        self.group_embed = nn.Parameter(torch.randn(8, width) * 0.02)
+        self.cls = nn.Parameter(torch.randn(1, 1, width) * 0.02)
+        self.pos = PositionalEncoding(width, max_len=80)
+        self.encoder = nn.TransformerEncoder(make_encoder_layer(width, heads), num_layers=layers)
+        self.pool = AttentionPool(width)
+        self.summary = nn.Sequential(
+            nn.LayerNorm(in_ch * (16 + 15 + 24 + 19 + 16 + 24 + 24 + 51)),
+            nn.Linear(in_ch * (16 + 15 + 24 + 19 + 16 + 24 + 24 + 51), stat_hidden),
+            nn.GELU(),
+            nn.Dropout(0.08),
+            nn.Linear(stat_hidden, width),
+            nn.GELU(),
+        )
+        self.out_dim = width * 4
+
+    def artifact_summary(self, x: torch.Tensor) -> torch.Tensor:
+        _, scalar = artifact_event_raw_windows_and_features(x, self.artifact_count, self.artifact_window)
+        score = scalar[..., 13]
+        k = max(1, min(4, scalar.shape[2]))
+        idx = torch.topk(score, k=k, dim=2).indices.unsqueeze(-1).expand(-1, -1, -1, scalar.shape[-1])
+        top_mean = torch.gather(scalar, 2, idx).mean(dim=2)
+        return torch.cat([scalar.mean(dim=2), scalar.amax(dim=2), top_mean], dim=2)
+
+    def _parts(self, x: torch.Tensor) -> list[torch.Tensor]:
+        b = x.shape[0]
+        return [
+            waveform_stats_v2(x).reshape(b, self.in_ch, 16),
+            qrs_detail_stats(x).reshape(b, self.in_ch, 15),
+            waveform_stress_stats(x).reshape(b, self.in_ch, 24),
+            qrs_visibility_bank_stats(x).reshape(b, self.in_ch, 19),
+            qrs_detector_agreement_stats(x).reshape(b, self.in_ch, 16),
+            rr_consistency_stats(x).reshape(b, self.in_ch, 24),
+            baseline_frequency_stats(x).reshape(b, self.in_ch, 24),
+            self.artifact_summary(x).reshape(b, self.in_ch, 51),
+        ]
+
+    def _tokens(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        parts = self._parts(x)
+        projs = [
+            self.wave_proj,
+            self.qrs_proj,
+            self.stress_proj,
+            self.qrsbank_proj,
+            self.detector_proj,
+            self.rr_proj,
+            self.baseline_proj,
+            self.artifact_proj,
+        ]
+        ch = self.channel_embed.view(1, self.in_ch, -1)
+        tokens = []
+        for i, (part, proj) in enumerate(zip(parts, projs)):
+            tokens.append(proj(part) + ch + self.group_embed[i].view(1, 1, -1))
+        return torch.cat(tokens, dim=1), torch.cat([p.flatten(start_dim=1) for p in parts], dim=1)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        stat_tokens, summary_stats = self._tokens(x)
+        cls = self.cls.expand(x.shape[0], -1, -1)
+        tokens = self.encoder(self.pos(torch.cat([cls, stat_tokens], dim=1)))
+        body = tokens[:, 1:, :]
+        return torch.cat([tokens[:, 0, :], self.pool(body), body.mean(dim=1), self.summary(summary_stats)], dim=1)
 
 
 class PrimitiveTokenTransformer(nn.Module):
@@ -6375,6 +14870,57 @@ def qrs_detector_agreement_stats(x: torch.Tensor) -> torch.Tensor:
     )
 
 
+def rr_consistency_stats(x: torch.Tensor, event_count: int = 18) -> torch.Tensor:
+    """RR/event regularity surrogates from waveform-only detector proposals.
+
+    Detector agreement in the 47-column teacher is not just "has high energy";
+    it depends on whether multiple QRS-like proposal mechanisms produce a
+    plausible, regular event sequence.  This bank exposes that structure without
+    any external detector: amplitude, slope, curvature, and combined proposal
+    scores each produce top-k event positions; the stats summarize intra-stream
+    RR gap stability and cross-stream nearest-event agreement.
+    """
+
+    eps = 1e-6
+    b, c, n = x.shape
+    k = max(4, min(int(event_count), int(n)))
+    smooth51 = F.avg_pool1d(x, kernel_size=51, stride=1, padding=25)
+    high = x - smooth51
+    slope = F.pad(high[:, :, 1:] - high[:, :, :-1], (1, 0))
+    curv = F.pad(high[:, :, 2:] - 2.0 * high[:, :, 1:-1] + high[:, :, :-2], (1, 1))
+    amp_score = high.abs()
+    slope_score = slope.abs()
+    curv_score = curv.abs()
+    combo_score = amp_score + 0.55 * slope_score + 0.35 * curv_score
+    scores = [amp_score, slope_score, curv_score, combo_score]
+
+    positions = []
+    gap_features = []
+    for score in scores:
+        idx = torch.topk(score, k=k, dim=2).indices.float() / max(1.0, float(n - 1))
+        pos = torch.sort(idx, dim=2).values
+        positions.append(pos)
+        gaps = (pos[:, :, 1:] - pos[:, :, :-1]).clamp_min(0.0)
+        gap_mean = gaps.mean(dim=2)
+        gap_std = gaps.std(dim=2, unbiased=False)
+        gap_cv = gap_std / (gap_mean + eps)
+        gap_min = gaps.amin(dim=2)
+        gap_max = gaps.amax(dim=2)
+        gap_features.extend([gap_mean, gap_std, gap_cv, gap_min, gap_max])
+
+    def nearest_mean(a: torch.Tensor, bpos: torch.Tensor) -> torch.Tensor:
+        dist = (a[:, :, :, None] - bpos[:, :, None, :]).abs()
+        return dist.amin(dim=3).mean(dim=2)
+
+    pair_features = [
+        nearest_mean(positions[0], positions[1]),
+        nearest_mean(positions[0], positions[2]),
+        nearest_mean(positions[1], positions[2]),
+        nearest_mean(positions[0], positions[3]),
+    ]
+    return torch.cat(gap_features + pair_features, dim=1)
+
+
 def baseline_frequency_stats(x: torch.Tensor) -> torch.Tensor:
     """Low-frequency and baseline-band waveform stats.
 
@@ -6645,6 +15191,7 @@ class GeometryStudent(nn.Module):
             "stresstoken_multiscale_stat_patch_teacher_atlas",
             "statbank_token_teacher_atlas",
             "qrsbank_stat_token_teacher_atlas",
+            "physio_sqi_token_teacher_atlas",
             "primitive_token_teacher_atlas",
         }
         if arch == "mapstudent":
@@ -6664,6 +15211,28 @@ class GeometryStudent(nn.Module):
             out_dim = self.encoder.out_dim
         elif arch == "qrsbank_stat_token_teacher_atlas":
             self.encoder = QRSBankStatTokenTransformer(in_ch, width, layers, heads, int(cfg["stat_hidden"]))
+            out_dim = self.encoder.out_dim
+        elif arch == "physio_sqi_token_teacher_atlas":
+            self.encoder = PhysioSQITokenTransformer(
+                in_ch,
+                width,
+                layers,
+                heads,
+                int(cfg["stat_hidden"]),
+                int(cfg.get("artifact_count", 16)),
+                int(cfg.get("artifact_window", 151)),
+            )
+            out_dim = self.encoder.out_dim
+        elif arch == "physio_sqi_token":
+            self.encoder = PhysioSQITokenTransformer(
+                in_ch,
+                width,
+                layers,
+                heads,
+                int(cfg["stat_hidden"]),
+                int(cfg.get("artifact_count", 16)),
+                int(cfg.get("artifact_window", 151)),
+            )
             out_dim = self.encoder.out_dim
         elif arch == "primitive_token_teacher_atlas":
             self.encoder = PrimitiveTokenTransformer(
@@ -6759,6 +15328,28 @@ class GeometryStudent(nn.Module):
                 list(cfg.get("scales", [25, 50, 100, 250, 500])),
             )
             out_dim = self.encoder.out_dim
+        elif arch == "detbase_token_sqi_query_multiscale_patch_teacher_atlas":
+            self.encoder = DetectorBaselineSQIQueryTransformer(
+                in_ch,
+                width,
+                layers,
+                heads,
+                int(cfg["patch"]),
+                int(cfg["stat_hidden"]),
+                list(cfg.get("scales", [25, 50, 100, 250, 500])),
+            )
+            out_dim = self.encoder.out_dim
+        elif arch == "detbase_token_sqi_query_multiscale_patch":
+            self.encoder = DetectorBaselineSQIQueryTransformer(
+                in_ch,
+                width,
+                layers,
+                heads,
+                int(cfg["patch"]),
+                int(cfg["stat_hidden"]),
+                list(cfg.get("scales", [25, 50, 100, 250, 500])),
+            )
+            out_dim = self.encoder.out_dim
         elif arch == "event_qrs_sqi_query_multiscale_patch_teacher_atlas":
             self.encoder = EventQRSQueryMultiScaleTransformer(
                 in_ch,
@@ -6770,6 +15361,64 @@ class GeometryStudent(nn.Module):
                 list(cfg.get("scales", [25, 50, 100, 250, 500])),
                 int(cfg.get("event_count", 12)),
                 int(cfg.get("event_window", 81)),
+            )
+            out_dim = self.encoder.out_dim
+        elif arch == "rawbeat_sqi_query_multiscale_patch_teacher_atlas":
+            self.encoder = RawBeatReliabilitySQITransformer(
+                in_ch,
+                width,
+                layers,
+                heads,
+                int(cfg["patch"]),
+                int(cfg["stat_hidden"]),
+                list(cfg.get("scales", [25, 50, 100, 250, 500])),
+                int(cfg.get("event_count", 18)),
+                int(cfg.get("event_window", 101)),
+            )
+            out_dim = self.encoder.out_dim
+        elif arch == "rawbeat_artifact_sqi_query_multiscale_patch_teacher_atlas":
+            self.encoder = RawBeatArtifactSQITransformer(
+                in_ch,
+                width,
+                layers,
+                heads,
+                int(cfg["patch"]),
+                int(cfg["stat_hidden"]),
+                list(cfg.get("scales", [25, 50, 100, 250, 500])),
+                int(cfg.get("event_count", 16)),
+                int(cfg.get("event_window", 101)),
+                int(cfg.get("artifact_count", 16)),
+                int(cfg.get("artifact_window", 151)),
+            )
+            out_dim = self.encoder.out_dim
+        elif arch == "detrawbeat_artifact_sqi_query_multiscale_patch_teacher_atlas":
+            self.encoder = DetectorRawBeatArtifactSQITransformer(
+                in_ch,
+                width,
+                layers,
+                heads,
+                int(cfg["patch"]),
+                int(cfg["stat_hidden"]),
+                list(cfg.get("scales", [25, 50, 100, 250, 500])),
+                int(cfg.get("event_count", 16)),
+                int(cfg.get("event_window", 101)),
+                int(cfg.get("artifact_count", 12)),
+                int(cfg.get("artifact_window", 151)),
+            )
+            out_dim = self.encoder.out_dim
+        elif arch == "detrawbeat_artifact_sqi_query_multiscale_patch":
+            self.encoder = DetectorRawBeatArtifactSQITransformer(
+                in_ch,
+                width,
+                layers,
+                heads,
+                int(cfg["patch"]),
+                int(cfg["stat_hidden"]),
+                list(cfg.get("scales", [25, 50, 100, 250, 500])),
+                int(cfg.get("event_count", 16)),
+                int(cfg.get("event_window", 101)),
+                int(cfg.get("artifact_count", 12)),
+                int(cfg.get("artifact_window", 151)),
             )
             out_dim = self.encoder.out_dim
         elif arch == "stresstoken_multiscale_stat_patch_teacher_atlas":
@@ -6844,11 +15493,25 @@ class GeometryStudent(nn.Module):
             class_head_in += len(self.predicted_feature_indices)
         else:
             self.predicted_feature_indices = []
+        self.detach_predicted_feature_fusion = bool(cfg.get("detach_predicted_feature_fusion", False))
+        self.local_aux_residual_mix = float(cfg.get("local_aux_residual_mix", 0.0))
         self.primitive_threshold_fusion = bool(cfg.get("primitive_threshold_fusion", False))
+        self.primitive_class_residual_mix = float(cfg.get("primitive_class_residual_mix", 0.0))
+        self.primitive_class_residual_cap = float(cfg.get("primitive_class_residual_cap", 0.0))
+        primitive_aux_residual_cols = list(cfg.get("primitive_aux_residual_columns", []))
+        self.primitive_aux_residual_indices = [FEATURE_COLUMNS.index(c) for c in primitive_aux_residual_cols if c in FEATURE_COLUMNS]
+        if len(self.primitive_aux_residual_indices) != len(primitive_aux_residual_cols):
+            missing = [c for c in primitive_aux_residual_cols if c not in FEATURE_COLUMNS]
+            raise ValueError(f"primitive_aux_residual_columns not found in schema: {missing}")
+        self.primitive_aux_residual_mix = float(cfg.get("primitive_aux_residual_mix", 0.0))
+        self.primitive_aux_residual_cap = float(cfg.get("primitive_aux_residual_cap", 0.0))
         self.use_primitive_branch = bool(
             cfg.get("primitive_fusion", False)
+            or cfg.get("aux_primitive_fusion", False)
             or cfg.get("primitive_bad_expert", False)
             or self.primitive_threshold_fusion
+            or self.primitive_class_residual_mix != 0.0
+            or self.primitive_aux_residual_mix != 0.0
         )
         self.primitive_fusion = bool(cfg.get("primitive_fusion", False))
         self.primitive_bad_mix = float(cfg.get("primitive_bad_mix", 0.0))
@@ -6908,6 +15571,32 @@ class GeometryStudent(nn.Module):
             self.primitive_bad_head = nn.Sequential(nn.LayerNorm(96), nn.Linear(96, 64), nn.GELU(), nn.Dropout(0.08), nn.Linear(64, 1))
         else:
             self.primitive_bad_head = None
+        if self.primitive_class_residual_mix != 0.0 and self.primitive_branch is not None:
+            self.primitive_class_residual_head = nn.Sequential(
+                nn.LayerNorm(96),
+                nn.Linear(96, 64),
+                nn.GELU(),
+                nn.Dropout(0.08),
+                nn.Linear(64, 3),
+            )
+            with torch.no_grad():
+                self.primitive_class_residual_head[-1].weight.mul_(0.15)
+                self.primitive_class_residual_head[-1].bias.zero_()
+        else:
+            self.primitive_class_residual_head = None
+        if self.primitive_aux_residual_mix != 0.0 and self.primitive_aux_residual_indices and self.primitive_branch is not None:
+            self.primitive_aux_residual_head = nn.Sequential(
+                nn.LayerNorm(96),
+                nn.Linear(96, 64),
+                nn.GELU(),
+                nn.Dropout(0.06),
+                nn.Linear(64, len(self.primitive_aux_residual_indices)),
+            )
+            with torch.no_grad():
+                self.primitive_aux_residual_head[-1].weight.mul_(0.10)
+                self.primitive_aux_residual_head[-1].bias.zero_()
+        else:
+            self.primitive_aux_residual_head = None
         self.project = nn.Sequential(nn.LayerNorm(out_dim), nn.Linear(out_dim, 192), nn.GELU(), nn.Dropout(0.08))
         self.primitive_context_fusion = bool(cfg.get("primitive_context_fusion", False))
         self.aux_primitive_context_fusion = bool(cfg.get("aux_primitive_context_fusion", False))
@@ -6933,6 +15622,70 @@ class GeometryStudent(nn.Module):
         else:
             self.primitive_context_encoder = None
             self.primitive_context_project = None
+        self.physio_context_fusion = bool(cfg.get("physio_context_fusion", False))
+        self.aux_physio_context_fusion = bool(cfg.get("aux_physio_context_fusion", False))
+        if self.physio_context_fusion or self.aux_physio_context_fusion:
+            physio_width = int(cfg.get("physio_context_width", max(48, width // 2)))
+            self.physio_context_encoder = PhysioSQITokenTransformer(
+                in_ch,
+                physio_width,
+                int(cfg.get("physio_context_layers", 2)),
+                int(cfg.get("physio_context_heads", max(1, min(heads, 4)))),
+                int(cfg.get("physio_context_hidden", max(160, int(cfg.get("stat_hidden", 160))))),
+                int(cfg.get("physio_context_artifact_count", cfg.get("artifact_count", 12))),
+                int(cfg.get("physio_context_artifact_window", cfg.get("artifact_window", 151))),
+            )
+            self.physio_context_project = nn.Sequential(
+                nn.LayerNorm(self.physio_context_encoder.out_dim),
+                nn.Linear(self.physio_context_encoder.out_dim, 96),
+                nn.GELU(),
+                nn.Dropout(0.08),
+            )
+            if self.physio_context_fusion:
+                class_head_in += 96
+        else:
+            self.physio_context_encoder = None
+            self.physio_context_project = None
+        self.artifact_bad_only = bool(cfg.get("artifact_bad_only", False))
+        self.artifact_bad_mix = float(cfg.get("artifact_bad_mix", 0.0))
+        self.artifact_veto_mix = float(cfg.get("artifact_veto_mix", 0.0))
+        self.artifact_context_fusion = bool(cfg.get("artifact_context_fusion", False))
+        self.aux_artifact_context_fusion = bool(cfg.get("aux_artifact_context_fusion", False))
+        if self.artifact_bad_only:
+            self.artifact_bad_expert = ArtifactBadOnlyExpert(
+                in_ch,
+                int(cfg.get("artifact_bad_width", max(48, width // 2))),
+                int(cfg.get("artifact_bad_layers", 1)),
+                int(cfg.get("artifact_bad_heads", max(1, min(heads, 4)))),
+                int(cfg.get("artifact_bad_count", cfg.get("artifact_count", 12))),
+                int(cfg.get("artifact_bad_window", cfg.get("artifact_window", 151))),
+            )
+            self.artifact_bad_head = nn.Sequential(
+                nn.LayerNorm(self.artifact_bad_expert.out_dim),
+                nn.Linear(self.artifact_bad_expert.out_dim, 64),
+                nn.GELU(),
+                nn.Dropout(0.08),
+                nn.Linear(64, 1),
+            )
+            with torch.no_grad():
+                self.artifact_bad_head[-1].bias.fill_(float(cfg.get("artifact_bad_bias_init", -1.4)))
+            self.artifact_veto_head = nn.Sequential(
+                nn.LayerNorm(self.artifact_bad_expert.out_dim),
+                nn.Linear(self.artifact_bad_expert.out_dim, 64),
+                nn.GELU(),
+                nn.Dropout(0.08),
+                nn.Linear(64, 1),
+            )
+            with torch.no_grad():
+                self.artifact_veto_head[-1].bias.fill_(float(cfg.get("artifact_veto_bias_init", 0.35)))
+            if self.artifact_context_fusion:
+                class_head_in += self.artifact_bad_expert.out_dim
+        else:
+            self.artifact_bad_expert = None
+            self.artifact_bad_head = None
+            self.artifact_veto_head = None
+            self.artifact_context_fusion = False
+            self.aux_artifact_context_fusion = False
         self.aux_primitive_fusion = bool(cfg.get("aux_primitive_fusion", False))
         self.final_mode = str(cfg.get("final_mode", "plain"))
         self.gate_logit_alpha = float(cfg.get("gate_logit_alpha", 0.35))
@@ -6972,15 +15725,57 @@ class GeometryStudent(nn.Module):
             self.feature_class_head = None
             self.dynamic_feature_gate = False
             self.feature_gate_head = None
-        self.dual_bad_modes = {"dual_bad_gm_replace", "dual_bad_gm_mix"}
+        gm_residual_cols = list(cfg.get("gm_feature_residual_columns", []))
+        self.gm_feature_residual_indices = [FEATURE_COLUMNS.index(c) for c in gm_residual_cols if c in FEATURE_COLUMNS]
+        if len(self.gm_feature_residual_indices) != len(gm_residual_cols):
+            missing = [c for c in gm_residual_cols if c not in FEATURE_COLUMNS]
+            raise ValueError(f"gm_feature_residual_columns not found in schema: {missing}")
+        self.gm_feature_residual_mix = float(cfg.get("gm_feature_residual_mix", 0.0))
+        self.gm_feature_residual_cap = float(cfg.get("gm_feature_residual_cap", 0.0))
+        if self.gm_feature_residual_indices and self.gm_feature_residual_mix != 0.0:
+            self.gm_feature_residual_head = nn.Sequential(
+                nn.LayerNorm(len(self.gm_feature_residual_indices)),
+                nn.Linear(len(self.gm_feature_residual_indices), 32),
+                nn.GELU(),
+                nn.Dropout(0.06),
+                nn.Linear(32, 1),
+            )
+        else:
+            self.gm_feature_residual_head = None
+        self.dual_bad_modes = {
+            "dual_bad_gm_replace",
+            "dual_bad_gm_mix",
+            "dual_bad_gm_routed_replace",
+            "dual_bad_gm_routed_mix",
+        }
+        self.bad_residual_modes = {"bad_residual_routed"}
+        self.bad_event_veto_residual_modes = {"bad_event_veto_residual"}
+        self.bad_artifact_residual_modes = {"bad_artifact_residual"}
+        self.bad_router_modes = {"dual_bad_gm_routed_replace", "dual_bad_gm_routed_mix"} | self.bad_residual_modes
         if self.final_mode in {"gated_bad", "gated_bad_mix", "gated_bad_replace"} | self.dual_bad_modes:
             self.gm_pair_head = nn.Sequential(nn.LayerNorm(class_head_in), nn.Linear(class_head_in, 96), nn.GELU(), nn.Dropout(0.08), nn.Linear(96, 2))
         else:
             self.gm_pair_head = None
+        if self.final_mode in self.bad_router_modes:
+            self.bad_router_head = nn.Sequential(
+                nn.LayerNorm(class_head_in),
+                nn.Linear(class_head_in, 96),
+                nn.GELU(),
+                nn.Dropout(0.08),
+                nn.Linear(96, 1),
+            )
+            with torch.no_grad():
+                self.bad_router_head[-1].bias.fill_(float(cfg.get("bad_router_bias_init", -1.7)))
+        else:
+            self.bad_router_head = None
         aux_hidden = int(cfg.get("aux_hidden", 128))
         aux_head_in = 192 + (96 if self.aux_primitive_fusion and self.primitive_branch is not None else 0)
         if self.aux_primitive_context_fusion and self.primitive_context_encoder is not None:
             aux_head_in += 96
+        if self.aux_physio_context_fusion and self.physio_context_encoder is not None:
+            aux_head_in += 96
+        if self.aux_artifact_context_fusion and self.artifact_bad_expert is not None:
+            aux_head_in += self.artifact_bad_expert.out_dim
         if bool(cfg.get("wide_aux_head", False)):
             self.aux_head = nn.Sequential(
                 nn.LayerNorm(aux_head_in),
@@ -6993,10 +15788,48 @@ class GeometryStudent(nn.Module):
             )
         else:
             self.aux_head = nn.Sequential(nn.LayerNorm(aux_head_in), nn.Linear(aux_head_in, aux_hidden), nn.GELU(), nn.Linear(aux_hidden, len(FEATURE_COLUMNS)))
+        bad_feature_cols = list(cfg.get("bad_feature_head_columns", []))
+        self.bad_feature_indices = [FEATURE_COLUMNS.index(c) for c in bad_feature_cols if c in FEATURE_COLUMNS]
+        if len(self.bad_feature_indices) != len(bad_feature_cols):
+            missing = [c for c in bad_feature_cols if c not in FEATURE_COLUMNS]
+            raise ValueError(f"bad_feature_head_columns not found in schema: {missing}")
+        self.bad_feature_mix = float(cfg.get("bad_feature_mix", 0.0))
+        if self.bad_feature_indices and self.bad_feature_mix != 0.0:
+            self.bad_feature_head = nn.Sequential(
+                nn.LayerNorm(len(self.bad_feature_indices)),
+                nn.Linear(len(self.bad_feature_indices), 48),
+                nn.GELU(),
+                nn.Dropout(0.08),
+                nn.Linear(48, 1),
+            )
+            with torch.no_grad():
+                self.bad_feature_head[-1].bias.fill_(float(cfg.get("bad_feature_bias_init", -1.3)))
+        else:
+            self.bad_feature_head = None
         self.bad_logit_mix = float(cfg.get("bad_logit_mix", 0.0))
-        if float(cfg.get("bad_aux_weight", 0.0)) > 0 or self.bad_logit_mix != 0.0 or self.final_mode in self.dual_bad_modes:
+        self.bad_residual_cap = float(cfg.get("bad_residual_cap", 0.0))
+        self.bad_event_veto_power = float(cfg.get("bad_event_veto_power", 1.0))
+        self.bad_event_veto_channels = tuple(int(i) for i in cfg.get("bad_event_veto_channels", [0, 1, 2]))
+        self.bad_artifact_floor = float(cfg.get("bad_artifact_floor", 0.0))
+        self.bad_artifact_power = float(cfg.get("bad_artifact_power", 1.0))
+        self.bad_artifact_veto_power = float(cfg.get("bad_artifact_veto_power", 0.0))
+        self.bad_artifact_veto_threshold = float(cfg.get("bad_artifact_veto_threshold", -1.0))
+        self.bad_artifact_veto_temperature = float(cfg.get("bad_artifact_veto_temperature", 0.0))
+        self.bad_core_logit_mix = float(cfg.get("bad_core_logit_mix", 0.0))
+        self.bad_core_residual_cap = float(cfg.get("bad_core_residual_cap", 0.0))
+        self.bad_core_floor = float(cfg.get("bad_core_floor", 0.0))
+        self.bad_core_power = float(cfg.get("bad_core_power", 1.0))
+        if (
+            float(cfg.get("bad_aux_weight", 0.0)) > 0
+            or self.bad_logit_mix != 0.0
+            or self.bad_core_logit_mix != 0.0
+            or self.final_mode in self.dual_bad_modes
+            or self.final_mode in self.bad_residual_modes
+            or self.final_mode in self.bad_event_veto_residual_modes
+            or self.final_mode in self.bad_artifact_residual_modes
+        ):
             self.bad_head = nn.Sequential(nn.LayerNorm(192), nn.Linear(192, 96), nn.GELU(), nn.Dropout(0.08), nn.Linear(96, 1))
-            if self.final_mode in {"gated_bad", "gated_bad_mix", "gated_bad_replace"} | self.dual_bad_modes:
+            if self.final_mode in {"gated_bad", "gated_bad_mix", "gated_bad_replace"} | self.dual_bad_modes | self.bad_residual_modes | self.bad_event_veto_residual_modes | self.bad_artifact_residual_modes:
                 with torch.no_grad():
                     self.bad_head[-1].bias.fill_(float(cfg.get("bad_gate_bias_init", -1.0)))
         else:
@@ -7070,11 +15903,22 @@ class GeometryStudent(nn.Module):
             feat, recon, recon_mask = self.encoder(x, mask_ratio)
         else:
             feat = self.encoder(x)
+        local_qrs_aux_pred = getattr(self.encoder, "last_qrs_aux_pred", None)
+        local_baseline_aux_pred = getattr(self.encoder, "last_baseline_aux_pred", None)
         emb = self.project(feat)
         primitive_context_emb = None
         if self.primitive_context_encoder is not None and self.primitive_context_project is not None:
             primitive_context_emb = self.primitive_context_project(self.primitive_context_encoder(x))
+        physio_context_emb = None
+        if self.physio_context_encoder is not None and self.physio_context_project is not None:
+            physio_context_emb = self.physio_context_project(self.physio_context_encoder(x))
         primitive_bad_logit = None
+        bad_feature_logit = None
+        artifact_bad_logit = None
+        artifact_veto_logit = None
+        artifact_event_logits = None
+        artifact_event_targets = None
+        artifact_bad_emb = None
         primitive_emb = None
         primitive_threshold_emb = None
         if self.primitive_branch is not None:
@@ -7091,12 +15935,44 @@ class GeometryStudent(nn.Module):
             primitive_bad_stats = primitive_waveform_stats(x, self.primitive_bad_bank)
             primitive_bad_emb = self.primitive_bad_branch(primitive_bad_stats)
             primitive_bad_logit = self.primitive_bad_head(primitive_bad_emb).squeeze(1)
+        if self.artifact_bad_expert is not None and self.artifact_bad_head is not None:
+            artifact_bad_emb = self.artifact_bad_expert(x)
+            artifact_event_logits = self.artifact_bad_expert.last_event_logits
+            artifact_event_targets = self.artifact_bad_expert.last_event_targets
+            artifact_bad_logit = self.artifact_bad_head(artifact_bad_emb).squeeze(1)
+            if self.artifact_veto_head is not None:
+                artifact_veto_logit = self.artifact_veto_head(artifact_bad_emb).squeeze(1)
         aux_input = emb
         if self.aux_primitive_fusion and primitive_emb is not None:
             aux_input = torch.cat([aux_input, primitive_emb], dim=1)
         if self.aux_primitive_context_fusion and primitive_context_emb is not None:
             aux_input = torch.cat([aux_input, primitive_context_emb], dim=1)
+        if self.aux_physio_context_fusion and physio_context_emb is not None:
+            aux_input = torch.cat([aux_input, physio_context_emb], dim=1)
+        if self.aux_artifact_context_fusion and artifact_bad_emb is not None:
+            aux_input = torch.cat([aux_input, artifact_bad_emb], dim=1)
         aux_pred = self.aux_head(aux_input)
+        if self.local_aux_residual_mix > 0.0:
+            local_mix = max(0.0, min(1.0, self.local_aux_residual_mix))
+            if local_qrs_aux_pred is not None and LOCAL_QRS_AUX_IDX:
+                aux_pred = aux_pred.clone()
+                for j, col in enumerate(LOCAL_QRS_AUX_IDX):
+                    aux_pred[:, col] = (1.0 - local_mix) * aux_pred[:, col] + local_mix * local_qrs_aux_pred[:, j]
+            if local_baseline_aux_pred is not None and LOCAL_BASELINE_AUX_IDX:
+                if local_qrs_aux_pred is None:
+                    aux_pred = aux_pred.clone()
+                for j, col in enumerate(LOCAL_BASELINE_AUX_IDX):
+                    aux_pred[:, col] = (1.0 - local_mix) * aux_pred[:, col] + local_mix * local_baseline_aux_pred[:, j]
+        if self.primitive_aux_residual_head is not None and primitive_emb is not None and self.primitive_aux_residual_indices:
+            primitive_aux_delta = self.primitive_aux_residual_mix * self.primitive_aux_residual_head(primitive_emb)
+            if self.primitive_aux_residual_cap > 0:
+                primitive_aux_delta = primitive_aux_delta.clamp(
+                    min=-self.primitive_aux_residual_cap,
+                    max=self.primitive_aux_residual_cap,
+                )
+            aux_pred = aux_pred.clone()
+            idx = torch.as_tensor(self.primitive_aux_residual_indices, dtype=torch.long, device=aux_pred.device)
+            aux_pred[:, idx] = aux_pred[:, idx] + primitive_aux_delta
         if self.use_teacher_atlas:
             atlas_pred = self.teacher_distance_features(aux_pred)
             head_input = torch.cat([emb, atlas_pred], dim=1)
@@ -7114,14 +15990,21 @@ class GeometryStudent(nn.Module):
             waveform_features, waveform_proto_class_logits, waveform_proto_logits = self.waveform_atlas_outputs(x)
             head_input = torch.cat([head_input, waveform_features], dim=1)
         if self.predicted_feature_indices:
-            head_input = torch.cat([head_input, aux_pred[:, self.predicted_feature_indices]], dim=1)
+            predicted_features = aux_pred[:, self.predicted_feature_indices]
+            if self.detach_predicted_feature_fusion:
+                predicted_features = predicted_features.detach()
+            head_input = torch.cat([head_input, predicted_features], dim=1)
         if primitive_emb is not None:
             if self.primitive_fusion:
                 head_input = torch.cat([head_input, primitive_emb], dim=1)
         if self.primitive_context_fusion and primitive_context_emb is not None:
             head_input = torch.cat([head_input, primitive_context_emb], dim=1)
+        if self.physio_context_fusion and physio_context_emb is not None:
+            head_input = torch.cat([head_input, physio_context_emb], dim=1)
         if primitive_threshold_emb is not None:
             head_input = torch.cat([head_input, primitive_threshold_emb], dim=1)
+        if self.artifact_context_fusion and artifact_bad_emb is not None:
+            head_input = torch.cat([head_input, artifact_bad_emb], dim=1)
         logits = self.class_head(head_input)
         feature_gate = None
         if proto_class_logits is not None and self.embedding_proto_logit_mix != 0.0:
@@ -7131,6 +16014,8 @@ class GeometryStudent(nn.Module):
         if self.feature_class_head is not None and self.predicted_feature_indices:
             residual_logits = logits
             feature_values = aux_pred[:, self.predicted_feature_indices]
+            if self.detach_predicted_feature_fusion:
+                feature_values = feature_values.detach()
             feature_logits = self.feature_class_head(feature_values)
             feature_first_logits = feature_logits + self.feature_residual_alpha * residual_logits
             if self.feature_gate_head is not None:
@@ -7138,13 +16023,46 @@ class GeometryStudent(nn.Module):
                 logits = feature_gate * feature_first_logits + (1.0 - feature_gate) * residual_logits
             else:
                 logits = feature_first_logits
+        if self.gm_feature_residual_head is not None and self.gm_feature_residual_indices:
+            gm_values = aux_pred[:, self.gm_feature_residual_indices]
+            if self.detach_predicted_feature_fusion:
+                gm_values = gm_values.detach()
+            gm_delta = self.gm_feature_residual_mix * self.gm_feature_residual_head(gm_values).squeeze(1)
+            if self.gm_feature_residual_cap > 0:
+                gm_delta = gm_delta.clamp(min=-self.gm_feature_residual_cap, max=self.gm_feature_residual_cap)
+            logits = logits.clone()
+            logits[:, CLASS_TO_INT["good"]] = logits[:, CLASS_TO_INT["good"]] - gm_delta
+            logits[:, CLASS_TO_INT["medium"]] = logits[:, CLASS_TO_INT["medium"]] + gm_delta
+        if self.primitive_class_residual_head is not None and primitive_emb is not None:
+            primitive_delta = self.primitive_class_residual_mix * self.primitive_class_residual_head(primitive_emb)
+            if self.primitive_class_residual_cap > 0:
+                primitive_delta = primitive_delta.clamp(
+                    min=-self.primitive_class_residual_cap,
+                    max=self.primitive_class_residual_cap,
+                )
+            logits = logits + primitive_delta
+        if self.bad_feature_head is not None and self.bad_feature_indices:
+            bad_feature_values = aux_pred[:, self.bad_feature_indices]
+            bad_feature_logit = self.bad_feature_head(bad_feature_values).squeeze(1)
         bad_logit = self.bad_head(emb).squeeze(1) if self.bad_head is not None else None
+        if bad_feature_logit is not None:
+            if bad_logit is None:
+                bad_logit = self.bad_feature_mix * bad_feature_logit
+            else:
+                bad_logit = bad_logit + self.bad_feature_mix * bad_feature_logit
         stress_logit = self.stress_head(emb).squeeze(1) if self.stress_head is not None else None
         if primitive_bad_logit is not None:
             if bad_logit is None:
                 bad_logit = primitive_bad_logit
             else:
                 bad_logit = bad_logit + self.primitive_bad_mix * primitive_bad_logit
+        if artifact_bad_logit is not None:
+            if bad_logit is None:
+                bad_logit = artifact_bad_logit
+            else:
+                bad_logit = bad_logit + self.artifact_bad_mix * artifact_bad_logit
+        if artifact_veto_logit is not None and self.artifact_veto_mix != 0.0 and bad_logit is not None:
+            bad_logit = bad_logit - self.artifact_veto_mix * artifact_veto_logit
         if stress_logit is not None and self.stress_bad_logit_mix != 0.0:
             if bad_logit is None:
                 bad_logit = self.stress_bad_logit_mix * stress_logit
@@ -7160,6 +16078,7 @@ class GeometryStudent(nn.Module):
                 margin_guard = margin_guard - self.bad_boundary_alpha * aux_pred[:, self.boundary_conf_idx]
             bad_logit = bad_logit + torch.clamp(margin_guard, min=-2.5, max=2.5)
         gm_pair_logits = self.gm_pair_head(head_input) if self.gm_pair_head is not None else None
+        bad_router_logit = self.bad_router_head(head_input).squeeze(1) if self.bad_router_head is not None else None
         if self.final_mode in self.dual_bad_modes and bad_logit is not None and gm_pair_logits is not None:
             gm_log_probs = F.log_softmax(gm_pair_logits, dim=1)
             log_not_bad = F.logsigmoid(-bad_logit)
@@ -7175,6 +16094,13 @@ class GeometryStudent(nn.Module):
             dual_logits = torch.nan_to_num(dual_logits, nan=0.0, posinf=30.0, neginf=-30.0)
             if self.final_mode == "dual_bad_gm_replace":
                 logits = dual_logits
+            elif self.final_mode in self.bad_router_modes and bad_router_logit is not None:
+                route = torch.sigmoid(bad_router_logit).unsqueeze(1).clamp(0.0, 1.0)
+                if self.final_mode == "dual_bad_gm_routed_replace":
+                    logits = (1.0 - route) * logits + route * dual_logits
+                else:
+                    mix = (self.gate_logit_alpha * route).clamp(0.0, 1.0)
+                    logits = (1.0 - mix) * logits + mix * dual_logits
             else:
                 logits = (1.0 - self.gate_logit_alpha) * logits + self.gate_logit_alpha * dual_logits
         elif self.final_mode in {"gated_bad", "gated_bad_mix", "gated_bad_replace"} and bad_logit is not None and gm_pair_logits is not None:
@@ -7194,14 +16120,89 @@ class GeometryStudent(nn.Module):
                 logits = (1.0 - self.gate_logit_alpha) * logits + self.gate_logit_alpha * gated_logits
             else:
                 logits = logits + gated_logits
+        elif self.final_mode in self.bad_residual_modes and bad_logit is not None and bad_router_logit is not None:
+            # Preserve the base good/medium decision surface and let the
+            # waveform-event branch add only a positive, routed bad residual.
+            route = torch.sigmoid(bad_router_logit).clamp(0.0, 1.0)
+            residual = self.bad_logit_mix * route * F.softplus(bad_logit)
+            if self.bad_residual_cap > 0:
+                residual = residual.clamp(max=self.bad_residual_cap)
+            logits = logits.clone()
+            logits[:, CLASS_TO_INT["bad"]] = logits[:, CLASS_TO_INT["bad"]] + residual
+        elif self.final_mode in self.bad_event_veto_residual_modes and artifact_event_logits is not None and artifact_veto_logit is not None:
+            # A structured bad route: sparse artifact-event evidence opens the
+            # path, while the waveform-derived veto suppresses coherent non-bad
+            # artifacts. This avoids replacing the good/medium logits.
+            event_prob = torch.sigmoid(artifact_event_logits)
+            valid_channels = [i for i in self.bad_event_veto_channels if 0 <= i < event_prob.shape[-1]]
+            if valid_channels:
+                event_score = event_prob[..., valid_channels].amax(dim=(1, 2))
+            else:
+                event_score = event_prob.amax(dim=(1, 2))
+            veto_open = (1.0 - torch.sigmoid(artifact_veto_logit)).clamp(0.0, 1.0)
+            if self.bad_event_veto_power != 1.0:
+                veto_open = veto_open.pow(max(self.bad_event_veto_power, 1e-4))
+            residual = self.bad_logit_mix * event_score * veto_open
+            if self.bad_residual_cap > 0:
+                residual = residual.clamp(max=self.bad_residual_cap)
+            logits = logits.clone()
+            logits[:, CLASS_TO_INT["bad"]] = logits[:, CLASS_TO_INT["bad"]] + residual
+        elif self.final_mode in self.bad_artifact_residual_modes and artifact_bad_logit is not None:
+            # Two-expert residual route: preserve the base good/medium logits
+            # and let the local artifact-bad expert contribute only a positive,
+            # capped bad residual.  The score is waveform-derived at inference
+            # time; sidecar SQI/geometry features remain teacher targets only.
+            artifact_score = torch.sigmoid(artifact_bad_logit).clamp(0.0, 1.0)
+            if self.bad_artifact_floor > 0.0:
+                denom = max(1e-4, 1.0 - self.bad_artifact_floor)
+                artifact_score = ((artifact_score - self.bad_artifact_floor) / denom).clamp(0.0, 1.0)
+            if self.bad_artifact_power != 1.0:
+                artifact_score = artifact_score.pow(max(self.bad_artifact_power, 1e-4))
+            if artifact_veto_logit is not None and self.bad_artifact_veto_power > 0.0:
+                veto_prob = torch.sigmoid(artifact_veto_logit).clamp(0.0, 1.0)
+                veto_open = (1.0 - veto_prob).clamp(0.0, 1.0)
+                artifact_score = artifact_score * veto_open.pow(max(self.bad_artifact_veto_power, 1e-4))
+            if (
+                artifact_veto_logit is not None
+                and self.bad_artifact_veto_threshold >= 0.0
+                and self.bad_artifact_veto_temperature > 0.0
+            ):
+                veto_prob = torch.sigmoid(artifact_veto_logit).clamp(0.0, 1.0)
+                temp = max(self.bad_artifact_veto_temperature, 1e-4)
+                veto_gate = torch.sigmoid((self.bad_artifact_veto_threshold - veto_prob) / temp).clamp(0.0, 1.0)
+                artifact_score = artifact_score * veto_gate
+            residual = self.bad_logit_mix * artifact_score
+            if bad_logit is not None and self.bad_core_logit_mix > 0.0:
+                core_score = torch.sigmoid(bad_logit).clamp(0.0, 1.0)
+                if self.bad_core_floor > 0.0:
+                    denom = max(1e-4, 1.0 - self.bad_core_floor)
+                    core_score = ((core_score - self.bad_core_floor) / denom).clamp(0.0, 1.0)
+                if self.bad_core_power != 1.0:
+                    core_score = core_score.pow(max(self.bad_core_power, 1e-4))
+                core_residual = self.bad_core_logit_mix * core_score
+                if self.bad_core_residual_cap > 0:
+                    core_residual = core_residual.clamp(max=self.bad_core_residual_cap)
+                residual = residual + core_residual
+            if self.bad_residual_cap > 0:
+                residual = residual.clamp(max=self.bad_residual_cap)
+            logits = logits.clone()
+            logits[:, CLASS_TO_INT["bad"]] = logits[:, CLASS_TO_INT["bad"]] + residual
         elif bad_logit is not None and self.bad_logit_mix != 0.0:
             logits = logits.clone()
             logits[:, CLASS_TO_INT["bad"]] = logits[:, CLASS_TO_INT["bad"]] + self.bad_logit_mix * bad_logit
         return {
             "logits": logits,
             "bad_logit": bad_logit,
+            "bad_feature_logit": bad_feature_logit,
             "stress_logit": stress_logit,
             "primitive_bad_logit": primitive_bad_logit,
+            "artifact_bad_logit": artifact_bad_logit,
+            "artifact_veto_logit": artifact_veto_logit,
+            "artifact_event_logits": artifact_event_logits,
+            "artifact_event_targets": artifact_event_targets,
+            "local_qrs_aux_pred": local_qrs_aux_pred,
+            "local_baseline_aux_pred": local_baseline_aux_pred,
+            "bad_router_logit": bad_router_logit,
             "gm_pair_logits": gm_pair_logits,
             "aux_pred": aux_pred,
             "atlas_pred": atlas_pred,
@@ -7242,6 +16243,17 @@ class AugmentedSyntheticDataset(torch.utils.data.Dataset):
         aug_aux_weight_nonbad: float = 1.0,
         nonbad_to_bad_stress_prob: float = 0.0,
         nonbad_to_bad_stress_strength: float = 0.0,
+        aug_bad_aux_pseudo_geometry: bool = False,
+        aug_bad_aux_pseudo_mix: float = 0.0,
+        aug_bad_aux_pseudo_mode: str = "legacy",
+        bad_flatlowamp_shell_strength: float = 0.0,
+        bad_flatlowamp_shell_prob: float = 1.0,
+        tail_focus_columns: list[str] | None = None,
+        tail_focus_directions: list[str] | None = None,
+        tail_focus_quantiles: list[float] | None = None,
+        tail_focus_min_hits: int = 1,
+        tail_focus_weight: float = 1.0,
+        tail_focus_labels: list[int] | None = None,
     ):
         self.base = base
         self.strength = float(strength)
@@ -7261,10 +16273,46 @@ class AugmentedSyntheticDataset(torch.utils.data.Dataset):
         self.bad_impulse_reset_prob = float(bad_impulse_reset_prob)
         self.bad_record111_burst_dropout_strength = float(bad_record111_burst_dropout_strength)
         self.bad_record111_burst_dropout_prob = float(bad_record111_burst_dropout_prob)
+        self.bad_flatlowamp_shell_strength = float(bad_flatlowamp_shell_strength)
+        self.bad_flatlowamp_shell_prob = float(bad_flatlowamp_shell_prob)
         self.aug_aux_weight_bad = float(aug_aux_weight_bad)
         self.aug_aux_weight_nonbad = float(aug_aux_weight_nonbad)
         self.nonbad_to_bad_stress_prob = float(nonbad_to_bad_stress_prob)
         self.nonbad_to_bad_stress_strength = float(nonbad_to_bad_stress_strength)
+        self.aug_bad_aux_pseudo_geometry = bool(aug_bad_aux_pseudo_geometry)
+        self.aug_bad_aux_pseudo_mix = float(aug_bad_aux_pseudo_mix)
+        self.aug_bad_aux_pseudo_mode = str(aug_bad_aux_pseudo_mode or "legacy").lower()
+        self.tail_focus_weight = float(tail_focus_weight)
+        self.tail_focus_mask = None
+        if tail_focus_columns and self.tail_focus_weight > 1.0:
+            aux_np = np.asarray(base.aux, dtype=np.float32)
+            hits = np.zeros(aux_np.shape[0], dtype=np.int16)
+            directions = list(tail_focus_directions or ["high"] * len(tail_focus_columns))
+            quantiles = list(tail_focus_quantiles or [0.85] * len(tail_focus_columns))
+            if len(directions) < len(tail_focus_columns):
+                directions.extend([directions[-1] if directions else "high"] * (len(tail_focus_columns) - len(directions)))
+            if len(quantiles) < len(tail_focus_columns):
+                quantiles.extend([quantiles[-1] if quantiles else 0.85] * (len(tail_focus_columns) - len(quantiles)))
+            for col, direction, quantile in zip(tail_focus_columns, directions, quantiles):
+                if col not in FEATURE_COLUMNS:
+                    continue
+                idx = FEATURE_COLUMNS.index(col)
+                values = aux_np[:, idx]
+                values = values[np.isfinite(values)]
+                if len(values) == 0:
+                    continue
+                q = float(np.clip(float(quantile), 0.01, 0.99))
+                if str(direction).lower().startswith("low"):
+                    cut = float(np.nanquantile(values, 1.0 - q))
+                    hits += (aux_np[:, idx] <= cut).astype(np.int16)
+                else:
+                    cut = float(np.nanquantile(values, q))
+                    hits += (aux_np[:, idx] >= cut).astype(np.int16)
+            mask = hits >= max(1, int(tail_focus_min_hits))
+            if tail_focus_labels:
+                label_set = {int(x) for x in tail_focus_labels}
+                mask &= np.asarray([int(y) in label_set for y in base.y], dtype=bool)
+            self.tail_focus_mask = mask
         self.rng = np.random.default_rng(seed)
         self.x = base.x
         self.y = base.y
@@ -7272,6 +16320,59 @@ class AugmentedSyntheticDataset(torch.utils.data.Dataset):
         self.mean = base.mean
         self.std = base.std
         self.frame = base.frame
+        self.bad_pseudo_aux = None
+        if self.aug_bad_aux_pseudo_geometry and self.aug_bad_aux_pseudo_mix > 0:
+            aux = np.asarray(base.aux, dtype=np.float32)
+            pseudo = np.nanmedian(aux, axis=0).astype(np.float32)
+            if self.aug_bad_aux_pseudo_mode in {"physio", "physio_record111", "record111_physio", "waveform"}:
+                # Waveform-computable pseudo targets for record111-like bad
+                # augmentations.  Keep atlas/knn/boundary proxy features out of
+                # this path so the aux target matches observable ECG quality.
+                rules = {
+                    "contact_loss_win_ratio": 0.94,
+                    "fatal_or_score": 0.92,
+                    "qrs_visibility": 0.06,
+                    "detector_agreement": 0.06,
+                    "sqi_basSQI": 0.04,
+                    "qrs_band_ratio": 0.08,
+                    "template_corr": 0.08,
+                    "sqi_bSQI": 0.10,
+                    "sqi_pSQI": 0.10,
+                    "qrs_prom_p90": 0.10,
+                    "low_amp_ratio": 0.90,
+                    "mean_abs": 0.12,
+                    "rms": 0.12,
+                    "non_qrs_rms_ratio": 0.90,
+                    "non_qrs_diff_p95": 0.82,
+                    "baseline_step": 0.96,
+                    "flatline_ratio": 0.96,
+                    "band_0p3_1": 0.94,
+                    "band_15_30": 0.82,
+                    "band_30_45": 0.82,
+                }
+            else:
+                rules = {
+                    "qrs_visibility": 0.08,
+                    "detector_agreement": 0.08,
+                    "sqi_basSQI": 0.08,
+                    "pca_margin": 0.06,
+                    "boundary_confidence": 0.06,
+                    "knn_label_purity": 0.06,
+                    "non_qrs_diff_p95": 0.18,
+                    "baseline_step": 0.94,
+                    "flatline_ratio": 0.94,
+                    "pc2": 0.92,
+                    "pc3": 0.22,
+                }
+            for col, q in rules.items():
+                if col not in FEATURE_COLUMNS:
+                    continue
+                idx = FEATURE_COLUMNS.index(col)
+                values = aux[:, idx]
+                values = values[np.isfinite(values)]
+                if len(values):
+                    pseudo[idx] = np.float32(np.nanquantile(values, q))
+            self.bad_pseudo_aux = torch.tensor(pseudo, dtype=torch.float32)
 
     def __len__(self) -> int:
         return len(self.base)
@@ -7287,16 +16388,19 @@ class AugmentedSyntheticDataset(torch.utils.data.Dataset):
             and self.rng.random() < self.nonbad_to_bad_stress_prob
         )
         stress_target = 0.0
+        bad_event_target = 0.0
         if converted_nonbad_to_bad:
             x = augment_synthetic_waveform(x, self.rng, self.strength, y, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
             x = augment_bad_intermittent_contact_qrs(x, self.rng, self.nonbad_to_bad_stress_strength)
             y = CLASS_TO_INT["bad"]
             stress_target = 1.0
+            bad_event_target = 1.0
         else:
             effective_contact_strength = self.bad_intermittent_contact_strength
             effective_record111_strength = self.bad_record111_motion_strength
             effective_impulse_strength = self.bad_impulse_reset_strength
             effective_burstdrop_strength = self.bad_record111_burst_dropout_strength
+            effective_flatlowamp_strength = self.bad_flatlowamp_shell_strength
             if y == CLASS_TO_INT["bad"] and effective_contact_strength > 0 and self.rng.random() > self.bad_intermittent_contact_prob:
                 effective_contact_strength = 0.0
             if y == CLASS_TO_INT["bad"] and effective_record111_strength > 0 and self.rng.random() > self.bad_record111_motion_prob:
@@ -7305,6 +16409,8 @@ class AugmentedSyntheticDataset(torch.utils.data.Dataset):
                 effective_impulse_strength = 0.0
             if y == CLASS_TO_INT["bad"] and effective_burstdrop_strength > 0 and self.rng.random() > self.bad_record111_burst_dropout_prob:
                 effective_burstdrop_strength = 0.0
+            if y == CLASS_TO_INT["bad"] and effective_flatlowamp_strength > 0 and self.rng.random() > self.bad_flatlowamp_shell_prob:
+                effective_flatlowamp_strength = 0.0
             x = augment_synthetic_waveform(
                 x,
                 self.rng,
@@ -7319,6 +16425,7 @@ class AugmentedSyntheticDataset(torch.utils.data.Dataset):
                 effective_record111_strength,
                 effective_impulse_strength,
                 effective_burstdrop_strength,
+                effective_flatlowamp_strength,
             )
             if y != CLASS_TO_INT["bad"] and self.subject111_shift_strength > 0:
                 x = augment_subject111_nonbad_shift(
@@ -7336,8 +16443,25 @@ class AugmentedSyntheticDataset(torch.utils.data.Dataset):
                 or effective_record111_strength > 0
                 or effective_impulse_strength > 0
                 or effective_burstdrop_strength > 0
+                or effective_flatlowamp_strength > 0
             ):
                 stress_target = 1.0
+            if y == CLASS_TO_INT["bad"] and (
+                effective_contact_strength > 0
+                or effective_record111_strength > 0
+                or effective_impulse_strength > 0
+                or effective_burstdrop_strength > 0
+                or effective_flatlowamp_strength > 0
+            ):
+                bad_event_target = 1.0
+        aux = item["aux"].clone()
+        if (
+            self.bad_pseudo_aux is not None
+            and y == CLASS_TO_INT["bad"]
+            and (stress_target > 0 or bad_event_target > 0 or converted_nonbad_to_bad)
+        ):
+            mix = float(np.clip(self.aug_bad_aux_pseudo_mix, 0.0, 1.0))
+            aux = (1.0 - mix) * aux + mix * self.bad_pseudo_aux.to(dtype=aux.dtype)
         aux_weight = 1.0
         if converted_nonbad_to_bad:
             aux_weight = self.aug_aux_weight_bad
@@ -7349,15 +16473,19 @@ class AugmentedSyntheticDataset(torch.utils.data.Dataset):
             or self.bad_record111_motion_strength > 0
             or self.bad_impulse_reset_strength > 0
             or self.bad_record111_burst_dropout_strength > 0
+            or self.bad_flatlowamp_shell_strength > 0
         ):
             aux_weight = self.aug_aux_weight_bad
         elif y != CLASS_TO_INT["bad"] and (self.nonbad_hardneg_strength > 0 or self.subject111_shift_strength > 0):
             aux_weight = self.aug_aux_weight_nonbad
+        if self.tail_focus_mask is not None and bool(self.tail_focus_mask[int(i)]):
+            aux_weight = max(float(aux_weight), self.tail_focus_weight)
         return {
             "x": torch.from_numpy(x),
-            "aux": item["aux"],
+            "aux": aux,
             "aux_weight": torch.tensor(aux_weight, dtype=torch.float32),
             "stress_target": torch.tensor(stress_target, dtype=torch.float32),
+            "bad_event_target": torch.tensor(bad_event_target, dtype=torch.float32),
             "y": torch.tensor(y, dtype=torch.long),
         }
 
@@ -7422,6 +16550,7 @@ def augment_synthetic_waveform(
     bad_record111_motion_strength: float = 0.0,
     bad_impulse_reset_strength: float = 0.0,
     bad_record111_burst_dropout_strength: float = 0.0,
+    bad_flatlowamp_shell_strength: float = 0.0,
 ) -> np.ndarray:
     if strength > 0:
         if rng.random() < 0.65:
@@ -7448,6 +16577,8 @@ def augment_synthetic_waveform(
         x = augment_bad_impulse_reset(x, rng, bad_impulse_reset_strength)
     if y == CLASS_TO_INT["bad"] and bad_record111_burst_dropout_strength > 0:
         x = augment_bad_record111_burst_dropout(x, rng, bad_record111_burst_dropout_strength)
+    if y == CLASS_TO_INT["bad"] and bad_flatlowamp_shell_strength > 0:
+        x = augment_bad_flatlowamp_shell(x, rng, bad_flatlowamp_shell_strength)
     if y != CLASS_TO_INT["bad"] and nonbad_hardneg_strength > 0:
         x = augment_nonbad_artifact_hard_negative(x, rng, nonbad_hardneg_strength)
     return np.nan_to_num(x, nan=0.0, posinf=0.0, neginf=0.0).astype(np.float32)
@@ -7753,6 +16884,113 @@ def augment_bad_record111_burst_dropout(x: np.ndarray, rng: np.random.Generator,
 
     if rng.random() < 0.45:
         x += rng.normal(0.0, float(rng.uniform(0.002, 0.010) * s), size=x.shape).astype(np.float32)
+    return np.nan_to_num(x, nan=0.0, posinf=0.0, neginf=0.0).astype(np.float32)
+
+
+def augment_bad_flatlowamp_shell(x: np.ndarray, rng: np.random.Generator, strength: float) -> np.ndarray:
+    """Long flat/low-amplitude bad shell from the original bad-outlier audit.
+
+    The original stress bucket had high flat/contact/low-amplitude ratios and
+    low derivative energy, while one robust channel often carried a slow broad
+    baseline sweep.  This block is deliberately narrower than the previous
+    record111 motion generator: it teaches a persistent bad-quality shell, not
+    generic high-amplitude motion or random noise.
+    """
+
+    n = x.shape[1]
+    s = float(strength)
+    if s <= 0:
+        return x
+    t01 = np.linspace(0.0, 1.0, n, dtype=np.float32)
+    t11 = np.linspace(-1.0, 1.0, n, dtype=np.float32)
+    if x.shape[0] >= 3:
+        flat_ch = 1
+        quiet_ch = 0
+        drift_ch = 2
+    elif x.shape[0] == 2:
+        flat_ch = 1
+        quiet_ch = 0
+        drift_ch = 0
+    else:
+        flat_ch = quiet_ch = drift_ch = 0
+
+    # Make one channel persistently low-amplitude/contact-like over most of
+    # the window.  Keep small residual wiggle so it is not a trivial constant.
+    residual = float(rng.uniform(0.0015, 0.0075) * min(2.4, s))
+    ripple = float(rng.uniform(0.002, 0.018) * min(2.0, s)) * np.sin(
+        2 * np.pi * float(rng.uniform(0.3, 1.2)) * t01 + float(rng.uniform(-np.pi, np.pi))
+    )
+    x[flat_ch] = (
+        float(rng.uniform(0.006, 0.045)) * x[flat_ch]
+        + ripple.astype(np.float32)
+        + rng.normal(0.0, residual, size=n).astype(np.float32)
+    )
+    span_count = int(rng.integers(1, 4))
+    for _ in range(span_count):
+        width = int(rng.integers(max(180, int(0.34 * n)), max(220, int(0.86 * n))))
+        start = int(rng.integers(0, max(1, n - width)))
+        end = start + width
+        plateau = float(rng.uniform(-0.012, 0.012) * min(2.0, s))
+        local_noise = float(rng.uniform(0.0008, 0.0045) * min(2.2, s))
+        x[flat_ch, start:end] = plateau + rng.normal(0.0, local_noise, size=width).astype(np.float32)
+        edge_len = int(rng.integers(4, 18))
+        edge = float(rng.uniform(0.035, 0.22) * s)
+        sign = 1.0 if rng.random() < 0.5 else -1.0
+        x[flat_ch, start : min(n, start + edge_len)] += sign * edge
+        x[flat_ch, max(0, end - edge_len) : end] -= sign * float(rng.uniform(0.45, 1.10)) * edge
+
+    # A second channel is low-detail but not fully flat; this separates true
+    # bad stress from non-bad local dropouts by persistence and multi-channel
+    # disagreement.
+    kernel = int(rng.choice([61, 81, 101, 121]))
+    filt = np.ones(kernel, dtype=np.float32) / float(kernel)
+    padded = np.pad(x[quiet_ch], (kernel // 2, kernel // 2), mode="edge")
+    smooth = np.convolve(padded, filt, mode="valid")[:n]
+    x[quiet_ch] = (
+        float(rng.uniform(0.02, 0.12)) * x[quiet_ch]
+        + float(rng.uniform(0.16, 0.42)) * smooth
+    ).astype(np.float32)
+    if rng.random() < min(0.92, 0.35 + 0.18 * s):
+        width = int(rng.integers(max(120, int(0.22 * n)), max(160, int(0.64 * n))))
+        start = int(rng.integers(0, max(1, n - width)))
+        end = start + width
+        x[quiet_ch, start:end] *= float(rng.uniform(0.015, 0.12))
+        x[quiet_ch, start:end] += rng.normal(0.0, float(rng.uniform(0.001, 0.006) * s), size=width).astype(np.float32)
+
+    # Slow broad drift on the remaining robust channel: high baseline span with
+    # low derivative/ZCR, matching the stress shell rather than high-frequency
+    # bad noise.
+    drift_amp = float(rng.uniform(0.45, 1.75) * s)
+    drift = (
+        0.50 * t11
+        + 0.32 * np.sin(np.pi * t11 + float(rng.uniform(-1.4, 1.4)))
+        + 0.18 * np.sin(2 * np.pi * float(rng.uniform(0.35, 1.20)) * t01 + float(rng.uniform(-np.pi, np.pi)))
+    ).astype(np.float32)
+    x[drift_ch] = (float(rng.uniform(0.14, 0.42)) * x[drift_ch] + drift_amp * drift).astype(np.float32)
+
+    # Sparse asymmetric reset edges keep detector agreement poor without
+    # creating generic broadband noise.
+    for _ in range(int(rng.integers(2, 7))):
+        center = int(rng.integers(8, max(9, n - 8)))
+        width = int(rng.integers(3, 20))
+        start = max(0, center - width)
+        end = min(n, center + width + 1)
+        local = np.linspace(-1.0, 1.0, end - start, dtype=np.float32)
+        spike = np.exp(-18.0 * local * local).astype(np.float32)
+        ch = int(rng.choice([flat_ch, quiet_ch, drift_ch]))
+        amp = float(rng.uniform(0.04, 0.40) * s)
+        sign = 1.0 if rng.random() < 0.5 else -1.0
+        x[ch, start:end] += sign * amp * spike
+        if rng.random() < 0.42:
+            step_end = min(n, center + int(rng.integers(18, 90)))
+            x[ch, center:step_end] += sign * float(rng.uniform(0.025, 0.18) * s)
+
+    # Mild global compression lowers mean_abs/diff_abs tails, one of the
+    # strongest waveform gaps to original bad outliers.
+    if rng.random() < 0.72:
+        x *= float(rng.uniform(0.38, 0.86))
+    if rng.random() < 0.38:
+        x += rng.normal(0.0, float(rng.uniform(0.001, 0.006) * s), size=x.shape).astype(np.float32)
     return np.nan_to_num(x, nan=0.0, posinf=0.0, neginf=0.0).astype(np.float32)
 
 
@@ -8143,7 +17381,7 @@ def waveform_prototype_targets(x: torch.Tensor, y: torch.Tensor, model: Geometry
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--stage", choices=["smoke", "search", "all"], default="all")
+    parser.add_argument("--stage", choices=["smoke", "search", "report", "all"], default="all")
     parser.add_argument("--epochs", type=int, default=None)
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--candidates", type=str, default=",".join(CANDIDATES.keys()))
@@ -8164,6 +17402,9 @@ def main() -> None:
     if args.stage == "search":
         epochs = args.epochs or 12
         run_set(names, epochs, args, run_label="search", but_report_mode=args.but_report_mode)
+        return
+    if args.stage == "report":
+        run_report_set(names, args, source_run_label="search", run_label="report")
         return
     smoke_payload = run_set(names, args.epochs or 2, args, run_label="smoke", but_report_mode="none")
     ranked = rank_candidates(smoke_payload["metrics"])
@@ -8215,6 +17456,135 @@ def run_set(names: list[str], epochs: int, args: argparse.Namespace, run_label: 
     return {"metrics": metrics, "payload": payload}
 
 
+def run_report_set(
+    names: list[str],
+    args: argparse.Namespace,
+    source_run_label: str,
+    run_label: str,
+) -> dict[str, Any]:
+    rows: list[dict[str, Any]] = []
+    summaries = []
+    for name in names:
+        try:
+            summary = report_existing_candidate(name, CANDIDATES[name], args, source_run_label, run_label)
+        except FileNotFoundError as exc:
+            print(f"skip report candidate {name}: {exc}", flush=True)
+            summaries.append(
+                {
+                    "candidate": name,
+                    "run_label": run_label,
+                    "checkpoint": "",
+                    "best_epoch": "missing",
+                    "useful_gate_passed": False,
+                    "bad_threshold_trainval": float("nan"),
+                    "synthetic_test": {},
+                    "original_report_ran": False,
+                    "metric_rows": [],
+                    "skip_reason": str(exc),
+                }
+            )
+            continue
+        summaries.append(summary)
+        rows.extend(summary["metric_rows"])
+    metrics = pd.DataFrame(rows)
+    prefix = f"waveform_geometry_student_{run_label}"
+    metrics_path = ANALYSIS_DIR / f"{prefix}_metrics.csv"
+    summary_path = ANALYSIS_DIR / f"{prefix}_summary.json"
+    report_path = ANALYSIS_DIR / f"{prefix}_report.md"
+    report_copy = REPORT_DIR / report_path.name
+    metrics.to_csv(metrics_path, index=False)
+    payload = {
+        "created_at": now(),
+        "run_label": run_label,
+        "source_run_label": source_run_label,
+        "variant_id": ARCH.VARIANT_ID,
+        "dirty_worktree_warning": git_status_short(),
+        "input_contract": "waveform only; SQI/geometry columns are training teacher targets, never classifier inputs",
+        "training_input": "no training in report stage; existing PTB-trained checkpoints loaded",
+        "original_used_for_training": False,
+        "but_usage": "report-only held-out buckets",
+        "teacher_columns": [FEATURE_COLUMNS[i] for i in TEACHER_IDX],
+        "core_teacher_columns": [FEATURE_COLUMNS[i] for i in CORE_IDX],
+        "hard_teacher_columns": [FEATURE_COLUMNS[i] for i in HARD_IDX],
+        "top14_teacher_columns": [FEATURE_COLUMNS[i] for i in TOP14_IDX],
+        "reference_rows": REFERENCE_ROWS,
+        "metrics_csv": str(metrics_path),
+        "report": str(report_copy),
+        "summaries": summaries,
+    }
+    summary_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False, default=json_default), encoding="utf-8")
+    report = render_report(metrics, payload)
+    report_path.write_text(report, encoding="utf-8")
+    report_copy.write_text(report, encoding="utf-8")
+    print(report, flush=True)
+    return {"metrics": metrics, "payload": payload}
+
+
+def report_existing_candidate(
+    name: str,
+    cfg: dict[str, Any],
+    args: argparse.Namespace,
+    source_run_label: str,
+    run_label: str,
+) -> dict[str, Any]:
+    print(f"reporting {source_run_label}:{name}", flush=True)
+    torch.manual_seed(int(cfg["seed"]))
+    np.random.seed(int(cfg["seed"]))
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    active_variant_id = configure_arch_variant(str(cfg.get("variant_id", DEFAULT_ARCH_VARIANT_ID)))
+    if active_variant_id != DEFAULT_ARCH_VARIANT_ID:
+        print(f"using synthetic variant override for {name}: {active_variant_id}", flush=True)
+    base_train_ds = ARCH.SyntheticWaveDataset("train", str(cfg["channels"]))
+    val_ds = ARCH.SyntheticWaveDataset("val", str(cfg["channels"]))
+    test_ds = ARCH.SyntheticWaveDataset("test", str(cfg["channels"]))
+    norm = ARCH.FeatureNorm(mean=base_train_ds.mean, std=base_train_ds.std)
+    original_ds = ARCH.OriginalWaveDataset(norm, str(cfg["channels"]))
+    pin = device.type == "cuda"
+    val_loader = DataLoader(val_ds, batch_size=args.batch_size * 2, shuffle=False, num_workers=args.num_workers, pin_memory=pin)
+    test_loader = DataLoader(test_ds, batch_size=args.batch_size * 2, shuffle=False, num_workers=args.num_workers, pin_memory=pin)
+    original_loader = DataLoader(original_ds, batch_size=args.batch_size * 2, shuffle=False, num_workers=args.num_workers, pin_memory=pin)
+    model = GeometryStudent(cfg, int(base_train_ds.x.shape[1])).to(device)
+    ckpt_path = OUT_ROOT / "runs" / "waveform_geometry_student" / NODE_ID / source_run_label / name / "ckpt_best.pt"
+    if not ckpt_path.exists():
+        raise FileNotFoundError(f"checkpoint not found for report stage: {ckpt_path}")
+    ckpt = torch.load(ckpt_path, map_location=device)
+    missing, unexpected = model.load_state_dict(ckpt["model_state"], strict=False)
+    if missing or unexpected:
+        print(f"loaded report checkpoint with missing={len(missing)} unexpected={len(unexpected)}", flush=True)
+    val_payload = eval_loader(model, val_loader, device)
+    test_payload = eval_loader(model, test_loader, device)
+    threshold = ARCH.calibrate_bad_threshold(val_ds.y, val_payload.probs)
+    synthetic_badcal = GEOM.metric_report(test_ds.y, ARCH.apply_bad_threshold(test_payload.probs, threshold), test_payload.probs)
+    original_payload = eval_loader(model, original_loader, device)
+    metric_rows = [
+        metric_row(name, run_label, "synthetic_val", val_payload.report),
+        metric_row(name, run_label, "synthetic_test", test_payload.report),
+        metric_row(f"{name}_badcal", run_label, "synthetic_test", synthetic_badcal),
+    ]
+    for bucket in ["original_test_all_10s+", "original_all_10s+", "bad_core_nearboundary", "bad_outlier_stress"]:
+        metric_rows.append(metric_row(name, run_label, bucket, ARCH.bucket_report(original_ds, original_payload.probs, bucket)))
+        metric_rows.append(metric_row(f"{name}_badcal", run_label, bucket, ARCH.bucket_report(original_ds, original_payload.probs, bucket, threshold)))
+    run_dir = OUT_ROOT / "runs" / "waveform_geometry_student" / NODE_ID / run_label / name
+    run_dir.mkdir(parents=True, exist_ok=True)
+    write_diagnostics(name, run_label, run_dir, test_ds, test_payload, original_ds, original_payload)
+    return {
+        "candidate": name,
+        "run_label": run_label,
+        "checkpoint": str(ckpt_path),
+        "best_epoch": ckpt.get("best_epoch", "loaded"),
+        "useful_gate_passed": (
+            test_payload.report["acc"] >= 0.94
+            and test_payload.report["good_recall"] >= 0.92
+            and test_payload.report["medium_recall"] >= 0.90
+            and test_payload.report["bad_recall"] >= 0.90
+        ),
+        "bad_threshold_trainval": threshold,
+        "synthetic_test": test_payload.report,
+        "original_report_ran": True,
+        "metric_rows": metric_rows,
+    }
+
+
 def train_candidate(
     name: str,
     cfg: dict[str, Any],
@@ -8227,6 +17597,9 @@ def train_candidate(
     torch.manual_seed(int(cfg["seed"]))
     np.random.seed(int(cfg["seed"]))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    active_variant_id = configure_arch_variant(str(cfg.get("variant_id", DEFAULT_ARCH_VARIANT_ID)))
+    if active_variant_id != DEFAULT_ARCH_VARIANT_ID:
+        print(f"using synthetic variant override for {name}: {active_variant_id}", flush=True)
     base_train_ds = ARCH.SyntheticWaveDataset("train", str(cfg["channels"]))
     if (
         float(cfg.get("augment_strength", 0.0)) > 0
@@ -8238,8 +17611,10 @@ def train_candidate(
         or float(cfg.get("bad_record111_motion_strength", 0.0)) > 0
         or float(cfg.get("bad_impulse_reset_strength", 0.0)) > 0
         or float(cfg.get("bad_record111_burst_dropout_strength", 0.0)) > 0
+        or float(cfg.get("bad_flatlowamp_shell_strength", 0.0)) > 0
         or float(cfg.get("subject111_shift_strength", 0.0)) > 0
         or float(cfg.get("nonbad_to_bad_stress_prob", 0.0)) > 0
+        or float(cfg.get("tail_focus_weight", 1.0)) > 1.0
     ):
         train_ds = AugmentedSyntheticDataset(
             base_train_ds,
@@ -8265,6 +17640,17 @@ def train_candidate(
             float(cfg.get("aug_aux_weight_nonbad", 1.0)),
             float(cfg.get("nonbad_to_bad_stress_prob", 0.0)),
             float(cfg.get("nonbad_to_bad_stress_strength", 0.0)),
+            bool(cfg.get("aug_bad_aux_pseudo_geometry", False)),
+            float(cfg.get("aug_bad_aux_pseudo_mix", 0.0)),
+            aug_bad_aux_pseudo_mode=str(cfg.get("aug_bad_aux_pseudo_mode", "legacy")),
+            bad_flatlowamp_shell_strength=float(cfg.get("bad_flatlowamp_shell_strength", 0.0)),
+            bad_flatlowamp_shell_prob=float(cfg.get("bad_flatlowamp_shell_prob", 1.0)),
+            tail_focus_columns=list(cfg.get("tail_focus_columns", [])),
+            tail_focus_directions=list(cfg.get("tail_focus_directions", [])),
+            tail_focus_quantiles=list(cfg.get("tail_focus_quantiles", [])),
+            tail_focus_min_hits=int(cfg.get("tail_focus_min_hits", 1)),
+            tail_focus_weight=float(cfg.get("tail_focus_weight", 1.0)),
+            tail_focus_labels=list(cfg.get("tail_focus_labels", [])),
         )
     else:
         train_ds = base_train_ds
@@ -8297,6 +17683,11 @@ def train_candidate(
             float(cfg.get("selection_stress_aug_aux_weight_nonbad", cfg.get("aug_aux_weight_nonbad", 1.0))),
             float(cfg.get("selection_stress_nonbad_to_bad_stress_prob", cfg.get("nonbad_to_bad_stress_prob", 0.0))),
             float(cfg.get("selection_stress_nonbad_to_bad_stress_strength", cfg.get("nonbad_to_bad_stress_strength", 0.0))),
+            aug_bad_aux_pseudo_geometry=bool(cfg.get("selection_stress_aug_bad_aux_pseudo_geometry", cfg.get("aug_bad_aux_pseudo_geometry", False))),
+            aug_bad_aux_pseudo_mix=float(cfg.get("selection_stress_aug_bad_aux_pseudo_mix", cfg.get("aug_bad_aux_pseudo_mix", 0.0))),
+            aug_bad_aux_pseudo_mode=str(cfg.get("selection_stress_aug_bad_aux_pseudo_mode", cfg.get("aug_bad_aux_pseudo_mode", "legacy"))),
+            bad_flatlowamp_shell_strength=float(cfg.get("selection_stress_bad_flatlowamp_shell_strength", cfg.get("bad_flatlowamp_shell_strength", 0.0))),
+            bad_flatlowamp_shell_prob=float(cfg.get("selection_stress_bad_flatlowamp_shell_prob", cfg.get("bad_flatlowamp_shell_prob", 1.0))),
         )
     if float(cfg.get("selection_medium_stress_weight", 0.0)) > 0:
         medium_stress_val_ds = AugmentedSyntheticDataset(
@@ -8344,12 +17735,85 @@ def train_candidate(
         if not init_path.exists():
             raise FileNotFoundError(f"init_from_candidate checkpoint not found: {init_path}")
         init_ckpt = torch.load(init_path, map_location=device)
-        missing, unexpected = model.load_state_dict(init_ckpt["model_state"], strict=False)
+        init_state = init_ckpt["model_state"]
+        if bool(cfg.get("init_skip_mismatch", False)):
+            current_state = model.state_dict()
+            compatible_state = {}
+            skipped_mismatch = []
+            for key, value in init_state.items():
+                if key in current_state and tuple(current_state[key].shape) == tuple(value.shape):
+                    compatible_state[key] = value
+                else:
+                    skipped_mismatch.append(key)
+            missing, unexpected = model.load_state_dict(compatible_state, strict=False)
+            if skipped_mismatch:
+                print(
+                    f"init_skip_mismatch skipped={len(skipped_mismatch)} first={skipped_mismatch[:6]}",
+                    flush=True,
+                )
+        else:
+            missing, unexpected = model.load_state_dict(init_state, strict=False)
         if missing or unexpected:
             print(
                 f"loaded init_from_candidate={init_from_candidate} with missing={len(missing)} unexpected={len(unexpected)}",
                 flush=True,
             )
+    init_artifact_from_candidate = str(cfg.get("init_artifact_from_candidate", "")).strip()
+    if init_artifact_from_candidate:
+        artifact_path = OUT_ROOT / "runs" / "waveform_geometry_student" / NODE_ID / "search" / init_artifact_from_candidate / "ckpt_best.pt"
+        if not artifact_path.exists():
+            raise FileNotFoundError(f"init_artifact_from_candidate checkpoint not found: {artifact_path}")
+        artifact_ckpt = torch.load(artifact_path, map_location=device)
+        artifact_state = artifact_ckpt["model_state"]
+        current_state = model.state_dict()
+        prefixes = tuple(
+            str(x)
+            for x in cfg.get(
+                "init_artifact_prefixes",
+                [
+                    "artifact_bad_expert",
+                    "artifact_bad_head",
+                    "artifact_veto_head",
+                ],
+            )
+        )
+        compatible_state = {}
+        skipped_missing = []
+        skipped_mismatch = []
+        for key, value in artifact_state.items():
+            if not key.startswith(prefixes):
+                continue
+            if key not in current_state:
+                skipped_missing.append(key)
+                continue
+            if tuple(current_state[key].shape) != tuple(value.shape):
+                skipped_mismatch.append(key)
+                continue
+            compatible_state[key] = value
+        missing, unexpected = model.load_state_dict(compatible_state, strict=False)
+        print(
+            "loaded init_artifact_from_candidate="
+            f"{init_artifact_from_candidate} copied={len(compatible_state)} "
+            f"skipped_missing={len(skipped_missing)} skipped_mismatch={len(skipped_mismatch)} "
+            f"load_missing={len(missing)} load_unexpected={len(unexpected)} "
+            f"prefixes={prefixes}",
+            flush=True,
+        )
+        if skipped_mismatch:
+            print(f"init_artifact skipped_mismatch first={skipped_mismatch[:6]}", flush=True)
+    reset_filters = [str(x) for x in cfg.get("reset_on_init_name_contains", []) if str(x)]
+    if reset_filters:
+        reset_count = 0
+        for module_name, module in model.named_modules():
+            if not module_name:
+                continue
+            if any(token in module_name for token in reset_filters) and hasattr(module, "reset_parameters"):
+                module.reset_parameters()
+                reset_count += 1
+        print(
+            f"reset_on_init_name_contains={reset_filters} reset_modules={reset_count}",
+            flush=True,
+        )
     if getattr(model, "use_teacher_atlas", False):
         prototypes = build_teacher_prototypes(
             base_train_ds.aux,
@@ -8365,7 +17829,34 @@ def train_candidate(
             str(cfg.get("waveform_atlas_mode", "farthest")),
         )
         model.set_waveform_atlas(wave_proto, wave_mean, wave_std)
-    opt = torch.optim.AdamW(model.parameters(), lr=float(cfg["lr"]), weight_decay=1e-4)
+    if bool(cfg.get("freeze_main_except_artifact", False)):
+        allow = tuple(
+            str(x)
+            for x in cfg.get(
+                "freeze_trainable_name_contains",
+                [
+                    "artifact_bad_expert",
+                    "artifact_bad_head",
+                    "artifact_veto_head",
+                ],
+            )
+        )
+        trainable = 0
+        total = 0
+        for param_name, param in model.named_parameters():
+            total += int(param.numel())
+            keep = any(token in param_name for token in allow)
+            param.requires_grad = bool(keep)
+            if keep:
+                trainable += int(param.numel())
+        print(
+            f"freeze_main_except_artifact trainable={trainable} total={total} allow={allow}",
+            flush=True,
+        )
+    opt_params = [p for p in model.parameters() if p.requires_grad]
+    if not opt_params:
+        raise RuntimeError(f"no trainable parameters for candidate {name}")
+    opt = torch.optim.AdamW(opt_params, lr=float(cfg["lr"]), weight_decay=1e-4)
     class_weight = torch.tensor(cfg["class_weight"], dtype=torch.float32, device=device)
     critical_idx = [FEATURE_COLUMNS.index(c) for c in list(cfg.get("critical_aux_columns", [])) if c in FEATURE_COLUMNS]
     quantile_aux_idx = [FEATURE_COLUMNS.index(c) for c in list(cfg.get("quantile_aux_columns", [])) if c in FEATURE_COLUMNS]
@@ -8418,8 +17909,19 @@ def train_candidate(
                 stress_target = batch["stress_target"].to(device=device, dtype=torch.float32)
             else:
                 stress_target = torch.zeros_like(y, dtype=torch.float32, device=device)
+            if "bad_event_target" in batch:
+                bad_event_target = batch["bad_event_target"].to(device=device, dtype=torch.float32)
+            else:
+                bad_event_target = torch.zeros_like(y, dtype=torch.float32, device=device)
             out = model(x, mask_ratio=float(cfg.get("mask_ratio", 0.0)))
-            cls_loss = classification_loss(out["logits"], y, class_weight, float(cfg.get("focal_gamma", 0.0)))
+            cls_loss = classification_loss(
+                out["logits"],
+                y,
+                class_weight,
+                float(cfg.get("focal_gamma", 0.0)),
+                aux_weight,
+                float(cfg.get("classification_aux_weight_power", 0.0)),
+            )
             if out.get("gm_pair_logits") is not None and float(cfg.get("gm_pair_weight", 0.0)) > 0:
                 gm_mask = y != CLASS_TO_INT["bad"]
                 if gm_mask.any():
@@ -8433,6 +17935,10 @@ def train_candidate(
             hard_loss = weighted_smooth_l1_columns(out["aux_pred"], aux, HARD_IDX, aux_weight)
             top14_loss = weighted_smooth_l1_columns(out["aux_pred"], aux, TOP14_IDX, aux_weight)
             critical_loss = weighted_smooth_l1_columns(out["aux_pred"], aux, critical_idx, aux_weight) if critical_idx else torch.zeros((), device=device)
+            local_qrs_loss = weighted_smooth_l1_local(out.get("local_qrs_aux_pred"), aux, LOCAL_QRS_AUX_IDX, aux_weight)
+            local_baseline_loss = weighted_smooth_l1_local(
+                out.get("local_baseline_aux_pred"), aux, LOCAL_BASELINE_AUX_IDX, aux_weight
+            )
             if out.get("atlas_pred") is not None:
                 atlas_target = model.teacher_distance_features(aux)
                 atlas_per = F.smooth_l1_loss(out["atlas_pred"], atlas_target, reduction="none").mean(dim=1)
@@ -8469,6 +17975,60 @@ def train_candidate(
                 stress_aux_loss = F.binary_cross_entropy_with_logits(out["stress_logit"], stress_target, pos_weight=stress_pos_weight)
             else:
                 stress_aux_loss = torch.zeros((), device=device)
+            if out.get("artifact_veto_logit") is not None and float(cfg.get("artifact_veto_weight", 0.0)) > 0:
+                veto_target = (y != CLASS_TO_INT["bad"]).float()
+                veto_pos_weight = torch.tensor(float(cfg.get("artifact_veto_pos_weight", 1.0)), dtype=torch.float32, device=device)
+                veto_per = F.binary_cross_entropy_with_logits(
+                    out["artifact_veto_logit"],
+                    veto_target,
+                    pos_weight=veto_pos_weight,
+                    reduction="none",
+                )
+                artifact_veto_loss = (veto_per * aux_weight).sum() / aux_weight.sum().clamp_min(1.0)
+            else:
+                artifact_veto_loss = torch.zeros((), device=device)
+            if out.get("artifact_event_logits") is not None and float(cfg.get("artifact_event_local_weight", 0.0)) > 0:
+                event_logits = out["artifact_event_logits"]
+                event_targets = out["artifact_event_targets"].to(device=device, dtype=torch.float32)
+                event_pos_weight_values = list(cfg.get("artifact_event_pos_weight", [1.35, 1.60, 1.35, 1.15, 1.30]))
+                if len(event_pos_weight_values) != event_logits.shape[-1]:
+                    event_pos_weight_values = [1.0] * int(event_logits.shape[-1])
+                event_pos_weight = torch.tensor(event_pos_weight_values, dtype=torch.float32, device=device).view(1, 1, -1)
+                event_per = F.binary_cross_entropy_with_logits(
+                    event_logits,
+                    event_targets,
+                    pos_weight=event_pos_weight,
+                    reduction="none",
+                ).mean(dim=(1, 2))
+                bad_event_boost = torch.maximum((y == CLASS_TO_INT["bad"]).float(), bad_event_target)
+                event_weight = aux_weight * (1.0 + float(cfg.get("artifact_event_bad_boost", 0.0)) * bad_event_boost)
+                artifact_event_loss = (event_per * event_weight).sum() / event_weight.sum().clamp_min(1.0)
+            else:
+                artifact_event_loss = torch.zeros((), device=device)
+            if out.get("bad_router_logit") is not None and float(cfg.get("bad_router_weight", 0.0)) > 0:
+                router_mode = str(cfg.get("bad_router_target", "bad"))
+                bad_class_target = (y == CLASS_TO_INT["bad"]).float()
+                if router_mode == "stress":
+                    router_target = stress_target
+                elif router_mode == "event":
+                    router_target = bad_event_target
+                elif router_mode == "stress_or_bad":
+                    router_target = torch.maximum(bad_class_target, stress_target)
+                elif router_mode == "event_or_bad":
+                    router_target = torch.maximum(bad_class_target, bad_event_target)
+                else:
+                    router_target = bad_class_target
+                router_pos_weight = torch.tensor(float(cfg.get("bad_router_pos_weight", 1.0)), dtype=torch.float32, device=device)
+                router_per = F.binary_cross_entropy_with_logits(
+                    out["bad_router_logit"],
+                    router_target,
+                    pos_weight=router_pos_weight,
+                    reduction="none",
+                )
+                router_weight = aux_weight * (1.0 + float(cfg.get("bad_router_event_boost", 0.0)) * bad_event_target)
+                bad_router_loss = (router_per * router_weight).sum() / router_weight.sum().clamp_min(1.0)
+            else:
+                bad_router_loss = torch.zeros((), device=device)
             if out.get("bad_logit") is not None and float(cfg.get("bad_specificity_weight", 0.0)) > 0:
                 bad_logit = out["bad_logit"]
                 if out.get("gm_pair_logits") is not None:
@@ -8539,9 +18099,14 @@ def train_candidate(
             hard_w = float(cfg.get("hard_aux_weight", 0.0))
             top14_w = float(cfg.get("top14_aux_weight", 0.0))
             critical_w = float(cfg.get("critical_aux_weight", 0.0))
+            local_qrs_w = float(cfg.get("local_qrs_aux_weight", 0.0))
+            local_baseline_w = float(cfg.get("local_baseline_aux_weight", 0.0))
             atlas_w = float(cfg.get("atlas_distill_weight", 0.0))
             bad_aux_w = float(cfg.get("bad_aux_weight", 0.0))
             stress_aux_w = float(cfg.get("stress_aux_weight", 0.0))
+            artifact_veto_w = float(cfg.get("artifact_veto_weight", 0.0))
+            artifact_event_w = float(cfg.get("artifact_event_local_weight", 0.0))
+            bad_router_w = float(cfg.get("bad_router_weight", 0.0))
             bad_spec_w = float(cfg.get("bad_specificity_weight", 0.0))
             feature_teacher_w = float(cfg.get("feature_teacher_distill_weight", 0.0))
             feature_gate_w = float(cfg.get("feature_gate_supervision_weight", 0.0))
@@ -8558,9 +18123,14 @@ def train_candidate(
                 hard_w = float(cfg.get("pretrain_hard_aux_weight", max(hard_w, 2.5)))
                 top14_w = float(cfg.get("pretrain_top14_aux_weight", max(top14_w, 3.0)))
                 critical_w = float(cfg.get("pretrain_critical_aux_weight", max(critical_w, 3.0 if critical_idx else 0.0)))
+                local_qrs_w = float(cfg.get("pretrain_local_qrs_aux_weight", local_qrs_w))
+                local_baseline_w = float(cfg.get("pretrain_local_baseline_aux_weight", local_baseline_w))
                 atlas_w = float(cfg.get("pretrain_atlas_distill_weight", atlas_w))
                 bad_aux_w = float(cfg.get("pretrain_bad_aux_weight", min(bad_aux_w, 0.25)))
                 stress_aux_w = float(cfg.get("pretrain_stress_aux_weight", min(stress_aux_w, 0.25)))
+                artifact_veto_w = float(cfg.get("pretrain_artifact_veto_weight", min(artifact_veto_w, 0.25)))
+                artifact_event_w = float(cfg.get("pretrain_artifact_event_local_weight", min(artifact_event_w, 0.35)))
+                bad_router_w = float(cfg.get("pretrain_bad_router_weight", min(bad_router_w, 0.25)))
                 bad_spec_w = float(cfg.get("pretrain_bad_specificity_weight", min(bad_spec_w, 0.25)))
                 feature_teacher_w = float(cfg.get("pretrain_feature_teacher_distill_weight", feature_teacher_w))
                 feature_gate_w = float(cfg.get("pretrain_feature_gate_supervision_weight", feature_gate_w))
@@ -8577,9 +18147,14 @@ def train_candidate(
                 + hard_w * hard_loss
                 + top14_w * top14_loss
                 + critical_w * critical_loss
+                + local_qrs_w * local_qrs_loss
+                + local_baseline_w * local_baseline_loss
                 + atlas_w * atlas_loss
                 + bad_aux_w * bad_aux_loss
                 + stress_aux_w * stress_aux_loss
+                + artifact_veto_w * artifact_veto_loss
+                + artifact_event_w * artifact_event_loss
+                + bad_router_w * bad_router_loss
                 + bad_spec_w * bad_specificity_loss
                 + feature_teacher_w * feature_teacher_loss
                 + feature_gate_w * feature_gate_loss
@@ -8603,9 +18178,14 @@ def train_candidate(
                         "hard": float(hard_loss.detach().cpu()) if torch.isfinite(hard_loss) else float("nan"),
                         "top14": float(top14_loss.detach().cpu()) if torch.isfinite(top14_loss) else float("nan"),
                         "critical": float(critical_loss.detach().cpu()) if torch.isfinite(critical_loss) else float("nan"),
+                        "local_qrs": float(local_qrs_loss.detach().cpu()) if torch.isfinite(local_qrs_loss) else float("nan"),
+                        "local_baseline": float(local_baseline_loss.detach().cpu()) if torch.isfinite(local_baseline_loss) else float("nan"),
                         "atlas": float(atlas_loss.detach().cpu()) if torch.isfinite(atlas_loss) else float("nan"),
                         "bad_aux": float(bad_aux_loss.detach().cpu()) if torch.isfinite(bad_aux_loss) else float("nan"),
                         "stress_aux": float(stress_aux_loss.detach().cpu()) if torch.isfinite(stress_aux_loss) else float("nan"),
+                        "artifact_veto": float(artifact_veto_loss.detach().cpu()) if torch.isfinite(artifact_veto_loss) else float("nan"),
+                        "artifact_event": float(artifact_event_loss.detach().cpu()) if torch.isfinite(artifact_event_loss) else float("nan"),
+                        "bad_router": float(bad_router_loss.detach().cpu()) if torch.isfinite(bad_router_loss) else float("nan"),
                         "bad_specificity": float(bad_specificity_loss.detach().cpu()) if torch.isfinite(bad_specificity_loss) else float("nan"),
                         "feature_teacher": float(feature_teacher_loss.detach().cpu()) if torch.isfinite(feature_teacher_loss) else float("nan"),
                         "feature_gate": float(feature_gate_loss.detach().cpu()) if torch.isfinite(feature_gate_loss) else float("nan"),
@@ -8634,10 +18214,15 @@ def train_candidate(
                     "hard": float(hard_loss.detach().cpu()),
                     "top14": float(top14_loss.detach().cpu()),
                     "critical": float(critical_loss.detach().cpu()),
+                    "local_qrs": float(local_qrs_loss.detach().cpu()),
+                    "local_baseline": float(local_baseline_loss.detach().cpu()),
                     "atlas": float(atlas_loss.detach().cpu()),
                         "bad_aux": float(bad_aux_loss.detach().cpu()),
-                        "stress_aux": float(stress_aux_loss.detach().cpu()),
-                    "bad_specificity": float(bad_specificity_loss.detach().cpu()),
+                    "stress_aux": float(stress_aux_loss.detach().cpu()),
+                        "artifact_veto": float(artifact_veto_loss.detach().cpu()),
+                        "artifact_event": float(artifact_event_loss.detach().cpu()),
+                        "bad_router": float(bad_router_loss.detach().cpu()),
+                        "bad_specificity": float(bad_specificity_loss.detach().cpu()),
                     "feature_teacher": float(feature_teacher_loss.detach().cpu()),
                     "feature_gate": float(feature_gate_loss.detach().cpu()),
                     "primitive_teacher": float(primitive_teacher_loss.detach().cpu()),
@@ -8769,6 +18354,7 @@ def train_candidate(
     run_dir = OUT_ROOT / "runs" / "waveform_geometry_student" / NODE_ID / run_label / name
     run_dir.mkdir(parents=True, exist_ok=True)
     ckpt_path = run_dir / "ckpt_best.pt"
+    run_dir.mkdir(parents=True, exist_ok=True)
     torch.save(
         {
             "model_state": model.state_dict(),
@@ -8808,12 +18394,24 @@ def train_candidate(
     }
 
 
-def classification_loss(logits: torch.Tensor, y: torch.Tensor, class_weight: torch.Tensor, focal_gamma: float) -> torch.Tensor:
+def classification_loss(
+    logits: torch.Tensor,
+    y: torch.Tensor,
+    class_weight: torch.Tensor,
+    focal_gamma: float,
+    sample_weight: torch.Tensor | None = None,
+    sample_weight_power: float = 0.0,
+) -> torch.Tensor:
     ce = F.cross_entropy(logits, y, weight=class_weight, reduction="none")
     if focal_gamma <= 0:
-        return ce.mean()
-    pt = torch.softmax(logits, dim=1).gather(1, y[:, None]).squeeze(1).clamp(1e-5, 1.0)
-    return (((1.0 - pt) ** float(focal_gamma)) * ce).mean()
+        per = ce
+    else:
+        pt = torch.softmax(logits, dim=1).gather(1, y[:, None]).squeeze(1).clamp(1e-5, 1.0)
+        per = ((1.0 - pt) ** float(focal_gamma)) * ce
+    if sample_weight is not None and float(sample_weight_power) > 0:
+        sw = sample_weight.to(device=logits.device, dtype=logits.dtype).clamp_min(0.0).pow(float(sample_weight_power))
+        return (per * sw).sum() / sw.sum().clamp_min(1.0)
+    return per.mean()
 
 
 def weighted_smooth_l1_columns(pred: torch.Tensor, target: torch.Tensor, cols: list[int], sample_weight: torch.Tensor) -> torch.Tensor:
@@ -8823,6 +18421,22 @@ def weighted_smooth_l1_columns(pred: torch.Tensor, target: torch.Tensor, cols: l
     weight = sample_weight.to(device=pred.device, dtype=pred.dtype).clamp_min(0.0)
     denom = weight.sum().clamp_min(1.0)
     return (loss * weight).sum() / denom
+
+
+def weighted_smooth_l1_local(
+    pred: torch.Tensor | None,
+    target: torch.Tensor,
+    cols: list[int],
+    sample_weight: torch.Tensor,
+) -> torch.Tensor:
+    if pred is None or not cols:
+        return torch.zeros((), device=target.device)
+    if pred.shape[1] != len(cols):
+        return torch.zeros((), device=target.device)
+    target_sel = target[:, cols]
+    loss = F.smooth_l1_loss(pred, target_sel, reduction="none").mean(dim=1)
+    weight = sample_weight.to(device=pred.device, dtype=pred.dtype).clamp_min(0.0)
+    return (loss * weight).sum() / weight.sum().clamp_min(1.0)
 
 
 def supervised_contrastive_loss(emb: torch.Tensor, y: torch.Tensor, temperature: float = 0.15) -> torch.Tensor:
@@ -8944,13 +18558,14 @@ def write_diagnostics(
     original_ds: Any | None,
     original: EvalPayload | None,
 ) -> None:
+    run_dir.mkdir(parents=True, exist_ok=True)
     feature_rows = feature_recovery_rows(name, run_label, "synthetic_test", synthetic, synthetic_ds.aux)
-    pd.DataFrame(feature_rows).to_csv(run_dir / "feature_teacher_recovery_synthetic_test.csv", index=False)
+    pd.DataFrame(feature_rows).to_csv(run_dir / "feat_syn.csv", index=False)
     if original is not None and original_ds is not None:
-        pd.DataFrame(feature_recovery_rows(name, run_label, "original_all_10s+", original, original_ds.aux)).to_csv(run_dir / "feature_teacher_recovery_original.csv", index=False)
-    write_error_rows(run_dir / "synthetic_test_error_rows.csv", synthetic_ds, synthetic)
-    plot_embedding_pca(run_dir / "synthetic_test_embedding_pca.png", synthetic.embeddings, synthetic.y, synthetic.pred, f"{name} synthetic embedding")
-    plot_waveform_errors(run_dir / "synthetic_test_error_waveforms.png", synthetic_ds, synthetic, f"{name} synthetic mistakes")
+        pd.DataFrame(feature_recovery_rows(name, run_label, "original_all_10s+", original, original_ds.aux)).to_csv(run_dir / "feat_orig.csv", index=False)
+    write_error_rows(run_dir / "err_syn.csv", synthetic_ds, synthetic)
+    plot_embedding_pca(run_dir / "emb_syn.png", synthetic.embeddings, synthetic.y, synthetic.pred, f"{name} synthetic embedding")
+    plot_waveform_errors(run_dir / "wave_err_syn.png", synthetic_ds, synthetic, f"{name} synthetic mistakes")
 
 
 def feature_recovery_rows(candidate: str, run_label: str, split: str, payload: EvalPayload, target_aux: np.ndarray) -> list[dict[str, Any]]:

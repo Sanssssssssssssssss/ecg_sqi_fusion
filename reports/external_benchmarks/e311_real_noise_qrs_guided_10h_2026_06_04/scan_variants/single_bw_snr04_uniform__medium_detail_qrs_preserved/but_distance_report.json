@@ -1,0 +1,131 @@
+{
+  "variant_id": "single_bw_snr04_uniform__medium_detail_qrs_preserved",
+  "family": "real_noise_qrs_guided",
+  "spec": {
+    "id": "single_bw_snr04_uniform__medium_detail_qrs_preserved",
+    "family": "real_noise_qrs_guided",
+    "mix": {
+      "name": "single_bw",
+      "mode": "weighted",
+      "weights": {
+        "bw": 1.0
+      }
+    },
+    "snr": {
+      "good": [
+        10,
+        14
+      ],
+      "medium": [
+        2,
+        8
+      ],
+      "bad": [
+        0,
+        6
+      ],
+      "sampler": "uniform"
+    },
+    "class_weight": "1.00,1.40,1.70",
+    "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile medium_detail_qrs_preserved.",
+    "base_variant_id": "single_bw_snr04_uniform",
+    "qrs": {
+      "good_qrs_noise_gain": 0.3,
+      "good_nonqrs_noise_gain": 0.95,
+      "medium_qrs_noise_gain": 0.42,
+      "medium_nonqrs_noise_gain": 1.65,
+      "medium_tst_noise_gain": 1.8,
+      "bad_qrs_noise_gain": 1.55,
+      "bad_nonqrs_noise_gain": 0.95,
+      "bad_tst_noise_gain": 1.1,
+      "bad_qrs_atten": 0.08
+    }
+  },
+  "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_qrs_guided_10h_2026_06_04\\scan_variants\\single_bw_snr04_uniform__medium_detail_qrs_preserved",
+  "morph_overall_distance": 0.4326562085575629,
+  "morph_medium_distance": 0.2614653663415854,
+  "morph_by_class": {
+    "good": 0.41570722262559207,
+    "medium": 0.2614653663415854,
+    "bad": 0.6207960367055114
+  },
+  "sqi_overall_distance": 0.4384920634920635,
+  "sqi_by_class": {
+    "good": 0.36309523809523814,
+    "medium": 0.25000000000000006,
+    "bad": 0.7023809523809523
+  },
+  "domain_separability_bal_acc": 0.9055555555555556,
+  "overall_but_like_score": 0.43802381094354287,
+  "audit": {
+    "spec": {
+      "id": "single_bw_snr04_uniform__medium_detail_qrs_preserved",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile medium_detail_qrs_preserved.",
+      "base_variant_id": "single_bw_snr04_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.3,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.42,
+        "medium_nonqrs_noise_gain": 1.65,
+        "medium_tst_noise_gain": 1.8,
+        "bad_qrs_noise_gain": 1.55,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    "rows": 180,
+    "sample_per_class": 60,
+    "split_counts": {
+      "test": 32,
+      "train": 119,
+      "val": 29
+    },
+    "class_counts": {
+      "bad": 60,
+      "good": 60,
+      "medium": 60
+    },
+    "snr_by_class": {
+      "good": {
+        "mean": 12.030318260192871,
+        "min": 10.001202583312988,
+        "max": 13.954781532287598
+      },
+      "medium": {
+        "mean": 5.241161823272705,
+        "min": 2.0882375240325928,
+        "max": 7.970579147338867
+      },
+      "bad": {
+        "mean": 3.732808828353882,
+        "min": 0.6210879683494568,
+        "max": 6.531181812286377
+      }
+    }
+  }
+}

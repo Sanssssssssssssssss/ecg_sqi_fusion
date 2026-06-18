@@ -1,0 +1,34 @@
+{
+  "variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_mid115_176_seed20260702",
+  "raw_confusion": {
+    "bad": {
+      "bad": 3965,
+      "good": 3,
+      "medium": 7
+    },
+    "good": {
+      "bad": 0,
+      "good": 6634,
+      "medium": 721
+    },
+    "medium": {
+      "bad": 119,
+      "good": 563,
+      "medium": 6472
+    }
+  },
+  "error_counts": {
+    "good->good": 6634,
+    "medium->medium": 6472,
+    "bad->bad": 3965,
+    "medium->good": 721,
+    "good->medium": 563,
+    "bad->medium": 119,
+    "medium->bad": 7,
+    "good->bad": 3
+  },
+  "outputs": [
+    "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\n7200_a12_error_gap",
+    "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\n7200_a12_error_gap"
+  ]
+}

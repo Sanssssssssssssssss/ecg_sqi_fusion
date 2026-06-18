@@ -1,0 +1,14 @@
+{
+  "manifest_csv": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\best_only_cleanup\\best_only_cleanup_manifest.csv",
+  "counts_by_action": {
+    "delete": 1208,
+    "keep": 44
+  },
+  "size_gb_by_action": {
+    "delete": 97.8443,
+    "keep": 5.3783
+  },
+  "delete_total_gb": 97.8443,
+  "keep_total_gb": 5.3783,
+  "skip_total_gb": 0.0
+}

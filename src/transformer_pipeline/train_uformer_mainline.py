@@ -68,6 +68,7 @@ def build_model(args: argparse.Namespace, with_head: bool, device: torch.device)
         feature_set=str(args.feature_set),
         detach_encoder_features=bool(args.detach_encoder_features),
         head_hidden_dim=int(args.hidden_dim),
+        denoiser_width=float(args.denoiser_width),
     )
     model = UformerDenoiseSQIModel(cfg).to(device)
     if with_head:
@@ -83,6 +84,30 @@ def load_denoiser(model: UformerDenoiseSQIModel, checkpoint: Path, device: torch
     state = ckpt.get("denoiser_state", ckpt.get("model_state", ckpt))
     missing, unexpected = model.denoiser.load_state_dict(state, strict=False)
     return {"checkpoint": str(checkpoint), "missing": len(missing), "unexpected": len(unexpected)}
+
+
+def classification_loss(
+    logits: torch.Tensor,
+    y: torch.Tensor,
+    soft_y: torch.Tensor,
+    cls_sample_weight: torch.Tensor,
+    class_weight: torch.Tensor | None,
+    variant: str,
+) -> torch.Tensor:
+    if variant == "hard_ce":
+        return F.cross_entropy(logits, y, weight=class_weight)
+    if variant == "sample_weighted_ce":
+        per_sample = F.cross_entropy(logits, y, weight=class_weight, reduction="none")
+    else:
+        logp = F.log_softmax(logits, dim=1)
+        soft = soft_y.to(device=logits.device, dtype=torch.float32)
+        if class_weight is not None:
+            soft = soft * class_weight.view(1, -1)
+        per_sample = -(soft * logp).sum(dim=1)
+    if variant in {"sample_weighted_ce", "soft_sample_weighted_ce"}:
+        w = cls_sample_weight.to(device=logits.device, dtype=torch.float32).clamp_min(0.0)
+        return (per_sample * w).sum() / w.sum().clamp_min(1e-6)
+    return per_sample.mean()
 
 
 def train_epoch(
@@ -105,13 +130,15 @@ def train_epoch(
         noisy = batch["noisy"].to(device=device, dtype=torch.float32)
         clean = batch["clean"].to(device=device, dtype=torch.float32)
         y = batch["y"].to(device=device, dtype=torch.long)
+        soft_y = batch["soft_y"].to(device=device, dtype=torch.float32)
         point_weight = batch["point_weight"].to(device=device, dtype=torch.float32)
         sample_weight = batch["sample_weight"].to(device=device, dtype=torch.float32)
+        cls_sample_weight = batch["cls_sample_weight"].to(device=device, dtype=torch.float32)
         out = model(noisy)
         l_den, _ = morph_loss(out["denoise"], out["noise_hat"], noisy, clean, y, point_weight, sample_weight, str(args.loss_variant))
         l_cls = torch.zeros((), device=device)
         if out["logits"] is not None and float(lambda_cls) > 0.0:
-            l_cls = F.cross_entropy(out["logits"], y, weight=class_weight)
+            l_cls = classification_loss(out["logits"], y, soft_y, cls_sample_weight, class_weight, str(args.cls_loss_variant))
         loss = float(lambda_den) * l_den + float(lambda_cls) * l_cls
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
@@ -297,6 +324,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--loss_variant", choices=("morph_soft_guard", "morph_soft_identity"), default="morph_soft_guard")
     parser.add_argument("--noise_scale", type=float, default=0.9)
     parser.add_argument("--hidden_dim", type=int, default=128)
+    parser.add_argument("--denoiser_width", type=float, default=1.0)
     parser.add_argument("--dropout", type=float, default=0.05)
     parser.add_argument("--epochs_stage1", type=int, default=10)
     parser.add_argument("--epochs_stage2", type=int, default=8)
@@ -308,6 +336,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--lambda_den_stage1", type=float, default=1.0)
     parser.add_argument("--lambda_den_stage2", type=float, default=0.5)
     parser.add_argument("--lambda_cls", type=float, default=18.0)
+    parser.add_argument("--cls_loss_variant", choices=("hard_ce", "sample_weighted_ce", "soft_ce", "soft_sample_weighted_ce"), default="hard_ce")
     parser.add_argument("--class_weight", default="1,1.40,1.70")
     parser.add_argument("--weight_decay", type=float, default=1e-4)
     parser.add_argument("--seed", type=int, default=0)

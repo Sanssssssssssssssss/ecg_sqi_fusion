@@ -1,0 +1,122 @@
+{
+  "but_rf_balanced_acc": 0.931740100259387,
+  "domain_rf_balanced_acc": 0.9709884914699992,
+  "medium_heavy_clusters": [
+    {
+      "cluster": 3,
+      "share": 0.7936127744510978
+    },
+    {
+      "cluster": 1,
+      "share": 0.523726977248104
+    },
+    {
+      "cluster": 0,
+      "share": 0.4532967032967033
+    }
+  ],
+  "top_but_features": [
+    {
+      "feature": "flatline_ratio",
+      "importance": 0.13313098678399626
+    },
+    {
+      "feature": "diff_abs_median",
+      "importance": 0.12515103112003953
+    },
+    {
+      "feature": "detail_instability",
+      "importance": 0.09042040294769159
+    },
+    {
+      "feature": "qrs_band_ratio",
+      "importance": 0.0834991036824866
+    },
+    {
+      "feature": "qrs_width_median",
+      "importance": 0.06744414560985483
+    },
+    {
+      "feature": "aggressive_peak_count",
+      "importance": 0.06385265660729471
+    },
+    {
+      "feature": "spurious_peak_density",
+      "importance": 0.05243938617129329
+    },
+    {
+      "feature": "qrs_visibility",
+      "importance": 0.04216267618459567
+    },
+    {
+      "feature": "baseline_step",
+      "importance": 0.04039523291735738
+    },
+    {
+      "feature": "lf_ratio",
+      "importance": 0.036329543641164835
+    },
+    {
+      "feature": "medium_detail_unreliable_score",
+      "importance": 0.030078689126307297
+    },
+    {
+      "feature": "spectral_entropy",
+      "importance": 0.02761667844905764
+    }
+  ],
+  "top_domain_features": [
+    {
+      "feature": "mean_abs",
+      "importance": 0.18151319408320898
+    },
+    {
+      "feature": "std",
+      "importance": 0.09150039053650437
+    },
+    {
+      "feature": "rms",
+      "importance": 0.08834523132105616
+    },
+    {
+      "feature": "hf_ratio",
+      "importance": 0.062256295431325014
+    },
+    {
+      "feature": "lf_ratio",
+      "importance": 0.061815935428543044
+    },
+    {
+      "feature": "qrs_slope_median",
+      "importance": 0.05401989582546021
+    },
+    {
+      "feature": "qrs_visibility",
+      "importance": 0.049280434964593785
+    },
+    {
+      "feature": "medium_detail_unreliable_score",
+      "importance": 0.04824950467993991
+    },
+    {
+      "feature": "aggressive_peak_count",
+      "importance": 0.046951317540253945
+    },
+    {
+      "feature": "spurious_peak_density",
+      "importance": 0.04606551631068073
+    },
+    {
+      "feature": "diff_abs_p95",
+      "importance": 0.042384208484379605
+    },
+    {
+      "feature": "qrs_band_ratio",
+      "importance": 0.029085350796672262
+    }
+  ],
+  "cluster_audit": {
+    "n_clusters": 7,
+    "silhouette_sample": 0.3272872865200043
+  }
+}

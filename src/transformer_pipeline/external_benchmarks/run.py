@@ -625,6 +625,7 @@ def load_uformer_model(checkpoint: Path, device: torch.device, feature_set: str 
         feature_set=feature_set,
         detach_encoder_features=True,
         head_hidden_dim=int(cfg_dict.get("head_hidden_dim", 128)),
+        denoiser_width=float(cfg_dict.get("denoiser_width", 1.0)),
     )
     model = UformerDenoiseSQIModel(cfg).to(device)
     if with_head:

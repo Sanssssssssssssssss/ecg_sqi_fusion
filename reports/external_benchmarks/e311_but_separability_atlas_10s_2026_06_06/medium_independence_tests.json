@@ -1,0 +1,23 @@
+{
+  "pca_explained_var_first_2": [
+    0.42002034310626296,
+    0.24183445112089683
+  ],
+  "pca_explained_var_first_8": [
+    0.42002034310626296,
+    0.24183445112089683,
+    0.07443110112731526,
+    0.05007970308524681,
+    0.02523930685633833,
+    0.02387847171454305,
+    0.01881226877468773,
+    0.016263423998169563
+  ],
+  "medium_projection_on_good_bad_axis": 0.21283885278220302,
+  "medium_off_axis_distance": 3.1817302680014348,
+  "good_bad_centroid_distance": 13.376949061746402,
+  "medium_independence_ratio": 0.2378517142389068,
+  "local_medium_neighbor_purity_k30": 0.8141621247512761,
+  "local_same_label_purity_k30": 0.8724833333333333,
+  "interpretation": "medium_independent_or_mixed"
+}

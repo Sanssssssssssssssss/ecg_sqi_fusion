@@ -1,0 +1,15 @@
+{
+  "original_test_bad_stress_count": 292,
+  "synthetic_bad_sampled": 320,
+  "pca_figure": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\record111_bad_aug_primitive_pca.png",
+  "waveform_figure": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\record111_bad_aug_waveform_examples.png",
+  "gap_table": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\record111_bad_aug_primitive_gap.csv",
+  "groups": {
+    "original_test_bad_stress": 292,
+    "synthetic_bad_plain": 320,
+    "contact_bad_aug": 320,
+    "record111_motion_bad_aug": 320,
+    "record111_burstdrop_bad_aug": 320,
+    "highamp_bad_aug": 320
+  }
+}

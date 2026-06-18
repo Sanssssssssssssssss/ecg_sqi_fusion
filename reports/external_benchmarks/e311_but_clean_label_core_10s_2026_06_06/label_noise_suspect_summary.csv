@@ -1,0 +1,12 @@
+class_name,ambiguous_type,n
+bad,bad_outlier,1321
+bad,medium_bad_boundary,2766
+good,good_medium_boundary,7904
+good,good_medium_low_purity,1017
+good,good_medium_negative_margin,1537
+good,isolated_good,3321
+medium,good_medium_boundary,5106
+medium,good_medium_low_purity,1397
+medium,good_medium_negative_margin,21
+medium,isolated_medium,2125
+medium,medium_bad_boundary,9

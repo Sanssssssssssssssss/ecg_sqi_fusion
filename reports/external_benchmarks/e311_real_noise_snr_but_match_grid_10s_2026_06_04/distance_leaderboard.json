@@ -1,0 +1,3288 @@
+{
+  "rows": [
+    {
+      "variant_id": "single_bw_snr07_triangular",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "single_bw_snr07_triangular",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "single_bw",
+          "mode": "weighted",
+          "weights": {
+            "bw": 1.0
+          }
+        },
+        "snr": {
+          "good": [
+            16,
+            20
+          ],
+          "medium": [
+            6,
+            12
+          ],
+          "bad": [
+            -6,
+            0
+          ],
+          "sampler": "triangular"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\single_bw_snr07_triangular",
+      "morph_overall_distance": 0.44246415770609326,
+      "morph_medium_distance": 0.2719086021505376,
+      "morph_by_class": {
+        "good": 0.4011290322580645,
+        "medium": 0.2719086021505376,
+        "bad": 0.6543548387096776
+      },
+      "sqi_overall_distance": 0.4166666666666667,
+      "sqi_by_class": {
+        "good": 0.3392857142857143,
+        "medium": 0.2619047619047619,
+        "bad": 0.6488095238095238
+      },
+      "domain_separability_bal_acc": 0.9178571428571428,
+      "overall_but_like_score": 0.44349494367639536,
+      "audit": {
+        "spec": {
+          "id": "single_bw_snr07_triangular",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "single_bw",
+            "mode": "weighted",
+            "weights": {
+              "bw": 1.0
+            }
+          },
+          "snr": {
+            "good": [
+              16,
+              20
+            ],
+            "medium": [
+              6,
+              12
+            ],
+            "bad": [
+              -6,
+              0
+            ],
+            "sampler": "triangular"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 18.012609481811523,
+            "min": 16.04904556274414,
+            "max": 19.69927215576172
+          },
+          "medium": {
+            "mean": 9.181110382080078,
+            "min": 6.514503479003906,
+            "max": 11.702909469604492
+          },
+          "bad": {
+            "mean": -2.837498664855957,
+            "min": -5.777979850769043,
+            "max": -0.22410090267658234
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "single_bw_snr02_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "single_bw_snr02_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "single_bw",
+          "mode": "weighted",
+          "weights": {
+            "bw": 1.0
+          }
+        },
+        "snr": {
+          "good": [
+            14,
+            18
+          ],
+          "medium": [
+            6,
+            12
+          ],
+          "bad": [
+            -4,
+            2
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\single_bw_snr02_uniform",
+      "morph_overall_distance": 0.44184587813620074,
+      "morph_medium_distance": 0.272741935483871,
+      "morph_by_class": {
+        "good": 0.4088978494623656,
+        "medium": 0.272741935483871,
+        "bad": 0.6438978494623656
+      },
+      "sqi_overall_distance": 0.4345238095238095,
+      "sqi_by_class": {
+        "good": 0.36309523809523814,
+        "medium": 0.2738095238095238,
+        "bad": 0.6666666666666666
+      },
+      "domain_separability_bal_acc": 0.9099206349206349,
+      "overall_but_like_score": 0.44527905785970306,
+      "audit": {
+        "spec": {
+          "id": "single_bw_snr02_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "single_bw",
+            "mode": "weighted",
+            "weights": {
+              "bw": 1.0
+            }
+          },
+          "snr": {
+            "good": [
+              14,
+              18
+            ],
+            "medium": [
+              6,
+              12
+            ],
+            "bad": [
+              -4,
+              2
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 16.030317306518555,
+            "min": 14.001202583312988,
+            "max": 17.95478057861328
+          },
+          "medium": {
+            "mean": 9.241162300109863,
+            "min": 6.088237762451172,
+            "max": 11.970579147338867
+          },
+          "bad": {
+            "mean": -0.7560720443725586,
+            "min": -3.9835686683654785,
+            "max": 1.9832594394683838
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "single_bw_snr03_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "single_bw_snr03_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "single_bw",
+          "mode": "weighted",
+          "weights": {
+            "bw": 1.0
+          }
+        },
+        "snr": {
+          "good": [
+            12,
+            16
+          ],
+          "medium": [
+            4,
+            10
+          ],
+          "bad": [
+            -2,
+            4
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\single_bw_snr03_uniform",
+      "morph_overall_distance": 0.4401433691756272,
+      "morph_medium_distance": 0.2737903225806451,
+      "morph_by_class": {
+        "good": 0.4164247311827957,
+        "medium": 0.2737903225806451,
+        "bad": 0.6302150537634409
+      },
+      "sqi_overall_distance": 0.4384920634920635,
+      "sqi_by_class": {
+        "good": 0.36904761904761907,
+        "medium": 0.24999999999999997,
+        "bad": 0.6964285714285714
+      },
+      "domain_separability_bal_acc": 0.9111111111111111,
+      "overall_but_like_score": 0.44540418586789554,
+      "audit": {
+        "spec": {
+          "id": "single_bw_snr03_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "single_bw",
+            "mode": "weighted",
+            "weights": {
+              "bw": 1.0
+            }
+          },
+          "snr": {
+            "good": [
+              12,
+              16
+            ],
+            "medium": [
+              4,
+              10
+            ],
+            "bad": [
+              -2,
+              4
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 14.030318260192871,
+            "min": 12.001202583312988,
+            "max": 15.954781532287598
+          },
+          "medium": {
+            "mean": 7.241161823272705,
+            "min": 4.088237762451172,
+            "max": 9.970579147338867
+          },
+          "bad": {
+            "mean": 1.2439278364181519,
+            "min": -1.983568549156189,
+            "max": 3.983259916305542
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "single_bw_snr06_triangular",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "single_bw_snr06_triangular",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "single_bw",
+          "mode": "weighted",
+          "weights": {
+            "bw": 1.0
+          }
+        },
+        "snr": {
+          "good": [
+            12,
+            16
+          ],
+          "medium": [
+            6,
+            12
+          ],
+          "bad": [
+            -2,
+            4
+          ],
+          "sampler": "triangular"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\single_bw_snr06_triangular",
+      "morph_overall_distance": 0.440689964157706,
+      "morph_medium_distance": 0.2719086021505376,
+      "morph_by_class": {
+        "good": 0.4181182795698925,
+        "medium": 0.2719086021505376,
+        "bad": 0.6320430107526881
+      },
+      "sqi_overall_distance": 0.4464285714285714,
+      "sqi_by_class": {
+        "good": 0.36904761904761907,
+        "medium": 0.2619047619047619,
+        "bad": 0.7083333333333333
+      },
+      "domain_separability_bal_acc": 0.9043650793650793,
+      "overall_but_like_score": 0.44572292626728105,
+      "audit": {
+        "spec": {
+          "id": "single_bw_snr06_triangular",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "single_bw",
+            "mode": "weighted",
+            "weights": {
+              "bw": 1.0
+            }
+          },
+          "snr": {
+            "good": [
+              12,
+              16
+            ],
+            "medium": [
+              6,
+              12
+            ],
+            "bad": [
+              -2,
+              4
+            ],
+            "sampler": "triangular"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 14.012609481811523,
+            "min": 12.049046516418457,
+            "max": 15.699272155761719
+          },
+          "medium": {
+            "mean": 9.181110382080078,
+            "min": 6.514503479003906,
+            "max": 11.702909469604492
+          },
+          "bad": {
+            "mean": 1.162501573562622,
+            "min": -1.7779792547225952,
+            "max": 3.7758994102478027
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "single_bw_snr04_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "single_bw_snr04_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "single_bw",
+          "mode": "weighted",
+          "weights": {
+            "bw": 1.0
+          }
+        },
+        "snr": {
+          "good": [
+            10,
+            14
+          ],
+          "medium": [
+            2,
+            8
+          ],
+          "bad": [
+            0,
+            6
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\single_bw_snr04_uniform",
+      "morph_overall_distance": 0.44091397849462366,
+      "morph_medium_distance": 0.27736559139784944,
+      "morph_by_class": {
+        "good": 0.4234408602150538,
+        "medium": 0.27736559139784944,
+        "bad": 0.6219354838709676
+      },
+      "sqi_overall_distance": 0.44246031746031744,
+      "sqi_by_class": {
+        "good": 0.375,
+        "medium": 0.24404761904761907,
+        "bad": 0.7083333333333333
+      },
+      "domain_separability_bal_acc": 0.8976190476190476,
+      "overall_but_like_score": 0.44592933947772656,
+      "audit": {
+        "spec": {
+          "id": "single_bw_snr04_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "single_bw",
+            "mode": "weighted",
+            "weights": {
+              "bw": 1.0
+            }
+          },
+          "snr": {
+            "good": [
+              10,
+              14
+            ],
+            "medium": [
+              2,
+              8
+            ],
+            "bad": [
+              0,
+              6
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 12.030318260192871,
+            "min": 10.001202583312988,
+            "max": 13.954781532287598
+          },
+          "medium": {
+            "mean": 5.241161823272705,
+            "min": 2.088237762451172,
+            "max": 7.970579147338867
+          },
+          "bad": {
+            "mean": 3.2439279556274414,
+            "min": 0.0164315328001976,
+            "max": 5.983259677886963
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "blockwise_switch_snr02_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "blockwise_switch_snr02_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "blockwise_switch",
+          "mode": "blockwise",
+          "choices": [
+            "em",
+            "ma",
+            "bw"
+          ]
+        },
+        "snr": {
+          "good": [
+            14,
+            18
+          ],
+          "medium": [
+            6,
+            12
+          ],
+          "bad": [
+            -4,
+            2
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\blockwise_switch_snr02_uniform",
+      "morph_overall_distance": 0.4364336917562724,
+      "morph_medium_distance": 0.270483870967742,
+      "morph_by_class": {
+        "good": 0.42639784946236553,
+        "medium": 0.270483870967742,
+        "bad": 0.6124193548387097
+      },
+      "sqi_overall_distance": 0.4404761904761905,
+      "sqi_by_class": {
+        "good": 0.380952380952381,
+        "medium": 0.2619047619047619,
+        "bad": 0.6785714285714286
+      },
+      "domain_separability_bal_acc": 0.9416666666666667,
+      "overall_but_like_score": 0.44607590885816695,
+      "audit": {
+        "spec": {
+          "id": "blockwise_switch_snr02_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "blockwise_switch",
+            "mode": "blockwise",
+            "choices": [
+              "em",
+              "ma",
+              "bw"
+            ]
+          },
+          "snr": {
+            "good": [
+              14,
+              18
+            ],
+            "medium": [
+              6,
+              12
+            ],
+            "bad": [
+              -4,
+              2
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 16.04139518737793,
+            "min": 14.047638893127441,
+            "max": 17.769441604614258
+          },
+          "medium": {
+            "mean": 8.715235710144043,
+            "min": 6.016430854797363,
+            "max": 11.885011672973633
+          },
+          "bad": {
+            "mean": -0.9124167561531067,
+            "min": -3.9988601207733154,
+            "max": 1.9717987775802612
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "blockwise_switch_snr06_triangular",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "blockwise_switch_snr06_triangular",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "blockwise_switch",
+          "mode": "blockwise",
+          "choices": [
+            "em",
+            "ma",
+            "bw"
+          ]
+        },
+        "snr": {
+          "good": [
+            12,
+            16
+          ],
+          "medium": [
+            6,
+            12
+          ],
+          "bad": [
+            -2,
+            4
+          ],
+          "sampler": "triangular"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\blockwise_switch_snr06_triangular",
+      "morph_overall_distance": 0.43737455197132613,
+      "morph_medium_distance": 0.26865591397849464,
+      "morph_by_class": {
+        "good": 0.4316935483870967,
+        "medium": 0.26865591397849464,
+        "bad": 0.611774193548387
+      },
+      "sqi_overall_distance": 0.4444444444444445,
+      "sqi_by_class": {
+        "good": 0.380952380952381,
+        "medium": 0.255952380952381,
+        "bad": 0.6964285714285714
+      },
+      "domain_separability_bal_acc": 0.9361111111111111,
+      "overall_but_like_score": 0.44612903225806444,
+      "audit": {
+        "spec": {
+          "id": "blockwise_switch_snr06_triangular",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "blockwise_switch",
+            "mode": "blockwise",
+            "choices": [
+              "em",
+              "ma",
+              "bw"
+            ]
+          },
+          "snr": {
+            "good": [
+              12,
+              16
+            ],
+            "medium": [
+              6,
+              12
+            ],
+            "bad": [
+              -2,
+              4
+            ],
+            "sampler": "triangular"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 13.995498657226562,
+            "min": 12.308670997619629,
+            "max": 15.320944786071777
+          },
+          "medium": {
+            "mean": 8.787209510803223,
+            "min": 6.222020626068115,
+            "max": 11.412663459777832
+          },
+          "bad": {
+            "mean": 1.0600656270980835,
+            "min": -1.9415186643600464,
+            "max": 3.7091331481933594
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "single_bw_snr08_triangular",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "single_bw_snr08_triangular",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "single_bw",
+          "mode": "weighted",
+          "weights": {
+            "bw": 1.0
+          }
+        },
+        "snr": {
+          "good": [
+            10,
+            14
+          ],
+          "medium": [
+            4,
+            10
+          ],
+          "bad": [
+            -2,
+            4
+          ],
+          "sampler": "triangular"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\single_bw_snr08_triangular",
+      "morph_overall_distance": 0.44451612903225807,
+      "morph_medium_distance": 0.27330645161290323,
+      "morph_by_class": {
+        "good": 0.42819892473118276,
+        "medium": 0.27330645161290323,
+        "bad": 0.6320430107526881
+      },
+      "sqi_overall_distance": 0.44246031746031744,
+      "sqi_by_class": {
+        "good": 0.375,
+        "medium": 0.24404761904761904,
+        "bad": 0.7083333333333333
+      },
+      "domain_separability_bal_acc": 0.9043650793650793,
+      "overall_but_like_score": 0.4473902329749104,
+      "audit": {
+        "spec": {
+          "id": "single_bw_snr08_triangular",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "single_bw",
+            "mode": "weighted",
+            "weights": {
+              "bw": 1.0
+            }
+          },
+          "snr": {
+            "good": [
+              10,
+              14
+            ],
+            "medium": [
+              4,
+              10
+            ],
+            "bad": [
+              -2,
+              4
+            ],
+            "sampler": "triangular"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 12.012609481811523,
+            "min": 10.049046516418457,
+            "max": 13.699272155761719
+          },
+          "medium": {
+            "mean": 7.1811113357543945,
+            "min": 4.514503479003906,
+            "max": 9.702909469604492
+          },
+          "bad": {
+            "mean": 1.162501573562622,
+            "min": -1.7779792547225952,
+            "max": 3.7758994102478027
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "blockwise_switch_snr05_triangular",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "blockwise_switch_snr05_triangular",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "blockwise_switch",
+          "mode": "blockwise",
+          "choices": [
+            "em",
+            "ma",
+            "bw"
+          ]
+        },
+        "snr": {
+          "good": [
+            14,
+            18
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -4,
+            2
+          ],
+          "sampler": "triangular"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\blockwise_switch_snr05_triangular",
+      "morph_overall_distance": 0.43899641577060927,
+      "morph_medium_distance": 0.2728763440860215,
+      "morph_by_class": {
+        "good": 0.4293279569892473,
+        "medium": 0.2728763440860215,
+        "bad": 0.6147849462365591
+      },
+      "sqi_overall_distance": 0.4424603174603175,
+      "sqi_by_class": {
+        "good": 0.36904761904761907,
+        "medium": 0.27976190476190477,
+        "bad": 0.6785714285714286
+      },
+      "domain_separability_bal_acc": 0.9373015873015873,
+      "overall_but_like_score": 0.4478165002560163,
+      "audit": {
+        "spec": {
+          "id": "blockwise_switch_snr05_triangular",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "blockwise_switch",
+            "mode": "blockwise",
+            "choices": [
+              "em",
+              "ma",
+              "bw"
+            ]
+          },
+          "snr": {
+            "good": [
+              14,
+              18
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -4,
+              2
+            ],
+            "sampler": "triangular"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 15.995498657226562,
+            "min": 14.308670997619629,
+            "max": 17.320945739746094
+          },
+          "medium": {
+            "mean": 10.78720760345459,
+            "min": 8.222020149230957,
+            "max": 13.412663459777832
+          },
+          "bad": {
+            "mean": -0.9399344325065613,
+            "min": -3.941519260406494,
+            "max": 1.7091330289840698
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "single_bw_snr05_triangular",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "single_bw_snr05_triangular",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "single_bw",
+          "mode": "weighted",
+          "weights": {
+            "bw": 1.0
+          }
+        },
+        "snr": {
+          "good": [
+            14,
+            18
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -4,
+            2
+          ],
+          "sampler": "triangular"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\single_bw_snr05_triangular",
+      "morph_overall_distance": 0.4446505376344086,
+      "morph_medium_distance": 0.276236559139785,
+      "morph_by_class": {
+        "good": 0.4095698924731183,
+        "medium": 0.276236559139785,
+        "bad": 0.6481451612903226
+      },
+      "sqi_overall_distance": 0.43849206349206354,
+      "sqi_by_class": {
+        "good": 0.3511904761904763,
+        "medium": 0.2857142857142857,
+        "bad": 0.6785714285714286
+      },
+      "domain_separability_bal_acc": 0.9099206349206349,
+      "overall_but_like_score": 0.44815028161802356,
+      "audit": {
+        "spec": {
+          "id": "single_bw_snr05_triangular",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "single_bw",
+            "mode": "weighted",
+            "weights": {
+              "bw": 1.0
+            }
+          },
+          "snr": {
+            "good": [
+              14,
+              18
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -4,
+              2
+            ],
+            "sampler": "triangular"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 16.012609481811523,
+            "min": 14.04904556274414,
+            "max": 17.69927215576172
+          },
+          "medium": {
+            "mean": 11.181110382080078,
+            "min": 8.514503479003906,
+            "max": 13.702909469604492
+          },
+          "bad": {
+            "mean": -0.8374987244606018,
+            "min": -3.777979850769043,
+            "max": 1.7758991718292236
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "single_bw_snr01_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "single_bw_snr01_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "single_bw",
+          "mode": "weighted",
+          "weights": {
+            "bw": 1.0
+          }
+        },
+        "snr": {
+          "good": [
+            16,
+            20
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -6,
+            0
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\single_bw_snr01_uniform",
+      "morph_overall_distance": 0.44507168458781377,
+      "morph_medium_distance": 0.27822580645161293,
+      "morph_by_class": {
+        "good": 0.40252688172043016,
+        "medium": 0.27822580645161293,
+        "bad": 0.6544623655913981
+      },
+      "sqi_overall_distance": 0.4305555555555555,
+      "sqi_by_class": {
+        "good": 0.36309523809523814,
+        "medium": 0.2738095238095238,
+        "bad": 0.6547619047619048
+      },
+      "domain_separability_bal_acc": 0.9178571428571428,
+      "overall_but_like_score": 0.44846134152585776,
+      "audit": {
+        "spec": {
+          "id": "single_bw_snr01_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "single_bw",
+            "mode": "weighted",
+            "weights": {
+              "bw": 1.0
+            }
+          },
+          "snr": {
+            "good": [
+              16,
+              20
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -6,
+              0
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 18.030317306518555,
+            "min": 16.001201629638672,
+            "max": 19.95478057861328
+          },
+          "medium": {
+            "mean": 11.241161346435547,
+            "min": 8.088237762451172,
+            "max": 13.970579147338867
+          },
+          "bad": {
+            "mean": -2.7560720443725586,
+            "min": -5.983569145202637,
+            "max": -0.016740715131163597
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "blockwise_switch_snr01_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "blockwise_switch_snr01_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "blockwise_switch",
+          "mode": "blockwise",
+          "choices": [
+            "em",
+            "ma",
+            "bw"
+          ]
+        },
+        "snr": {
+          "good": [
+            16,
+            20
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -6,
+            0
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\blockwise_switch_snr01_uniform",
+      "morph_overall_distance": 0.44189068100358425,
+      "morph_medium_distance": 0.2711559139784946,
+      "morph_by_class": {
+        "good": 0.4230645161290323,
+        "medium": 0.2711559139784946,
+        "bad": 0.6314516129032259
+      },
+      "sqi_overall_distance": 0.4305555555555555,
+      "sqi_by_class": {
+        "good": 0.35714285714285715,
+        "medium": 0.27380952380952384,
+        "bad": 0.6607142857142857
+      },
+      "domain_separability_bal_acc": 0.9519841269841269,
+      "overall_but_like_score": 0.44851606502816177,
+      "audit": {
+        "spec": {
+          "id": "blockwise_switch_snr01_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "blockwise_switch",
+            "mode": "blockwise",
+            "choices": [
+              "em",
+              "ma",
+              "bw"
+            ]
+          },
+          "snr": {
+            "good": [
+              16,
+              20
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -6,
+              0
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 18.041391372680664,
+            "min": 16.047637939453125,
+            "max": 19.769441604614258
+          },
+          "medium": {
+            "mean": 10.715234756469727,
+            "min": 8.016430854797363,
+            "max": 13.885011672973633
+          },
+          "bad": {
+            "mean": -2.912416934967041,
+            "min": -5.998859882354736,
+            "max": -0.028201071545481682
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "dirichlet_balanced_snr01_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "dirichlet_balanced_snr01_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "dirichlet_balanced",
+          "mode": "dirichlet",
+          "alpha": {
+            "em": 1.0,
+            "ma": 1.0,
+            "bw": 1.0
+          }
+        },
+        "snr": {
+          "good": [
+            16,
+            20
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -6,
+            0
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\dirichlet_balanced_snr01_uniform",
+      "morph_overall_distance": 0.4422670250896057,
+      "morph_medium_distance": 0.2787903225806451,
+      "morph_by_class": {
+        "good": 0.429758064516129,
+        "medium": 0.2787903225806451,
+        "bad": 0.618252688172043
+      },
+      "sqi_overall_distance": 0.4305555555555555,
+      "sqi_by_class": {
+        "good": 0.36904761904761907,
+        "medium": 0.2619047619047619,
+        "bad": 0.6607142857142857
+      },
+      "domain_separability_bal_acc": 0.9317460317460318,
+      "overall_but_like_score": 0.44858902969790065,
+      "audit": {
+        "spec": {
+          "id": "dirichlet_balanced_snr01_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "dirichlet_balanced",
+            "mode": "dirichlet",
+            "alpha": {
+              "em": 1.0,
+              "ma": 1.0,
+              "bw": 1.0
+            }
+          },
+          "snr": {
+            "good": [
+              16,
+              20
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -6,
+              0
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 18.089506149291992,
+            "min": 16.000886917114258,
+            "max": 19.95068359375
+          },
+          "medium": {
+            "mean": 11.12142562866211,
+            "min": 8.170191764831543,
+            "max": 13.900008201599121
+          },
+          "bad": {
+            "mean": -3.0443155765533447,
+            "min": -5.960408687591553,
+            "max": -0.20362767577171326
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "bw_heavy_snr01_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "bw_heavy_snr01_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "bw_heavy",
+          "mode": "weighted",
+          "weights": {
+            "em": 0.15,
+            "ma": 0.15,
+            "bw": 0.7
+          }
+        },
+        "snr": {
+          "good": [
+            16,
+            20
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -6,
+            0
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\bw_heavy_snr01_uniform",
+      "morph_overall_distance": 0.4419354838709677,
+      "morph_medium_distance": 0.27575268817204296,
+      "morph_by_class": {
+        "good": 0.4161290322580645,
+        "medium": 0.27575268817204296,
+        "bad": 0.6339247311827956
+      },
+      "sqi_overall_distance": 0.42658730158730157,
+      "sqi_by_class": {
+        "good": 0.34523809523809523,
+        "medium": 0.30357142857142855,
+        "bad": 0.6309523809523808
+      },
+      "domain_separability_bal_acc": 0.9476190476190476,
+      "overall_but_like_score": 0.4486559139784946,
+      "audit": {
+        "spec": {
+          "id": "bw_heavy_snr01_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "bw_heavy",
+            "mode": "weighted",
+            "weights": {
+              "em": 0.15,
+              "ma": 0.15,
+              "bw": 0.7
+            }
+          },
+          "snr": {
+            "good": [
+              16,
+              20
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -6,
+              0
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 18.244285583496094,
+            "min": 16.160873413085938,
+            "max": 19.98038673400879
+          },
+          "medium": {
+            "mean": 11.395406723022461,
+            "min": 8.088237762451172,
+            "max": 13.891655921936035
+          },
+          "bad": {
+            "mean": -2.6515393257141113,
+            "min": -5.998195648193359,
+            "max": -0.06782788783311844
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "blockwise_switch_snr07_triangular",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "blockwise_switch_snr07_triangular",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "blockwise_switch",
+          "mode": "blockwise",
+          "choices": [
+            "em",
+            "ma",
+            "bw"
+          ]
+        },
+        "snr": {
+          "good": [
+            16,
+            20
+          ],
+          "medium": [
+            6,
+            12
+          ],
+          "bad": [
+            -6,
+            0
+          ],
+          "sampler": "triangular"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\blockwise_switch_snr07_triangular",
+      "morph_overall_distance": 0.440967741935484,
+      "morph_medium_distance": 0.26865591397849464,
+      "morph_by_class": {
+        "good": 0.4257795698924732,
+        "medium": 0.26865591397849464,
+        "bad": 0.6284677419354839
+      },
+      "sqi_overall_distance": 0.4305555555555555,
+      "sqi_by_class": {
+        "good": 0.375,
+        "medium": 0.255952380952381,
+        "bad": 0.6607142857142857
+      },
+      "domain_separability_bal_acc": 0.9654761904761904,
+      "overall_but_like_score": 0.44877880184331803,
+      "audit": {
+        "spec": {
+          "id": "blockwise_switch_snr07_triangular",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "blockwise_switch",
+            "mode": "blockwise",
+            "choices": [
+              "em",
+              "ma",
+              "bw"
+            ]
+          },
+          "snr": {
+            "good": [
+              16,
+              20
+            ],
+            "medium": [
+              6,
+              12
+            ],
+            "bad": [
+              -6,
+              0
+            ],
+            "sampler": "triangular"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 17.99549674987793,
+            "min": 16.308671951293945,
+            "max": 19.320945739746094
+          },
+          "medium": {
+            "mean": 8.787209510803223,
+            "min": 6.222020626068115,
+            "max": 11.412663459777832
+          },
+          "bad": {
+            "mean": -2.939934253692627,
+            "min": -5.941518783569336,
+            "max": -0.29086700081825256
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "em_ma_no_bw_snr01_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "em_ma_no_bw_snr01_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "em_ma_no_bw",
+          "mode": "weighted",
+          "weights": {
+            "em": 0.45,
+            "ma": 0.55
+          }
+        },
+        "snr": {
+          "good": [
+            16,
+            20
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -6,
+            0
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\em_ma_no_bw_snr01_uniform",
+      "morph_overall_distance": 0.43335125448028666,
+      "morph_medium_distance": 0.28927419354838707,
+      "morph_by_class": {
+        "good": 0.4286290322580645,
+        "medium": 0.28927419354838707,
+        "bad": 0.5821505376344086
+      },
+      "sqi_overall_distance": 0.42658730158730157,
+      "sqi_by_class": {
+        "good": 0.36904761904761907,
+        "medium": 0.26785714285714285,
+        "bad": 0.6428571428571429
+      },
+      "domain_separability_bal_acc": 0.9634920634920635,
+      "overall_but_like_score": 0.4493314772145417,
+      "audit": {
+        "spec": {
+          "id": "em_ma_no_bw_snr01_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "em_ma_no_bw",
+            "mode": "weighted",
+            "weights": {
+              "em": 0.45,
+              "ma": 0.55
+            }
+          },
+          "snr": {
+            "good": [
+              16,
+              20
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -6,
+              0
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 18.165685653686523,
+            "min": 16.134342193603516,
+            "max": 19.96809196472168
+          },
+          "medium": {
+            "mean": 11.3671875,
+            "min": 8.016430854797363,
+            "max": 13.970580101013184
+          },
+          "bad": {
+            "mean": -3.1250853538513184,
+            "min": -5.998195648193359,
+            "max": -0.06782808154821396
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "blockwise_switch_snr03_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "blockwise_switch_snr03_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "blockwise_switch",
+          "mode": "blockwise",
+          "choices": [
+            "em",
+            "ma",
+            "bw"
+          ]
+        },
+        "snr": {
+          "good": [
+            12,
+            16
+          ],
+          "medium": [
+            4,
+            10
+          ],
+          "bad": [
+            -2,
+            4
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\blockwise_switch_snr03_uniform",
+      "morph_overall_distance": 0.43977598566308246,
+      "morph_medium_distance": 0.27524193548387094,
+      "morph_by_class": {
+        "good": 0.4317741935483871,
+        "medium": 0.27524193548387094,
+        "bad": 0.6123118279569891
+      },
+      "sqi_overall_distance": 0.4464285714285714,
+      "sqi_by_class": {
+        "good": 0.375,
+        "medium": 0.2738095238095238,
+        "bad": 0.6904761904761905
+      },
+      "domain_separability_bal_acc": 0.9428571428571428,
+      "overall_but_like_score": 0.449948476702509,
+      "audit": {
+        "spec": {
+          "id": "blockwise_switch_snr03_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "blockwise_switch",
+            "mode": "blockwise",
+            "choices": [
+              "em",
+              "ma",
+              "bw"
+            ]
+          },
+          "snr": {
+            "good": [
+              12,
+              16
+            ],
+            "medium": [
+              4,
+              10
+            ],
+            "bad": [
+              -2,
+              4
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 14.04139518737793,
+            "min": 12.047638893127441,
+            "max": 15.769442558288574
+          },
+          "medium": {
+            "mean": 6.715235233306885,
+            "min": 4.0164313316345215,
+            "max": 9.885011672973633
+          },
+          "bad": {
+            "mean": 1.0875831842422485,
+            "min": -1.9988601207733154,
+            "max": 3.9717986583709717
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "bw_heavy_snr05_triangular",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "bw_heavy_snr05_triangular",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "bw_heavy",
+          "mode": "weighted",
+          "weights": {
+            "em": 0.15,
+            "ma": 0.15,
+            "bw": 0.7
+          }
+        },
+        "snr": {
+          "good": [
+            14,
+            18
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -4,
+            2
+          ],
+          "sampler": "triangular"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\bw_heavy_snr05_triangular",
+      "morph_overall_distance": 0.4396863799283155,
+      "morph_medium_distance": 0.27709677419354833,
+      "morph_by_class": {
+        "good": 0.4191397849462366,
+        "medium": 0.27709677419354833,
+        "bad": 0.6228225806451614
+      },
+      "sqi_overall_distance": 0.4503968253968254,
+      "sqi_by_class": {
+        "good": 0.37500000000000006,
+        "medium": 0.29166666666666663,
+        "bad": 0.6845238095238095
+      },
+      "domain_separability_bal_acc": 0.9396825396825397,
+      "overall_but_like_score": 0.4506451612903226,
+      "audit": {
+        "spec": {
+          "id": "bw_heavy_snr05_triangular",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "bw_heavy",
+            "mode": "weighted",
+            "weights": {
+              "em": 0.15,
+              "ma": 0.15,
+              "bw": 0.7
+            }
+          },
+          "snr": {
+            "good": [
+              14,
+              18
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -4,
+              2
+            ],
+            "sampler": "triangular"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 16.18118667602539,
+            "min": 14.56722640991211,
+            "max": 17.801939010620117
+          },
+          "medium": {
+            "mean": 11.271780014038086,
+            "min": 8.514503479003906,
+            "max": 13.429884910583496
+          },
+          "bad": {
+            "mean": -0.7790288329124451,
+            "min": -3.9264309406280518,
+            "max": 1.548907995223999
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "ma_bw_wearable_snr01_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "ma_bw_wearable_snr01_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "ma_bw_wearable",
+          "mode": "weighted",
+          "weights": {
+            "em": 0.1,
+            "ma": 0.55,
+            "bw": 0.35
+          }
+        },
+        "snr": {
+          "good": [
+            16,
+            20
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -6,
+            0
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\ma_bw_wearable_snr01_uniform",
+      "morph_overall_distance": 0.43724014336917555,
+      "morph_medium_distance": 0.29255376344086015,
+      "morph_by_class": {
+        "good": 0.44064516129032266,
+        "medium": 0.29255376344086015,
+        "bad": 0.5785215053763441
+      },
+      "sqi_overall_distance": 0.42658730158730157,
+      "sqi_by_class": {
+        "good": 0.38690476190476186,
+        "medium": 0.2797619047619047,
+        "bad": 0.613095238095238
+      },
+      "domain_separability_bal_acc": 0.9543650793650793,
+      "overall_but_like_score": 0.45118311571940595,
+      "audit": {
+        "spec": {
+          "id": "ma_bw_wearable_snr01_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "ma_bw_wearable",
+            "mode": "weighted",
+            "weights": {
+              "em": 0.1,
+              "ma": 0.55,
+              "bw": 0.35
+            }
+          },
+          "snr": {
+            "good": [
+              16,
+              20
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -6,
+              0
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 18.244287490844727,
+            "min": 16.160873413085938,
+            "max": 19.98038673400879
+          },
+          "medium": {
+            "mean": 11.395406723022461,
+            "min": 8.088238716125488,
+            "max": 13.891655921936035
+          },
+          "bad": {
+            "mean": -2.6515393257141113,
+            "min": -5.998196125030518,
+            "max": -0.06782788783311844
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "blockwise_switch_snr08_triangular",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "blockwise_switch_snr08_triangular",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "blockwise_switch",
+          "mode": "blockwise",
+          "choices": [
+            "em",
+            "ma",
+            "bw"
+          ]
+        },
+        "snr": {
+          "good": [
+            10,
+            14
+          ],
+          "medium": [
+            4,
+            10
+          ],
+          "bad": [
+            -2,
+            4
+          ],
+          "sampler": "triangular"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\blockwise_switch_snr08_triangular",
+      "morph_overall_distance": 0.4425448028673835,
+      "morph_medium_distance": 0.27150537634408606,
+      "morph_by_class": {
+        "good": 0.4443548387096773,
+        "medium": 0.27150537634408606,
+        "bad": 0.611774193548387
+      },
+      "sqi_overall_distance": 0.4503968253968254,
+      "sqi_by_class": {
+        "good": 0.380952380952381,
+        "medium": 0.27380952380952384,
+        "bad": 0.6964285714285714
+      },
+      "domain_separability_bal_acc": 0.9472222222222222,
+      "overall_but_like_score": 0.45143049155145926,
+      "audit": {
+        "spec": {
+          "id": "blockwise_switch_snr08_triangular",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "blockwise_switch",
+            "mode": "blockwise",
+            "choices": [
+              "em",
+              "ma",
+              "bw"
+            ]
+          },
+          "snr": {
+            "good": [
+              10,
+              14
+            ],
+            "medium": [
+              4,
+              10
+            ],
+            "bad": [
+              -2,
+              4
+            ],
+            "sampler": "triangular"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 11.995498657226562,
+            "min": 10.308670997619629,
+            "max": 13.320944786071777
+          },
+          "medium": {
+            "mean": 6.787208557128906,
+            "min": 4.222020149230957,
+            "max": 9.412663459777832
+          },
+          "bad": {
+            "mean": 1.0600656270980835,
+            "min": -1.9415186643600464,
+            "max": 3.7091331481933594
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "dirichlet_wearable_snr07_triangular",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "dirichlet_wearable_snr07_triangular",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "dirichlet_wearable",
+          "mode": "dirichlet",
+          "alpha": {
+            "em": 0.7,
+            "ma": 1.8,
+            "bw": 1.3
+          }
+        },
+        "snr": {
+          "good": [
+            16,
+            20
+          ],
+          "medium": [
+            6,
+            12
+          ],
+          "bad": [
+            -6,
+            0
+          ],
+          "sampler": "triangular"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\dirichlet_wearable_snr07_triangular",
+      "morph_overall_distance": 0.43938172043010754,
+      "morph_medium_distance": 0.297768817204301,
+      "morph_by_class": {
+        "good": 0.42314516129032265,
+        "medium": 0.297768817204301,
+        "bad": 0.5972311827956989
+      },
+      "sqi_overall_distance": 0.4146825396825397,
+      "sqi_by_class": {
+        "good": 0.35714285714285715,
+        "medium": 0.26190476190476186,
+        "bad": 0.625
+      },
+      "domain_separability_bal_acc": 0.9587301587301587,
+      "overall_but_like_score": 0.45220846134152587,
+      "audit": {
+        "spec": {
+          "id": "dirichlet_wearable_snr07_triangular",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "dirichlet_wearable",
+            "mode": "dirichlet",
+            "alpha": {
+              "em": 0.7,
+              "ma": 1.8,
+              "bw": 1.3
+            }
+          },
+          "snr": {
+            "good": [
+              16,
+              20
+            ],
+            "medium": [
+              6,
+              12
+            ],
+            "bad": [
+              -6,
+              0
+            ],
+            "sampler": "triangular"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 18.05925941467285,
+            "min": 16.254056930541992,
+            "max": 19.530887603759766
+          },
+          "medium": {
+            "mean": 9.074755668640137,
+            "min": 6.411128520965576,
+            "max": 11.737990379333496
+          },
+          "bad": {
+            "mean": -2.967451810836792,
+            "min": -5.6391706466674805,
+            "max": -0.7264948487281799
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "pair_em_ma_snr01_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "pair_em_ma_snr01_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "pair_em_ma",
+          "mode": "weighted",
+          "weights": {
+            "em": 0.5,
+            "ma": 0.5
+          }
+        },
+        "snr": {
+          "good": [
+            16,
+            20
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -6,
+            0
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\pair_em_ma_snr01_uniform",
+      "morph_overall_distance": 0.43672043010752687,
+      "morph_medium_distance": 0.29190860215053754,
+      "morph_by_class": {
+        "good": 0.42913978494623656,
+        "medium": 0.29190860215053754,
+        "bad": 0.5891129032258065
+      },
+      "sqi_overall_distance": 0.4246031746031746,
+      "sqi_by_class": {
+        "good": 0.38095238095238093,
+        "medium": 0.2619047619047619,
+        "bad": 0.630952380952381
+      },
+      "domain_separability_bal_acc": 0.9726190476190476,
+      "overall_but_like_score": 0.4522897465437788,
+      "audit": {
+        "spec": {
+          "id": "pair_em_ma_snr01_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "pair_em_ma",
+            "mode": "weighted",
+            "weights": {
+              "em": 0.5,
+              "ma": 0.5
+            }
+          },
+          "snr": {
+            "good": [
+              16,
+              20
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -6,
+              0
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 18.165687561035156,
+            "min": 16.134342193603516,
+            "max": 19.96809196472168
+          },
+          "medium": {
+            "mean": 11.3671875,
+            "min": 8.016430854797363,
+            "max": 13.970579147338867
+          },
+          "bad": {
+            "mean": -3.1250853538513184,
+            "min": -5.998195171356201,
+            "max": -0.06782808154821396
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "pair_em_bw_snr02_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "pair_em_bw_snr02_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "pair_em_bw",
+          "mode": "weighted",
+          "weights": {
+            "em": 0.5,
+            "bw": 0.5
+          }
+        },
+        "snr": {
+          "good": [
+            14,
+            18
+          ],
+          "medium": [
+            6,
+            12
+          ],
+          "bad": [
+            -4,
+            2
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\pair_em_bw_snr02_uniform",
+      "morph_overall_distance": 0.4469444444444444,
+      "morph_medium_distance": 0.2790322580645161,
+      "morph_by_class": {
+        "good": 0.404005376344086,
+        "medium": 0.2790322580645161,
+        "bad": 0.6577956989247311
+      },
+      "sqi_overall_distance": 0.44047619047619047,
+      "sqi_by_class": {
+        "good": 0.3630952380952381,
+        "medium": 0.26785714285714285,
+        "bad": 0.6904761904761905
+      },
+      "domain_separability_bal_acc": 0.9317460317460318,
+      "overall_but_like_score": 0.45247631848438297,
+      "audit": {
+        "spec": {
+          "id": "pair_em_bw_snr02_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "pair_em_bw",
+            "mode": "weighted",
+            "weights": {
+              "em": 0.5,
+              "bw": 0.5
+            }
+          },
+          "snr": {
+            "good": [
+              14,
+              18
+            ],
+            "medium": [
+              6,
+              12
+            ],
+            "bad": [
+              -4,
+              2
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 16.16568374633789,
+            "min": 14.134342193603516,
+            "max": 17.968093872070312
+          },
+          "medium": {
+            "mean": 9.3671875,
+            "min": 6.016430377960205,
+            "max": 11.970579147338867
+          },
+          "bad": {
+            "mean": -1.1250855922698975,
+            "min": -3.9981956481933594,
+            "max": 1.9321725368499756
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "pair_ma_bw_snr01_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "pair_ma_bw_snr01_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "pair_ma_bw",
+          "mode": "weighted",
+          "weights": {
+            "ma": 0.5,
+            "bw": 0.5
+          }
+        },
+        "snr": {
+          "good": [
+            16,
+            20
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -6,
+            0
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\pair_ma_bw_snr01_uniform",
+      "morph_overall_distance": 0.43548387096774194,
+      "morph_medium_distance": 0.2956720430107526,
+      "morph_by_class": {
+        "good": 0.4285752688172043,
+        "medium": 0.2956720430107526,
+        "bad": 0.5822043010752689
+      },
+      "sqi_overall_distance": 0.42658730158730157,
+      "sqi_by_class": {
+        "good": 0.37500000000000006,
+        "medium": 0.26785714285714285,
+        "bad": 0.6369047619047619
+      },
+      "domain_separability_bal_acc": 0.969047619047619,
+      "overall_but_like_score": 0.4525528033794163,
+      "audit": {
+        "spec": {
+          "id": "pair_ma_bw_snr01_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "pair_ma_bw",
+            "mode": "weighted",
+            "weights": {
+              "ma": 0.5,
+              "bw": 0.5
+            }
+          },
+          "snr": {
+            "good": [
+              16,
+              20
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -6,
+              0
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 18.165685653686523,
+            "min": 16.134342193603516,
+            "max": 19.96809196472168
+          },
+          "medium": {
+            "mean": 11.3671875,
+            "min": 8.016430854797363,
+            "max": 13.970579147338867
+          },
+          "bad": {
+            "mean": -3.1250853538513184,
+            "min": -5.998196125030518,
+            "max": -0.06782808154821396
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "ma_heavy_snr01_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "ma_heavy_snr01_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "ma_heavy",
+          "mode": "weighted",
+          "weights": {
+            "em": 0.15,
+            "ma": 0.7,
+            "bw": 0.15
+          }
+        },
+        "snr": {
+          "good": [
+            16,
+            20
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -6,
+            0
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\ma_heavy_snr01_uniform",
+      "morph_overall_distance": 0.4400716845878136,
+      "morph_medium_distance": 0.29586021505376336,
+      "morph_by_class": {
+        "good": 0.4415322580645161,
+        "medium": 0.29586021505376336,
+        "bad": 0.5828225806451612
+      },
+      "sqi_overall_distance": 0.4226190476190476,
+      "sqi_by_class": {
+        "good": 0.38095238095238093,
+        "medium": 0.2738095238095238,
+        "bad": 0.613095238095238
+      },
+      "domain_separability_bal_acc": 0.9543650793650793,
+      "overall_but_like_score": 0.4528302611367127,
+      "audit": {
+        "spec": {
+          "id": "ma_heavy_snr01_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "ma_heavy",
+            "mode": "weighted",
+            "weights": {
+              "em": 0.15,
+              "ma": 0.7,
+              "bw": 0.15
+            }
+          },
+          "snr": {
+            "good": [
+              16,
+              20
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -6,
+              0
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 18.244285583496094,
+            "min": 16.160873413085938,
+            "max": 19.98038673400879
+          },
+          "medium": {
+            "mean": 11.395406723022461,
+            "min": 8.088237762451172,
+            "max": 13.891656875610352
+          },
+          "bad": {
+            "mean": -2.6515393257141113,
+            "min": -5.998195171356201,
+            "max": -0.06782883405685425
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "triple_balanced_snr05_triangular",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "triple_balanced_snr05_triangular",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "triple_balanced",
+          "mode": "weighted",
+          "weights": {
+            "em": 0.3333333333333333,
+            "ma": 0.3333333333333333,
+            "bw": 0.3333333333333333
+          }
+        },
+        "snr": {
+          "good": [
+            14,
+            18
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -4,
+            2
+          ],
+          "sampler": "triangular"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\triple_balanced_snr05_triangular",
+      "morph_overall_distance": 0.4400716845878136,
+      "morph_medium_distance": 0.2858064516129032,
+      "morph_by_class": {
+        "good": 0.44392473118279574,
+        "medium": 0.2858064516129032,
+        "bad": 0.5904838709677418
+      },
+      "sqi_overall_distance": 0.4424603174603175,
+      "sqi_by_class": {
+        "good": 0.3869047619047619,
+        "medium": 0.27976190476190477,
+        "bad": 0.6607142857142857
+      },
+      "domain_separability_bal_acc": 0.95,
+      "overall_but_like_score": 0.4528565028161802,
+      "audit": {
+        "spec": {
+          "id": "triple_balanced_snr05_triangular",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "triple_balanced",
+            "mode": "weighted",
+            "weights": {
+              "em": 0.3333333333333333,
+              "ma": 0.3333333333333333,
+              "bw": 0.3333333333333333
+            }
+          },
+          "snr": {
+            "good": [
+              14,
+              18
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -4,
+              2
+            ],
+            "sampler": "triangular"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 16.18118667602539,
+            "min": 14.56722640991211,
+            "max": 17.801939010620117
+          },
+          "medium": {
+            "mean": 11.271780014038086,
+            "min": 8.51450252532959,
+            "max": 13.42988395690918
+          },
+          "bad": {
+            "mean": -0.7790287137031555,
+            "min": -3.9264309406280518,
+            "max": 1.548907995223999
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "dirichlet_balanced_snr05_triangular",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "dirichlet_balanced_snr05_triangular",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "dirichlet_balanced",
+          "mode": "dirichlet",
+          "alpha": {
+            "em": 1.0,
+            "ma": 1.0,
+            "bw": 1.0
+          }
+        },
+        "snr": {
+          "good": [
+            14,
+            18
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -4,
+            2
+          ],
+          "sampler": "triangular"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\dirichlet_balanced_snr05_triangular",
+      "morph_overall_distance": 0.4445878136200716,
+      "morph_medium_distance": 0.28440860215053765,
+      "morph_by_class": {
+        "good": 0.4359946236559139,
+        "medium": 0.28440860215053765,
+        "bad": 0.6133602150537633
+      },
+      "sqi_overall_distance": 0.4404761904761905,
+      "sqi_by_class": {
+        "good": 0.380952380952381,
+        "medium": 0.2619047619047619,
+        "bad": 0.6785714285714286
+      },
+      "domain_separability_bal_acc": 0.9341269841269841,
+      "overall_but_like_score": 0.4528801843317972,
+      "audit": {
+        "spec": {
+          "id": "dirichlet_balanced_snr05_triangular",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "dirichlet_balanced",
+            "mode": "dirichlet",
+            "alpha": {
+              "em": 1.0,
+              "ma": 1.0,
+              "bw": 1.0
+            }
+          },
+          "snr": {
+            "good": [
+              14,
+              18
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -4,
+              2
+            ],
+            "sampler": "triangular"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 16.052738189697266,
+            "min": 14.0421142578125,
+            "max": 17.685941696166992
+          },
+          "medium": {
+            "mean": 11.090215682983398,
+            "min": 8.714546203613281,
+            "max": 13.452299118041992
+          },
+          "bad": {
+            "mean": -1.0478005409240723,
+            "min": -3.655364751815796,
+            "max": 1.2184101343154907
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "ma_bw_wearable_snr05_triangular",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "ma_bw_wearable_snr05_triangular",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "ma_bw_wearable",
+          "mode": "weighted",
+          "weights": {
+            "em": 0.1,
+            "ma": 0.55,
+            "bw": 0.35
+          }
+        },
+        "snr": {
+          "good": [
+            14,
+            18
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -4,
+            2
+          ],
+          "sampler": "triangular"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\ma_bw_wearable_snr05_triangular",
+      "morph_overall_distance": 0.4384767025089606,
+      "morph_medium_distance": 0.2910215053763441,
+      "morph_by_class": {
+        "good": 0.4495161290322581,
+        "medium": 0.2910215053763441,
+        "bad": 0.5748924731182796
+      },
+      "sqi_overall_distance": 0.43650793650793657,
+      "sqi_by_class": {
+        "good": 0.3928571428571429,
+        "medium": 0.2738095238095238,
+        "bad": 0.6428571428571429
+      },
+      "domain_separability_bal_acc": 0.9555555555555555,
+      "overall_but_like_score": 0.45302547363031237,
+      "audit": {
+        "spec": {
+          "id": "ma_bw_wearable_snr05_triangular",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "ma_bw_wearable",
+            "mode": "weighted",
+            "weights": {
+              "em": 0.1,
+              "ma": 0.55,
+              "bw": 0.35
+            }
+          },
+          "snr": {
+            "good": [
+              14,
+              18
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -4,
+              2
+            ],
+            "sampler": "triangular"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 16.18118667602539,
+            "min": 14.56722640991211,
+            "max": 17.801939010620117
+          },
+          "medium": {
+            "mean": 11.271780014038086,
+            "min": 8.514503479003906,
+            "max": 13.42988395690918
+          },
+          "bad": {
+            "mean": -0.7790287137031555,
+            "min": -3.9264304637908936,
+            "max": 1.548907995223999
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "pair_em_bw_snr01_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "pair_em_bw_snr01_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "pair_em_bw",
+          "mode": "weighted",
+          "weights": {
+            "em": 0.5,
+            "bw": 0.5
+          }
+        },
+        "snr": {
+          "good": [
+            16,
+            20
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -6,
+            0
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\pair_em_bw_snr01_uniform",
+      "morph_overall_distance": 0.44749103942652324,
+      "morph_medium_distance": 0.2750268817204301,
+      "morph_by_class": {
+        "good": 0.3965860215053763,
+        "medium": 0.2750268817204301,
+        "bad": 0.6708602150537634
+      },
+      "sqi_overall_distance": 0.43452380952380953,
+      "sqi_by_class": {
+        "good": 0.35714285714285715,
+        "medium": 0.27976190476190477,
+        "bad": 0.6666666666666667
+      },
+      "domain_separability_bal_acc": 0.9543650793650793,
+      "overall_but_like_score": 0.45311731950844847,
+      "audit": {
+        "spec": {
+          "id": "pair_em_bw_snr01_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "pair_em_bw",
+            "mode": "weighted",
+            "weights": {
+              "em": 0.5,
+              "bw": 0.5
+            }
+          },
+          "snr": {
+            "good": [
+              16,
+              20
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -6,
+              0
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 18.165685653686523,
+            "min": 16.134342193603516,
+            "max": 19.96809196472168
+          },
+          "medium": {
+            "mean": 11.3671875,
+            "min": 8.016429901123047,
+            "max": 13.97057819366455
+          },
+          "bad": {
+            "mean": -3.1250855922698975,
+            "min": -5.998196125030518,
+            "max": -0.06782808154821396
+          }
+        }
+      }
+    },
+    {
+      "variant_id": "single_ma_snr01_uniform",
+      "family": "real_noise_snr",
+      "spec": {
+        "id": "single_ma_snr01_uniform",
+        "family": "real_noise_snr",
+        "mix": {
+          "name": "single_ma",
+          "mode": "weighted",
+          "weights": {
+            "ma": 1.0
+          }
+        },
+        "snr": {
+          "good": [
+            16,
+            20
+          ],
+          "medium": [
+            8,
+            14
+          ],
+          "bad": [
+            -6,
+            0
+          ],
+          "sampler": "uniform"
+        },
+        "class_weight": "1.00,1.40,1.70",
+        "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+      },
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\single_ma_snr01_uniform",
+      "morph_overall_distance": 0.43503584229390674,
+      "morph_medium_distance": 0.2933333333333332,
+      "morph_by_class": {
+        "good": 0.43900537634408604,
+        "medium": 0.2933333333333332,
+        "bad": 0.5727688172043011
+      },
+      "sqi_overall_distance": 0.4384920634920635,
+      "sqi_by_class": {
+        "good": 0.3869047619047619,
+        "medium": 0.29166666666666663,
+        "bad": 0.6369047619047619
+      },
+      "domain_separability_bal_acc": 0.9702380952380952,
+      "overall_but_like_score": 0.4536488735279057,
+      "audit": {
+        "spec": {
+          "id": "single_ma_snr01_uniform",
+          "family": "real_noise_snr",
+          "mix": {
+            "name": "single_ma",
+            "mode": "weighted",
+            "weights": {
+              "ma": 1.0
+            }
+          },
+          "snr": {
+            "good": [
+              16,
+              20
+            ],
+            "medium": [
+              8,
+              14
+            ],
+            "bad": [
+              -6,
+              0
+            ],
+            "sampler": "uniform"
+          },
+          "class_weight": "1.00,1.40,1.70",
+          "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+        },
+        "rows": 180,
+        "sample_per_class": 60,
+        "split_counts": {
+          "test": 32,
+          "train": 119,
+          "val": 29
+        },
+        "class_counts": {
+          "bad": 60,
+          "good": 60,
+          "medium": 60
+        },
+        "snr_by_class": {
+          "good": {
+            "mean": 18.030317306518555,
+            "min": 16.001203536987305,
+            "max": 19.95478057861328
+          },
+          "medium": {
+            "mean": 11.241161346435547,
+            "min": 8.088237762451172,
+            "max": 13.970579147338867
+          },
+          "bad": {
+            "mean": -2.7560720443725586,
+            "min": -5.9835686683654785,
+            "max": -0.016740277409553528
+          }
+        }
+      }
+    }
+  ]
+}

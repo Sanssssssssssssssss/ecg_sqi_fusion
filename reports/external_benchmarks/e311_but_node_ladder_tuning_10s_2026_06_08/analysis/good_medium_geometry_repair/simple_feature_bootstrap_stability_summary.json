@@ -1,0 +1,74 @@
+{
+  "created_at": "2026-06-13T11:06:01",
+  "n_bootstrap": 120,
+  "top_features": [
+    {
+      "feature": "pc1",
+      "trees_used": 120,
+      "usage_rate": 1.0,
+      "split_count": 314
+    },
+    {
+      "feature": "qrs_band_ratio",
+      "trees_used": 70,
+      "usage_rate": 0.5833333333333334,
+      "split_count": 85
+    },
+    {
+      "feature": "qrs_visibility",
+      "trees_used": 58,
+      "usage_rate": 0.48333333333333334,
+      "split_count": 60
+    },
+    {
+      "feature": "qrs_prom_p90",
+      "trees_used": 51,
+      "usage_rate": 0.425,
+      "split_count": 51
+    },
+    {
+      "feature": "band_15_30",
+      "trees_used": 30,
+      "usage_rate": 0.25,
+      "split_count": 35
+    },
+    {
+      "feature": "amplitude_entropy",
+      "trees_used": 18,
+      "usage_rate": 0.15,
+      "split_count": 18
+    },
+    {
+      "feature": "sqi_sSQI",
+      "trees_used": 13,
+      "usage_rate": 0.10833333333333334,
+      "split_count": 13
+    },
+    {
+      "feature": "sqi_basSQI",
+      "trees_used": 11,
+      "usage_rate": 0.09166666666666666,
+      "split_count": 13
+    }
+  ],
+  "metric_summary": [
+    {
+      "dataset": "node_test",
+      "median": 0.9985059760956175,
+      "min": 0.9449701195219123,
+      "max": 0.9997509960159362
+    },
+    {
+      "dataset": "original_all",
+      "median": 0.8305923048913704,
+      "min": 0.8011591212525792,
+      "max": 0.849283893676417
+    },
+    {
+      "dataset": "original_test",
+      "median": 0.799988203373835,
+      "min": 0.7331603161495812,
+      "max": 0.8656364279815972
+    }
+  ]
+}

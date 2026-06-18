@@ -1,0 +1,9 @@
+gap_group,class_name,n,split_counts,region_counts,ordinary_pred_counts,adapter_pred_counts
+adapter_only_fix,good,492,"{""train"": 431, ""test"": 52, ""val"": 9}","{""good_medium_overlap"": 445, ""outlier_low_confidence"": 44, ""clean_core"": 3}","{""medium"": 492}","{""good"": 492}"
+adapter_only_fix,medium,561,"{""train"": 354, ""test"": 204, ""val"": 3}","{""good_medium_overlap"": 452, ""outlier_low_confidence"": 76, ""clean_core"": 33}","{""good"": 561}","{""medium"": 561}"
+both_correct,bad,3964,"{""train"": 3964}","{""right_bad_island"": 3964}","{""bad"": 3964}","{""bad"": 3964}"
+both_correct,good,6705,"{""train"": 5049, ""test"": 1351, ""val"": 305}","{""good_medium_overlap"": 4592, ""clean_core"": 1437, ""outlier_low_confidence"": 676}","{""good"": 6705}","{""good"": 6705}"
+both_correct,medium,6639,"{""train"": 4259, ""test"": 2299, ""val"": 81}","{""good_medium_overlap"": 4049, ""clean_core"": 1937, ""outlier_low_confidence"": 644, ""medium_bad_overlap"": 9}","{""medium"": 6639}","{""medium"": 6639}"
+both_wrong,bad,120,"{""test"": 119, ""val"": 1}","{""near_bad_boundary"": 120}","{""medium"": 120}","{""medium"": 120}"
+both_wrong,good,2,"{""train"": 2}","{""good_medium_overlap"": 2}","{""medium"": 2}","{""medium"": 2}"
+ordinary_only_fix,good,1,"{""train"": 1}","{""good_medium_overlap"": 1}","{""good"": 1}","{""medium"": 1}"

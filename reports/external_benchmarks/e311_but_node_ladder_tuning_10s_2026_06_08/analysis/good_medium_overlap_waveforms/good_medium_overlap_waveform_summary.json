@@ -1,0 +1,34 @@
+{
+  "status": "complete",
+  "report_dir": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_overlap_waveforms",
+  "output_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_overlap_waveforms",
+  "original_selected_rows": 24,
+  "synthetic_selected_rows": 12,
+  "figures": [
+    "original_good_medium_overlap_waveform_grid.png",
+    "original_good_medium_overlap_average_overlay.png",
+    "original_good_medium_overlap_feature_fingerprints.png",
+    "synthetic_n7100_boundary_clean_noisy_waveforms.png"
+  ],
+  "label_scope_counts": {
+    "original_all_total": 32956,
+    "original_all_counts": {
+      "good": 17043,
+      "medium": 10628,
+      "bad": 5285
+    },
+    "original_test_total": 8477,
+    "original_test_counts": {
+      "good": 3640,
+      "medium": 4426,
+      "bad": 411
+    },
+    "protocol_windows_failing_10s_scope": 0,
+    "raw_short_consensus_segments": 4468,
+    "raw_short_consensus_segments_by_class": {
+      "good": 1685,
+      "medium": 2459,
+      "bad": 324
+    }
+  }
+}

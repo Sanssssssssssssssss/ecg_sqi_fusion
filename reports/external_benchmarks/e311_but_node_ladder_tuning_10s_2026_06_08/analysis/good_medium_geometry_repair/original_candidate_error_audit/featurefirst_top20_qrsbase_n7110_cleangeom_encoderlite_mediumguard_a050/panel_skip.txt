@@ -1,0 +1,1 @@
+Skipped waveform panel render: FileNotFoundError: [Errno 2] No such file or directory: 'E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\original_candidate_error_audit\\featurefirst_top20_qrsbase_n7110_cleangeom_encoderlite_mediumguard_a050\\original_error_waveform_panels.png'

@@ -1,0 +1,7 @@
+class_name,original_region,n
+bad,right_bad_island,3600
+good,clean_core,2376
+good,good_medium_overlap,1224
+medium,clean_core,1970
+medium,good_medium_overlap,1621
+medium,medium_bad_overlap,9

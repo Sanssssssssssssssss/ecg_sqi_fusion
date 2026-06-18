@@ -1,0 +1,7 @@
+selected_class,source_label,split,N7000_promoted,N7100_best,delta_n7100_minus_n7000
+good,aux_geometry_good_rescue_pc1low_flatlinehigh,test,22,22,0
+good,aux_geometry_good_rescue_pc1low_flatlinehigh,train,109,109,0
+good,aux_geometry_good_rescue_pc1low_flatlinehigh,val,22,22,0
+medium,aux_geometry_medium_hard_negative_visibleqrs,test,28,28,0
+medium,aux_geometry_medium_hard_negative_visibleqrs,train,139,139,0
+medium,aux_geometry_medium_hard_negative_visibleqrs,val,28,28,0

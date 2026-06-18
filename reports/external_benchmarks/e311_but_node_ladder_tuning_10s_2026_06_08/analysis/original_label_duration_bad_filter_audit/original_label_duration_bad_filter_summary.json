@@ -1,0 +1,129 @@
+{
+  "metadata_source": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_protocol_adaptation_2026_06_03\\protocols\\p1_current_10s_center\\metadata.csv",
+  "atlas_source": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\original_region_boundary\\original_region_atlas.csv",
+  "ann_source_root": "E:\\GPTProject2\\ecg\\data\\external\\butqdb_1_0_0",
+  "protocol_note": "p1_current_10s_center windows are generated only from full 10s chunks inside consensus label segments; segments shorter than 10s are dropped before protocol metadata is written.",
+  "scope_summaries": [
+    {
+      "scope": "original_all_protocol",
+      "n": 32956,
+      "class_counts": {
+        "good": 17043,
+        "medium": 10628,
+        "bad": 5285
+      },
+      "bad_total": 5285,
+      "bad_outlier_low_confidence": 1201,
+      "bad_core_after_drop_outlier": 4084,
+      "bad_outlier_rate_within_bad": 0.2272469252601703,
+      "drop_bad_outlier_total_after_filter": 31755,
+      "drop_bad_outlier_class_counts": {
+        "good": 17043,
+        "medium": 10628,
+        "bad": 4084
+      }
+    },
+    {
+      "scope": "original_all_10s_labeled",
+      "n": 32956,
+      "class_counts": {
+        "good": 17043,
+        "medium": 10628,
+        "bad": 5285
+      },
+      "bad_total": 5285,
+      "bad_outlier_low_confidence": 1201,
+      "bad_core_after_drop_outlier": 4084,
+      "bad_outlier_rate_within_bad": 0.2272469252601703,
+      "drop_bad_outlier_total_after_filter": 31755,
+      "drop_bad_outlier_class_counts": {
+        "good": 17043,
+        "medium": 10628,
+        "bad": 4084
+      }
+    },
+    {
+      "scope": "original_test_protocol",
+      "n": 8477,
+      "class_counts": {
+        "good": 3640,
+        "medium": 4426,
+        "bad": 411
+      },
+      "bad_total": 411,
+      "bad_outlier_low_confidence": 292,
+      "bad_core_after_drop_outlier": 119,
+      "bad_outlier_rate_within_bad": 0.7104622871046229,
+      "drop_bad_outlier_total_after_filter": 8185,
+      "drop_bad_outlier_class_counts": {
+        "good": 3640,
+        "medium": 4426,
+        "bad": 119
+      }
+    },
+    {
+      "scope": "original_test_10s_labeled",
+      "n": 8477,
+      "class_counts": {
+        "good": 3640,
+        "medium": 4426,
+        "bad": 411
+      },
+      "bad_total": 411,
+      "bad_outlier_low_confidence": 292,
+      "bad_core_after_drop_outlier": 119,
+      "bad_outlier_rate_within_bad": 0.7104622871046229,
+      "drop_bad_outlier_total_after_filter": 8185,
+      "drop_bad_outlier_class_counts": {
+        "good": 3640,
+        "medium": 4426,
+        "bad": 119
+      }
+    }
+  ],
+  "raw_consensus_segments_total": 7104,
+  "raw_consensus_segments_short_lt10_total": 4468,
+  "raw_consensus_segments_short_lt10_by_class": {
+    "good": 1685,
+    "medium": 2459,
+    "bad": 324
+  },
+  "protocol_windows_unmatched_to_segments": 0,
+  "protocol_windows_not_10s_labeled_scope": 0,
+  "test_bad_10s_breakdown": {
+    "bad_outlier_records": {
+      "111001": 292
+    },
+    "bad_core_records": {
+      "122001": 119
+    },
+    "bad_outlier_unique_label_segments": 76,
+    "bad_core_unique_label_segments": 1,
+    "bad_outlier_segment_duration_sec": {
+      "count": 292.0,
+      "mean": 259.43882191780824,
+      "std": 314.6964315103301,
+      "min": 10.085,
+      "10%": 18.377100000000002,
+      "25%": 29.691,
+      "50%": 101.001,
+      "75%": 777.395,
+      "90%": 777.395,
+      "95%": 777.395,
+      "max": 777.395
+    },
+    "bad_core_segment_duration_sec": {
+      "count": 119.0,
+      "mean": 1199.9990000000007,
+      "std": 6.850052718637188e-13,
+      "min": 1199.999,
+      "10%": 1199.999,
+      "25%": 1199.999,
+      "50%": 1199.999,
+      "75%": 1199.999,
+      "90%": 1199.999,
+      "95%": 1199.999,
+      "max": 1199.999
+    }
+  }
+}

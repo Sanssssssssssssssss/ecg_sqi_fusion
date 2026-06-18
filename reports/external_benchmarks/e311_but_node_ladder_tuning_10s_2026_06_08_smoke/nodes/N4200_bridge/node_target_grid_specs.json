@@ -1,0 +1,212 @@
+{
+  "node": {
+    "node_id": "N4200_bridge",
+    "level": 4200,
+    "role": "active_bridge",
+    "target_acc": 0.95,
+    "target_good": 0.94,
+    "target_medium": 0.91,
+    "target_bad": 0.98,
+    "train_default": true,
+    "reason": "First failing widening node; add good/medium overlap and controlled near-bad shell."
+  },
+  "stage": "scan",
+  "rows": [
+    {
+      "id": "nl_n4200_bridge_scan_001_sc_overlap_qrs_visible_compact_c_47e1dbead201",
+      "family": "bad_qrs_visible_compact_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.45,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.74,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.16999999999999998,
+      "medium_step_rate": 0.19,
+      "medium_ramp_rate": 0.19,
+      "medium_contact_rate": 0.0,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_qrs_visible_compact_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.18,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.03,
+      "bad_baseline_step_rate": 0.0,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_qrs_prominent_noalt",
+      "good_target_std": 0.32,
+      "good_std_jitter": 0.055,
+      "good_qrs_boost": 0.48,
+      "good_qrs_sharp": 0.22,
+      "good_nonqrs_smooth": 27,
+      "good_nonqrs_blend": 0.94,
+      "good_residual_mix": 0.01,
+      "good_baseline_mix": 0.055,
+      "good_qrsband_noise": 0.0,
+      "bad_alt_family": "bad_narrow_oscillatory_core",
+      "bad_alt_cluster_prob": 0.2,
+      "selection_basis": "Original-aware SemiCleanBUT node N4200_bridge region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_visible_target_std": 0.154,
+      "bad_visible_pulse_amp": 0.74,
+      "bad_visible_qrsband_amp": 0.34,
+      "bad_visible_hf_amp": 0.035,
+      "bad_visible_width": 5.5,
+      "bad_visible_side_lobe": 0.46,
+      "bad_neg_spike_rate": 0.06,
+      "bad_neg_spike_amp": 0.12,
+      "bad_hf_qrs_bias": 0.82,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.58,
+      "node_id": "N4200_bridge",
+      "node_level": 4200,
+      "node_role": "active_bridge",
+      "base_spec_id": "sc_overlap_qrs_visible_compact_core_000_0a0d9171f058"
+    },
+    {
+      "id": "nl_n4200_bridge_scan_002_sc_overlap_qrs_visible_compact_c_21fde1f0156b",
+      "family": "bad_qrs_visible_compact_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.55,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.74,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.16999999999999998,
+      "medium_step_rate": 0.19,
+      "medium_ramp_rate": 0.19,
+      "medium_contact_rate": 0.0,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_qrs_visible_compact_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.18,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.03,
+      "bad_baseline_step_rate": 0.0,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_peak_locked",
+      "good_target_std": 0.36,
+      "good_std_jitter": 0.055,
+      "good_qrs_boost": 0.44,
+      "good_qrs_sharp": 0.14,
+      "good_nonqrs_smooth": 25,
+      "good_nonqrs_blend": 0.92,
+      "good_residual_mix": 0.014,
+      "good_baseline_mix": 0.065,
+      "good_qrsband_noise": 0.0,
+      "bad_alt_family": "bad_1530_spike_core",
+      "bad_alt_cluster_prob": 0.24,
+      "selection_basis": "Original-aware SemiCleanBUT node N4200_bridge region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_visible_target_std": 0.154,
+      "bad_visible_pulse_amp": 0.74,
+      "bad_visible_qrsband_amp": 0.34,
+      "bad_visible_hf_amp": 0.035,
+      "bad_visible_width": 5.5,
+      "bad_visible_side_lobe": 0.46,
+      "bad_neg_spike_rate": 0.06,
+      "bad_neg_spike_amp": 0.12,
+      "bad_hf_qrs_bias": 0.82,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.58,
+      "node_id": "N4200_bridge",
+      "node_level": 4200,
+      "node_role": "active_bridge",
+      "base_spec_id": "sc_overlap_qrs_visible_compact_core_001_094786caeef9"
+    }
+  ]
+}

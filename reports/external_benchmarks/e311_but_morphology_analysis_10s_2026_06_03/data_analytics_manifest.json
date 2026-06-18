@@ -1,0 +1,301 @@
+{
+  "version": 1,
+  "title": "BUT 10s Morphology Analysis",
+  "surface": "report",
+  "description": "Morphology-distance audit between BUT QDB expert labels and PTB synthetic generator rules.",
+  "sources": [
+    {
+      "label": "Local markdown summary",
+      "path": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_morphology_analysis_10s_2026_06_03\\morphology_analysis_summary.md"
+    },
+    {
+      "label": "BUT processed data",
+      "path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_realdata_2026_06_02\\processed\\butqdb"
+    },
+    {
+      "label": "Large rule grid rows",
+      "path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_large_rule_grid_10s_2026_06_03\\large_rule_grid_summary.jsonl"
+    }
+  ],
+  "blocks": [
+    {
+      "id": "intro",
+      "type": "markdown",
+      "body": "# BUT 10s Morphology Analysis\nThis report compares real BUT expert classes with PTB synthetic generator variants using QRS reliability, local morphology, contact/motion, and global waveform proxies."
+    },
+    {
+      "id": "metric_scatter_block",
+      "type": "chart",
+      "chartId": "metric_scatter"
+    },
+    {
+      "id": "top_metric_table_block",
+      "type": "table",
+      "tableId": "top_metric_table"
+    },
+    {
+      "id": "family_bar_block",
+      "type": "chart",
+      "chartId": "family_bar"
+    },
+    {
+      "id": "distance_table_block",
+      "type": "table",
+      "tableId": "distance_table"
+    },
+    {
+      "id": "profile_table_block",
+      "type": "table",
+      "tableId": "profile_table"
+    },
+    {
+      "id": "corr_table_block",
+      "type": "table",
+      "tableId": "corr_table"
+    }
+  ],
+  "charts": [
+    {
+      "id": "metric_scatter",
+      "title": "Morphology Distance vs BUT Macro-F1",
+      "type": "scatter",
+      "dataset": "top_metric_rows",
+      "source": {
+        "label": "grid_metric_distance_join",
+        "query": {
+          "language": "sql",
+          "sql": "SELECT variant_id, family, macro_f1, overall_but_like_score FROM top_metric_rows",
+          "description": "Top completed synthetic variants joined with morphology distance and BUT metrics."
+        }
+      },
+      "encodings": {
+        "x": {
+          "field": "overall_but_like_score"
+        },
+        "y": {
+          "field": "macro_f1"
+        },
+        "color": {
+          "field": "family"
+        }
+      }
+    },
+    {
+      "id": "family_bar",
+      "title": "Best Macro-F1 by Rule Family",
+      "type": "bar",
+      "dataset": "family_summary",
+      "source": {
+        "label": "family_summary",
+        "query": {
+          "language": "sql",
+          "sql": "SELECT family, best_macro FROM family_summary",
+          "description": "Rule-family aggregate metrics from completed synthetic variants."
+        }
+      },
+      "encodings": {
+        "x": {
+          "field": "family"
+        },
+        "y": {
+          "field": "best_macro"
+        }
+      },
+      "options": {
+        "orientation": "vertical"
+      }
+    }
+  ],
+  "tables": [
+    {
+      "id": "top_metric_table",
+      "title": "Top Metric Rows",
+      "dataset": "top_metric_rows",
+      "source": {
+        "label": "top_metric_rows",
+        "query": {
+          "language": "sql",
+          "sql": "SELECT * FROM top_metric_rows",
+          "description": "Top variants by BUT macro-F1."
+        }
+      },
+      "columns": [
+        {
+          "field": "variant_id",
+          "label": "Variant",
+          "type": "text"
+        },
+        {
+          "field": "family",
+          "label": "Family",
+          "type": "text"
+        },
+        {
+          "field": "acc",
+          "label": "Acc",
+          "type": "number"
+        },
+        {
+          "field": "balanced_acc",
+          "label": "Balanced",
+          "type": "number"
+        },
+        {
+          "field": "macro_f1",
+          "label": "Macro-F1",
+          "type": "number"
+        },
+        {
+          "field": "good_recall",
+          "label": "Good R",
+          "type": "number"
+        },
+        {
+          "field": "medium_recall",
+          "label": "Medium R",
+          "type": "number"
+        },
+        {
+          "field": "bad_recall",
+          "label": "Bad R",
+          "type": "number"
+        },
+        {
+          "field": "overall_but_like_score",
+          "label": "Morph Dist",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "id": "distance_table",
+      "title": "Closest Morphology Rows",
+      "dataset": "top_distance_rows",
+      "source": {
+        "label": "top_distance_rows",
+        "query": {
+          "language": "sql",
+          "sql": "SELECT * FROM top_distance_rows",
+          "description": "Variants ranked by closest class-wise morphology distance to BUT."
+        }
+      },
+      "columns": [
+        {
+          "field": "variant_id",
+          "label": "Variant",
+          "type": "text"
+        },
+        {
+          "field": "family",
+          "label": "Family",
+          "type": "text"
+        },
+        {
+          "field": "overall_but_like_score",
+          "label": "Morph Dist",
+          "type": "number"
+        },
+        {
+          "field": "qrs_distance",
+          "label": "QRS Dist",
+          "type": "number"
+        },
+        {
+          "field": "ptst_distance",
+          "label": "P/T/ST Dist",
+          "type": "number"
+        },
+        {
+          "field": "contact_motion_distance",
+          "label": "Contact Dist",
+          "type": "number"
+        },
+        {
+          "field": "macro_f1",
+          "label": "Macro-F1",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "id": "profile_table",
+      "title": "BUT Class Morphology Profile",
+      "dataset": "but_profile",
+      "source": {
+        "label": "but_profile",
+        "query": {
+          "language": "sql",
+          "sql": "SELECT * FROM but_profile",
+          "description": "Sampled BUT class-level morphology proxy means."
+        }
+      },
+      "columns": [
+        {
+          "field": "y_class",
+          "label": "Class",
+          "type": "text"
+        },
+        {
+          "field": "n",
+          "label": "N",
+          "type": "number"
+        },
+        {
+          "field": "qrs_reliable_proxy_mean",
+          "label": "QRS Reliable",
+          "type": "number"
+        },
+        {
+          "field": "spurious_peak_proxy_mean",
+          "label": "Spurious Peak",
+          "type": "number"
+        },
+        {
+          "field": "ptst_unreliable_proxy_mean",
+          "label": "P/T/ST Unreliable",
+          "type": "number"
+        },
+        {
+          "field": "hf_energy_mean",
+          "label": "HF Energy",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "id": "corr_table",
+      "title": "Distance and Metric Correlations",
+      "dataset": "correlations",
+      "source": {
+        "label": "correlations",
+        "query": {
+          "language": "sql",
+          "sql": "SELECT * FROM correlations",
+          "description": "Spearman correlations between morphology-distance proxies and BUT metrics."
+        }
+      },
+      "columns": [
+        {
+          "field": "x",
+          "label": "Distance Feature",
+          "type": "text"
+        },
+        {
+          "field": "y",
+          "label": "Metric",
+          "type": "text"
+        },
+        {
+          "field": "spearman",
+          "label": "Spearman",
+          "type": "number"
+        },
+        {
+          "field": "n",
+          "label": "N",
+          "type": "number"
+        }
+      ]
+    }
+  ]
+}

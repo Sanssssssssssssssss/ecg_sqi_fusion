@@ -1,0 +1,18 @@
+{
+  "name": "but_10s_p1_balanced_test",
+  "seed": 20260605,
+  "source_split": "test",
+  "source_counts_good_medium_bad": [
+    3640,
+    4426,
+    411
+  ],
+  "n_per_class": 411,
+  "selected_counts_good_medium_bad": [
+    411,
+    411,
+    411
+  ],
+  "n_total": 1233,
+  "note": "Evaluation-only balanced subset; validation thresholds are still selected on the original validation split."
+}

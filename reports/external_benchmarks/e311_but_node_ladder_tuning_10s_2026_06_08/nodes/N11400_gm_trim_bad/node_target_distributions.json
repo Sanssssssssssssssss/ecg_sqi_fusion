@@ -1,0 +1,81 @@
+{
+  "node_id": "N11400_gm_trim_bad",
+  "level_n_per_class": 11400,
+  "feature_count": 64,
+  "selected_counts": {
+    "good": 11400,
+    "medium": 10628,
+    "bad": 4084
+  },
+  "region_counts": [
+    {
+      "class_name": "bad",
+      "original_region": "near_bad_boundary",
+      "n": 120
+    },
+    {
+      "class_name": "bad",
+      "original_region": "right_bad_island",
+      "n": 3964
+    },
+    {
+      "class_name": "good",
+      "original_region": "clean_core",
+      "n": 2280
+    },
+    {
+      "class_name": "good",
+      "original_region": "good_medium_overlap",
+      "n": 7980
+    },
+    {
+      "class_name": "good",
+      "original_region": "outlier_low_confidence",
+      "n": 1140
+    },
+    {
+      "class_name": "medium",
+      "original_region": "clean_core",
+      "n": 1970
+    },
+    {
+      "class_name": "medium",
+      "original_region": "good_medium_overlap",
+      "n": 5127
+    },
+    {
+      "class_name": "medium",
+      "original_region": "medium_bad_overlap",
+      "n": 9
+    },
+    {
+      "class_name": "medium",
+      "original_region": "outlier_low_confidence",
+      "n": 3522
+    }
+  ],
+  "by_class": {
+    "good": {
+      "n": 11400,
+      "ambiguous_fraction": 0.8,
+      "outlier_fraction": 0.1,
+      "pc1_median": -4.364627650482521,
+      "pc2_median": -1.0508898037566994
+    },
+    "medium": {
+      "n": 10628,
+      "ambiguous_fraction": 0.8146405720737674,
+      "outlier_fraction": 0.33138878434324426,
+      "pc1_median": -0.6364861004544042,
+      "pc2_median": 0.8255770452978376
+    },
+    "bad": {
+      "n": 4084,
+      "ambiguous_fraction": 0.7066601371204702,
+      "outlier_fraction": 0.0,
+      "pc1_median": 10.417240126183543,
+      "pc2_median": -0.04054816965729165
+    }
+  },
+  "trim_bad": true
+}

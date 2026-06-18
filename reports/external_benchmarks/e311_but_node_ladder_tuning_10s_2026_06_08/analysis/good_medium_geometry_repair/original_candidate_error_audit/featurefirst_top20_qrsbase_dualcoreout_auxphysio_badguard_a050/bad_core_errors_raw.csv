@@ -1,0 +1,7 @@
+row,split,region,true,pred_raw,pred_badcal,correct_raw,correct_badcal,prob_good,prob_medium,prob_bad,is_test,is_bad_core,is_bad_outlier
+32497,test,near_bad_boundary,bad,medium,bad,False,True,0.009904218837618828,0.5588644742965698,0.4312313199043274,True,True,False
+32511,test,near_bad_boundary,bad,medium,bad,False,True,0.008062520064413548,0.6487703323364258,0.34316715598106384,True,True,False
+32518,test,near_bad_boundary,bad,medium,bad,False,True,0.008544934913516045,0.5090253949165344,0.4824296534061432,True,True,False
+32519,test,near_bad_boundary,bad,medium,bad,False,True,0.009095662273466587,0.6894453167915344,0.30145904421806335,True,True,False
+32581,test,near_bad_boundary,bad,medium,bad,False,True,0.013891180045902729,0.795418381690979,0.19069041311740875,True,True,False
+32590,test,near_bad_boundary,bad,medium,bad,False,True,0.009950444102287292,0.6333690881729126,0.3566804826259613,True,True,False

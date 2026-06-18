@@ -1,0 +1,184 @@
+{
+  "base_key": "nl_n7200_gm_trim_bad_geom_stack_n7000_g008_m044_g115_m184_2839a07720c5::medium_guarded_pmed0005",
+  "alt_key": "nl_n7200_gm_trim_bad_geom_tri_atlaspc2_matchold_g002_m006_942f7f261b19::medium_guarded_pmed0005",
+  "threshold": 0.5302708812395728,
+  "disagreement_rows": 1411,
+  "trainval_disagreement_rows": 1250,
+  "test_disagreement_rows": 161,
+  "gate_flips": 924,
+  "group_counts": {
+    "unused": 17126,
+    "gate_fixed_medium": 753,
+    "remaining_medium_to_good": 409,
+    "remaining_good_to_medium": 196
+  },
+  "base_all": {
+    "n": 18484,
+    "acc": 0.927288465700065,
+    "macro_f1": 0.9354531964495344,
+    "good_recall": 0.9809722222222222,
+    "medium_recall": 0.8488888888888889,
+    "bad_recall": 0.9708619000979432,
+    "good_precision": 0.8665194454668139,
+    "medium_precision": 0.9597989949748744,
+    "bad_precision": 1.0,
+    "support_good": 7200,
+    "support_medium": 7200,
+    "support_bad": 4084,
+    "confusion_3x3": [
+      [
+        7063,
+        137,
+        0
+      ],
+      [
+        1088,
+        6112,
+        0
+      ],
+      [
+        0,
+        119,
+        3965
+      ]
+    ]
+  },
+  "alt_all": {
+    "n": 18484,
+    "acc": 0.9352953906080935,
+    "macro_f1": 0.9426911011640304,
+    "good_recall": 0.9070833333333334,
+    "medium_recall": 0.9434722222222223,
+    "bad_recall": 0.970617042115573,
+    "good_precision": 0.9413375612568463,
+    "medium_precision": 0.8959377472962279,
+    "bad_precision": 1.0,
+    "support_good": 7200,
+    "support_medium": 7200,
+    "support_bad": 4084,
+    "confusion_3x3": [
+      [
+        6531,
+        669,
+        0
+      ],
+      [
+        407,
+        6793,
+        0
+      ],
+      [
+        0,
+        120,
+        3964
+      ]
+    ]
+  },
+  "gated_all": {
+    "n": 18484,
+    "acc": 0.9608309889634278,
+    "macro_f1": 0.9644019754862331,
+    "good_recall": 0.9727777777777777,
+    "medium_recall": 0.9431944444444444,
+    "bad_recall": 0.9708619000979432,
+    "good_precision": 0.9448266558748145,
+    "medium_precision": 0.9556712637207994,
+    "bad_precision": 1.0,
+    "support_good": 7200,
+    "support_medium": 7200,
+    "support_bad": 4084,
+    "confusion_3x3": [
+      [
+        7004,
+        196,
+        0
+      ],
+      [
+        409,
+        6791,
+        0
+      ],
+      [
+        0,
+        119,
+        3965
+      ]
+    ]
+  },
+  "gated_trainval": {
+    "n": 14459,
+    "acc": 0.9764160730340964,
+    "macro_f1": 0.9780849639629592,
+    "good_recall": 0.972744523029153,
+    "medium_recall": 0.961038961038961,
+    "bad_recall": 1.0,
+    "good_precision": 0.9685675025764342,
+    "medium_precision": 0.966181506849315,
+    "bad_precision": 1.0,
+    "support_good": 5797,
+    "support_medium": 4697,
+    "support_bad": 3965,
+    "confusion_3x3": [
+      [
+        5639,
+        158,
+        0
+      ],
+      [
+        183,
+        4514,
+        0
+      ],
+      [
+        0,
+        0,
+        3965
+      ]
+    ]
+  },
+  "gated_test": {
+    "n": 4025,
+    "acc": 0.9048447204968945,
+    "macro_f1": 0.6114153903648226,
+    "good_recall": 0.9729151817533856,
+    "medium_recall": 0.9097083499800239,
+    "bad_recall": 0.0,
+    "good_precision": 0.857950974230044,
+    "medium_precision": 0.9354971240755957,
+    "bad_precision": 0.0,
+    "support_good": 1403,
+    "support_medium": 2503,
+    "support_bad": 119,
+    "confusion_3x3": [
+      [
+        1365,
+        38,
+        0
+      ],
+      [
+        226,
+        2277,
+        0
+      ],
+      [
+        0,
+        119,
+        0
+      ]
+    ]
+  },
+  "delta_acc_vs_base": 0.03354252326336282,
+  "delta_good_recall_vs_base": -0.008194444444444504,
+  "delta_medium_recall_vs_base": 0.09430555555555553,
+  "delta_bad_recall_vs_base": 0.0,
+  "eligible_by_node_gates": true,
+  "trainval_objective": 1.3136320095439327,
+  "created_at": "2026-06-11T10:08:26",
+  "node_id": "N7200_gm_trim_bad",
+  "artifact_id": "rule_n7200_gm_trim_bad_qrslow_bisect_2839a07720c5_942f7f261b19",
+  "base_variant": "nl_n7200_gm_trim_bad_geom_stack_n7000_g008_m044_g115_m184_2839a07720c5",
+  "base_prediction_mode": "medium_guarded_pmed0005",
+  "alt_variant": "nl_n7200_gm_trim_bad_geom_tri_atlaspc2_matchold_g002_m006_942f7f261b19",
+  "alt_prediction_mode": "medium_guarded_pmed0005",
+  "rule_description": "if endpoints disagree good-vs-medium and qrs_visibility <= 0.53027088, use alt endpoint; otherwise use base endpoint"
+}

@@ -1,0 +1,2932 @@
+{
+  "rows": [
+    {
+      "id": "single_bw_snr07_triangular__qrs_soft_boundary",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_soft_boundary.",
+      "base_variant_id": "single_bw_snr07_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.35,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.55,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.65,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.15,
+        "bad_qrs_atten": 0.05
+      }
+    },
+    {
+      "id": "single_bw_snr07_triangular__medium_detail_qrs_preserved",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile medium_detail_qrs_preserved.",
+      "base_variant_id": "single_bw_snr07_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.3,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.42,
+        "medium_nonqrs_noise_gain": 1.65,
+        "medium_tst_noise_gain": 1.8,
+        "bad_qrs_noise_gain": 1.55,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr07_triangular__bad_qrs_focus_light",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_light.",
+      "base_variant_id": "single_bw_snr07_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.45,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.65,
+        "medium_nonqrs_noise_gain": 1.25,
+        "medium_tst_noise_gain": 1.35,
+        "bad_qrs_noise_gain": 1.9,
+        "bad_nonqrs_noise_gain": 0.9,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr07_triangular__bad_qrs_focus_strong",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_strong.",
+      "base_variant_id": "single_bw_snr07_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.5,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.7,
+        "medium_nonqrs_noise_gain": 1.2,
+        "medium_tst_noise_gain": 1.3,
+        "bad_qrs_noise_gain": 2.25,
+        "bad_nonqrs_noise_gain": 0.85,
+        "bad_tst_noise_gain": 1.0,
+        "bad_qrs_atten": 0.14
+      }
+    },
+    {
+      "id": "single_bw_snr07_triangular__nonqrs_medium_bad_guard",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile nonqrs_medium_bad_guard.",
+      "base_variant_id": "single_bw_snr07_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.42,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.48,
+        "medium_nonqrs_noise_gain": 1.85,
+        "medium_tst_noise_gain": 1.95,
+        "bad_qrs_noise_gain": 1.75,
+        "bad_nonqrs_noise_gain": 1.05,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.06
+      }
+    },
+    {
+      "id": "single_bw_snr07_triangular__qrs_boundary_balanced",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_boundary_balanced.",
+      "base_variant_id": "single_bw_snr07_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.4,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.58,
+        "medium_nonqrs_noise_gain": 1.45,
+        "medium_tst_noise_gain": 1.55,
+        "bad_qrs_noise_gain": 1.85,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.1
+      }
+    },
+    {
+      "id": "single_bw_snr07_triangular__good_qrs_cleaner",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile good_qrs_cleaner.",
+      "base_variant_id": "single_bw_snr07_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.22,
+        "good_nonqrs_noise_gain": 0.9,
+        "medium_qrs_noise_gain": 0.52,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.7,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr07_triangular__bad_atten_only_mild",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_atten_only_mild.",
+      "base_variant_id": "single_bw_snr07_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.55,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.78,
+        "medium_nonqrs_noise_gain": 1.18,
+        "medium_tst_noise_gain": 1.25,
+        "bad_qrs_noise_gain": 1.35,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.16
+      }
+    },
+    {
+      "id": "single_bw_snr02_uniform__qrs_soft_boundary",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_soft_boundary.",
+      "base_variant_id": "single_bw_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.35,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.55,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.65,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.15,
+        "bad_qrs_atten": 0.05
+      }
+    },
+    {
+      "id": "single_bw_snr02_uniform__medium_detail_qrs_preserved",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile medium_detail_qrs_preserved.",
+      "base_variant_id": "single_bw_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.3,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.42,
+        "medium_nonqrs_noise_gain": 1.65,
+        "medium_tst_noise_gain": 1.8,
+        "bad_qrs_noise_gain": 1.55,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr02_uniform__bad_qrs_focus_light",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_light.",
+      "base_variant_id": "single_bw_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.45,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.65,
+        "medium_nonqrs_noise_gain": 1.25,
+        "medium_tst_noise_gain": 1.35,
+        "bad_qrs_noise_gain": 1.9,
+        "bad_nonqrs_noise_gain": 0.9,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr02_uniform__bad_qrs_focus_strong",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_strong.",
+      "base_variant_id": "single_bw_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.5,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.7,
+        "medium_nonqrs_noise_gain": 1.2,
+        "medium_tst_noise_gain": 1.3,
+        "bad_qrs_noise_gain": 2.25,
+        "bad_nonqrs_noise_gain": 0.85,
+        "bad_tst_noise_gain": 1.0,
+        "bad_qrs_atten": 0.14
+      }
+    },
+    {
+      "id": "single_bw_snr02_uniform__nonqrs_medium_bad_guard",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile nonqrs_medium_bad_guard.",
+      "base_variant_id": "single_bw_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.42,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.48,
+        "medium_nonqrs_noise_gain": 1.85,
+        "medium_tst_noise_gain": 1.95,
+        "bad_qrs_noise_gain": 1.75,
+        "bad_nonqrs_noise_gain": 1.05,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.06
+      }
+    },
+    {
+      "id": "single_bw_snr02_uniform__qrs_boundary_balanced",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_boundary_balanced.",
+      "base_variant_id": "single_bw_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.4,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.58,
+        "medium_nonqrs_noise_gain": 1.45,
+        "medium_tst_noise_gain": 1.55,
+        "bad_qrs_noise_gain": 1.85,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.1
+      }
+    },
+    {
+      "id": "single_bw_snr02_uniform__good_qrs_cleaner",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile good_qrs_cleaner.",
+      "base_variant_id": "single_bw_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.22,
+        "good_nonqrs_noise_gain": 0.9,
+        "medium_qrs_noise_gain": 0.52,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.7,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr02_uniform__bad_atten_only_mild",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_atten_only_mild.",
+      "base_variant_id": "single_bw_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.55,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.78,
+        "medium_nonqrs_noise_gain": 1.18,
+        "medium_tst_noise_gain": 1.25,
+        "bad_qrs_noise_gain": 1.35,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.16
+      }
+    },
+    {
+      "id": "single_bw_snr03_uniform__qrs_soft_boundary",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_soft_boundary.",
+      "base_variant_id": "single_bw_snr03_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.35,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.55,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.65,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.15,
+        "bad_qrs_atten": 0.05
+      }
+    },
+    {
+      "id": "single_bw_snr03_uniform__medium_detail_qrs_preserved",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile medium_detail_qrs_preserved.",
+      "base_variant_id": "single_bw_snr03_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.3,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.42,
+        "medium_nonqrs_noise_gain": 1.65,
+        "medium_tst_noise_gain": 1.8,
+        "bad_qrs_noise_gain": 1.55,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr03_uniform__bad_qrs_focus_light",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_light.",
+      "base_variant_id": "single_bw_snr03_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.45,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.65,
+        "medium_nonqrs_noise_gain": 1.25,
+        "medium_tst_noise_gain": 1.35,
+        "bad_qrs_noise_gain": 1.9,
+        "bad_nonqrs_noise_gain": 0.9,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr03_uniform__bad_qrs_focus_strong",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_strong.",
+      "base_variant_id": "single_bw_snr03_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.5,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.7,
+        "medium_nonqrs_noise_gain": 1.2,
+        "medium_tst_noise_gain": 1.3,
+        "bad_qrs_noise_gain": 2.25,
+        "bad_nonqrs_noise_gain": 0.85,
+        "bad_tst_noise_gain": 1.0,
+        "bad_qrs_atten": 0.14
+      }
+    },
+    {
+      "id": "single_bw_snr03_uniform__nonqrs_medium_bad_guard",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile nonqrs_medium_bad_guard.",
+      "base_variant_id": "single_bw_snr03_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.42,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.48,
+        "medium_nonqrs_noise_gain": 1.85,
+        "medium_tst_noise_gain": 1.95,
+        "bad_qrs_noise_gain": 1.75,
+        "bad_nonqrs_noise_gain": 1.05,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.06
+      }
+    },
+    {
+      "id": "single_bw_snr03_uniform__qrs_boundary_balanced",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_boundary_balanced.",
+      "base_variant_id": "single_bw_snr03_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.4,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.58,
+        "medium_nonqrs_noise_gain": 1.45,
+        "medium_tst_noise_gain": 1.55,
+        "bad_qrs_noise_gain": 1.85,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.1
+      }
+    },
+    {
+      "id": "single_bw_snr03_uniform__good_qrs_cleaner",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile good_qrs_cleaner.",
+      "base_variant_id": "single_bw_snr03_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.22,
+        "good_nonqrs_noise_gain": 0.9,
+        "medium_qrs_noise_gain": 0.52,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.7,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr03_uniform__bad_atten_only_mild",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_atten_only_mild.",
+      "base_variant_id": "single_bw_snr03_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.55,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.78,
+        "medium_nonqrs_noise_gain": 1.18,
+        "medium_tst_noise_gain": 1.25,
+        "bad_qrs_noise_gain": 1.35,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.16
+      }
+    },
+    {
+      "id": "single_bw_snr06_triangular__qrs_soft_boundary",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_soft_boundary.",
+      "base_variant_id": "single_bw_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.35,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.55,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.65,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.15,
+        "bad_qrs_atten": 0.05
+      }
+    },
+    {
+      "id": "single_bw_snr06_triangular__medium_detail_qrs_preserved",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile medium_detail_qrs_preserved.",
+      "base_variant_id": "single_bw_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.3,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.42,
+        "medium_nonqrs_noise_gain": 1.65,
+        "medium_tst_noise_gain": 1.8,
+        "bad_qrs_noise_gain": 1.55,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr06_triangular__bad_qrs_focus_light",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_light.",
+      "base_variant_id": "single_bw_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.45,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.65,
+        "medium_nonqrs_noise_gain": 1.25,
+        "medium_tst_noise_gain": 1.35,
+        "bad_qrs_noise_gain": 1.9,
+        "bad_nonqrs_noise_gain": 0.9,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr06_triangular__bad_qrs_focus_strong",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_strong.",
+      "base_variant_id": "single_bw_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.5,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.7,
+        "medium_nonqrs_noise_gain": 1.2,
+        "medium_tst_noise_gain": 1.3,
+        "bad_qrs_noise_gain": 2.25,
+        "bad_nonqrs_noise_gain": 0.85,
+        "bad_tst_noise_gain": 1.0,
+        "bad_qrs_atten": 0.14
+      }
+    },
+    {
+      "id": "single_bw_snr06_triangular__nonqrs_medium_bad_guard",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile nonqrs_medium_bad_guard.",
+      "base_variant_id": "single_bw_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.42,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.48,
+        "medium_nonqrs_noise_gain": 1.85,
+        "medium_tst_noise_gain": 1.95,
+        "bad_qrs_noise_gain": 1.75,
+        "bad_nonqrs_noise_gain": 1.05,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.06
+      }
+    },
+    {
+      "id": "single_bw_snr06_triangular__qrs_boundary_balanced",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_boundary_balanced.",
+      "base_variant_id": "single_bw_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.4,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.58,
+        "medium_nonqrs_noise_gain": 1.45,
+        "medium_tst_noise_gain": 1.55,
+        "bad_qrs_noise_gain": 1.85,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.1
+      }
+    },
+    {
+      "id": "single_bw_snr06_triangular__good_qrs_cleaner",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile good_qrs_cleaner.",
+      "base_variant_id": "single_bw_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.22,
+        "good_nonqrs_noise_gain": 0.9,
+        "medium_qrs_noise_gain": 0.52,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.7,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr06_triangular__bad_atten_only_mild",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_atten_only_mild.",
+      "base_variant_id": "single_bw_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.55,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.78,
+        "medium_nonqrs_noise_gain": 1.18,
+        "medium_tst_noise_gain": 1.25,
+        "bad_qrs_noise_gain": 1.35,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.16
+      }
+    },
+    {
+      "id": "single_bw_snr04_uniform__qrs_soft_boundary",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_soft_boundary.",
+      "base_variant_id": "single_bw_snr04_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.35,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.55,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.65,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.15,
+        "bad_qrs_atten": 0.05
+      }
+    },
+    {
+      "id": "single_bw_snr04_uniform__medium_detail_qrs_preserved",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile medium_detail_qrs_preserved.",
+      "base_variant_id": "single_bw_snr04_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.3,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.42,
+        "medium_nonqrs_noise_gain": 1.65,
+        "medium_tst_noise_gain": 1.8,
+        "bad_qrs_noise_gain": 1.55,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr04_uniform__bad_qrs_focus_light",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_light.",
+      "base_variant_id": "single_bw_snr04_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.45,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.65,
+        "medium_nonqrs_noise_gain": 1.25,
+        "medium_tst_noise_gain": 1.35,
+        "bad_qrs_noise_gain": 1.9,
+        "bad_nonqrs_noise_gain": 0.9,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr04_uniform__bad_qrs_focus_strong",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_strong.",
+      "base_variant_id": "single_bw_snr04_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.5,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.7,
+        "medium_nonqrs_noise_gain": 1.2,
+        "medium_tst_noise_gain": 1.3,
+        "bad_qrs_noise_gain": 2.25,
+        "bad_nonqrs_noise_gain": 0.85,
+        "bad_tst_noise_gain": 1.0,
+        "bad_qrs_atten": 0.14
+      }
+    },
+    {
+      "id": "single_bw_snr04_uniform__nonqrs_medium_bad_guard",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile nonqrs_medium_bad_guard.",
+      "base_variant_id": "single_bw_snr04_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.42,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.48,
+        "medium_nonqrs_noise_gain": 1.85,
+        "medium_tst_noise_gain": 1.95,
+        "bad_qrs_noise_gain": 1.75,
+        "bad_nonqrs_noise_gain": 1.05,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.06
+      }
+    },
+    {
+      "id": "single_bw_snr04_uniform__qrs_boundary_balanced",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_boundary_balanced.",
+      "base_variant_id": "single_bw_snr04_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.4,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.58,
+        "medium_nonqrs_noise_gain": 1.45,
+        "medium_tst_noise_gain": 1.55,
+        "bad_qrs_noise_gain": 1.85,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.1
+      }
+    },
+    {
+      "id": "single_bw_snr04_uniform__good_qrs_cleaner",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile good_qrs_cleaner.",
+      "base_variant_id": "single_bw_snr04_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.22,
+        "good_nonqrs_noise_gain": 0.9,
+        "medium_qrs_noise_gain": 0.52,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.7,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr04_uniform__bad_atten_only_mild",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_atten_only_mild.",
+      "base_variant_id": "single_bw_snr04_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.55,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.78,
+        "medium_nonqrs_noise_gain": 1.18,
+        "medium_tst_noise_gain": 1.25,
+        "bad_qrs_noise_gain": 1.35,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.16
+      }
+    },
+    {
+      "id": "blockwise_switch_snr02_uniform__qrs_soft_boundary",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_soft_boundary.",
+      "base_variant_id": "blockwise_switch_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.35,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.55,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.65,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.15,
+        "bad_qrs_atten": 0.05
+      }
+    },
+    {
+      "id": "blockwise_switch_snr02_uniform__medium_detail_qrs_preserved",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile medium_detail_qrs_preserved.",
+      "base_variant_id": "blockwise_switch_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.3,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.42,
+        "medium_nonqrs_noise_gain": 1.65,
+        "medium_tst_noise_gain": 1.8,
+        "bad_qrs_noise_gain": 1.55,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "blockwise_switch_snr02_uniform__bad_qrs_focus_light",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_light.",
+      "base_variant_id": "blockwise_switch_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.45,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.65,
+        "medium_nonqrs_noise_gain": 1.25,
+        "medium_tst_noise_gain": 1.35,
+        "bad_qrs_noise_gain": 1.9,
+        "bad_nonqrs_noise_gain": 0.9,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "blockwise_switch_snr02_uniform__bad_qrs_focus_strong",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_strong.",
+      "base_variant_id": "blockwise_switch_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.5,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.7,
+        "medium_nonqrs_noise_gain": 1.2,
+        "medium_tst_noise_gain": 1.3,
+        "bad_qrs_noise_gain": 2.25,
+        "bad_nonqrs_noise_gain": 0.85,
+        "bad_tst_noise_gain": 1.0,
+        "bad_qrs_atten": 0.14
+      }
+    },
+    {
+      "id": "blockwise_switch_snr02_uniform__nonqrs_medium_bad_guard",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile nonqrs_medium_bad_guard.",
+      "base_variant_id": "blockwise_switch_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.42,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.48,
+        "medium_nonqrs_noise_gain": 1.85,
+        "medium_tst_noise_gain": 1.95,
+        "bad_qrs_noise_gain": 1.75,
+        "bad_nonqrs_noise_gain": 1.05,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.06
+      }
+    },
+    {
+      "id": "blockwise_switch_snr02_uniform__qrs_boundary_balanced",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_boundary_balanced.",
+      "base_variant_id": "blockwise_switch_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.4,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.58,
+        "medium_nonqrs_noise_gain": 1.45,
+        "medium_tst_noise_gain": 1.55,
+        "bad_qrs_noise_gain": 1.85,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.1
+      }
+    },
+    {
+      "id": "blockwise_switch_snr02_uniform__good_qrs_cleaner",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile good_qrs_cleaner.",
+      "base_variant_id": "blockwise_switch_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.22,
+        "good_nonqrs_noise_gain": 0.9,
+        "medium_qrs_noise_gain": 0.52,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.7,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "blockwise_switch_snr02_uniform__bad_atten_only_mild",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_atten_only_mild.",
+      "base_variant_id": "blockwise_switch_snr02_uniform",
+      "qrs": {
+        "good_qrs_noise_gain": 0.55,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.78,
+        "medium_nonqrs_noise_gain": 1.18,
+        "medium_tst_noise_gain": 1.25,
+        "bad_qrs_noise_gain": 1.35,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.16
+      }
+    },
+    {
+      "id": "blockwise_switch_snr06_triangular__qrs_soft_boundary",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_soft_boundary.",
+      "base_variant_id": "blockwise_switch_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.35,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.55,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.65,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.15,
+        "bad_qrs_atten": 0.05
+      }
+    },
+    {
+      "id": "blockwise_switch_snr06_triangular__medium_detail_qrs_preserved",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile medium_detail_qrs_preserved.",
+      "base_variant_id": "blockwise_switch_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.3,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.42,
+        "medium_nonqrs_noise_gain": 1.65,
+        "medium_tst_noise_gain": 1.8,
+        "bad_qrs_noise_gain": 1.55,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "blockwise_switch_snr06_triangular__bad_qrs_focus_light",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_light.",
+      "base_variant_id": "blockwise_switch_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.45,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.65,
+        "medium_nonqrs_noise_gain": 1.25,
+        "medium_tst_noise_gain": 1.35,
+        "bad_qrs_noise_gain": 1.9,
+        "bad_nonqrs_noise_gain": 0.9,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "blockwise_switch_snr06_triangular__bad_qrs_focus_strong",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_strong.",
+      "base_variant_id": "blockwise_switch_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.5,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.7,
+        "medium_nonqrs_noise_gain": 1.2,
+        "medium_tst_noise_gain": 1.3,
+        "bad_qrs_noise_gain": 2.25,
+        "bad_nonqrs_noise_gain": 0.85,
+        "bad_tst_noise_gain": 1.0,
+        "bad_qrs_atten": 0.14
+      }
+    },
+    {
+      "id": "blockwise_switch_snr06_triangular__nonqrs_medium_bad_guard",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile nonqrs_medium_bad_guard.",
+      "base_variant_id": "blockwise_switch_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.42,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.48,
+        "medium_nonqrs_noise_gain": 1.85,
+        "medium_tst_noise_gain": 1.95,
+        "bad_qrs_noise_gain": 1.75,
+        "bad_nonqrs_noise_gain": 1.05,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.06
+      }
+    },
+    {
+      "id": "blockwise_switch_snr06_triangular__qrs_boundary_balanced",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_boundary_balanced.",
+      "base_variant_id": "blockwise_switch_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.4,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.58,
+        "medium_nonqrs_noise_gain": 1.45,
+        "medium_tst_noise_gain": 1.55,
+        "bad_qrs_noise_gain": 1.85,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.1
+      }
+    },
+    {
+      "id": "blockwise_switch_snr06_triangular__good_qrs_cleaner",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile good_qrs_cleaner.",
+      "base_variant_id": "blockwise_switch_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.22,
+        "good_nonqrs_noise_gain": 0.9,
+        "medium_qrs_noise_gain": 0.52,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.7,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "blockwise_switch_snr06_triangular__bad_atten_only_mild",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_atten_only_mild.",
+      "base_variant_id": "blockwise_switch_snr06_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.55,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.78,
+        "medium_nonqrs_noise_gain": 1.18,
+        "medium_tst_noise_gain": 1.25,
+        "bad_qrs_noise_gain": 1.35,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.16
+      }
+    },
+    {
+      "id": "single_bw_snr08_triangular__qrs_soft_boundary",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_soft_boundary.",
+      "base_variant_id": "single_bw_snr08_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.35,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.55,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.65,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.15,
+        "bad_qrs_atten": 0.05
+      }
+    },
+    {
+      "id": "single_bw_snr08_triangular__medium_detail_qrs_preserved",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile medium_detail_qrs_preserved.",
+      "base_variant_id": "single_bw_snr08_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.3,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.42,
+        "medium_nonqrs_noise_gain": 1.65,
+        "medium_tst_noise_gain": 1.8,
+        "bad_qrs_noise_gain": 1.55,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr08_triangular__bad_qrs_focus_light",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_light.",
+      "base_variant_id": "single_bw_snr08_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.45,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.65,
+        "medium_nonqrs_noise_gain": 1.25,
+        "medium_tst_noise_gain": 1.35,
+        "bad_qrs_noise_gain": 1.9,
+        "bad_nonqrs_noise_gain": 0.9,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr08_triangular__bad_qrs_focus_strong",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_strong.",
+      "base_variant_id": "single_bw_snr08_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.5,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.7,
+        "medium_nonqrs_noise_gain": 1.2,
+        "medium_tst_noise_gain": 1.3,
+        "bad_qrs_noise_gain": 2.25,
+        "bad_nonqrs_noise_gain": 0.85,
+        "bad_tst_noise_gain": 1.0,
+        "bad_qrs_atten": 0.14
+      }
+    },
+    {
+      "id": "single_bw_snr08_triangular__nonqrs_medium_bad_guard",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile nonqrs_medium_bad_guard.",
+      "base_variant_id": "single_bw_snr08_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.42,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.48,
+        "medium_nonqrs_noise_gain": 1.85,
+        "medium_tst_noise_gain": 1.95,
+        "bad_qrs_noise_gain": 1.75,
+        "bad_nonqrs_noise_gain": 1.05,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.06
+      }
+    },
+    {
+      "id": "single_bw_snr08_triangular__qrs_boundary_balanced",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_boundary_balanced.",
+      "base_variant_id": "single_bw_snr08_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.4,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.58,
+        "medium_nonqrs_noise_gain": 1.45,
+        "medium_tst_noise_gain": 1.55,
+        "bad_qrs_noise_gain": 1.85,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.1
+      }
+    },
+    {
+      "id": "single_bw_snr08_triangular__good_qrs_cleaner",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile good_qrs_cleaner.",
+      "base_variant_id": "single_bw_snr08_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.22,
+        "good_nonqrs_noise_gain": 0.9,
+        "medium_qrs_noise_gain": 0.52,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.7,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "single_bw_snr08_triangular__bad_atten_only_mild",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_atten_only_mild.",
+      "base_variant_id": "single_bw_snr08_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.55,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.78,
+        "medium_nonqrs_noise_gain": 1.18,
+        "medium_tst_noise_gain": 1.25,
+        "bad_qrs_noise_gain": 1.35,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.16
+      }
+    },
+    {
+      "id": "blockwise_switch_snr05_triangular__qrs_soft_boundary",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_soft_boundary.",
+      "base_variant_id": "blockwise_switch_snr05_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.35,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.55,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.65,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.15,
+        "bad_qrs_atten": 0.05
+      }
+    },
+    {
+      "id": "blockwise_switch_snr05_triangular__medium_detail_qrs_preserved",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile medium_detail_qrs_preserved.",
+      "base_variant_id": "blockwise_switch_snr05_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.3,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.42,
+        "medium_nonqrs_noise_gain": 1.65,
+        "medium_tst_noise_gain": 1.8,
+        "bad_qrs_noise_gain": 1.55,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "blockwise_switch_snr05_triangular__bad_qrs_focus_light",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_light.",
+      "base_variant_id": "blockwise_switch_snr05_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.45,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.65,
+        "medium_nonqrs_noise_gain": 1.25,
+        "medium_tst_noise_gain": 1.35,
+        "bad_qrs_noise_gain": 1.9,
+        "bad_nonqrs_noise_gain": 0.9,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "blockwise_switch_snr05_triangular__bad_qrs_focus_strong",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_qrs_focus_strong.",
+      "base_variant_id": "blockwise_switch_snr05_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.5,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.7,
+        "medium_nonqrs_noise_gain": 1.2,
+        "medium_tst_noise_gain": 1.3,
+        "bad_qrs_noise_gain": 2.25,
+        "bad_nonqrs_noise_gain": 0.85,
+        "bad_tst_noise_gain": 1.0,
+        "bad_qrs_atten": 0.14
+      }
+    },
+    {
+      "id": "blockwise_switch_snr05_triangular__nonqrs_medium_bad_guard",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile nonqrs_medium_bad_guard.",
+      "base_variant_id": "blockwise_switch_snr05_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.42,
+        "good_nonqrs_noise_gain": 0.95,
+        "medium_qrs_noise_gain": 0.48,
+        "medium_nonqrs_noise_gain": 1.85,
+        "medium_tst_noise_gain": 1.95,
+        "bad_qrs_noise_gain": 1.75,
+        "bad_nonqrs_noise_gain": 1.05,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.06
+      }
+    },
+    {
+      "id": "blockwise_switch_snr05_triangular__qrs_boundary_balanced",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile qrs_boundary_balanced.",
+      "base_variant_id": "blockwise_switch_snr05_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.4,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.58,
+        "medium_nonqrs_noise_gain": 1.45,
+        "medium_tst_noise_gain": 1.55,
+        "bad_qrs_noise_gain": 1.85,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.1,
+        "bad_qrs_atten": 0.1
+      }
+    },
+    {
+      "id": "blockwise_switch_snr05_triangular__good_qrs_cleaner",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile good_qrs_cleaner.",
+      "base_variant_id": "blockwise_switch_snr05_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.22,
+        "good_nonqrs_noise_gain": 0.9,
+        "medium_qrs_noise_gain": 0.52,
+        "medium_nonqrs_noise_gain": 1.35,
+        "medium_tst_noise_gain": 1.45,
+        "bad_qrs_noise_gain": 1.7,
+        "bad_nonqrs_noise_gain": 0.95,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.08
+      }
+    },
+    {
+      "id": "blockwise_switch_snr05_triangular__bad_atten_only_mild",
+      "family": "real_noise_qrs_guided",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Real NSTDB SNR candidate plus light QRS-aware shaping profile bad_atten_only_mild.",
+      "base_variant_id": "blockwise_switch_snr05_triangular",
+      "qrs": {
+        "good_qrs_noise_gain": 0.55,
+        "good_nonqrs_noise_gain": 1.0,
+        "medium_qrs_noise_gain": 0.78,
+        "medium_nonqrs_noise_gain": 1.18,
+        "medium_tst_noise_gain": 1.25,
+        "bad_qrs_noise_gain": 1.35,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.16
+      }
+    }
+  ]
+}

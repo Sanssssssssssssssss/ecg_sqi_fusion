@@ -1,0 +1,10 @@
+row,split,region,true,pred_raw,pred_badcal,correct_raw,correct_badcal,prob_good,prob_medium,prob_bad,is_test,is_bad_core,is_bad_outlier
+21306,test,good_medium_overlap,medium,bad,bad,False,False,0.018363481387495995,0.4269614517688751,0.5546751022338867,True,False,False
+25696,test,outlier_low_confidence,medium,bad,bad,False,False,0.011692438274621964,0.21139287948608398,0.776914656162262,True,False,False
+26080,test,outlier_low_confidence,medium,bad,bad,False,False,0.018665736541152,0.31136712431907654,0.6699671745300293,True,False,False
+26134,test,outlier_low_confidence,medium,bad,bad,False,False,0.04187532514333725,0.28955361247062683,0.6685709953308105,True,False,False
+26176,test,outlier_low_confidence,medium,bad,bad,False,False,0.2170322835445404,0.3495933413505554,0.4333743453025818,True,False,False
+26232,test,outlier_low_confidence,medium,bad,bad,False,False,0.019022630527615547,0.2678045332431793,0.7131728529930115,True,False,False
+26484,test,outlier_low_confidence,medium,bad,bad,False,False,0.02065163664519787,0.37182438373565674,0.6075239181518555,True,False,False
+26601,test,outlier_low_confidence,medium,bad,bad,False,False,0.07096300274133682,0.3687867522239685,0.5602502226829529,True,False,False
+26743,test,outlier_low_confidence,medium,bad,bad,False,False,0.016222674399614334,0.3838847577571869,0.5998925566673279,True,False,False

@@ -1,0 +1,12 @@
+row,split,region,true,pred_raw,pred_badcal,correct_raw,correct_badcal,prob_good,prob_medium,prob_bad,is_test,is_bad_core,is_bad_outlier
+32475,test,near_bad_boundary,bad,medium,bad,False,True,0.010987439192831516,0.6249117851257324,0.3641008138656616,True,True,False
+32488,test,near_bad_boundary,bad,medium,bad,False,True,0.009770858101546764,0.5587517023086548,0.43147745728492737,True,True,False
+32497,test,near_bad_boundary,bad,medium,bad,False,True,0.009590762667357922,0.6836342215538025,0.3067750036716461,True,True,False
+32518,test,near_bad_boundary,bad,medium,bad,False,True,0.01141117699444294,0.7849596738815308,0.20362918078899384,True,True,False
+32544,test,near_bad_boundary,bad,medium,bad,False,True,0.009072070010006428,0.5970104336738586,0.3939174711704254,True,True,False
+32553,test,near_bad_boundary,bad,medium,bad,False,True,0.0127847446128726,0.8360415101051331,0.15117374062538147,True,True,False
+32565,test,near_bad_boundary,bad,medium,bad,False,True,0.010470910929143429,0.724069356918335,0.26545974612236023,True,True,False
+32569,test,near_bad_boundary,bad,medium,bad,False,True,0.010664990171790123,0.8009170293807983,0.1884179562330246,True,True,False
+32578,test,near_bad_boundary,bad,medium,bad,False,True,0.01264900527894497,0.6912192106246948,0.29613178968429565,True,True,False
+32581,test,near_bad_boundary,bad,medium,bad,False,True,0.00822233036160469,0.961068868637085,0.03070882521569729,True,True,False
+32590,test,near_bad_boundary,bad,medium,bad,False,True,0.011843560263514519,0.8128223419189453,0.1753341108560562,True,True,False

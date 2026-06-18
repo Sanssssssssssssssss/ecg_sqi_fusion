@@ -1,0 +1,79 @@
+{
+  "rows": [
+    {
+      "level": 6800,
+      "node_id": "N6800_gm_trim_bad",
+      "variant_id": "nl_n6800_gm_trim_bad_scan_029_sc_overlap_narrow_oscillato_873d37fc4791",
+      "prediction_mode": "medium_guarded_pmed001",
+      "acc": 0.950294,
+      "macro_f1": 0.955047,
+      "good_recall": 0.965441,
+      "medium_recall": 0.9225,
+      "bad_recall": 0.971352,
+      "good_to_medium": null,
+      "medium_to_good": null,
+      "promoted": true,
+      "source": "known_promoted_state"
+    },
+    {
+      "level": 7000,
+      "node_id": "N7000_gm_trim_bad",
+      "variant_id": "nl_n7000_gm_trim_bad_geom_pc1flat_g030_m038_g126_m168_b15_9160023afe86",
+      "prediction_mode": "medium_guarded_pmed0005",
+      "acc": 0.961402,
+      "macro_f1": 0.964748,
+      "good_recall": 0.972714,
+      "medium_recall": 0.944714,
+      "bad_recall": 0.970617,
+      "good_to_medium": null,
+      "medium_to_good": null,
+      "promoted": true,
+      "source": "known_promoted_state"
+    },
+    {
+      "level": 7050,
+      "node_id": "N7050_gm_trim_bad",
+      "variant_id": "nl_n7050_gm_trim_bad_geom_pc1flat_g018_m026_g122_m170_b15_98a5e745864d",
+      "prediction_mode": "medium_guarded_pmed001",
+      "acc": 0.9239991201055874,
+      "macro_f1": 0.9326898825384388,
+      "good_recall": 0.9380141843971632,
+      "medium_recall": 0.8829787234042553,
+      "bad_recall": 0.970617042115573,
+      "good_to_medium": 437,
+      "medium_to_good": 825,
+      "promoted": false,
+      "source": "current_diagnostic"
+    },
+    {
+      "level": 7100,
+      "node_id": "N7100_gm_trim_bad",
+      "variant_id": "nl_n7100_gm_trim_bad_geom_pc1flat_g030_m038_g126_m168_b15_7ff4e49ac675",
+      "prediction_mode": "medium_guarded_pmed0005",
+      "acc": 0.9423539706847516,
+      "macro_f1": 0.9485645638497744,
+      "good_recall": 0.9364788732394366,
+      "medium_recall": 0.9319718309859156,
+      "bad_recall": 0.970617042115573,
+      "good_to_medium": 451,
+      "medium_to_good": 483,
+      "promoted": false,
+      "source": "geometry_gate_diagnostic_promote_summary_2026-06-11T02:10:43"
+    },
+    {
+      "level": 7200,
+      "node_id": "N7200_gm_trim_bad",
+      "variant_id": "nl_n7200_gm_trim_bad_geom_tri_atlaspc2_matchold_g002_m006_942f7f261b19",
+      "prediction_mode": "calibrated",
+      "acc": 0.9396234581259468,
+      "macro_f1": 0.946347886638812,
+      "good_recall": 0.9334722222222224,
+      "medium_recall": 0.9281944444444444,
+      "bad_recall": 0.970617042115573,
+      "good_to_medium": 479,
+      "medium_to_good": 517,
+      "promoted": false,
+      "source": "geometry_gate_diagnostic_promote_summary_2026-06-11T01:41:09"
+    }
+  ]
+}

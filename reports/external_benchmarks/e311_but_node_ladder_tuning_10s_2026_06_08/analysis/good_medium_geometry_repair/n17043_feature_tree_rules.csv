@@ -1,0 +1,249 @@
+model,tree
+dtree_depth3_leaf50_trainval_node,"|--- pc1 <= 7.82
+|   |--- pc1 <= -1.93
+|   |   |--- boundary_confidence <= 0.35
+|   |   |   |--- class: 1
+|   |   |--- boundary_confidence >  0.35
+|   |   |   |--- class: 0
+|   |--- pc1 >  -1.93
+|   |   |--- pca_margin <= 0.00
+|   |   |   |--- class: 0
+|   |   |--- pca_margin >  0.00
+|   |   |   |--- class: 1
+|--- pc1 >  7.82
+|   |--- class: 2
+"
+dtree_depth4_leaf50_trainval_node,"|--- pc1 <= 7.82
+|   |--- pc1 <= -1.93
+|   |   |--- boundary_confidence <= 0.35
+|   |   |   |--- pc2 <= 0.61
+|   |   |   |   |--- class: 1
+|   |   |   |--- pc2 >  0.61
+|   |   |   |   |--- class: 1
+|   |   |--- boundary_confidence >  0.35
+|   |   |   |--- sqi_sSQI <= -0.44
+|   |   |   |   |--- class: 1
+|   |   |   |--- sqi_sSQI >  -0.44
+|   |   |   |   |--- class: 0
+|   |--- pc1 >  -1.93
+|   |   |--- pca_margin <= 0.00
+|   |   |   |--- pca_margin <= -0.26
+|   |   |   |   |--- class: 0
+|   |   |   |--- pca_margin >  -0.26
+|   |   |   |   |--- class: 0
+|   |   |--- pca_margin >  0.00
+|   |   |   |--- band_15_30 <= 0.37
+|   |   |   |   |--- class: 1
+|   |   |   |--- band_15_30 >  0.37
+|   |   |   |   |--- class: 0
+|--- pc1 >  7.82
+|   |--- class: 2
+"
+dtree_depth5_leaf50_trainval_node,"|--- pc1 <= 7.82
+|   |--- pc1 <= -1.93
+|   |   |--- boundary_confidence <= 0.35
+|   |   |   |--- pc2 <= 0.61
+|   |   |   |   |--- boundary_confidence <= 0.26
+|   |   |   |   |   |--- class: 1
+|   |   |   |   |--- boundary_confidence >  0.26
+|   |   |   |   |   |--- class: 1
+|   |   |   |--- pc2 >  0.61
+|   |   |   |   |--- boundary_confidence <= 0.29
+|   |   |   |   |   |--- class: 1
+|   |   |   |   |--- boundary_confidence >  0.29
+|   |   |   |   |   |--- class: 0
+|   |   |--- boundary_confidence >  0.35
+|   |   |   |--- sqi_sSQI <= -0.44
+|   |   |   |   |--- flatline_ratio <= 0.39
+|   |   |   |   |   |--- class: 1
+|   |   |   |   |--- flatline_ratio >  0.39
+|   |   |   |   |   |--- class: 0
+|   |   |   |--- sqi_sSQI >  -0.44
+|   |   |   |   |--- knn_label_purity <= 0.58
+|   |   |   |   |   |--- class: 0
+|   |   |   |   |--- knn_label_purity >  0.58
+|   |   |   |   |   |--- class: 0
+|   |--- pc1 >  -1.93
+|   |   |--- pca_margin <= 0.00
+|   |   |   |--- pca_margin <= -0.26
+|   |   |   |   |--- pc2 <= -3.07
+|   |   |   |   |   |--- class: 0
+|   |   |   |   |--- pc2 >  -3.07
+|   |   |   |   |   |--- class: 0
+|   |   |   |--- pca_margin >  -0.26
+|   |   |   |   |--- boundary_confidence <= 0.39
+|   |   |   |   |   |--- class: 1
+|   |   |   |   |--- boundary_confidence >  0.39
+|   |   |   |   |   |--- class: 0
+|   |   |--- pca_margin >  0.00
+|   |   |   |--- band_15_30 <= 0.37
+|   |   |   |   |--- qrs_visibility <= 0.58
+|   |   |   |   |   |--- class: 1
+|   |   |   |   |--- qrs_visibility >  0.58
+|   |   |   |   |   |--- class: 0
+|   |   |   |--- band_15_30 >  0.37
+|   |   |   |   |--- class: 0
+|--- pc1 >  7.82
+|   |--- class: 2
+"
+dtree_depth8_leaf10_trainval_node,"|--- pc1 <= 7.82
+|   |--- pc1 <= -1.93
+|   |   |--- boundary_confidence <= 0.35
+|   |   |   |--- pc2 <= 0.61
+|   |   |   |   |--- boundary_confidence <= 0.34
+|   |   |   |   |   |--- ptp_p99_p01 <= 2.16
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- ptp_p99_p01 >  2.16
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |--- boundary_confidence >  0.34
+|   |   |   |   |   |--- class: 1
+|   |   |   |--- pc2 >  0.61
+|   |   |   |   |--- boundary_confidence <= 0.29
+|   |   |   |   |   |--- pc3 <= -0.37
+|   |   |   |   |   |   |--- pca_margin <= 0.36
+|   |   |   |   |   |   |   |--- pc1 <= -3.51
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- pc1 >  -3.51
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- pca_margin >  0.36
+|   |   |   |   |   |   |   |--- pc1 <= -4.17
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |--- pc1 >  -4.17
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- pc3 >  -0.37
+|   |   |   |   |   |   |--- pca_margin <= -0.65
+|   |   |   |   |   |   |   |--- amplitude_entropy <= 0.77
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |--- amplitude_entropy >  0.77
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |--- pca_margin >  -0.65
+|   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |--- boundary_confidence >  0.29
+|   |   |   |   |   |--- fatal_or_score <= 0.92
+|   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |--- fatal_or_score >  0.92
+|   |   |   |   |   |   |--- pca_margin <= -0.26
+|   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |--- pca_margin >  -0.26
+|   |   |   |   |   |   |   |--- pc1 <= -4.21
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |--- pc1 >  -4.21
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |--- boundary_confidence >  0.35
+|   |   |   |--- sqi_sSQI <= -0.44
+|   |   |   |   |--- flatline_ratio <= 0.39
+|   |   |   |   |   |--- flatline_ratio <= 0.28
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- flatline_ratio >  0.28
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |--- flatline_ratio >  0.39
+|   |   |   |   |   |--- class: 0
+|   |   |   |--- sqi_sSQI >  -0.44
+|   |   |   |   |--- knn_label_purity <= 0.48
+|   |   |   |   |   |--- amplitude_entropy <= 0.64
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- amplitude_entropy >  0.64
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |--- knn_label_purity >  0.48
+|   |   |   |   |   |--- pc4 <= -2.34
+|   |   |   |   |   |   |--- pc3 <= -0.79
+|   |   |   |   |   |   |   |--- ptp_p99_p01 <= 1.02
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |--- ptp_p99_p01 >  1.02
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |--- pc3 >  -0.79
+|   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- pc4 >  -2.34
+|   |   |   |   |   |   |--- template_corr <= 0.48
+|   |   |   |   |   |   |   |--- pc4 <= -0.36
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- pc4 >  -0.36
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |--- template_corr >  0.48
+|   |   |   |   |   |   |   |--- boundary_confidence <= 0.42
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |--- boundary_confidence >  0.42
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |--- pc1 >  -1.93
+|   |   |--- pca_margin <= 0.00
+|   |   |   |--- pca_margin <= -0.26
+|   |   |   |   |--- pc2 <= -3.10
+|   |   |   |   |   |--- pc1 <= -1.44
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- pc1 >  -1.44
+|   |   |   |   |   |   |--- non_qrs_diff_p95 <= 0.09
+|   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |--- non_qrs_diff_p95 >  0.09
+|   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |--- pc2 >  -3.10
+|   |   |   |   |   |--- pc1 <= -1.90
+|   |   |   |   |   |   |--- detector_agreement <= 0.27
+|   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |--- detector_agreement >  0.27
+|   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- pc1 >  -1.90
+|   |   |   |   |   |   |--- non_qrs_diff_p95 <= 0.21
+|   |   |   |   |   |   |   |--- pca_margin <= -0.57
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |--- pca_margin >  -0.57
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |--- non_qrs_diff_p95 >  0.21
+|   |   |   |   |   |   |   |--- class: 0
+|   |   |   |--- pca_margin >  -0.26
+|   |   |   |   |--- boundary_confidence <= 0.34
+|   |   |   |   |   |--- flatline_ratio <= 0.11
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- flatline_ratio >  0.11
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |--- boundary_confidence >  0.34
+|   |   |   |   |   |--- pc3 <= 0.57
+|   |   |   |   |   |   |--- band_15_30 <= 0.29
+|   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- band_15_30 >  0.29
+|   |   |   |   |   |   |   |--- pca_margin <= -0.18
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |   |   |--- pca_margin >  -0.18
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |--- pc3 >  0.57
+|   |   |   |   |   |   |--- class: 0
+|   |   |--- pca_margin >  0.00
+|   |   |   |--- band_15_30 <= 0.37
+|   |   |   |   |--- qrs_visibility <= 0.61
+|   |   |   |   |   |--- pca_margin <= 0.27
+|   |   |   |   |   |   |--- boundary_confidence <= 0.37
+|   |   |   |   |   |   |   |--- pc3 <= 0.51
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- pc3 >  0.51
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- boundary_confidence >  0.37
+|   |   |   |   |   |   |   |--- qrs_visibility <= 0.53
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- qrs_visibility >  0.53
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |--- pca_margin >  0.27
+|   |   |   |   |   |   |--- qrs_visibility <= 0.56
+|   |   |   |   |   |   |   |--- pc1 <= -1.83
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- pc1 >  -1.83
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |--- qrs_visibility >  0.56
+|   |   |   |   |   |   |   |--- boundary_confidence <= 0.36
+|   |   |   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |   |   |--- boundary_confidence >  0.36
+|   |   |   |   |   |   |   |   |--- class: 0
+|   |   |   |   |--- qrs_visibility >  0.61
+|   |   |   |   |   |--- pc3 <= 1.90
+|   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |--- pc3 >  1.90
+|   |   |   |   |   |   |--- class: 0
+|   |   |   |--- band_15_30 >  0.37
+|   |   |   |   |--- pc1 <= -0.85
+|   |   |   |   |   |--- pc3 <= -0.43
+|   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |--- pc3 >  -0.43
+|   |   |   |   |   |   |--- class: 0
+|   |   |   |   |--- pc1 >  -0.85
+|   |   |   |   |   |--- class: 1
+|--- pc1 >  7.82
+|   |--- class: 2
+"

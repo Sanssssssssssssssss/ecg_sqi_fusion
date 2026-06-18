@@ -1,0 +1,2 @@
+row,split,region,true,pred_raw,pred_badcal,correct_raw,correct_badcal,prob_good,prob_medium,prob_bad,is_test,is_bad_core,is_bad_outlier
+32578,test,near_bad_boundary,bad,medium,bad,False,True,0.0009886623593047261,0.6572055220603943,0.3418058454990387,True,True,False

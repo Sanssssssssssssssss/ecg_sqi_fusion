@@ -1,0 +1,138 @@
+{
+  "selected": {
+    "top_filtered_acc": {
+      "variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good122_mid174_seed20260721",
+      "prediction_mode": "calibrated",
+      "scope": "original_test_drop_bad_outlier",
+      "n": 8185,
+      "acc": 0.7759315821624924,
+      "balanced_acc": 0.5227229954862128,
+      "macro_f1": 0.520202713335777,
+      "good_recall": 0.7502747252747253,
+      "medium_recall": 0.8178942611839133,
+      "bad_recall": 0.0,
+      "good_precision": 0.7754116978989211,
+      "medium_precision": 0.7789972024962342,
+      "bad_precision": 0.0,
+      "good_f1": 0.7626361351577772,
+      "medium_f1": 0.7979720048495537,
+      "bad_f1": 0.0,
+      "support_good": 3640,
+      "support_medium": 4426,
+      "support_bad": 119,
+      "confusion_3x3": "[[2731, 908, 1], [791, 3620, 15], [0, 119, 0]]"
+    },
+    "best_filtered_macro": {
+      "variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good128_mid168_837d9498a6ae",
+      "prediction_mode": "calibrated",
+      "scope": "original_test_drop_bad_outlier",
+      "n": 8185,
+      "acc": 0.7277947464874771,
+      "balanced_acc": 0.7274693314358661,
+      "macro_f1": 0.7634958047248084,
+      "good_recall": 0.7502747252747253,
+      "medium_recall": 0.7094441934026209,
+      "bad_recall": 0.7226890756302521,
+      "good_precision": 0.6798605924819517,
+      "medium_precision": 0.7692307692307693,
+      "bad_precision": 1.0,
+      "good_f1": 0.7133342039963432,
+      "medium_f1": 0.7381288199341796,
+      "bad_f1": 0.8390243902439024,
+      "support_good": 3640,
+      "support_medium": 4426,
+      "support_bad": 119,
+      "confusion_3x3": "[[2731, 909, 0], [1286, 3140, 0], [0, 33, 86]]"
+    },
+    "best_clean_node": {
+      "node_id": "N7200_gm_trim_bad",
+      "node_level": 7200,
+      "variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_seed20260722",
+      "base_variant_id": "nl_n7200_gm_trim_bad_goodlike_aux_tail_a12_good126_mid170_seed20260722",
+      "cls_loss_variant": "soft_sample_weighted_ce",
+      "prediction_mode": "raw",
+      "n_total": 18484,
+      "acc": 0.931887037437784,
+      "balanced_acc": 0.9374741992237094,
+      "macro_f1": 0.939770169052314,
+      "good_recall": 0.9166666666666666,
+      "medium_recall": 0.9251388888888888,
+      "bad_recall": 0.970617042115573,
+      "confusion_3x3": "[[6600, 600, 0], [539, 6661, 0], [0, 120, 3964]]",
+      "original_but_acc": 0.7270260705438245,
+      "original_but_macro_f1": 0.4940170462316285,
+      "score": 0.1651076455091615,
+      "bad_64d_KS": 0.5722391114715966,
+      "medium_64d_KS": 0.1983224826388888,
+      "good_64d_KS": 0.2453125,
+      "domain_separability": 1.0,
+      "medium_guard_medium_prob_min": NaN,
+      "medium_guard_bad_prob_max": NaN,
+      "medium_guard_flip_total": NaN,
+      "medium_guard_note": NaN
+    }
+  },
+  "counts": {
+    "node_trim": {
+      "node_id": "N7200_gm_trim_bad",
+      "kept_counts": {
+        "bad": 4084,
+        "good": 7200,
+        "medium": 7200
+      },
+      "removed_counts": {
+        "bad": 1201
+      },
+      "kept_total": 18484,
+      "source_before_trim_total": 19685,
+      "source_before_trim_bad": 5285
+    },
+    "original_test_region_counts": [
+      {
+        "y_class": "bad",
+        "original_region": "near_bad_boundary",
+        "n": 119
+      },
+      {
+        "y_class": "bad",
+        "original_region": "outlier_low_confidence",
+        "n": 292
+      },
+      {
+        "y_class": "good",
+        "original_region": "clean_core",
+        "n": 38
+      },
+      {
+        "y_class": "good",
+        "original_region": "good_medium_overlap",
+        "n": 1191
+      },
+      {
+        "y_class": "good",
+        "original_region": "outlier_low_confidence",
+        "n": 2411
+      },
+      {
+        "y_class": "medium",
+        "original_region": "clean_core",
+        "n": 531
+      },
+      {
+        "y_class": "medium",
+        "original_region": "good_medium_overlap",
+        "n": 1711
+      },
+      {
+        "y_class": "medium",
+        "original_region": "medium_bad_overlap",
+        "n": 5
+      },
+      {
+        "y_class": "medium",
+        "original_region": "outlier_low_confidence",
+        "n": 2179
+      }
+    ]
+  }
+}

@@ -1,0 +1,91 @@
+|--- pc1 <= 7.82
+|   |--- pc1 <= -1.51
+|   |   |--- pc1 <= -2.37
+|   |   |   |--- qrs_prom_p90 <= 3.76
+|   |   |   |   |--- pc4 <= -1.49
+|   |   |   |   |   |--- band_15_30 <= 0.13
+|   |   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |   |   |--- band_15_30 >  0.13
+|   |   |   |   |   |   |--- class: 0
+|   |   |   |   |--- pc4 >  -1.49
+|   |   |   |   |   |--- detector_agreement <= 0.26
+|   |   |   |   |   |   |--- truncated branch of depth 4
+|   |   |   |   |   |--- detector_agreement >  0.26
+|   |   |   |   |   |   |--- class: 0
+|   |   |   |--- qrs_prom_p90 >  3.76
+|   |   |   |   |--- pc1 <= -3.21
+|   |   |   |   |   |--- qrs_prom_p90 <= 4.54
+|   |   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |   |   |--- qrs_prom_p90 >  4.54
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |--- pc1 >  -3.21
+|   |   |   |   |   |--- non_qrs_rms_ratio <= 0.24
+|   |   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |   |   |--- non_qrs_rms_ratio >  0.24
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |--- pc1 >  -2.37
+|   |   |   |--- pc4 <= -0.70
+|   |   |   |   |--- band_15_30 <= 0.18
+|   |   |   |   |   |--- non_qrs_diff_p95 <= 0.03
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |   |--- non_qrs_diff_p95 >  0.03
+|   |   |   |   |   |   |--- class: 1
+|   |   |   |   |--- band_15_30 >  0.18
+|   |   |   |   |   |--- amplitude_entropy <= 0.67
+|   |   |   |   |   |   |--- truncated branch of depth 4
+|   |   |   |   |   |--- amplitude_entropy >  0.67
+|   |   |   |   |   |   |--- truncated branch of depth 4
+|   |   |   |--- pc4 >  -0.70
+|   |   |   |   |--- pc4 <= 0.38
+|   |   |   |   |   |--- non_qrs_rms_ratio <= 0.27
+|   |   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |   |   |--- non_qrs_rms_ratio >  0.27
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |--- pc4 >  0.38
+|   |   |   |   |   |--- std <= 0.32
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- std >  0.32
+|   |   |   |   |   |   |--- class: 0
+|   |--- pc1 >  -1.51
+|   |   |--- detail_instability <= 1.69
+|   |   |   |--- pc1 <= -0.81
+|   |   |   |   |--- pc4 <= 0.21
+|   |   |   |   |   |--- qrs_band_ratio <= 0.57
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- qrs_band_ratio >  0.57
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |--- pc4 >  0.21
+|   |   |   |   |   |--- qrs_prom_p90 <= 6.06
+|   |   |   |   |   |   |--- class: 0
+|   |   |   |   |   |--- qrs_prom_p90 >  6.06
+|   |   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |--- pc1 >  -0.81
+|   |   |   |   |--- pc1 <= 0.44
+|   |   |   |   |   |--- pc3 <= 3.96
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- pc3 >  3.96
+|   |   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |   |--- pc1 >  0.44
+|   |   |   |   |   |--- non_qrs_diff_p95 <= 0.07
+|   |   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |   |   |--- non_qrs_diff_p95 >  0.07
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |--- detail_instability >  1.69
+|   |   |   |--- detail_instability <= 2.76
+|   |   |   |   |--- non_qrs_diff_p95 <= 0.07
+|   |   |   |   |   |--- band_15_30 <= 0.27
+|   |   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |   |   |--- band_15_30 >  0.27
+|   |   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |   |--- non_qrs_diff_p95 >  0.07
+|   |   |   |   |   |--- std <= 0.29
+|   |   |   |   |   |   |--- truncated branch of depth 5
+|   |   |   |   |   |--- std >  0.29
+|   |   |   |   |   |   |--- truncated branch of depth 4
+|   |   |   |--- detail_instability >  2.76
+|   |   |   |   |--- qrs_band_ratio <= 0.56
+|   |   |   |   |   |--- class: 0
+|   |   |   |   |--- qrs_band_ratio >  0.56
+|   |   |   |   |   |--- class: 0
+|--- pc1 >  7.82
+|   |--- class: 2

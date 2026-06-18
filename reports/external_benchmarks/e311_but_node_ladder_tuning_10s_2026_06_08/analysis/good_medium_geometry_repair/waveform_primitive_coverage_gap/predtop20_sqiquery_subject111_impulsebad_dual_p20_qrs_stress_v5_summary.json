@@ -1,0 +1,13 @@
+{
+  "candidate": "predtop20_sqiquery_subject111_impulsebad_dual_p20",
+  "bank": "qrs_stress_v5",
+  "n_synthetic_train": 9229,
+  "n_original_test": 8477,
+  "correct_nn_dist_median": 16.823184967041016,
+  "wrong_nn_dist_median": 25.028547286987305,
+  "correct_same_class_nn_rate": 0.9404591104734576,
+  "wrong_same_class_nn_rate": 0.31320504313205044,
+  "bad_outlier_wrong_nn_dist_median": 29.024721145629883,
+  "medium_to_good_nn_dist_median": 39.47016143798828,
+  "good_to_medium_nn_dist_median": 15.93295669555664
+}

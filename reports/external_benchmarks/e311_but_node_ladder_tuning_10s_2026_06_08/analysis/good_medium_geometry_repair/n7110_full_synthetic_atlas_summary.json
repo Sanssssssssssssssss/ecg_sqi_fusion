@@ -1,0 +1,67 @@
+{
+  "created_at": "2026-06-11T19:17:13",
+  "variants": [
+    {
+      "variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+      "rows": 15919,
+      "morph_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d\\synthetic_morph_features.csv",
+      "atlas_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d\\synthetic_atlas64_features.csv",
+      "columns": 72,
+      "class_counts": {
+        "bad": 5107,
+        "good": 5307,
+        "medium": 5505
+      },
+      "split_counts": {
+        "test": 2288,
+        "train": 11362,
+        "val": 2269
+      },
+      "by_class": {
+        "bad": {
+          "n": 5107,
+          "finite_counts": {
+            "flatline_ratio": 5107,
+            "qrs_visibility": 5107,
+            "non_qrs_diff_p95": 5107,
+            "rms": 5107,
+            "std": 5107,
+            "mean_abs": 5107,
+            "sqi_bSQI": 5107,
+            "sqi_sSQI": 5107,
+            "sqi_kSQI": 5107
+          }
+        },
+        "good": {
+          "n": 5307,
+          "finite_counts": {
+            "flatline_ratio": 5307,
+            "qrs_visibility": 5307,
+            "non_qrs_diff_p95": 5307,
+            "rms": 5307,
+            "std": 5307,
+            "mean_abs": 5307,
+            "sqi_bSQI": 5307,
+            "sqi_sSQI": 5307,
+            "sqi_kSQI": 5307
+          }
+        },
+        "medium": {
+          "n": 5505,
+          "finite_counts": {
+            "flatline_ratio": 5505,
+            "qrs_visibility": 5505,
+            "non_qrs_diff_p95": 5505,
+            "rms": 5505,
+            "std": 5505,
+            "mean_abs": 5505,
+            "sqi_bSQI": 5505,
+            "sqi_sSQI": 5505,
+            "sqi_kSQI": 5505
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "rows": [
+    {
+      "y_class": "medium",
+      "pred_calibrated_class": "medium",
+      "error_type": "correct",
+      "n": 3374
+    },
+    {
+      "y_class": "good",
+      "pred_calibrated_class": "good",
+      "error_type": "correct",
+      "n": 3120
+    },
+    {
+      "y_class": "medium",
+      "pred_calibrated_class": "good",
+      "error_type": "medium_to_good",
+      "n": 816
+    },
+    {
+      "y_class": "good",
+      "pred_calibrated_class": "medium",
+      "error_type": "good_to_medium",
+      "n": 518
+    },
+    {
+      "y_class": "bad",
+      "pred_calibrated_class": "bad",
+      "error_type": "correct_bad",
+      "n": 237
+    },
+    {
+      "y_class": "medium",
+      "pred_calibrated_class": "bad",
+      "error_type": "medium_to_bad",
+      "n": 236
+    },
+    {
+      "y_class": "bad",
+      "pred_calibrated_class": "medium",
+      "error_type": "bad_missed",
+      "n": 158
+    },
+    {
+      "y_class": "bad",
+      "pred_calibrated_class": "good",
+      "error_type": "bad_missed",
+      "n": 16
+    },
+    {
+      "y_class": "good",
+      "pred_calibrated_class": "bad",
+      "error_type": "good_false_bad",
+      "n": 2
+    }
+  ]
+}

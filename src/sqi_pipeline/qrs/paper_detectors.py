@@ -60,17 +60,19 @@ def _safe_record_name(record_id: str) -> str:
     return safe[:80] or "record"
 
 
-def _write_temp_wfdb_record(
+def _write_temp_wfdb_record_any(
     tmp_dir: Path,
     record_id: str,
-    sig12: np.ndarray,
+    sig_in: np.ndarray,
     fs: int,
     leads: list[str],
 ) -> str:
-    if leads != LEADS_12:
-        raise ValueError(f"paper QRS expects 12-lead order {LEADS_12}, got {leads}")
     record_name = _safe_record_name(record_id)
-    sig = np.asarray(sig12, dtype=np.float64)
+    sig = np.asarray(sig_in, dtype=np.float64)
+    if sig.ndim != 2:
+        raise ValueError(f"temporary WFDB record expects 2D signal, got {sig.shape}")
+    if sig.shape[1] != len(leads):
+        raise ValueError(f"lead count mismatch: signal has {sig.shape[1]} columns, leads={leads}")
     wfdb.wrsamp(
         record_name=record_name,
         fs=float(fs),
@@ -84,6 +86,18 @@ def _write_temp_wfdb_record(
         write_dir=str(tmp_dir),
     )
     return record_name
+
+
+def _write_temp_wfdb_record(
+    tmp_dir: Path,
+    record_id: str,
+    sig12: np.ndarray,
+    fs: int,
+    leads: list[str],
+) -> str:
+    if leads != LEADS_12:
+        raise ValueError(f"paper QRS expects 12-lead order {LEADS_12}, got {leads}")
+    return _write_temp_wfdb_record_any(tmp_dir, record_id, sig12, fs, leads)
 
 
 def _prepend_warmup(sig12: np.ndarray, warmup_samples: int) -> tuple[np.ndarray, int]:
@@ -187,3 +201,89 @@ def run_paper_qrs_12lead(
             epl_all.append(np.unique(epl.astype(int)))
 
     return wqrs_all, epl_all
+
+
+def run_wqrs_multilead(
+    *,
+    record_id: str,
+    sig: np.ndarray,
+    fs: int,
+    leads: list[str],
+    executable: Path,
+    work_dir: Path,
+) -> list[np.ndarray]:
+    """Run the paper wqrs executable on an arbitrary multi-lead WFDB record."""
+    work_dir.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="paper_wqrs_", dir=str(work_dir)) as td:
+        tmp_dir = Path(td)
+        record_name = _write_temp_wfdb_record_any(tmp_dir, f"{record_id}_wqrs", sig, fs, leads)
+        out: list[np.ndarray] = []
+        for lead in leads:
+            _remove_ann(tmp_dir, record_name, "wqrs")
+            _run_command(executable, ["-r", record_name, "-s", lead], cwd=tmp_dir)
+            out.append(_read_ann_samples(tmp_dir, record_name, "wqrs"))
+    return out
+
+
+def run_eplimited_multilead(
+    *,
+    record_id: str,
+    sig: np.ndarray,
+    fs: int,
+    leads: list[str],
+    executable: Path,
+    work_dir: Path,
+    eplimited_warmup_sec: float = 8.0,
+) -> list[np.ndarray]:
+    """Run the paper EP Limited detector on an arbitrary multi-lead WFDB record."""
+    work_dir.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="paper_epl_", dir=str(work_dir)) as td:
+        tmp_dir = Path(td)
+        sig_arr = np.asarray(sig, dtype=np.float64)
+        warmup_samples = int(round(float(eplimited_warmup_sec) * fs))
+        sig_epl, epl_offset = _prepend_warmup(sig_arr, warmup_samples)
+        epl_record_name = _write_temp_wfdb_record_any(tmp_dir, f"{record_id}_epl", sig_epl, fs, leads)
+        epl_end = epl_offset + sig_arr.shape[0]
+
+        out: list[np.ndarray] = []
+        for lead in leads:
+            _remove_ann(tmp_dir, epl_record_name, "epl")
+            _run_command(executable, ["-r", epl_record_name, "-s", lead], cwd=tmp_dir)
+            epl = _read_ann_samples(tmp_dir, epl_record_name, "epl")
+            if epl_offset:
+                epl = epl[(epl >= epl_offset) & (epl < epl_end)] - epl_offset
+            else:
+                epl = epl[epl < sig_arr.shape[0]]
+            out.append(np.unique(epl.astype(int)))
+    return out
+
+
+def run_paper_qrs_multilead(
+    *,
+    record_id: str,
+    sig: np.ndarray,
+    fs: int,
+    leads: list[str],
+    executables: PaperQRSExecutables,
+    work_dir: Path,
+    eplimited_warmup_sec: float = 8.0,
+) -> tuple[list[np.ndarray], list[np.ndarray]]:
+    """Run paper wqrs and EP Limited detectors on arbitrary lead sets."""
+    wqrs = run_wqrs_multilead(
+        record_id=record_id,
+        sig=sig,
+        fs=fs,
+        leads=leads,
+        executable=executables.wqrs,
+        work_dir=work_dir,
+    )
+    epl = run_eplimited_multilead(
+        record_id=record_id,
+        sig=sig,
+        fs=fs,
+        leads=leads,
+        executable=executables.eplimited,
+        work_dir=work_dir,
+        eplimited_warmup_sec=eplimited_warmup_sec,
+    )
+    return wqrs, epl

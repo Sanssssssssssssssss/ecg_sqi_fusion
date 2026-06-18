@@ -1,0 +1,21 @@
+{
+  "selected_n7100": 18284,
+  "selected_n7150": 18384,
+  "candidate_added_7100_to_7150": 100,
+  "selected_n7125_added": 50,
+  "class_counts": {
+    "good": 25,
+    "medium": 25
+  },
+  "region_counts": {
+    "good_medium_overlap": 35,
+    "clean_core": 10,
+    "outlier_low_confidence": 5
+  },
+  "ambiguous_type_counts": {
+    "good_medium_boundary": 35,
+    "clean_or_target": 10,
+    "good_medium_low_purity": 3,
+    "isolated_medium": 2
+  }
+}

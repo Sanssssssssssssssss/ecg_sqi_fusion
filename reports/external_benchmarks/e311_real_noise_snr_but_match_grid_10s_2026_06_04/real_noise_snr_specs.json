@@ -1,0 +1,3524 @@
+{
+  "rows": [
+    {
+      "id": "single_em_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_em",
+        "mode": "weighted",
+        "weights": {
+          "em": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_em_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_em",
+        "mode": "weighted",
+        "weights": {
+          "em": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_em_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_em",
+        "mode": "weighted",
+        "weights": {
+          "em": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_em_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_em",
+        "mode": "weighted",
+        "weights": {
+          "em": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_em_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_em",
+        "mode": "weighted",
+        "weights": {
+          "em": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_em_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_em",
+        "mode": "weighted",
+        "weights": {
+          "em": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_em_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_em",
+        "mode": "weighted",
+        "weights": {
+          "em": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_em_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_em",
+        "mode": "weighted",
+        "weights": {
+          "em": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_ma_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_ma",
+        "mode": "weighted",
+        "weights": {
+          "ma": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_ma_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_ma",
+        "mode": "weighted",
+        "weights": {
+          "ma": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_ma_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_ma",
+        "mode": "weighted",
+        "weights": {
+          "ma": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_ma_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_ma",
+        "mode": "weighted",
+        "weights": {
+          "ma": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_ma_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_ma",
+        "mode": "weighted",
+        "weights": {
+          "ma": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_ma_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_ma",
+        "mode": "weighted",
+        "weights": {
+          "ma": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_ma_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_ma",
+        "mode": "weighted",
+        "weights": {
+          "ma": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_ma_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_ma",
+        "mode": "weighted",
+        "weights": {
+          "ma": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_bw_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_bw_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_bw_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_bw_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_bw_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_bw_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_bw_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "single_bw_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "single_bw",
+        "mode": "weighted",
+        "weights": {
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_ma_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_ma",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "ma": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_ma_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_ma",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "ma": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_ma_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_ma",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "ma": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_ma_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_ma",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "ma": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_ma_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_ma",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "ma": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_ma_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_ma",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "ma": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_ma_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_ma",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "ma": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_ma_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_ma",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "ma": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_bw_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_bw_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_bw_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_bw_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_bw_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_bw_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_bw_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_em_bw_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_ma_bw_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_ma_bw",
+        "mode": "weighted",
+        "weights": {
+          "ma": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_ma_bw_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_ma_bw",
+        "mode": "weighted",
+        "weights": {
+          "ma": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_ma_bw_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_ma_bw",
+        "mode": "weighted",
+        "weights": {
+          "ma": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_ma_bw_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_ma_bw",
+        "mode": "weighted",
+        "weights": {
+          "ma": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_ma_bw_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_ma_bw",
+        "mode": "weighted",
+        "weights": {
+          "ma": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_ma_bw_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_ma_bw",
+        "mode": "weighted",
+        "weights": {
+          "ma": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_ma_bw_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_ma_bw",
+        "mode": "weighted",
+        "weights": {
+          "ma": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "pair_ma_bw_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_ma_bw",
+        "mode": "weighted",
+        "weights": {
+          "ma": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "triple_balanced_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "triple_balanced",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.3333333333333333,
+          "ma": 0.3333333333333333,
+          "bw": 0.3333333333333333
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "triple_balanced_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "triple_balanced",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.3333333333333333,
+          "ma": 0.3333333333333333,
+          "bw": 0.3333333333333333
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "triple_balanced_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "triple_balanced",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.3333333333333333,
+          "ma": 0.3333333333333333,
+          "bw": 0.3333333333333333
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "triple_balanced_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "triple_balanced",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.3333333333333333,
+          "ma": 0.3333333333333333,
+          "bw": 0.3333333333333333
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "triple_balanced_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "triple_balanced",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.3333333333333333,
+          "ma": 0.3333333333333333,
+          "bw": 0.3333333333333333
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "triple_balanced_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "triple_balanced",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.3333333333333333,
+          "ma": 0.3333333333333333,
+          "bw": 0.3333333333333333
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "triple_balanced_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "triple_balanced",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.3333333333333333,
+          "ma": 0.3333333333333333,
+          "bw": 0.3333333333333333
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "triple_balanced_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "triple_balanced",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.3333333333333333,
+          "ma": 0.3333333333333333,
+          "bw": 0.3333333333333333
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_heavy_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.7,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_heavy_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.7,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_heavy_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.7,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_heavy_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.7,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_heavy_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.7,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_heavy_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.7,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_heavy_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.7,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_heavy_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.7,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_heavy_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.7,
+          "ma": 0.15,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_heavy_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.7,
+          "ma": 0.15,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_heavy_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.7,
+          "ma": 0.15,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_heavy_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.7,
+          "ma": 0.15,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_heavy_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.7,
+          "ma": 0.15,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_heavy_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.7,
+          "ma": 0.15,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_heavy_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.7,
+          "ma": 0.15,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_heavy_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.7,
+          "ma": 0.15,
+          "bw": 0.15
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "bw_heavy_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "bw_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.15,
+          "bw": 0.7
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "bw_heavy_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "bw_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.15,
+          "bw": 0.7
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "bw_heavy_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "bw_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.15,
+          "bw": 0.7
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "bw_heavy_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "bw_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.15,
+          "bw": 0.7
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "bw_heavy_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "bw_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.15,
+          "bw": 0.7
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "bw_heavy_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "bw_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.15,
+          "bw": 0.7
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "bw_heavy_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "bw_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.15,
+          "bw": 0.7
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "bw_heavy_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "bw_heavy",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.15,
+          "ma": 0.15,
+          "bw": 0.7
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_bw_wearable_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_bw_wearable",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.1,
+          "ma": 0.55,
+          "bw": 0.35
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_bw_wearable_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_bw_wearable",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.1,
+          "ma": 0.55,
+          "bw": 0.35
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_bw_wearable_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_bw_wearable",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.1,
+          "ma": 0.55,
+          "bw": 0.35
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_bw_wearable_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_bw_wearable",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.1,
+          "ma": 0.55,
+          "bw": 0.35
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_bw_wearable_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_bw_wearable",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.1,
+          "ma": 0.55,
+          "bw": 0.35
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_bw_wearable_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_bw_wearable",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.1,
+          "ma": 0.55,
+          "bw": 0.35
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_bw_wearable_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_bw_wearable",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.1,
+          "ma": 0.55,
+          "bw": 0.35
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "ma_bw_wearable_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "ma_bw_wearable",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.1,
+          "ma": 0.55,
+          "bw": 0.35
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_ma_no_bw_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_ma_no_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.45,
+          "ma": 0.55
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_ma_no_bw_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_ma_no_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.45,
+          "ma": 0.55
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_ma_no_bw_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_ma_no_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.45,
+          "ma": 0.55
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_ma_no_bw_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_ma_no_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.45,
+          "ma": 0.55
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_ma_no_bw_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_ma_no_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.45,
+          "ma": 0.55
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_ma_no_bw_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_ma_no_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.45,
+          "ma": 0.55
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_ma_no_bw_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_ma_no_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.45,
+          "ma": 0.55
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "em_ma_no_bw_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "em_ma_no_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.45,
+          "ma": 0.55
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_balanced_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_balanced",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 1.0,
+          "ma": 1.0,
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_balanced_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_balanced",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 1.0,
+          "ma": 1.0,
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_balanced_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_balanced",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 1.0,
+          "ma": 1.0,
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_balanced_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_balanced",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 1.0,
+          "ma": 1.0,
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_balanced_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_balanced",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 1.0,
+          "ma": 1.0,
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_balanced_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_balanced",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 1.0,
+          "ma": 1.0,
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_balanced_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_balanced",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 1.0,
+          "ma": 1.0,
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_balanced_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_balanced",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 1.0,
+          "ma": 1.0,
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_wearable_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_wearable",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 0.7,
+          "ma": 1.8,
+          "bw": 1.3
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_wearable_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_wearable",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 0.7,
+          "ma": 1.8,
+          "bw": 1.3
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_wearable_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_wearable",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 0.7,
+          "ma": 1.8,
+          "bw": 1.3
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_wearable_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_wearable",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 0.7,
+          "ma": 1.8,
+          "bw": 1.3
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_wearable_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_wearable",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 0.7,
+          "ma": 1.8,
+          "bw": 1.3
+        }
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_wearable_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_wearable",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 0.7,
+          "ma": 1.8,
+          "bw": 1.3
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_wearable_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_wearable",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 0.7,
+          "ma": 1.8,
+          "bw": 1.3
+        }
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "dirichlet_wearable_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_wearable",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 0.7,
+          "ma": 1.8,
+          "bw": 1.3
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "blockwise_switch_snr01_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "blockwise_switch_snr02_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "blockwise_switch_snr03_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "blockwise_switch_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "blockwise_switch_snr05_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          14,
+          18
+        ],
+        "medium": [
+          8,
+          14
+        ],
+        "bad": [
+          -4,
+          2
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "blockwise_switch_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "blockwise_switch_snr07_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          16,
+          20
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -6,
+          0
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    {
+      "id": "blockwise_switch_snr08_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          4,
+          10
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+keep,class_name,split,n
+False,good,test,3062
+False,good,train,6206
+False,good,val,644
+False,medium,test,3296
+False,medium,train,3375
+False,medium,val,66
+True,bad,test,119
+True,bad,train,3964
+True,bad,val,1
+True,good,test,578
+True,good,train,6228
+True,good,val,325
+True,medium,test,1130
+True,medium,train,2722
+True,medium,val,39

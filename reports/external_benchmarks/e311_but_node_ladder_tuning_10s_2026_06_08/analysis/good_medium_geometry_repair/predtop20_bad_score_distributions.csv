@@ -1,0 +1,10 @@
+candidate,group,n,p_bad_q05,p_bad_q50,p_bad_q95,p_bad_mean
+predtop20_sqiquery_boundary_pretrain,test_bad_core_nearboundary,119,0.810056764,0.94949985,0.975191956,0.9315867794117648
+predtop20_sqiquery_boundary_pretrain,test_bad_outlier_stress,292,0.00158876919,0.0082540315,0.1837224564999998,0.04489941103972603
+predtop20_sqiquery_boundary_pretrain,test_nonbad,8066,0.0008121242425,0.0026936523,0.0680508045,0.019514810843295316
+predtop20_sqiquery_balancedguard_pretrain,test_bad_core_nearboundary,119,0.738467947,0.97480154,0.98574733,0.9332617942857145
+predtop20_sqiquery_balancedguard_pretrain,test_bad_outlier_stress,292,0.002204057465,0.01160164225,0.14154062399999967,0.03992650316349315
+predtop20_sqiquery_balancedguard_pretrain,test_nonbad,8066,0.0009573942024999999,0.00480703705,0.075922722,0.020587574462308453
+predtop20_sqiquery_badguardlite_pretrain,test_bad_core_nearboundary,119,0.8679597,0.96087646,0.979668306,0.9479852156302521
+predtop20_sqiquery_badguardlite_pretrain,test_bad_outlier_stress,292,0.00230760387,0.0106332425,0.17430506699999992,0.0466411491989726
+predtop20_sqiquery_badguardlite_pretrain,test_nonbad,8066,0.0008412524625,0.00232274225,0.1012138225,0.02421042933433796

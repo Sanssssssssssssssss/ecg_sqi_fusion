@@ -1,0 +1,109 @@
+{
+  "variant_id": "pair_em_bw_snr04_uniform",
+  "family": "real_noise_snr",
+  "spec": {
+    "id": "pair_em_bw_snr04_uniform",
+    "family": "real_noise_snr",
+    "mix": {
+      "name": "pair_em_bw",
+      "mode": "weighted",
+      "weights": {
+        "em": 0.5,
+        "bw": 0.5
+      }
+    },
+    "snr": {
+      "good": [
+        10,
+        14
+      ],
+      "medium": [
+        2,
+        8
+      ],
+      "bad": [
+        0,
+        6
+      ],
+      "sampler": "uniform"
+    },
+    "class_weight": "1.00,1.40,1.70",
+    "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+  },
+  "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\pair_em_bw_snr04_uniform",
+  "morph_overall_distance": 0.4513709677419355,
+  "morph_medium_distance": 0.2924462365591398,
+  "morph_by_class": {
+    "good": 0.4245698924731182,
+    "medium": 0.2924462365591398,
+    "bad": 0.6370967741935485
+  },
+  "sqi_overall_distance": 0.4424603174603175,
+  "sqi_by_class": {
+    "good": 0.36904761904761907,
+    "medium": 0.2678571428571429,
+    "bad": 0.6904761904761905
+  },
+  "domain_separability_bal_acc": 0.9281746031746032,
+  "overall_but_like_score": 0.4579835509472606,
+  "audit": {
+    "spec": {
+      "id": "pair_em_bw_snr04_uniform",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "pair_em_bw",
+        "mode": "weighted",
+        "weights": {
+          "em": 0.5,
+          "bw": 0.5
+        }
+      },
+      "snr": {
+        "good": [
+          10,
+          14
+        ],
+        "medium": [
+          2,
+          8
+        ],
+        "bad": [
+          0,
+          6
+        ],
+        "sampler": "uniform"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    "rows": 180,
+    "sample_per_class": 60,
+    "split_counts": {
+      "test": 32,
+      "train": 119,
+      "val": 29
+    },
+    "class_counts": {
+      "bad": 60,
+      "good": 60,
+      "medium": 60
+    },
+    "snr_by_class": {
+      "good": {
+        "mean": 12.165684700012207,
+        "min": 10.134342193603516,
+        "max": 13.968092918395996
+      },
+      "medium": {
+        "mean": 5.367187023162842,
+        "min": 2.0164308547973633,
+        "max": 7.970579147338867
+      },
+      "bad": {
+        "mean": 2.8749144077301025,
+        "min": 0.0018041186267510056,
+        "max": 5.9321722984313965
+      }
+    }
+  }
+}

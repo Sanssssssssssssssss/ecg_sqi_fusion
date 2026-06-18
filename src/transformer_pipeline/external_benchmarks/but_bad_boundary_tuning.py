@@ -272,6 +272,46 @@ def ensure_but_10s(args: argparse.Namespace) -> tuple[np.ndarray, pd.DataFrame]:
     return X, meta
 
 
+def balanced_but_test_indices(meta: pd.DataFrame, seed: int = 20260605) -> tuple[np.ndarray, dict[str, Any]]:
+    """Return a deterministic class-balanced subset of the formal BUT 10s test split."""
+    test_meta = meta.loc[meta["split"].astype(str) == "test"].copy()
+    if test_meta.empty:
+        raise ValueError("BUT metadata has no test split rows")
+    counts = test_meta["y"].astype(int).value_counts().to_dict()
+    missing = [cls for cls in (0, 1, 2) if counts.get(cls, 0) <= 0]
+    if missing:
+        raise ValueError(f"BUT test split is missing classes: {missing}")
+    n_per_class = int(min(counts.get(cls, 0) for cls in (0, 1, 2)))
+    rng = np.random.default_rng(int(seed))
+    selected: list[int] = []
+    selected_counts: dict[str, int] = {}
+    for cls in (0, 1, 2):
+        cls_idx = test_meta.index[test_meta["y"].astype(int) == cls].to_numpy()
+        chosen = rng.choice(cls_idx, size=n_per_class, replace=False)
+        selected.extend(int(v) for v in chosen)
+        selected_counts[INT_TO_CLASS[cls]] = n_per_class
+    selected_idx = np.asarray(sorted(selected), dtype=np.int64)
+    info = {
+        "name": "but_10s_p1_balanced_test",
+        "seed": int(seed),
+        "source_split": "test",
+        "source_counts_good_medium_bad": [int(counts.get(cls, 0)) for cls in (0, 1, 2)],
+        "n_per_class": n_per_class,
+        "selected_counts_good_medium_bad": [int(n_per_class), int(n_per_class), int(n_per_class)],
+        "n_total": int(len(selected_idx)),
+        "note": "Evaluation-only balanced subset; validation thresholds are still selected on the original validation split.",
+    }
+    return selected_idx, info
+
+
+def write_balanced_but_index(meta: pd.DataFrame, selected_idx: np.ndarray, out_csv: Path) -> None:
+    out_csv.parent.mkdir(parents=True, exist_ok=True)
+    cols = [c for c in ["window_id", "record_id", "subject_id", "split", "start_sec", "end_sec", "y_class", "y"] if c in meta.columns]
+    out = meta.loc[selected_idx, cols].copy()
+    out.insert(0, "original_index", selected_idx.astype(int))
+    out.to_csv(out_csv, index=False)
+
+
 def score_specs(args: argparse.Namespace) -> list[dict[str, Any]]:
     out_root = Path(args.out_root)
     report_root = Path(args.report_root)
@@ -334,12 +374,21 @@ def evaluate_checkpoint_10s(args: argparse.Namespace, checkpoint: Path, run_dir:
     assert isinstance(probs, np.ndarray)
     assert isinstance(denoise, np.ndarray)
     cal = calibrate_but(probs[split == "val"], y[split == "val"])
+    test_mask = split == "test"
     pred_test = apply_but_thresholds(probs[split == "test"], cal["t_good"], cal["t_bad"])
     pred_all = apply_but_thresholds(probs, cal["t_good"], cal["t_bad"])
+    balanced_idx, balanced_selection = balanced_but_test_indices(meta)
+    pred_balanced = apply_but_thresholds(probs[balanced_idx], cal["t_good"], cal["t_bad"])
+    pred_test_raw = np.argmax(probs[test_mask], axis=1).astype(np.int64)
+    pred_balanced_raw = np.argmax(probs[balanced_idx], axis=1).astype(np.int64)
     report = {
         "checkpoint": str(checkpoint),
         "calibration": cal,
-        "but_10s_test_report": multiclass_report(y[split == "test"], pred_test, probs[split == "test"]),
+        "but_10s_test_report": multiclass_report(y[test_mask], pred_test, probs[test_mask]),
+        "but_10s_raw_test_report": multiclass_report(y[test_mask], pred_test_raw, probs[test_mask]),
+        "but_10s_balanced_test_report": multiclass_report(y[balanced_idx], pred_balanced, probs[balanced_idx]),
+        "but_10s_balanced_raw_report": multiclass_report(y[balanced_idx], pred_balanced_raw, probs[balanced_idx]),
+        "but_10s_balanced_test_selection": balanced_selection,
         "but_10s_all_report": multiclass_report(y, pred_all, probs),
         "elapsed_sec": float(outputs["elapsed_sec"]),
         "peak_cuda_memory_bytes": int(outputs["peak_cuda_memory_bytes"]),
@@ -347,6 +396,15 @@ def evaluate_checkpoint_10s(args: argparse.Namespace, checkpoint: Path, run_dir:
     out_dir = run_dir / "but_10s_eval"
     out_dir.mkdir(parents=True, exist_ok=True)
     write_json(out_dir / "but_10s_eval_summary.json", report)
+    write_json(
+        out_dir / "but_10s_balanced_test_report.json",
+        {
+            "selection": balanced_selection,
+            "calibrated_report": report["but_10s_balanced_test_report"],
+            "raw_argmax_report": report["but_10s_balanced_raw_report"],
+        },
+    )
+    write_balanced_but_index(meta, balanced_idx, out_dir / "but_10s_balanced_test_index.csv")
     meta2 = meta.copy()
     meta2["pred_class"] = [INT_TO_CLASS[int(v)] for v in pred_all]
     cases = {

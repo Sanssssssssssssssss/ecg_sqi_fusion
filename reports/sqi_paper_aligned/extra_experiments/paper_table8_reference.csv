@@ -1,0 +1,9 @@
+component,paper_ms
+kSQI,0.33
+sSQI,0.29
+pSQI/basSQI shared PSD,1.92
+fSQI,0.07
+P&T/eplimited,2.46
+wqrs,33.18
+SVM predict,0.1
+MLP predict,0.001

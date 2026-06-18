@@ -1,0 +1,111 @@
+{
+  "variant_id": "dirichlet_balanced_snr06_triangular",
+  "family": "real_noise_snr",
+  "spec": {
+    "id": "dirichlet_balanced_snr06_triangular",
+    "family": "real_noise_snr",
+    "mix": {
+      "name": "dirichlet_balanced",
+      "mode": "dirichlet",
+      "alpha": {
+        "em": 1.0,
+        "ma": 1.0,
+        "bw": 1.0
+      }
+    },
+    "snr": {
+      "good": [
+        12,
+        16
+      ],
+      "medium": [
+        6,
+        12
+      ],
+      "bad": [
+        -2,
+        4
+      ],
+      "sampler": "triangular"
+    },
+    "class_weight": "1.00,1.40,1.70",
+    "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+  },
+  "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_snr_but_match_grid_10s_2026_06_04\\scan_variants\\dirichlet_balanced_snr06_triangular",
+  "morph_overall_distance": 0.44830645161290333,
+  "morph_medium_distance": 0.2923924731182796,
+  "morph_by_class": {
+    "good": 0.44123655913978493,
+    "medium": 0.2923924731182796,
+    "bad": 0.6112903225806453
+  },
+  "sqi_overall_distance": 0.4444444444444444,
+  "sqi_by_class": {
+    "good": 0.380952380952381,
+    "medium": 0.26190476190476186,
+    "bad": 0.6904761904761905
+  },
+  "domain_separability_bal_acc": 0.9317460317460318,
+  "overall_but_like_score": 0.4570926139272914,
+  "audit": {
+    "spec": {
+      "id": "dirichlet_balanced_snr06_triangular",
+      "family": "real_noise_snr",
+      "mix": {
+        "name": "dirichlet_balanced",
+        "mode": "dirichlet",
+        "alpha": {
+          "em": 1.0,
+          "ma": 1.0,
+          "bw": 1.0
+        }
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.40,1.70",
+      "note": "Only real NSTDB em/ma/bw noise mixed at class-specific SNR."
+    },
+    "rows": 180,
+    "sample_per_class": 60,
+    "split_counts": {
+      "test": 32,
+      "train": 119,
+      "val": 29
+    },
+    "class_counts": {
+      "bad": 60,
+      "good": 60,
+      "medium": 60
+    },
+    "snr_by_class": {
+      "good": {
+        "mean": 14.05273723602295,
+        "min": 12.0421142578125,
+        "max": 15.685941696166992
+      },
+      "medium": {
+        "mean": 9.090215682983398,
+        "min": 6.714546203613281,
+        "max": 11.452299118041992
+      },
+      "bad": {
+        "mean": 0.952199399471283,
+        "min": -1.655364990234375,
+        "max": 3.2184104919433594
+      }
+    }
+  }
+}

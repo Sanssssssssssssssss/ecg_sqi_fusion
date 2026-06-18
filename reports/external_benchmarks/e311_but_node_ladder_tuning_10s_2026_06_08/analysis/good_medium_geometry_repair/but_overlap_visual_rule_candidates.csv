@@ -1,0 +1,100 @@
+rule_name,rescue,feature_expr,direction,threshold,split,candidates,fixed,lost,precision,recall_current_errors,net_gain,train_score
+good_rescue:pc1<=-2.61208,good_rescue,pc1,<=,-2.612080079837712,train_val,3836,187,5,0.9739583333333334,0.9396984924623115,182,167
+good_rescue:pc1<=-2.61208,good_rescue,pc1,<=,-2.612080079837712,all,5918,192,7,0.964824120603015,0.9411764705882353,185,167
+good_rescue:pc1<=-2.61208,good_rescue,pc1,<=,-2.612080079837712,test,2082,5,2,0.7142857142857143,1.0,3,167
+good_rescue:qrs_visibility >= 0.432896 AND non_qrs_diff_p95 <= 0.0589044,good_rescue,qrs_visibility >= 0.432896 AND non_qrs_diff_p95 <= 0.0589044,AND,,test,2082,5,0,1.0,1.0,5,129
+good_rescue:qrs_visibility >= 0.432896 AND non_qrs_diff_p95 <= 0.0589044,good_rescue,qrs_visibility >= 0.432896 AND non_qrs_diff_p95 <= 0.0589044,AND,,all,5918,169,7,0.9602272727272727,0.8284313725490197,162,129
+good_rescue:qrs_visibility >= 0.432896 AND non_qrs_diff_p95 <= 0.0589044,good_rescue,qrs_visibility >= 0.432896 AND non_qrs_diff_p95 <= 0.0589044,AND,,train_val,3836,164,7,0.9590643274853801,0.8241206030150754,157,129
+good_rescue:qrs_visibility>=0.514647,good_rescue,qrs_visibility,>=,0.5146472951540783,test,2082,4,0,1.0,0.8,4,112
+good_rescue:qrs_visibility>=0.514647,good_rescue,qrs_visibility,>=,0.5146472951540783,all,5918,180,16,0.9183673469387755,0.8823529411764706,164,112
+good_rescue:qrs_visibility>=0.514647,good_rescue,qrs_visibility,>=,0.5146472951540783,train_val,3836,176,16,0.9166666666666666,0.8844221105527639,160,112
+medium_rescue:qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0699296,medium_rescue,qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0699296,AND,,test,1480,61,0,1.0,0.580952380952381,61,97
+medium_rescue:qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0699296,medium_rescue,qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0699296,AND,,all,7241,168,2,0.9882352941176471,0.5014925373134328,166,97
+medium_rescue:qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0699296,medium_rescue,qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0699296,AND,,train_val,5761,107,2,0.981651376146789,0.4652173913043478,105,97
+medium_rescue:qrs_visibility <= 0.338125 AND flatline_ratio <= 0.184948,medium_rescue,qrs_visibility <= 0.338125 AND flatline_ratio <= 0.184948,AND,,test,1480,86,0,1.0,0.819047619047619,86,93
+medium_rescue:qrs_visibility <= 0.338125 AND flatline_ratio <= 0.184948,medium_rescue,qrs_visibility <= 0.338125 AND flatline_ratio <= 0.184948,AND,,all,7241,199,4,0.9802955665024631,0.5940298507462687,195,93
+medium_rescue:qrs_visibility <= 0.338125 AND flatline_ratio <= 0.184948,medium_rescue,qrs_visibility <= 0.338125 AND flatline_ratio <= 0.184948,AND,,train_val,5761,113,4,0.9658119658119658,0.49130434782608695,109,93
+good_rescue:qrs_visibility >= 0.395938 AND non_qrs_diff_p95 <= 0.0589044,good_rescue,qrs_visibility >= 0.395938 AND non_qrs_diff_p95 <= 0.0589044,AND,,test,2082,5,0,1.0,1.0,5,87
+good_rescue:qrs_visibility >= 0.395938 AND non_qrs_diff_p95 <= 0.0589044,good_rescue,qrs_visibility >= 0.395938 AND non_qrs_diff_p95 <= 0.0589044,AND,,all,5918,172,16,0.9148936170212766,0.8431372549019608,156,87
+good_rescue:qrs_visibility >= 0.395938 AND non_qrs_diff_p95 <= 0.0589044,good_rescue,qrs_visibility >= 0.395938 AND non_qrs_diff_p95 <= 0.0589044,AND,,train_val,3836,167,16,0.912568306010929,0.8391959798994975,151,87
+good_rescue:qrs_visibility >= 0.432896 AND flatline_ratio >= 0.135308,good_rescue,qrs_visibility >= 0.432896 AND flatline_ratio >= 0.135308,AND,,test,2082,5,0,1.0,1.0,5,86
+good_rescue:qrs_visibility >= 0.432896 AND flatline_ratio >= 0.135308,good_rescue,qrs_visibility >= 0.432896 AND flatline_ratio >= 0.135308,AND,,all,5918,201,22,0.9013452914798207,0.9852941176470589,179,86
+good_rescue:qrs_visibility >= 0.432896 AND flatline_ratio >= 0.135308,good_rescue,qrs_visibility >= 0.432896 AND flatline_ratio >= 0.135308,AND,,train_val,3836,196,22,0.8990825688073395,0.9849246231155779,174,86
+good_rescue:qrs_visibility >= 0.432896 AND raw_non_qrs_diff_p95 <= 0.423036,good_rescue,qrs_visibility >= 0.432896 AND raw_non_qrs_diff_p95 <= 0.423036,AND,,test,2082,5,0,1.0,1.0,5,80
+good_rescue:qrs_visibility >= 0.432896 AND raw_non_qrs_diff_p95 <= 0.423036,good_rescue,qrs_visibility >= 0.432896 AND raw_non_qrs_diff_p95 <= 0.423036,AND,,all,5918,155,14,0.9171597633136095,0.7598039215686274,141,80
+good_rescue:qrs_visibility >= 0.432896 AND raw_non_qrs_diff_p95 <= 0.423036,good_rescue,qrs_visibility >= 0.432896 AND raw_non_qrs_diff_p95 <= 0.423036,AND,,train_val,3836,150,14,0.9146341463414634,0.7537688442211056,136,80
+medium_rescue:qrs_visibility <= 0.338125 AND flatline_ratio <= 0.213771,medium_rescue,qrs_visibility <= 0.338125 AND flatline_ratio <= 0.213771,AND,,test,1480,92,0,1.0,0.8761904761904762,92,79
+medium_rescue:qrs_visibility <= 0.338125 AND flatline_ratio <= 0.213771,medium_rescue,qrs_visibility <= 0.338125 AND flatline_ratio <= 0.213771,AND,,all,7241,206,7,0.9671361502347418,0.6149253731343284,199,79
+medium_rescue:qrs_visibility <= 0.338125 AND flatline_ratio <= 0.213771,medium_rescue,qrs_visibility <= 0.338125 AND flatline_ratio <= 0.213771,AND,,train_val,5761,114,7,0.9421487603305785,0.4956521739130435,107,79
+medium_rescue:qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0655117,medium_rescue,qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0655117,AND,,test,1480,67,0,1.0,0.638095238095238,67,77
+medium_rescue:qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0655117,medium_rescue,qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0655117,AND,,all,7241,174,6,0.9666666666666667,0.5194029850746269,168,77
+medium_rescue:qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0655117,medium_rescue,qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0655117,AND,,train_val,5761,107,6,0.9469026548672567,0.4652173913043478,101,77
+good_rescue:pc3 <= -0.0623558 AND flatline_ratio >= 0.135308,good_rescue,pc3 <= -0.0623558 AND flatline_ratio >= 0.135308,AND,,train_val,3836,170,19,0.8994708994708994,0.8542713567839196,151,75
+good_rescue:pc3 <= -0.0623558 AND flatline_ratio >= 0.135308,good_rescue,pc3 <= -0.0623558 AND flatline_ratio >= 0.135308,AND,,all,5918,175,20,0.8974358974358975,0.8578431372549019,155,75
+good_rescue:pc3 <= -0.0623558 AND flatline_ratio >= 0.135308,good_rescue,pc3 <= -0.0623558 AND flatline_ratio >= 0.135308,AND,,test,2082,5,1,0.8333333333333334,1.0,4,75
+medium_rescue:pc1 >= -3.13881 AND qrs_visibility <= 0.338125,medium_rescue,pc1 >= -3.13881 AND qrs_visibility <= 0.338125,AND,,test,1480,102,0,1.0,0.9714285714285714,102,74
+medium_rescue:qrs_visibility <= 0.338125 AND flatline_ratio <= 0.244996,medium_rescue,qrs_visibility <= 0.338125 AND flatline_ratio <= 0.244996,AND,,test,1480,97,1,0.9897959183673469,0.9238095238095239,96,74
+medium_rescue:pc1 >= -3.13881 AND qrs_visibility <= 0.338125,medium_rescue,pc1 >= -3.13881 AND qrs_visibility <= 0.338125,AND,,all,7241,216,8,0.9642857142857143,0.6447761194029851,208,74
+medium_rescue:qrs_visibility <= 0.338125 AND flatline_ratio <= 0.244996,medium_rescue,qrs_visibility <= 0.338125 AND flatline_ratio <= 0.244996,AND,,all,7241,211,9,0.9590909090909091,0.6298507462686567,202,74
+medium_rescue:pc1 >= -3.13881 AND qrs_visibility <= 0.338125,medium_rescue,pc1 >= -3.13881 AND qrs_visibility <= 0.338125,AND,,train_val,5761,114,8,0.9344262295081968,0.4956521739130435,106,74
+medium_rescue:qrs_visibility <= 0.338125 AND flatline_ratio <= 0.244996,medium_rescue,qrs_visibility <= 0.338125 AND flatline_ratio <= 0.244996,AND,,train_val,5761,114,8,0.9344262295081968,0.4956521739130435,106,74
+good_rescue:qrs_visibility >= 0.432896 AND non_qrs_diff_p95 <= 0.0717702,good_rescue,qrs_visibility >= 0.432896 AND non_qrs_diff_p95 <= 0.0717702,AND,,test,2082,5,0,1.0,1.0,5,59
+good_rescue:qrs_visibility >= 0.432896 AND non_qrs_diff_p95 <= 0.0717702,good_rescue,qrs_visibility >= 0.432896 AND non_qrs_diff_p95 <= 0.0717702,AND,,all,5918,189,25,0.883177570093458,0.9264705882352942,164,59
+good_rescue:qrs_visibility >= 0.432896 AND non_qrs_diff_p95 <= 0.0717702,good_rescue,qrs_visibility >= 0.432896 AND non_qrs_diff_p95 <= 0.0717702,AND,,train_val,3836,184,25,0.8803827751196173,0.9246231155778895,159,59
+good_rescue:qrs_visibility >= 0.432896 AND band_30_45 <= 0.0143527,good_rescue,qrs_visibility >= 0.432896 AND band_30_45 <= 0.0143527,AND,,test,2082,3,0,1.0,0.6,3,49
+good_rescue:qrs_visibility >= 0.432896 AND band_30_45 <= 0.0143527,good_rescue,qrs_visibility >= 0.432896 AND band_30_45 <= 0.0143527,AND,,all,5918,77,5,0.9390243902439024,0.37745098039215685,72,49
+good_rescue:qrs_visibility >= 0.432896 AND band_30_45 <= 0.0143527,good_rescue,qrs_visibility >= 0.432896 AND band_30_45 <= 0.0143527,AND,,train_val,3836,74,5,0.9367088607594937,0.37185929648241206,69,49
+good_rescue:pc3 <= -0.0623558 AND qrs_visibility >= 0.432896,good_rescue,pc3 <= -0.0623558 AND qrs_visibility >= 0.432896,AND,,train_val,3836,168,24,0.875,0.8442211055276382,144,48
+good_rescue:pc3 <= -0.0623558 AND qrs_visibility >= 0.432896,good_rescue,pc3 <= -0.0623558 AND qrs_visibility >= 0.432896,AND,,all,5918,173,27,0.865,0.8480392156862745,146,48
+good_rescue:pc3 <= -0.0623558 AND qrs_visibility >= 0.432896,good_rescue,pc3 <= -0.0623558 AND qrs_visibility >= 0.432896,AND,,test,2082,5,3,0.625,1.0,2,48
+good_rescue:qrs_visibility >= 0.432896 AND raw_slow_drift_ratio >= 0.298657,good_rescue,qrs_visibility >= 0.432896 AND raw_slow_drift_ratio >= 0.298657,AND,,test,2082,1,0,1.0,0.2,1,39
+good_rescue:qrs_visibility >= 0.432896 AND raw_slow_drift_ratio >= 0.298657,good_rescue,qrs_visibility >= 0.432896 AND raw_slow_drift_ratio >= 0.298657,AND,,all,5918,50,2,0.9615384615384616,0.24509803921568626,48,39
+good_rescue:qrs_visibility >= 0.432896 AND raw_slow_drift_ratio >= 0.298657,good_rescue,qrs_visibility >= 0.432896 AND raw_slow_drift_ratio >= 0.298657,AND,,train_val,3836,49,2,0.9607843137254902,0.24623115577889448,47,39
+medium_rescue:pc1 >= -3.44731 AND qrs_visibility <= 0.338125,medium_rescue,pc1 >= -3.44731 AND qrs_visibility <= 0.338125,AND,,test,1480,102,0,1.0,0.9714285714285714,102,34
+medium_rescue:pc1 >= -3.44731 AND qrs_visibility <= 0.338125,medium_rescue,pc1 >= -3.44731 AND qrs_visibility <= 0.338125,AND,,all,7241,216,16,0.9310344827586207,0.6447761194029851,200,34
+medium_rescue:pc1 >= -3.44731 AND qrs_visibility <= 0.338125,medium_rescue,pc1 >= -3.44731 AND qrs_visibility <= 0.338125,AND,,train_val,5761,114,16,0.8769230769230769,0.4956521739130435,98,34
+good_rescue:qrs_visibility >= 0.395938 AND flatline_ratio >= 0.135308,good_rescue,qrs_visibility >= 0.395938 AND flatline_ratio >= 0.135308,AND,,test,2082,5,0,1.0,1.0,5,29
+good_rescue:qrs_visibility >= 0.395938 AND flatline_ratio >= 0.135308,good_rescue,qrs_visibility >= 0.395938 AND flatline_ratio >= 0.135308,AND,,all,5918,204,34,0.8571428571428571,1.0,170,29
+good_rescue:qrs_visibility >= 0.395938 AND flatline_ratio >= 0.135308,good_rescue,qrs_visibility >= 0.395938 AND flatline_ratio >= 0.135308,AND,,train_val,3836,199,34,0.8540772532188842,1.0,165,29
+good_rescue:flatline_ratio>=0.210769,good_rescue,flatline_ratio,>=,0.21076861489191348,train_val,3836,159,33,0.828125,0.7989949748743719,126,27
+good_rescue:flatline_ratio>=0.210769,good_rescue,flatline_ratio,>=,0.21076861489191348,all,5918,160,80,0.6666666666666666,0.7843137254901961,80,27
+good_rescue:flatline_ratio>=0.210769,good_rescue,flatline_ratio,>=,0.21076861489191348,test,2082,1,47,0.020833333333333332,0.2,-46,27
+good_rescue:pc1 <= -0.997087 AND pc3 <= -0.0623558,good_rescue,pc1 <= -0.997087 AND pc3 <= -0.0623558,AND,,train_val,3836,170,29,0.8542713567839196,0.8542713567839196,141,25
+good_rescue:pc1 <= -0.997087 AND pc3 <= -0.0623558,good_rescue,pc1 <= -0.997087 AND pc3 <= -0.0623558,AND,,all,5918,175,30,0.8536585365853658,0.8578431372549019,145,25
+good_rescue:pc1 <= -0.997087 AND pc3 <= -0.0623558,good_rescue,pc1 <= -0.997087 AND pc3 <= -0.0623558,AND,,test,2082,5,1,0.8333333333333334,1.0,4,25
+good_rescue:qrs_visibility >= 0.357416 AND non_qrs_diff_p95 <= 0.0589044,good_rescue,qrs_visibility >= 0.357416 AND non_qrs_diff_p95 <= 0.0589044,AND,,test,2082,5,0,1.0,1.0,5,22
+good_rescue:qrs_visibility >= 0.357416 AND non_qrs_diff_p95 <= 0.0589044,good_rescue,qrs_visibility >= 0.357416 AND non_qrs_diff_p95 <= 0.0589044,AND,,all,5918,172,29,0.8557213930348259,0.8431372549019608,143,22
+good_rescue:qrs_visibility >= 0.357416 AND non_qrs_diff_p95 <= 0.0589044,good_rescue,qrs_visibility >= 0.357416 AND non_qrs_diff_p95 <= 0.0589044,AND,,train_val,3836,167,29,0.8520408163265306,0.8391959798994975,138,22
+medium_rescue:raw_non_qrs_diff_p95 >= 0.918193 AND amplitude_entropy >= 0.631451,medium_rescue,raw_non_qrs_diff_p95 >= 0.918193 AND amplitude_entropy >= 0.631451,AND,,test,1480,16,0,1.0,0.1523809523809524,16,16
+good_rescue:qrs_visibility >= 0.395938 AND raw_non_qrs_diff_p95 <= 0.423036,good_rescue,qrs_visibility >= 0.395938 AND raw_non_qrs_diff_p95 <= 0.423036,AND,,test,2082,5,0,1.0,1.0,5,16
+good_rescue:qrs_visibility >= 0.432896 AND raw_non_qrs_diff_p95 <= 0.513609,good_rescue,qrs_visibility >= 0.432896 AND raw_non_qrs_diff_p95 <= 0.513609,AND,,test,2082,5,0,1.0,1.0,5,16
+medium_rescue:raw_non_qrs_diff_p95 >= 0.918193 AND amplitude_entropy >= 0.631451,medium_rescue,raw_non_qrs_diff_p95 >= 0.918193 AND amplitude_entropy >= 0.631451,AND,,all,7241,72,8,0.9,0.21492537313432836,64,16
+medium_rescue:raw_non_qrs_diff_p95 >= 0.918193 AND amplitude_entropy >= 0.631451,medium_rescue,raw_non_qrs_diff_p95 >= 0.918193 AND amplitude_entropy >= 0.631451,AND,,train_val,5761,56,8,0.875,0.24347826086956523,48,16
+good_rescue:qrs_visibility >= 0.395938 AND raw_non_qrs_diff_p95 <= 0.423036,good_rescue,qrs_visibility >= 0.395938 AND raw_non_qrs_diff_p95 <= 0.423036,AND,,all,5918,156,27,0.8524590163934426,0.7647058823529411,129,16
+good_rescue:qrs_visibility >= 0.432896 AND raw_non_qrs_diff_p95 <= 0.513609,good_rescue,qrs_visibility >= 0.432896 AND raw_non_qrs_diff_p95 <= 0.513609,AND,,all,5918,176,31,0.8502415458937198,0.8627450980392157,145,16
+good_rescue:qrs_visibility >= 0.395938 AND raw_non_qrs_diff_p95 <= 0.423036,good_rescue,qrs_visibility >= 0.395938 AND raw_non_qrs_diff_p95 <= 0.423036,AND,,train_val,3836,151,27,0.848314606741573,0.7587939698492462,124,16
+good_rescue:qrs_visibility >= 0.432896 AND raw_non_qrs_diff_p95 <= 0.513609,good_rescue,qrs_visibility >= 0.432896 AND raw_non_qrs_diff_p95 <= 0.513609,AND,,train_val,3836,171,31,0.8465346534653465,0.8592964824120602,140,16
+good_rescue:qrs_visibility >= 0.432896 AND raw_slow_drift_ratio >= 0.37038,good_rescue,qrs_visibility >= 0.432896 AND raw_slow_drift_ratio >= 0.37038,AND,,train_val,3836,15,0,1.0,0.07537688442211055,15,15
+good_rescue:qrs_visibility >= 0.432896 AND raw_slow_drift_ratio >= 0.37038,good_rescue,qrs_visibility >= 0.432896 AND raw_slow_drift_ratio >= 0.37038,AND,,all,5918,15,0,1.0,0.07352941176470588,15,15
+good_rescue:qrs_visibility >= 0.432896 AND raw_slow_drift_ratio >= 0.37038,good_rescue,qrs_visibility >= 0.432896 AND raw_slow_drift_ratio >= 0.37038,AND,,test,2082,0,0,0.0,0.0,0,15
+medium_rescue:qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0615223,medium_rescue,qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0615223,AND,,test,1480,69,0,1.0,0.6571428571428571,69,12
+medium_rescue:qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0615223,medium_rescue,qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0615223,AND,,all,7241,176,19,0.9025641025641026,0.5253731343283582,157,12
+medium_rescue:qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0615223,medium_rescue,qrs_visibility <= 0.338125 AND non_qrs_diff_p95 >= 0.0615223,AND,,train_val,5761,107,19,0.8492063492063492,0.4652173913043478,88,12
+medium_rescue:raw_non_qrs_diff_p95 >= 0.820712 AND amplitude_entropy >= 0.66692,medium_rescue,raw_non_qrs_diff_p95 >= 0.820712 AND amplitude_entropy >= 0.66692,AND,,all,7241,13,0,1.0,0.03880597014925373,13,6
+medium_rescue:raw_non_qrs_diff_p95 >= 0.918193 AND amplitude_entropy >= 0.646336,medium_rescue,raw_non_qrs_diff_p95 >= 0.918193 AND amplitude_entropy >= 0.646336,AND,,test,1480,9,0,1.0,0.08571428571428572,9,6
+medium_rescue:raw_non_qrs_diff_p95 >= 0.820712 AND amplitude_entropy >= 0.66692,medium_rescue,raw_non_qrs_diff_p95 >= 0.820712 AND amplitude_entropy >= 0.66692,AND,,test,1480,7,0,1.0,0.06666666666666667,7,6
+medium_rescue:raw_non_qrs_diff_p95 >= 0.820712 AND amplitude_entropy >= 0.66692,medium_rescue,raw_non_qrs_diff_p95 >= 0.820712 AND amplitude_entropy >= 0.66692,AND,,train_val,5761,6,0,1.0,0.02608695652173913,6,6
+medium_rescue:raw_non_qrs_diff_p95 >= 0.918193 AND amplitude_entropy >= 0.646336,medium_rescue,raw_non_qrs_diff_p95 >= 0.918193 AND amplitude_entropy >= 0.646336,AND,,all,7241,25,2,0.9259259259259259,0.07462686567164178,23,6
+medium_rescue:raw_non_qrs_diff_p95 >= 0.918193 AND amplitude_entropy >= 0.646336,medium_rescue,raw_non_qrs_diff_p95 >= 0.918193 AND amplitude_entropy >= 0.646336,AND,,train_val,5761,16,2,0.8888888888888888,0.06956521739130435,14,6
+good_rescue:flatline_ratio >= 0.135308 AND raw_slow_drift_ratio <= 0.105316,good_rescue,flatline_ratio >= 0.135308 AND raw_slow_drift_ratio <= 0.105316,AND,,all,5918,6,0,1.0,0.029411764705882353,6,5
+good_rescue:flatline_ratio >= 0.135308 AND raw_slow_drift_ratio <= 0.105316,good_rescue,flatline_ratio >= 0.135308 AND raw_slow_drift_ratio <= 0.105316,AND,,train_val,3836,5,0,1.0,0.02512562814070352,5,5
+good_rescue:flatline_ratio >= 0.135308 AND raw_slow_drift_ratio <= 0.105316,good_rescue,flatline_ratio >= 0.135308 AND raw_slow_drift_ratio <= 0.105316,AND,,test,2082,1,0,1.0,0.2,1,5
+medium_rescue:raw_non_qrs_diff_p95 >= 0.75647 AND raw_slow_drift_ratio >= 0.132874,medium_rescue,raw_non_qrs_diff_p95 >= 0.75647 AND raw_slow_drift_ratio >= 0.132874,AND,,train_val,5761,8,1,0.8888888888888888,0.034782608695652174,7,3
+medium_rescue:raw_non_qrs_diff_p95 >= 0.75647 AND raw_slow_drift_ratio >= 0.132874,medium_rescue,raw_non_qrs_diff_p95 >= 0.75647 AND raw_slow_drift_ratio >= 0.132874,AND,,all,7241,29,11,0.725,0.08656716417910448,18,3
+medium_rescue:raw_non_qrs_diff_p95 >= 0.75647 AND raw_slow_drift_ratio >= 0.132874,medium_rescue,raw_non_qrs_diff_p95 >= 0.75647 AND raw_slow_drift_ratio >= 0.132874,AND,,test,1480,21,10,0.6774193548387096,0.2,11,3
+medium_rescue:raw_non_qrs_diff_p95 >= 0.75647 AND amplitude_entropy >= 0.66692,medium_rescue,raw_non_qrs_diff_p95 >= 0.75647 AND amplitude_entropy >= 0.66692,AND,,test,1480,8,0,1.0,0.0761904761904762,8,1
+medium_rescue:raw_non_qrs_diff_p95 >= 0.75647 AND amplitude_entropy >= 0.66692,medium_rescue,raw_non_qrs_diff_p95 >= 0.75647 AND amplitude_entropy >= 0.66692,AND,,all,7241,14,1,0.9333333333333333,0.041791044776119404,13,1
+medium_rescue:raw_non_qrs_diff_p95 >= 0.75647 AND amplitude_entropy >= 0.66692,medium_rescue,raw_non_qrs_diff_p95 >= 0.75647 AND amplitude_entropy >= 0.66692,AND,,train_val,5761,6,1,0.8571428571428571,0.02608695652173913,5,1
+medium_rescue:raw_non_qrs_diff_p95 >= 0.918193 AND raw_slow_drift_ratio >= 0.103973,medium_rescue,raw_non_qrs_diff_p95 >= 0.918193 AND raw_slow_drift_ratio >= 0.103973,AND,,train_val,5761,6,1,0.8571428571428571,0.02608695652173913,5,1
+medium_rescue:raw_non_qrs_diff_p95 >= 0.918193 AND raw_slow_drift_ratio >= 0.103973,medium_rescue,raw_non_qrs_diff_p95 >= 0.918193 AND raw_slow_drift_ratio >= 0.103973,AND,,all,7241,23,6,0.7931034482758621,0.06865671641791045,17,1
+medium_rescue:raw_non_qrs_diff_p95 >= 0.918193 AND raw_slow_drift_ratio >= 0.103973,medium_rescue,raw_non_qrs_diff_p95 >= 0.918193 AND raw_slow_drift_ratio >= 0.103973,AND,,test,1480,17,5,0.7727272727272727,0.1619047619047619,12,1

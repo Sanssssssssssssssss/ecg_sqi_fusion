@@ -1,0 +1,68 @@
+{
+  "node_id": "N7000_gm_trim_bad",
+  "medium_strong": {
+    "variant_id": "nl_n7000_gm_trim_bad_scan_014_sc_overlap_compact_pca_core_ddc377ccab88",
+    "mode": "calibrated",
+    "n": 18084,
+    "acc": 0.9346383543463835,
+    "balanced_acc": 0.9436122848747726,
+    "macro_f1": 0.9430977797515321,
+    "good_recall": 0.8645714285714285,
+    "medium_recall": 0.967,
+    "bad_recall": 0.9992654260528894,
+    "good_precision": 0.9669276242211216,
+    "medium_precision": 0.8768134715025907,
+    "bad_precision": 0.9941534713763703,
+    "support_good": 7000,
+    "support_medium": 7000,
+    "support_bad": 4084
+  },
+  "good_strong": {
+    "variant_id": "nl_n7000_gm_trim_bad_dense_joint_n6800full_lcg045_vqm045__d0f7b043135d",
+    "mode": "medium_guarded_pmed0005",
+    "n": 18084,
+    "acc": 0.9325923468259235,
+    "balanced_acc": 0.9379063476516953,
+    "macro_f1": 0.9394893862441472,
+    "good_recall": 0.9872857142857143,
+    "medium_recall": 0.8555714285714285,
+    "bad_recall": 0.9708619000979432,
+    "good_precision": 0.8735937302490203,
+    "medium_precision": 0.9664353719541714,
+    "bad_precision": 0.9972334004024145,
+    "support_good": 7000,
+    "support_medium": 7000,
+    "support_bad": 4084
+  },
+  "balanced_dense": {
+    "variant_id": "nl_n7000_gm_trim_bad_dense_joint_n6800full_lcg025_vqm035__bfc4b452a166",
+    "mode": "medium_guarded_pmed0005",
+    "n": 18084,
+    "acc": 0.9297168767971687,
+    "balanced_acc": 0.935634158854531,
+    "macro_f1": 0.9376158603222405,
+    "good_recall": 0.9471428571428572,
+    "medium_recall": 0.8874285714285715,
+    "bad_recall": 0.9723310479921645,
+    "good_precision": 0.8937719061741709,
+    "medium_precision": 0.9278566094100075,
+    "bad_precision": 1.0,
+    "support_good": 7000,
+    "support_medium": 7000,
+    "support_bad": 4084
+  },
+  "disagreement_counts": {
+    "both_correct_gm": 11996,
+    "both_wrong_gm": 275,
+    "good_rescued_by_dense": 860,
+    "medium_lost_by_dense": 813,
+    "other": 4140
+  },
+  "gm_focus_disagreement_counts": {
+    "both_correct_gm": 11988,
+    "both_wrong_gm": 275,
+    "good_rescued_by_dense": 860,
+    "medium_lost_by_dense": 813,
+    "other": 55
+  }
+}

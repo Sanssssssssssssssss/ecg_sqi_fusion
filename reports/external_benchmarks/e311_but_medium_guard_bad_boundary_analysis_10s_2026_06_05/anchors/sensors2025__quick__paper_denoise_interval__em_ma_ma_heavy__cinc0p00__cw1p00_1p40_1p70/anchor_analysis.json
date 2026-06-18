@@ -1,0 +1,314 @@
+{
+  "anchor_id": "sensors2025__quick__paper_denoise_interval__em_ma_ma_heavy__cinc0p00__cw1p00_1p40_1p70",
+  "spec_id": "paper_denoise_interval__em_ma_ma_heavy__cinc0p00__cw1p00_1p40_1p70",
+  "mode": "quick",
+  "run_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_sensors2025_noise_synthesis_but_10s_2026_06_05\\runs\\quick\\paper_denoise_interval__em_ma_ma_heavy__cinc0p00__cw1p00_1p40_1p70",
+  "checkpoint": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_sensors2025_noise_synthesis_but_10s_2026_06_05\\runs\\quick\\paper_denoise_interval__em_ma_ma_heavy__cinc0p00__cw1p00_1p40_1p70\\ckpt_best.pt",
+  "calibration": {
+    "t_bad": 0.07,
+    "t_good": 0.7699999999999999,
+    "key": [
+      0.7143765519457556,
+      0.7951807228915663,
+      0.7412998596183348
+    ],
+    "val_report": {
+      "acc": 0.8980121002592912,
+      "balanced_acc": 0.7412998596183348,
+      "macro_f1": 0.7143765519457556,
+      "recall_good_medium_bad": [
+        0.9525283797729618,
+        0.47619047619047616,
+        0.7951807228915663
+      ],
+      "precision_good_medium_bad": [
+        0.9756871035940803,
+        0.46296296296296297,
+        0.6407766990291263
+      ],
+      "f1_good_medium_bad": [
+        0.9639686684073107,
+        0.4694835680751174,
+        0.7096774193548387
+      ],
+      "support_good_medium_bad": [
+        969,
+        105,
+        83
+      ],
+      "confusion_3x3": [
+        [
+          923,
+          42,
+          4
+        ],
+        [
+          22,
+          50,
+          33
+        ],
+        [
+          1,
+          16,
+          66
+        ]
+      ]
+    }
+  },
+  "original_test_calibrated": {
+    "acc": 0.5918367346938775,
+    "balanced_acc": 0.6631856375168951,
+    "macro_f1": 0.5234936327640983,
+    "recall_good_medium_bad": [
+      0.781043956043956,
+      0.41775869859918663,
+      0.7907542579075426
+    ],
+    "precision_good_medium_bad": [
+      0.8926216640502355,
+      0.7497972424979724,
+      0.11500353857041755
+    ],
+    "f1_good_medium_bad": [
+      0.8331135531135531,
+      0.536564132327336,
+      0.20080321285140562
+    ],
+    "support_good_medium_bad": [
+      3640,
+      4426,
+      411
+    ],
+    "confusion_3x3": [
+      [
+        2843,
+        539,
+        258
+      ],
+      [
+        334,
+        1849,
+        2243
+      ],
+      [
+        8,
+        78,
+        325
+      ]
+    ]
+  },
+  "original_test_raw": {
+    "acc": 0.6601392001887461,
+    "balanced_acc": 0.6618660016472709,
+    "macro_f1": 0.5544880691550219,
+    "recall_good_medium_bad": [
+      0.9293956043956044,
+      0.4430637144148215,
+      0.6131386861313869
+    ],
+    "precision_good_medium_bad": [
+      0.7004140786749482,
+      0.8813483146067416,
+      0.17721518987341772
+    ],
+    "f1_good_medium_bad": [
+      0.798819362455726,
+      0.589685761539618,
+      0.27495908346972175
+    ],
+    "support_good_medium_bad": [
+      3640,
+      4426,
+      411
+    ],
+    "confusion_3x3": [
+      [
+        3383,
+        182,
+        75
+      ],
+      [
+        1370,
+        1961,
+        1095
+      ],
+      [
+        77,
+        82,
+        252
+      ]
+    ]
+  },
+  "balanced_test_calibrated": {
+    "acc": 0.6593673965936739,
+    "balanced_acc": 0.6593673965936739,
+    "macro_f1": 0.6550008612250072,
+    "recall_good_medium_bad": [
+      0.7615571776155717,
+      0.4257907542579075,
+      0.7907542579075426
+    ],
+    "precision_good_medium_bad": [
+      0.8694444444444445,
+      0.546875,
+      0.5877034358047016
+    ],
+    "f1_good_medium_bad": [
+      0.8119325551232166,
+      0.478796169630643,
+      0.6742738589211619
+    ],
+    "support_good_medium_bad": [
+      411,
+      411,
+      411
+    ],
+    "confusion_3x3": [
+      [
+        313,
+        67,
+        31
+      ],
+      [
+        39,
+        175,
+        197
+      ],
+      [
+        8,
+        78,
+        325
+      ]
+    ]
+  },
+  "balanced_test_raw": {
+    "acc": 0.6553122465531225,
+    "balanced_acc": 0.6553122465531224,
+    "macro_f1": 0.6388194996514708,
+    "recall_good_medium_bad": [
+      0.9367396593673966,
+      0.41605839416058393,
+      0.6131386861313869
+    ],
+    "precision_good_medium_bad": [
+      0.632183908045977,
+      0.6240875912408759,
+      0.72
+    ],
+    "f1_good_medium_bad": [
+      0.7549019607843137,
+      0.4992700729927007,
+      0.6622864651773982
+    ],
+    "support_good_medium_bad": [
+      411,
+      411,
+      411
+    ],
+    "confusion_3x3": [
+      [
+        385,
+        21,
+        5
+      ],
+      [
+        147,
+        171,
+        93
+      ],
+      [
+        77,
+        82,
+        252
+      ]
+    ]
+  },
+  "stratified_balanced_test_calibrated": {
+    "acc": 0.6593673965936739,
+    "balanced_acc": 0.6593673965936739,
+    "macro_f1": 0.649375995331935,
+    "recall_good_medium_bad": [
+      0.8223844282238443,
+      0.36496350364963503,
+      0.7907542579075426
+    ],
+    "precision_good_medium_bad": [
+      0.8825065274151436,
+      0.5357142857142857,
+      0.5701754385964912
+    ],
+    "f1_good_medium_bad": [
+      0.8513853904282116,
+      0.4341534008683068,
+      0.6625891946992865
+    ],
+    "support_good_medium_bad": [
+      411,
+      411,
+      411
+    ],
+    "confusion_3x3": [
+      [
+        338,
+        52,
+        21
+      ],
+      [
+        37,
+        150,
+        224
+      ],
+      [
+        8,
+        78,
+        325
+      ]
+    ]
+  },
+  "stratified_balanced_test_raw": {
+    "acc": 0.6609894566098946,
+    "balanced_acc": 0.6609894566098946,
+    "macro_f1": 0.6444337518573326,
+    "recall_good_medium_bad": [
+      0.9416058394160584,
+      0.4282238442822384,
+      0.6131386861313869
+    ],
+    "precision_good_medium_bad": [
+      0.6581632653061225,
+      0.6376811594202898,
+      0.6829268292682927
+    ],
+    "f1_good_medium_bad": [
+      0.7747747747747747,
+      0.512372634643377,
+      0.6461538461538462
+    ],
+    "support_good_medium_bad": [
+      411,
+      411,
+      411
+    ],
+    "confusion_3x3": [
+      [
+        387,
+        18,
+        6
+      ],
+      [
+        124,
+        176,
+        111
+      ],
+      [
+        77,
+        82,
+        252
+      ]
+    ]
+  },
+  "runtime": {
+    "elapsed_sec": 17.16980599999988,
+    "peak_cuda_memory_bytes": 517443072
+  }
+}

@@ -1,0 +1,13 @@
+fix_state,class_name,n
+fixed_by_feature_rule,bad,77
+fixed_by_feature_rule,good,346
+fixed_by_feature_rule,medium,443
+regressed_by_feature_rule,bad,13
+regressed_by_feature_rule,good,146
+regressed_by_feature_rule,medium,105
+still_wrong,bad,202
+still_wrong,good,552
+still_wrong,medium,104
+unchanged,bad,119
+unchanged,good,2596
+unchanged,medium,3774

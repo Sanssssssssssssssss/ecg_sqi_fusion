@@ -1,0 +1,11 @@
+{
+  "finding": "The original-test missed bad-outlier band overlaps clean-node medium rather than clean-node bad. This supports keeping clean selection separate from original stress handling.",
+  "counts": {
+    "original_test_bad_outlier_missed": 279,
+    "original_test_bad_outlier_caught": 13,
+    "clean_node_medium_in_original_missed_band": 875,
+    "clean_node_bad_in_original_missed_band": 0,
+    "clean_node_good_in_original_missed_band": 0
+  },
+  "waveform_figure": "n7188_bad_domain_conflict_waveforms.png"
+}

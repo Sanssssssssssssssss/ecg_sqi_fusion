@@ -22,6 +22,20 @@ class Uformer1DConfig:
     feature_set: str = "full_tokens"
     detach_encoder_features: bool = True
     head_hidden_dim: int = 128
+    denoiser_width: float = 1.0
+
+
+def scale_channels(base: int, width: float) -> int:
+    if abs(float(width) - 1.0) < 1e-9:
+        return int(base)
+    return max(8, int(round(base * float(width) / 8.0) * 8))
+
+
+def compatible_heads(dim: int, preferred: int) -> int:
+    for heads in [preferred, 8, 6, 5, 4, 3, 2, 1]:
+        if dim % heads == 0:
+            return heads
+    return 1
 
 
 def tensor_summary(x: torch.Tensor) -> torch.Tensor:
@@ -98,23 +112,30 @@ class UpBlock(nn.Module):
 class Uformer1DResidualDenoiser(nn.Module):
     """Conv local stem + hierarchical Transformer encoder + U-shaped decoder."""
 
-    def __init__(self, dropout: float = 0.05):
+    def __init__(self, dropout: float = 0.05, width: float = 1.0):
         super().__init__()
-        self.e1 = ConvBlock(1, 32, kernel=9)
-        self.d1 = nn.Conv1d(32, 64, kernel_size=4, stride=2, padding=1)
-        self.e2 = nn.Sequential(ConvBlock(64, 64), TransformerBlock1D(64, 4, dropout=dropout))
-        self.d2 = nn.Conv1d(64, 128, kernel_size=4, stride=2, padding=1)
-        self.e3 = nn.Sequential(ConvBlock(128, 128), TransformerBlock1D(128, 4, dropout=dropout))
-        self.d3 = nn.Conv1d(128, 160, kernel_size=4, stride=2, padding=1)
+        c1 = scale_channels(32, width)
+        c2 = scale_channels(64, width)
+        c3 = scale_channels(128, width)
+        cb = scale_channels(160, width)
+        u3 = scale_channels(96, width)
+        u2 = scale_channels(64, width)
+        u1 = scale_channels(32, width)
+        self.e1 = ConvBlock(1, c1, kernel=9)
+        self.d1 = nn.Conv1d(c1, c2, kernel_size=4, stride=2, padding=1)
+        self.e2 = nn.Sequential(ConvBlock(c2, c2), TransformerBlock1D(c2, compatible_heads(c2, 4), dropout=dropout))
+        self.d2 = nn.Conv1d(c2, c3, kernel_size=4, stride=2, padding=1)
+        self.e3 = nn.Sequential(ConvBlock(c3, c3), TransformerBlock1D(c3, compatible_heads(c3, 4), dropout=dropout))
+        self.d3 = nn.Conv1d(c3, cb, kernel_size=4, stride=2, padding=1)
         self.bottleneck = nn.Sequential(
-            ConvBlock(160, 160),
-            TransformerBlock1D(160, 5, dropout=dropout),
-            TransformerBlock1D(160, 5, dropout=dropout),
+            ConvBlock(cb, cb),
+            TransformerBlock1D(cb, compatible_heads(cb, 5), dropout=dropout),
+            TransformerBlock1D(cb, compatible_heads(cb, 5), dropout=dropout),
         )
-        self.u3 = UpBlock(160, 128, 96)
-        self.u2 = UpBlock(96, 64, 64)
-        self.u1 = UpBlock(64, 32, 32)
-        self.out = nn.Conv1d(32, 1, kernel_size=1)
+        self.u3 = UpBlock(cb, c3, u3)
+        self.u2 = UpBlock(u3, c2, u2)
+        self.u1 = UpBlock(u2, c1, u1)
+        self.out = nn.Conv1d(u1, 1, kernel_size=1)
         nn.init.zeros_(self.out.weight)
         nn.init.zeros_(self.out.bias)
 
@@ -173,7 +194,7 @@ class UformerDenoiseSQIModel(nn.Module):
     def __init__(self, cfg: Uformer1DConfig, head: SQIMLPHead | None = None):
         super().__init__()
         self.cfg = cfg
-        self.denoiser = Uformer1DResidualDenoiser(dropout=cfg.dropout)
+        self.denoiser = Uformer1DResidualDenoiser(dropout=cfg.dropout, width=cfg.denoiser_width)
         self.head = head
 
     def infer_feature_dim(self, seq_len: int = 1250, device: torch.device | None = None) -> int:

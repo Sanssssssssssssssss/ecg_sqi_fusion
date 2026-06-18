@@ -1,0 +1,4 @@
+split,n,rate
+train,63,0.63
+test,34,0.34
+val,3,0.03

@@ -1,0 +1,3 @@
+record_id,class_name,original_region,n
+111001,bad,outlier_low_confidence,292
+122001,bad,near_bad_boundary,119

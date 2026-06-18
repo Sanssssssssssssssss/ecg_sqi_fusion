@@ -1,0 +1,10 @@
+bucket,true,pred_badcal,n
+bad_to_good,bad,good,102
+bad_to_medium,bad,medium,48
+correct,bad,bad,261
+correct,good,good,3238
+correct,medium,medium,3826
+good_to_medium,good,medium,397
+medium_to_good,medium,good,424
+nonbad_to_bad,good,bad,5
+nonbad_to_bad,medium,bad,176

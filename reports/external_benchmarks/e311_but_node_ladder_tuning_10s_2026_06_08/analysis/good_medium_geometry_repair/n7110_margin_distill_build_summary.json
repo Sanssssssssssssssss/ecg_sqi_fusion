@@ -1,0 +1,580 @@
+{
+  "created_at": "2026-06-11T19:20:44",
+  "feature_summary": {
+    "rows": 18304,
+    "endpoint_disagreement_rows": 873,
+    "disagreement_by_class": {
+      "bad": 1,
+      "good": 146,
+      "medium": 726
+    },
+    "by_class": {
+      "good": {
+        "n": 146,
+        "quantiles": {
+          "pc1": {
+            "0.05": -4.813449108500161,
+            "0.25": -4.2209439385672045,
+            "0.5": -3.707282874900212,
+            "0.75": -3.1132426477506803,
+            "0.95": -2.5605908034339775
+          },
+          "pc3": {
+            "0.05": -3.9624686530169146,
+            "0.25": -3.0267207707601114,
+            "0.5": -1.8315848446036713,
+            "0.75": -0.47698275739651785,
+            "0.95": 0.854517189560644
+          },
+          "flatline_ratio": {
+            "0.05": 0.17033626901521215,
+            "0.25": 0.21317053642914327,
+            "0.5": 0.28222578062449954,
+            "0.75": 0.32325860688550834,
+            "0.95": 0.36369095276220975
+          },
+          "qrs_visibility": {
+            "0.05": 0.4834998397887473,
+            "0.25": 0.5539794119396525,
+            "0.5": 0.6017497773088243,
+            "0.75": 0.647439003253158,
+            "0.95": 0.7760115187235193
+          },
+          "non_qrs_diff_p95": {
+            "0.05": 0.03076128691900515,
+            "0.25": 0.039547439292073175,
+            "0.5": 0.04694908726960415,
+            "0.75": 0.055078169703483504,
+            "0.95": 0.08000618601217865
+          },
+          "rms": {
+            "0.05": 0.20254922636391276,
+            "0.25": 0.22192577849018813,
+            "0.5": 0.24027280667041107,
+            "0.75": 0.2669314981113481,
+            "0.95": 0.31458745470284216
+          },
+          "std": {
+            "0.05": 0.20180717820061106,
+            "0.25": 0.21870182696123558,
+            "0.5": 0.23615900640745313,
+            "0.75": 0.2612562199769949,
+            "0.95": 0.31080036867102434
+          },
+          "mean_abs": {
+            "0.05": 0.12502953527330754,
+            "0.25": 0.13253984150707326,
+            "0.5": 0.14020523712197897,
+            "0.75": 0.147668953812294,
+            "0.95": 0.15808813798184487
+          },
+          "amplitude_entropy": {
+            "0.05": 0.6589089859921207,
+            "0.25": 0.6958981455019271,
+            "0.5": 0.7174665849673614,
+            "0.75": 0.7427656031660794,
+            "0.95": 0.7638375643975794
+          },
+          "low_amp_ratio": {
+            "0.05": 0.0906,
+            "0.25": 0.1432,
+            "0.5": 0.18280000000000002,
+            "0.75": 0.228,
+            "0.95": 0.2968
+          }
+        }
+      },
+      "medium": {
+        "n": 726,
+        "quantiles": {
+          "pc1": {
+            "0.05": -1.4437300394827537,
+            "0.25": -0.9169275944693898,
+            "0.5": -0.47776790594747554,
+            "0.75": -0.0136394242979172,
+            "0.95": 0.8136407072180223
+          },
+          "pc3": {
+            "0.05": 1.2770598425211013,
+            "0.25": 2.2245161241639697,
+            "0.5": 2.790827552682241,
+            "0.75": 3.4244174087216415,
+            "0.95": 4.287940496563604
+          },
+          "flatline_ratio": {
+            "0.05": 0.04843875100080058,
+            "0.25": 0.077662129703763,
+            "0.5": 0.0944755804643715,
+            "0.75": 0.1176941553242594,
+            "0.95": 0.1623298638911128
+          },
+          "qrs_visibility": {
+            "0.05": 0.04556236745295365,
+            "0.25": 0.09292934140836714,
+            "0.5": 0.29111394247098793,
+            "0.75": 0.4227040481746908,
+            "0.95": 0.4727109987913254
+          },
+          "non_qrs_diff_p95": {
+            "0.05": 0.05201510590268295,
+            "0.25": 0.08589706467464564,
+            "0.5": 0.1125631520757451,
+            "0.75": 0.15160627964651194,
+            "0.95": 0.2011940900702028
+          },
+          "rms": {
+            "0.05": 0.1932467565665757,
+            "0.25": 0.23573620415991767,
+            "0.5": 0.25988753317219615,
+            "0.75": 0.2924076457887962,
+            "0.95": 0.32339919631659875
+          },
+          "std": {
+            "0.05": 0.18689501889223195,
+            "0.25": 0.23015157562326702,
+            "0.5": 0.2550211542981989,
+            "0.75": 0.28722127697408895,
+            "0.95": 0.31640300104671
+          },
+          "mean_abs": {
+            "0.05": 0.11948889787698568,
+            "0.25": 0.13066499412368066,
+            "0.5": 0.1385036869584699,
+            "0.75": 0.14583883187738822,
+            "0.95": 0.1542797835910765
+          },
+          "amplitude_entropy": {
+            "0.05": 0.6140060799534736,
+            "0.25": 0.6452172606621572,
+            "0.5": 0.6691546458099022,
+            "0.75": 0.6966099668176751,
+            "0.95": 0.7848296423526047
+          },
+          "low_amp_ratio": {
+            "0.05": 0.1224,
+            "0.25": 0.188,
+            "0.5": 0.23720000000000002,
+            "0.75": 0.27399999999999997,
+            "0.95": 0.311
+          }
+        }
+      }
+    }
+  },
+  "built": [
+    {
+      "level": 7110,
+      "node_id": "N7110_gm_trim_bad",
+      "spec_id": "nl_n7110_gm_trim_bad_margin_fullatlas_ultratiny_seed20261501",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7110_gm_trim_bad_margin_fullatlas_ultratiny_seed20261501",
+      "audit": {
+        "created_at": "2026-06-11T19:20:40",
+        "spec_id": "nl_n7110_gm_trim_bad_margin_fullatlas_ultratiny_seed20261501",
+        "node_id": "N7110_gm_trim_bad",
+        "node_level": 7110,
+        "purpose": "N7110 good/medium margin distillation: keep the best normal checkpoint data, then apply tiny soft-target adjustments on synthetic-only overlap rows derived from endpoint disagreement geometry. Bad is unchanged; original BUT is report-only.",
+        "base_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+        "config": {
+          "name": "margin_fullatlas_ultratiny",
+          "seed": 20261501,
+          "epochs": [
+            5,
+            5
+          ],
+          "loss": "soft_sample_weighted_ce",
+          "class_weight": "1.24,1.72,1.50",
+          "medium_soft": [
+            0.08,
+            0.91,
+            0.01
+          ],
+          "medium_weight": 1.04,
+          "good_soft": [
+            0.96,
+            0.03,
+            0.01
+          ],
+          "good_weight": 1.02,
+          "medium_gate": {
+            "qrs_visibility_max": 0.12,
+            "flatline_ratio_max": 0.115,
+            "non_qrs_diff_p95_min": 0.08,
+            "fatal_or_score_max": 1.2,
+            "contact_loss_win_ratio_max": 0.08,
+            "max_rows_per_split": {
+              "train": 60,
+              "val": 15
+            }
+          },
+          "good_gate": {
+            "flatline_ratio_min": 0.17,
+            "qrs_visibility_min": 0.45,
+            "non_qrs_diff_p95_max": 0.08,
+            "fatal_or_score_max": 1.2,
+            "contact_loss_win_ratio_max": 0.08,
+            "max_rows_per_split": {
+              "train": 60,
+              "val": 15
+            }
+          }
+        },
+        "rows": 15919,
+        "class_counts": {
+          "bad": 5107,
+          "good": 5307,
+          "medium": 5505
+        },
+        "split_counts": {
+          "test": 2288,
+          "train": 11362,
+          "val": 2269
+        },
+        "margin_distill": {
+          "medium_soft_rows": 75,
+          "good_anchor_soft_rows": 75,
+          "role_counts": {
+            "base_onehot": 15769,
+            "good_margin_anchor_soft_target": 75,
+            "medium_margin_soft_target": 75
+          },
+          "split_role_counts": [
+            {
+              "split": "test",
+              "distill_role": "base_onehot",
+              "n": 2288
+            },
+            {
+              "split": "train",
+              "distill_role": "base_onehot",
+              "n": 11242
+            },
+            {
+              "split": "train",
+              "distill_role": "good_margin_anchor_soft_target",
+              "n": 60
+            },
+            {
+              "split": "train",
+              "distill_role": "medium_margin_soft_target",
+              "n": 60
+            },
+            {
+              "split": "val",
+              "distill_role": "base_onehot",
+              "n": 2239
+            },
+            {
+              "split": "val",
+              "distill_role": "good_margin_anchor_soft_target",
+              "n": 15
+            },
+            {
+              "split": "val",
+              "distill_role": "medium_margin_soft_target",
+              "n": 15
+            }
+          ],
+          "medium_gate": {
+            "qrs_visibility_max": 0.12,
+            "flatline_ratio_max": 0.115,
+            "non_qrs_diff_p95_min": 0.08,
+            "fatal_or_score_max": 1.2,
+            "contact_loss_win_ratio_max": 0.08,
+            "max_rows_per_split": {
+              "train": 60,
+              "val": 15
+            }
+          },
+          "good_gate": {
+            "flatline_ratio_min": 0.17,
+            "qrs_visibility_min": 0.45,
+            "non_qrs_diff_p95_max": 0.08,
+            "fatal_or_score_max": 1.2,
+            "contact_loss_win_ratio_max": 0.08,
+            "max_rows_per_split": {
+              "train": 60,
+              "val": 15
+            }
+          }
+        },
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "level": 7110,
+      "node_id": "N7110_gm_trim_bad",
+      "spec_id": "nl_n7110_gm_trim_bad_margin_fullatlas_mild_seed20261502",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7110_gm_trim_bad_margin_fullatlas_mild_seed20261502",
+      "audit": {
+        "created_at": "2026-06-11T19:20:42",
+        "spec_id": "nl_n7110_gm_trim_bad_margin_fullatlas_mild_seed20261502",
+        "node_id": "N7110_gm_trim_bad",
+        "node_level": 7110,
+        "purpose": "N7110 good/medium margin distillation: keep the best normal checkpoint data, then apply tiny soft-target adjustments on synthetic-only overlap rows derived from endpoint disagreement geometry. Bad is unchanged; original BUT is report-only.",
+        "base_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+        "config": {
+          "name": "margin_fullatlas_mild",
+          "seed": 20261502,
+          "epochs": [
+            5,
+            5
+          ],
+          "loss": "soft_sample_weighted_ce",
+          "class_weight": "1.23,1.71,1.50",
+          "medium_soft": [
+            0.16,
+            0.83,
+            0.01
+          ],
+          "medium_weight": 1.03,
+          "good_soft": [
+            0.94,
+            0.05,
+            0.01
+          ],
+          "good_weight": 1.02,
+          "medium_gate": {
+            "qrs_visibility_max": 0.35,
+            "flatline_ratio_max": 0.28,
+            "non_qrs_diff_p95_min": 0.035,
+            "fatal_or_score_max": 1.25,
+            "contact_loss_win_ratio_max": 0.1,
+            "max_rows_per_split": {
+              "train": 100,
+              "val": 25
+            }
+          },
+          "good_gate": {
+            "flatline_ratio_min": 0.15,
+            "qrs_visibility_min": 0.4,
+            "non_qrs_diff_p95_max": 0.1,
+            "fatal_or_score_max": 1.25,
+            "contact_loss_win_ratio_max": 0.1,
+            "max_rows_per_split": {
+              "train": 100,
+              "val": 25
+            }
+          }
+        },
+        "rows": 15919,
+        "class_counts": {
+          "bad": 5107,
+          "good": 5307,
+          "medium": 5505
+        },
+        "split_counts": {
+          "test": 2288,
+          "train": 11362,
+          "val": 2269
+        },
+        "margin_distill": {
+          "medium_soft_rows": 125,
+          "good_anchor_soft_rows": 125,
+          "role_counts": {
+            "base_onehot": 15669,
+            "good_margin_anchor_soft_target": 125,
+            "medium_margin_soft_target": 125
+          },
+          "split_role_counts": [
+            {
+              "split": "test",
+              "distill_role": "base_onehot",
+              "n": 2288
+            },
+            {
+              "split": "train",
+              "distill_role": "base_onehot",
+              "n": 11162
+            },
+            {
+              "split": "train",
+              "distill_role": "good_margin_anchor_soft_target",
+              "n": 100
+            },
+            {
+              "split": "train",
+              "distill_role": "medium_margin_soft_target",
+              "n": 100
+            },
+            {
+              "split": "val",
+              "distill_role": "base_onehot",
+              "n": 2219
+            },
+            {
+              "split": "val",
+              "distill_role": "good_margin_anchor_soft_target",
+              "n": 25
+            },
+            {
+              "split": "val",
+              "distill_role": "medium_margin_soft_target",
+              "n": 25
+            }
+          ],
+          "medium_gate": {
+            "qrs_visibility_max": 0.35,
+            "flatline_ratio_max": 0.28,
+            "non_qrs_diff_p95_min": 0.035,
+            "fatal_or_score_max": 1.25,
+            "contact_loss_win_ratio_max": 0.1,
+            "max_rows_per_split": {
+              "train": 100,
+              "val": 25
+            }
+          },
+          "good_gate": {
+            "flatline_ratio_min": 0.15,
+            "qrs_visibility_min": 0.4,
+            "non_qrs_diff_p95_max": 0.1,
+            "fatal_or_score_max": 1.25,
+            "contact_loss_win_ratio_max": 0.1,
+            "max_rows_per_split": {
+              "train": 100,
+              "val": 25
+            }
+          }
+        },
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    },
+    {
+      "level": 7110,
+      "node_id": "N7110_gm_trim_bad",
+      "spec_id": "nl_n7110_gm_trim_bad_margin_fullatlas_anchor_guard_seed20261503",
+      "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\synthetic_variants\\nl_n7110_gm_trim_bad_margin_fullatlas_anchor_guard_seed20261503",
+      "audit": {
+        "created_at": "2026-06-11T19:20:44",
+        "spec_id": "nl_n7110_gm_trim_bad_margin_fullatlas_anchor_guard_seed20261503",
+        "node_id": "N7110_gm_trim_bad",
+        "node_level": 7110,
+        "purpose": "N7110 good/medium margin distillation: keep the best normal checkpoint data, then apply tiny soft-target adjustments on synthetic-only overlap rows derived from endpoint disagreement geometry. Bad is unchanged; original BUT is report-only.",
+        "base_variant_id": "nl_n7110_gm_trim_bad_geom_directrule_n7100base_g003_m008__69ab5b71cf7d",
+        "config": {
+          "name": "margin_fullatlas_anchor_guard",
+          "seed": 20261503,
+          "epochs": [
+            5,
+            5
+          ],
+          "loss": "soft_sample_weighted_ce",
+          "class_weight": "1.22,1.70,1.50",
+          "medium_soft": [
+            0.12,
+            0.87,
+            0.01
+          ],
+          "medium_weight": 1.02,
+          "good_soft": [
+            0.97,
+            0.02,
+            0.01
+          ],
+          "good_weight": 1.03,
+          "medium_gate": {
+            "qrs_visibility_max": 0.5,
+            "flatline_ratio_max": 0.32,
+            "non_qrs_diff_p95_min": 0.03,
+            "fatal_or_score_max": 1.25,
+            "contact_loss_win_ratio_max": 0.08,
+            "max_rows_per_split": {
+              "train": 80,
+              "val": 20
+            }
+          },
+          "good_gate": {
+            "flatline_ratio_min": 0.165,
+            "qrs_visibility_min": 0.46,
+            "non_qrs_diff_p95_max": 0.09,
+            "fatal_or_score_max": 1.25,
+            "contact_loss_win_ratio_max": 0.08,
+            "max_rows_per_split": {
+              "train": 120,
+              "val": 30
+            }
+          }
+        },
+        "rows": 15919,
+        "class_counts": {
+          "bad": 5107,
+          "good": 5307,
+          "medium": 5505
+        },
+        "split_counts": {
+          "test": 2288,
+          "train": 11362,
+          "val": 2269
+        },
+        "margin_distill": {
+          "medium_soft_rows": 100,
+          "good_anchor_soft_rows": 150,
+          "role_counts": {
+            "base_onehot": 15669,
+            "good_margin_anchor_soft_target": 150,
+            "medium_margin_soft_target": 100
+          },
+          "split_role_counts": [
+            {
+              "split": "test",
+              "distill_role": "base_onehot",
+              "n": 2288
+            },
+            {
+              "split": "train",
+              "distill_role": "base_onehot",
+              "n": 11162
+            },
+            {
+              "split": "train",
+              "distill_role": "good_margin_anchor_soft_target",
+              "n": 120
+            },
+            {
+              "split": "train",
+              "distill_role": "medium_margin_soft_target",
+              "n": 80
+            },
+            {
+              "split": "val",
+              "distill_role": "base_onehot",
+              "n": 2219
+            },
+            {
+              "split": "val",
+              "distill_role": "good_margin_anchor_soft_target",
+              "n": 30
+            },
+            {
+              "split": "val",
+              "distill_role": "medium_margin_soft_target",
+              "n": 20
+            }
+          ],
+          "medium_gate": {
+            "qrs_visibility_max": 0.5,
+            "flatline_ratio_max": 0.32,
+            "non_qrs_diff_p95_min": 0.03,
+            "fatal_or_score_max": 1.25,
+            "contact_loss_win_ratio_max": 0.08,
+            "max_rows_per_split": {
+              "train": 80,
+              "val": 20
+            }
+          },
+          "good_gate": {
+            "flatline_ratio_min": 0.165,
+            "qrs_visibility_min": 0.46,
+            "non_qrs_diff_p95_max": 0.09,
+            "fatal_or_score_max": 1.25,
+            "contact_loss_win_ratio_max": 0.08,
+            "max_rows_per_split": {
+              "train": 120,
+              "val": 30
+            }
+          }
+        },
+        "selection_note": "Clean/SemiClean/node diagnostics only. Original BUT is report-only and bucketed."
+      }
+    }
+  ]
+}

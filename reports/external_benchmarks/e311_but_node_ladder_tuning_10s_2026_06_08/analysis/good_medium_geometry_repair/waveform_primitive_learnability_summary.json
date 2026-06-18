@@ -1,0 +1,202 @@
+{
+  "created_by": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\analyze_waveform_hard_feature_learnability.py",
+  "input_contract": "waveform primitive stats computed from ECG only; diagnostic, not final model",
+  "banks": [
+    "qrs_enhanced",
+    "qrs_enhanced_v2",
+    "qrs_stress_v3"
+  ],
+  "target_features": [
+    "pc1",
+    "qrs_visibility",
+    "baseline_step",
+    "flatline_ratio",
+    "non_qrs_diff_p95",
+    "pca_margin",
+    "qrs_band_ratio",
+    "template_corr",
+    "amplitude_entropy",
+    "sqi_bSQI",
+    "region_confidence",
+    "detector_agreement",
+    "mean_abs",
+    "sqi_basSQI",
+    "pc2",
+    "pc3",
+    "low_amp_ratio",
+    "boundary_confidence",
+    "knn_label_purity"
+  ],
+  "feature_csv": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\waveform_primitive_hard_feature_learnability.csv",
+  "class_csv": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\waveform_primitive_class_learnability.csv",
+  "class_rows": [
+    {
+      "n": 1951,
+      "acc": 0.9948744233726294,
+      "macro_f1": 0.9944747203619855,
+      "good_recall": 0.9937238493723849,
+      "medium_recall": 0.9959415584415584,
+      "bad_recall": 0.991701244813278,
+      "confusion_3x3": [
+        [
+          475,
+          3,
+          0
+        ],
+        [
+          5,
+          1227,
+          0
+        ],
+        [
+          0,
+          2,
+          239
+        ]
+      ],
+      "split": "synthetic_test",
+      "model": "primitive_extra_trees",
+      "bank": "qrs_enhanced"
+    },
+    {
+      "n": 32956,
+      "acc": 0.83071367884452,
+      "macro_f1": 0.8555371387557704,
+      "good_recall": 0.7954585460306284,
+      "medium_recall": 0.8367519759126835,
+      "bad_recall": 0.9322611163670766,
+      "confusion_3x3": [
+        [
+          13557,
+          3486,
+          0
+        ],
+        [
+          1734,
+          8893,
+          1
+        ],
+        [
+          273,
+          85,
+          4927
+        ]
+      ],
+      "split": "original_test_all_10s+",
+      "model": "primitive_extra_trees",
+      "bank": "qrs_enhanced"
+    },
+    {
+      "n": 1951,
+      "acc": 0.9948744233726294,
+      "macro_f1": 0.994133995088652,
+      "good_recall": 0.99581589958159,
+      "medium_recall": 0.9951298701298701,
+      "bad_recall": 0.991701244813278,
+      "confusion_3x3": [
+        [
+          476,
+          2,
+          0
+        ],
+        [
+          5,
+          1226,
+          1
+        ],
+        [
+          0,
+          2,
+          239
+        ]
+      ],
+      "split": "synthetic_test",
+      "model": "primitive_extra_trees",
+      "bank": "qrs_enhanced_v2"
+    },
+    {
+      "n": 32956,
+      "acc": 0.8276186430392037,
+      "macro_f1": 0.8530952033818636,
+      "good_recall": 0.7892976588628763,
+      "medium_recall": 0.8371283402333459,
+      "bad_recall": 0.9320719016083254,
+      "confusion_3x3": [
+        [
+          13452,
+          3591,
+          0
+        ],
+        [
+          1727,
+          8897,
+          4
+        ],
+        [
+          268,
+          91,
+          4926
+        ]
+      ],
+      "split": "original_test_all_10s+",
+      "model": "primitive_extra_trees",
+      "bank": "qrs_enhanced_v2"
+    },
+    {
+      "n": 1951,
+      "acc": 0.9933367503844183,
+      "macro_f1": 0.99268215476109,
+      "good_recall": 0.9916317991631799,
+      "medium_recall": 0.9943181818181818,
+      "bad_recall": 0.991701244813278,
+      "confusion_3x3": [
+        [
+          474,
+          4,
+          0
+        ],
+        [
+          6,
+          1225,
+          1
+        ],
+        [
+          0,
+          2,
+          239
+        ]
+      ],
+      "split": "synthetic_test",
+      "model": "primitive_extra_trees",
+      "bank": "qrs_stress_v3"
+    },
+    {
+      "n": 32956,
+      "acc": 0.8282861997815268,
+      "macro_f1": 0.8534412431596866,
+      "good_recall": 0.7941090183653112,
+      "medium_recall": 0.8315769665035755,
+      "bad_recall": 0.9318826868495743,
+      "confusion_3x3": [
+        [
+          13534,
+          3509,
+          0
+        ],
+        [
+          1788,
+          8838,
+          2
+        ],
+        [
+          270,
+          90,
+          4925
+        ]
+      ],
+      "split": "original_test_all_10s+",
+      "model": "primitive_extra_trees",
+      "bank": "qrs_stress_v3"
+    }
+  ]
+}

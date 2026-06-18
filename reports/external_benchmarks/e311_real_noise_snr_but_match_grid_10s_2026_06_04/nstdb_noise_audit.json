@@ -1,0 +1,23 @@
+{
+  "nstdb_root": "E:\\GPTProject2\\ecg\\data\\physionet\\nstdb",
+  "tracks": {
+    "em": {
+      "samples_125hz": 225695,
+      "duration_sec": 1805.56,
+      "std": 0.33341264724731445,
+      "path": "E:\\GPTProject2\\ecg\\data\\physionet\\nstdb\\em"
+    },
+    "ma": {
+      "samples_125hz": 225695,
+      "duration_sec": 1805.56,
+      "std": 0.14326204359531403,
+      "path": "E:\\GPTProject2\\ecg\\data\\physionet\\nstdb\\ma"
+    },
+    "bw": {
+      "samples_125hz": 225695,
+      "duration_sec": 1805.56,
+      "std": 0.18321523070335388,
+      "path": "E:\\GPTProject2\\ecg\\data\\physionet\\nstdb\\bw"
+    }
+  }
+}

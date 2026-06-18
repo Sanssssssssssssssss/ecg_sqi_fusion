@@ -1,0 +1,1257 @@
+{
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "BUT 10s Three-Class Separability Atlas",
+    "description": "Feature-level evidence for separating BUT good, medium, and bad ECG quality classes.",
+    "sources": [
+      {
+        "id": "atlas_csv",
+        "label": "Generated BUT separability atlas CSV tables",
+        "path": "outputs/external_benchmarks/e311_but_separability_atlas_10s_2026_06_06"
+      }
+    ],
+    "blocks": [
+      {
+        "id": "intro",
+        "type": "markdown",
+        "body": "# BUT 10s Three-Class Separability Atlas\n\nMedium is evaluated as its own usability cluster, not only as a midpoint between good and bad."
+      },
+      {
+        "id": "family_scores_block",
+        "type": "chart",
+        "chartId": "family_scores"
+      },
+      {
+        "id": "top_features_block",
+        "type": "chart",
+        "chartId": "top_feature_scores"
+      },
+      {
+        "id": "probe_results_block",
+        "type": "table",
+        "tableId": "probe_results"
+      },
+      {
+        "id": "cluster_summary_block",
+        "type": "table",
+        "tableId": "cluster_summary"
+      },
+      {
+        "id": "next_targets",
+        "type": "markdown",
+        "body": "The generator target should be class-wise distribution matching on QRS detectability, detail reliability, fatal/contact events, motion/frequency, and SQI consistency."
+      }
+    ],
+    "charts": [
+      {
+        "id": "family_scores",
+        "title": "Separability by Feature Family",
+        "type": "bar",
+        "dataset": "family_scores",
+        "sourceId": "atlas_csv",
+        "encodings": {
+          "x": {
+            "field": "family",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "max_score",
+            "type": "quantitative"
+          }
+        }
+      },
+      {
+        "id": "top_feature_scores",
+        "title": "Top Separating Features",
+        "type": "bar",
+        "dataset": "top_feature_scores",
+        "sourceId": "atlas_csv",
+        "encodings": {
+          "x": {
+            "field": "feature",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "separability_score",
+            "type": "quantitative"
+          },
+          "color": {
+            "field": "family",
+            "type": "nominal"
+          }
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "probe_results",
+        "title": "Interpretable Probe Results",
+        "dataset": "probe_results",
+        "sourceId": "atlas_csv",
+        "columns": [
+          {
+            "field": "model",
+            "label": "Model",
+            "type": "text"
+          },
+          {
+            "field": "split_mode",
+            "label": "Split",
+            "type": "text"
+          },
+          {
+            "field": "acc",
+            "label": "Accuracy",
+            "type": "number"
+          },
+          {
+            "field": "macro_f1",
+            "label": "Macro-F1",
+            "type": "number"
+          },
+          {
+            "field": "good_recall",
+            "label": "Good recall",
+            "type": "number"
+          },
+          {
+            "field": "medium_recall",
+            "label": "Medium recall",
+            "type": "number"
+          },
+          {
+            "field": "bad_recall",
+            "label": "Bad recall",
+            "type": "number"
+          }
+        ]
+      },
+      {
+        "id": "cluster_summary",
+        "title": "Cluster Composition",
+        "dataset": "cluster_summary",
+        "sourceId": "atlas_csv",
+        "columns": [
+          {
+            "field": "method",
+            "label": "Method",
+            "type": "text"
+          },
+          {
+            "field": "cluster",
+            "label": "Cluster",
+            "type": "number"
+          },
+          {
+            "field": "n",
+            "label": "N",
+            "type": "number"
+          },
+          {
+            "field": "good_share",
+            "label": "Good share",
+            "type": "number"
+          },
+          {
+            "field": "medium_share",
+            "label": "Medium share",
+            "type": "number"
+          },
+          {
+            "field": "bad_share",
+            "label": "Bad share",
+            "type": "number"
+          },
+          {
+            "field": "dominant_class",
+            "label": "Dominant class",
+            "type": "text"
+          }
+        ]
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "ready",
+    "generatedAt": "2026-06-06T15:44:53",
+    "datasets": {
+      "family_scores": [
+        {
+          "family": "Detail reliability",
+          "n_features": 9,
+          "mean_score": 0.7122889763396381,
+          "max_score": 0.9616425832101476,
+          "top_features": "sample_entropy_proxy, higuchi_fd_proxy, non_qrs_diff_p95, diff_abs_median, non_qrs_rms_ratio, detail_instability"
+        },
+        {
+          "family": "SQI",
+          "n_features": 7,
+          "mean_score": 0.5683514516474532,
+          "max_score": 0.8028424195456153,
+          "top_features": "sqi_bSQI, sqi_pSQI, sqi_sSQI, sqi_kSQI, sqi_basSQI, sqi_fSQI"
+        },
+        {
+          "family": "QRS detectability",
+          "n_features": 19,
+          "mean_score": 0.510440837656078,
+          "max_score": 0.7684774105246746,
+          "top_features": "template_corr, rr_count_detector_b, qrs_prom_p90, qrs_width_median, aggressive_peak_count, qrs_band_ratio"
+        },
+        {
+          "family": "Motion/frequency",
+          "n_features": 18,
+          "mean_score": 0.6502020109290592,
+          "max_score": 0.7443561385144779,
+          "top_features": "zero_crossing_rate, band_30_45, hjorth_mobility, wavelet_e4, diff_zero_crossing_rate, band_5_15"
+        },
+        {
+          "family": "Contact/flat/fatal",
+          "n_features": 7,
+          "mean_score": 0.3863572348139135,
+          "max_score": 0.6835485955990228,
+          "top_features": "flatline_ratio, baseline_step, low_amp_ratio, local_rms_cv, fatal_or_score, contact_loss_win_ratio"
+        },
+        {
+          "family": "Amplitude/global",
+          "n_features": 4,
+          "mean_score": 0.5764621707771296,
+          "max_score": 0.6637790635878815,
+          "top_features": "rms, std, ptp_p99_p01, mean_abs"
+        }
+      ],
+      "top_feature_scores": [
+        {
+          "feature": "sample_entropy_proxy",
+          "max_ks": 0.9432041309502022,
+          "max_abs_cliffs": 0.96449856,
+          "max_abs_d": 6.173365667347449,
+          "mutual_info": 0.6617332732656789,
+          "mean_probe_importance": 0.5773080111857096,
+          "family": "Detail reliability",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.97537906324692,
+          "max_abs_cliffs_norm": 0.9705712300723164,
+          "max_abs_d_norm": 0.7917564573758364,
+          "mutual_info_norm": 1.0,
+          "mean_probe_importance_norm": 1.0,
+          "separability_score": 0.9616425832101476
+        },
+        {
+          "feature": "higuchi_fd_proxy",
+          "max_ks": 0.9363724378833416,
+          "max_abs_cliffs": 0.92411872,
+          "max_abs_d": 6.187824227237145,
+          "mutual_info": 0.6154248537587594,
+          "mean_probe_importance": 0.2951216975431769,
+          "family": "Detail reliability",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9683143249094912,
+          "max_abs_cliffs_norm": 0.9299371507649058,
+          "max_abs_d_norm": 0.7936108199349137,
+          "mutual_info_norm": 0.9300195087993904,
+          "mean_probe_importance_norm": 0.5112031910609355,
+          "separability_score": 0.8405916323312039
+        },
+        {
+          "feature": "sqi_bSQI",
+          "max_ks": 0.9567838176139812,
+          "max_abs_cliffs": 0.9937432,
+          "max_abs_d": 7.797051239478598,
+          "mutual_info": 0.5074900302708498,
+          "mean_probe_importance": 0.1378623613972487,
+          "family": "SQI",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9894219852641928,
+          "max_abs_cliffs_norm": 1.0,
+          "max_abs_d_norm": 1.0,
+          "mutual_info_norm": 0.7669102503586789,
+          "mean_probe_importance_norm": 0.238802093035395,
+          "separability_score": 0.8028424195456153
+        },
+        {
+          "feature": "non_qrs_diff_p95",
+          "max_ks": 0.9336574842053194,
+          "max_abs_cliffs": 0.94137216,
+          "max_abs_d": 6.51780848057672,
+          "mutual_info": 0.518443544578352,
+          "mean_probe_importance": 0.1673106911496744,
+          "family": "Detail reliability",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9655067577155686,
+          "max_abs_cliffs_norm": 0.9472992217707752,
+          "max_abs_d_norm": 0.8359324929885388,
+          "mutual_info_norm": 0.7834630137605343,
+          "mean_probe_importance_norm": 0.2898118299208108,
+          "separability_score": 0.7780453285696127
+        },
+        {
+          "feature": "template_corr",
+          "max_ks": 0.96701289425917,
+          "max_abs_cliffs": 0.9889536,
+          "max_abs_d": 3.920288432429306,
+          "mutual_info": 0.4886115319426629,
+          "mean_probe_importance": 0.2202261724495409,
+          "family": "QRS detectability",
+          "scope": "inference_safe",
+          "max_ks_norm": 1.0,
+          "max_abs_cliffs_norm": 0.9951802437490892,
+          "max_abs_d_norm": 0.5027911593782809,
+          "mutual_info_norm": 0.7383813867048674,
+          "mean_probe_importance_norm": 0.3814708408380255,
+          "separability_score": 0.7684774105246746
+        },
+        {
+          "feature": "diff_abs_median",
+          "max_ks": 0.9339772386069384,
+          "max_abs_cliffs": 0.9072384,
+          "max_abs_d": 6.566633519466143,
+          "mutual_info": 0.5354385094216436,
+          "mean_probe_importance": 0.1283297602671577,
+          "family": "Detail reliability",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9658374196989996,
+          "max_abs_cliffs_norm": 0.9129505489949516,
+          "max_abs_d_norm": 0.8421944806797583,
+          "mutual_info_norm": 0.8091455138400918,
+          "mean_probe_importance_norm": 0.2222899349752421,
+          "separability_score": 0.7624511154624452
+        },
+        {
+          "feature": "zero_crossing_rate",
+          "max_ks": 0.9336574842053194,
+          "max_abs_cliffs": 0.912036,
+          "max_abs_d": 6.571403178398021,
+          "mutual_info": 0.4850320777622721,
+          "mean_probe_importance": 0.1126653286037033,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9655067577155686,
+          "max_abs_cliffs_norm": 0.9177783556154144,
+          "max_abs_d_norm": 0.8428062066753151,
+          "mutual_info_norm": 0.7329721767935596,
+          "mean_probe_importance_norm": 0.1951563574742442,
+          "separability_score": 0.7443561385144779
+        },
+        {
+          "feature": "band_30_45",
+          "max_ks": 0.933598809089436,
+          "max_abs_cliffs": 0.91032064,
+          "max_abs_d": 4.143506492626794,
+          "mutual_info": 0.4697952184193916,
+          "mean_probe_importance": 0.1790934052719434,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.965446081052174,
+          "max_abs_cliffs_norm": 0.9160521953760288,
+          "max_abs_d_norm": 0.5314196823084977,
+          "mutual_info_norm": 0.709946495664234,
+          "mean_probe_importance_norm": 0.3102215832829181,
+          "separability_score": 0.7254614334305004
+        },
+        {
+          "feature": "hjorth_mobility",
+          "max_ks": 0.9335856196783348,
+          "max_abs_cliffs": 0.89238752,
+          "max_abs_d": 4.53903850774223,
+          "mutual_info": 0.4722681016449748,
+          "mean_probe_importance": 0.1387444953193928,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9654324417189452,
+          "max_abs_cliffs_norm": 0.898006164973003,
+          "max_abs_d_norm": 0.5821480926994349,
+          "mutual_info_norm": 0.7136834744825717,
+          "mean_probe_importance_norm": 0.2403301056474708,
+          "separability_score": 0.7142692576356547
+        },
+        {
+          "feature": "sqi_pSQI",
+          "max_ks": 0.932450331125828,
+          "max_abs_cliffs": 0.88906208,
+          "max_abs_d": 5.310080293220215,
+          "mutual_info": 0.4554394192418156,
+          "mean_probe_importance": 0.1128980282263347,
+          "family": "SQI",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9642584257784684,
+          "max_abs_cliffs_norm": 0.8946597873575386,
+          "max_abs_d_norm": 0.6810369882313753,
+          "mutual_info_norm": 0.6882522575813738,
+          "mean_probe_importance_norm": 0.195559434545968,
+          "separability_score": 0.7115392442982356
+        },
+        {
+          "feature": "wavelet_e4",
+          "max_ks": 0.9335856196783348,
+          "max_abs_cliffs": 0.89857472,
+          "max_abs_d": 4.940968497007756,
+          "mutual_info": 0.451940958056904,
+          "mean_probe_importance": 0.1051570418111798,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9654324417189452,
+          "max_abs_cliffs_norm": 0.9042323207846856,
+          "max_abs_d_norm": 0.6336970663973944,
+          "mutual_info_norm": 0.6829654428990071,
+          "mean_probe_importance_norm": 0.1821506713464828,
+          "separability_score": 0.7046597562127407
+        },
+        {
+          "feature": "diff_zero_crossing_rate",
+          "max_ks": 0.9316493408541842,
+          "max_abs_cliffs": 0.9028472,
+          "max_abs_d": 3.785915675608628,
+          "mutual_info": 0.5032506631811082,
+          "mean_probe_importance": 0.0640628851861994,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9634301118269184,
+          "max_abs_cliffs_norm": 0.9085317011477412,
+          "max_abs_d_norm": 0.4855573676929945,
+          "mutual_info_norm": 0.760503791350172,
+          "mean_probe_importance_norm": 0.1109682941253894,
+          "separability_score": 0.6869886309553084
+        },
+        {
+          "feature": "flatline_ratio",
+          "max_ks": 0.9375868629024552,
+          "max_abs_cliffs": 0.918876,
+          "max_abs_d": 2.177358133048065,
+          "mutual_info": 0.5885169451262313,
+          "mean_probe_importance": 0.0434387752326248,
+          "family": "Contact/flat/fatal",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9695701768493395,
+          "max_abs_cliffs_norm": 0.9246614215825576,
+          "max_abs_d_norm": 0.2792540495339451,
+          "mutual_info_norm": 0.8893567376805428,
+          "mean_probe_importance_norm": 0.0752436730323691,
+          "separability_score": 0.6835485955990228
+        },
+        {
+          "feature": "band_5_15",
+          "max_ks": 0.9127109674338674,
+          "max_abs_cliffs": 0.9804384,
+          "max_abs_d": 4.089846409699957,
+          "mutual_info": 0.393803687867063,
+          "mean_probe_importance": 0.0907055181894591,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9438457055250504,
+          "max_abs_cliffs_norm": 0.9866114303977124,
+          "max_abs_d_norm": 0.5245375827456346,
+          "mutual_info_norm": 0.595109394943414,
+          "mean_probe_importance_norm": 0.1571180659751503,
+          "separability_score": 0.6828191264488315
+        },
+        {
+          "feature": "non_qrs_rms_ratio",
+          "max_ks": 0.9230914003429802,
+          "max_abs_cliffs": 0.97114752,
+          "max_abs_d": 3.834326533349728,
+          "mutual_info": 0.4374072386364382,
+          "mean_probe_importance": 0.0636063314414304,
+          "family": "Detail reliability",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9545802396462992,
+          "max_abs_cliffs_norm": 0.9772620532145528,
+          "max_abs_d_norm": 0.4917662351550912,
+          "mutual_info_norm": 0.6610023347893886,
+          "mean_probe_importance_norm": 0.1101774619596772,
+          "separability_score": 0.6823079796808018
+        },
+        {
+          "feature": "spectral_entropy",
+          "max_ks": 0.891837813986116,
+          "max_abs_cliffs": 0.92144256,
+          "max_abs_d": 4.433952827070119,
+          "mutual_info": 0.3899566749414296,
+          "mean_probe_importance": 0.1320708639379087,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.922260519255386,
+          "max_abs_cliffs_norm": 0.9272441411422992,
+          "max_abs_d_norm": 0.5686704743736717,
+          "mutual_info_norm": 0.5892958548343482,
+          "mean_probe_importance_norm": 0.2287701909188021,
+          "separability_score": 0.6822944054215976
+        },
+        {
+          "feature": "band_15_30",
+          "max_ks": 0.9086134019168588,
+          "max_abs_cliffs": 0.87733728,
+          "max_abs_d": 4.757290656593983,
+          "mutual_info": 0.448299708830816,
+          "mean_probe_importance": 0.0823452017295763,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9396083623196656,
+          "max_abs_cliffs_norm": 0.8828611657418133,
+          "max_abs_d_norm": 0.6101397195527615,
+          "mutual_info_norm": 0.6774628493719833,
+          "mean_probe_importance_norm": 0.1426365131508409,
+          "separability_score": 0.6810071797761619
+        },
+        {
+          "feature": "sqi_sSQI",
+          "max_ks": 0.9467013232876206,
+          "max_abs_cliffs": 0.95831136,
+          "max_abs_d": 2.986138498630887,
+          "mutual_info": 0.4445202280476756,
+          "mean_probe_importance": 0.0511990312976172,
+          "family": "SQI",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9789955531181306,
+          "max_abs_cliffs_norm": 0.964345074260634,
+          "max_abs_d_norm": 0.3829830543515288,
+          "mutual_info_norm": 0.6717513626811471,
+          "mean_probe_importance_norm": 0.0886858146874865,
+          "separability_score": 0.6708850459527032
+        },
+        {
+          "feature": "rr_count_detector_b",
+          "max_ks": 0.9171934465280124,
+          "max_abs_cliffs": 0.93586976,
+          "max_abs_d": 2.990314690764148,
+          "mutual_info": 0.4132993397518401,
+          "mean_probe_importance": 0.095933320205818,
+          "family": "QRS detectability",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9484810926235638,
+          "max_abs_cliffs_norm": 0.9417621775927624,
+          "max_abs_d_norm": 0.3835186660853745,
+          "mutual_info_norm": 0.6245708904921647,
+          "mean_probe_importance_norm": 0.1661735474773414,
+          "separability_score": 0.6644420947193085
+        },
+        {
+          "feature": "rms",
+          "max_ks": 0.91531940662527,
+          "max_abs_cliffs": 0.97696768,
+          "max_abs_d": 2.556160597725724,
+          "mutual_info": 0.3896138294535107,
+          "mean_probe_importance": 0.1072073223038932,
+          "family": "Amplitude/global",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.946543124770324,
+          "max_abs_cliffs_norm": 0.9831188580711796,
+          "max_abs_d_norm": 0.3278368346206557,
+          "mutual_info_norm": 0.5887777525992485,
+          "mean_probe_importance_norm": 0.185702121270939,
+          "separability_score": 0.6637790635878815
+        },
+        {
+          "feature": "wavelet_e3",
+          "max_ks": 0.914297072868334,
+          "max_abs_cliffs": 0.86649248,
+          "max_abs_d": 4.167540234808264,
+          "mutual_info": 0.4255834815306298,
+          "mean_probe_importance": 0.0709117290837494,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9454859167816768,
+          "max_abs_cliffs_norm": 0.8719480847768316,
+          "max_abs_d_norm": 0.534502096601196,
+          "mutual_info_norm": 0.6431344753609852,
+          "mean_probe_importance_norm": 0.1228317080480256,
+          "separability_score": 0.6610354341164985
+        },
+        {
+          "feature": "qrs_prom_p90",
+          "max_ks": 0.9129262723576754,
+          "max_abs_cliffs": 0.92593504,
+          "max_abs_d": 2.8873554909471504,
+          "mutual_info": 0.3857630403943954,
+          "mean_probe_importance": 0.0987255954268115,
+          "family": "QRS detectability",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9440683550109944,
+          "max_abs_cliffs_norm": 0.9317649066680406,
+          "max_abs_d_norm": 0.3703137766143798,
+          "mutual_info_norm": 0.5829585060618763,
+          "mean_probe_importance_norm": 0.1710102640426608,
+          "separability_score": 0.6528996559634429
+        },
+        {
+          "feature": "detail_instability",
+          "max_ks": 0.9335665127957548,
+          "max_abs_cliffs": 0.92581504,
+          "max_abs_d": 1.3043501858095308,
+          "mutual_info": 0.4863299246601513,
+          "mean_probe_importance": 0.056702341665163,
+          "family": "Detail reliability",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9654126830552362,
+          "max_abs_cliffs_norm": 0.9316441511247574,
+          "max_abs_d_norm": 0.1672876252505883,
+          "mutual_info_norm": 0.7349334608188804,
+          "mean_probe_importance_norm": 0.0982185255816983,
+          "separability_score": 0.6472835075967215
+        },
+        {
+          "feature": "amplitude_entropy",
+          "max_ks": 0.9004477238856738,
+          "max_abs_cliffs": 0.94098816,
+          "max_abs_d": 2.834770597591659,
+          "mutual_info": 0.3665071255760206,
+          "mean_probe_importance": 0.0992551761170773,
+          "family": "Detail reliability",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9311641336235832,
+          "max_abs_cliffs_norm": 0.946912804032269,
+          "max_abs_d_norm": 0.3635695739997759,
+          "mutual_info_norm": 0.5538592970658616,
+          "mean_probe_importance_norm": 0.1719275918468915,
+          "separability_score": 0.6467553150229091
+        },
+        {
+          "feature": "hjorth_activity",
+          "max_ks": 0.910169185838636,
+          "max_abs_cliffs": 0.97239488,
+          "max_abs_d": 2.2193308971906505,
+          "mutual_info": 0.3815059320712592,
+          "mean_probe_importance": 0.0795679571145423,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.941217217724814,
+          "max_abs_cliffs_norm": 0.978517266835134,
+          "max_abs_d_norm": 0.2846372082247674,
+          "mutual_info_norm": 0.5765252368050241,
+          "mean_probe_importance_norm": 0.1378258322643417,
+          "separability_score": 0.6443107937314222
+        },
+        {
+          "feature": "qrs_width_median",
+          "max_ks": 0.917731148176539,
+          "max_abs_cliffs": 0.89526848,
+          "max_abs_d": 0.9952253905127484,
+          "mutual_info": 0.4643637778209666,
+          "mean_probe_importance": 0.1092558299409296,
+          "family": "QRS detectability",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9490371365519528,
+          "max_abs_cliffs_norm": 0.9009052640561463,
+          "max_abs_d_norm": 0.1276412530770159,
+          "mutual_info_norm": 0.7017385955663279,
+          "mean_probe_importance_norm": 0.1892505002945196,
+          "separability_score": 0.6434095539569837
+        },
+        {
+          "feature": "aggressive_peak_count",
+          "max_ks": 0.9119831961573516,
+          "max_abs_cliffs": 0.91873968,
+          "max_abs_d": 2.3002165944246387,
+          "mutual_info": 0.4598069105900983,
+          "mean_probe_importance": 0.0338565518167111,
+          "family": "QRS detectability",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9430931082423912,
+          "max_abs_cliffs_norm": 0.924524243285388,
+          "max_abs_d_norm": 0.2950110912158707,
+          "mutual_info_norm": 0.6948523357771232,
+          "mean_probe_importance_norm": 0.0586455603607068,
+          "separability_score": 0.6396652672885829
+        },
+        {
+          "feature": "band_1_5",
+          "max_ks": 0.9091541007827548,
+          "max_abs_cliffs": 0.88832384,
+          "max_abs_d": 2.8112481779840377,
+          "mutual_info": 0.4376692423360344,
+          "mean_probe_importance": 0.0462384807870988,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9401675057076246,
+          "max_abs_cliffs_norm": 0.8939168992552603,
+          "max_abs_d_norm": 0.3605527386750931,
+          "mutual_info_norm": 0.6613982702972152,
+          "mean_probe_importance_norm": 0.0800932602548359,
+          "separability_score": 0.6382452887797693
+        },
+        {
+          "feature": "wavelet_e0",
+          "max_ks": 0.910794295091202,
+          "max_abs_cliffs": 0.89135552,
+          "max_abs_d": 2.229303619498138,
+          "mutual_info": 0.4068651150086761,
+          "mean_probe_importance": 0.0842844525731048,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9418636509381426,
+          "max_abs_cliffs_norm": 0.8969676673007674,
+          "max_abs_d_norm": 0.285916245902113,
+          "mutual_info_norm": 0.6148476001528249,
+          "mean_probe_importance_norm": 0.1459956400050579,
+          "separability_score": 0.6352363546056223
+        },
+        {
+          "feature": "std",
+          "max_ks": 0.910169185838636,
+          "max_abs_cliffs": 0.97239488,
+          "max_abs_d": 2.4894188281816385,
+          "mutual_info": 0.3815207020952744,
+          "mean_probe_importance": 0.037355561271518,
+          "family": "Amplitude/global",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.941217217724814,
+          "max_abs_cliffs_norm": 0.978517266835134,
+          "max_abs_d_norm": 0.3192769614719257,
+          "mutual_info_norm": 0.576547557012594,
+          "mean_probe_importance_norm": 0.0647064661285315,
+          "separability_score": 0.6338477085312818
+        },
+        {
+          "feature": "ptp_p99_p01",
+          "max_ks": 0.9043598497672786,
+          "max_abs_cliffs": 0.93453152,
+          "max_abs_d": 2.5629312751638027,
+          "mutual_info": 0.3617696186297552,
+          "mean_probe_importance": 0.0672850981137404,
+          "family": "Amplitude/global",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9352097114073228,
+          "max_abs_cliffs_norm": 0.940415511774068,
+          "max_abs_d_norm": 0.3287051984713121,
+          "mutual_info_norm": 0.546700057629577,
+          "mean_probe_importance_norm": 0.1165497391514563,
+          "separability_score": 0.629910713804518
+        },
+        {
+          "feature": "hjorth_complexity",
+          "max_ks": 0.9333974375180036,
+          "max_abs_cliffs": 0.8902,
+          "max_abs_d": 0.5845273364977495,
+          "mutual_info": 0.4323994855532129,
+          "mean_probe_importance": 0.088964037886042,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.965237840218336,
+          "max_abs_cliffs_norm": 0.8958048719226456,
+          "max_abs_d_norm": 0.0749677433871574,
+          "mutual_info_norm": 0.6534347040149652,
+          "mean_probe_importance_norm": 0.1541015128186466,
+          "separability_score": 0.6247783455769982
+        },
+        {
+          "feature": "qrs_band_ratio",
+          "max_ks": 0.9071087428642703,
+          "max_abs_cliffs": 0.84902432,
+          "max_abs_d": 2.133886719400558,
+          "mutual_info": 0.4342953240575167,
+          "mean_probe_importance": 0.0529324960233913,
+          "family": "QRS detectability",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9380523757743764,
+          "max_abs_cliffs_norm": 0.8543699418521807,
+          "max_abs_d_norm": 0.2736786836279987,
+          "mutual_info_norm": 0.6562996627240048,
+          "mean_probe_importance_norm": 0.0916884834400191,
+          "separability_score": 0.6199291304379899
+        },
+        {
+          "feature": "sqi_kSQI",
+          "max_ks": 0.9047264443418233,
+          "max_abs_cliffs": 0.92312,
+          "max_abs_d": 2.1221836445815416,
+          "mutual_info": 0.3803461263632299,
+          "mean_probe_importance": 0.0459400264376798,
+          "family": "SQI",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9355888113931876,
+          "max_abs_cliffs_norm": 0.9289321426300076,
+          "max_abs_d_norm": 0.2721777219875569,
+          "mutual_info_norm": 0.5747725582638566,
+          "mean_probe_importance_norm": 0.0795762843188776,
+          "separability_score": 0.6183655825584707
+        },
+        {
+          "feature": "wavelet_e2",
+          "max_ks": 0.8928207470768885,
+          "max_abs_cliffs": 0.8536384,
+          "max_abs_d": 2.6229078286215795,
+          "mutual_info": 0.3958341788089747,
+          "mean_probe_importance": 0.056687390803994,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9232769825276008,
+          "max_abs_cliffs_norm": 0.8590130729951159,
+          "max_abs_d_norm": 0.3363974082074876,
+          "mutual_info_norm": 0.5981778381122019,
+          "mean_probe_importance_norm": 0.0981926280350174,
+          "separability_score": 0.6151786566187522
+        },
+        {
+          "feature": "baseline_step",
+          "max_ks": 0.9085151804430132,
+          "max_abs_cliffs": 0.89979776,
+          "max_abs_d": 1.4236503117869197,
+          "mutual_info": 0.4188616526292157,
+          "mean_probe_importance": 0.0385452169695434,
+          "family": "Contact/flat/fatal",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.939506790278146,
+          "max_abs_cliffs_norm": 0.905463061281828,
+          "max_abs_d_norm": 0.1825882975577472,
+          "mutual_info_norm": 0.6329765625387364,
+          "mean_probe_importance_norm": 0.0667671610694903,
+          "separability_score": 0.6114635839376834
+        },
+        {
+          "feature": "sqi_basSQI",
+          "max_ks": 0.8959768687927265,
+          "max_abs_cliffs": 0.88416864,
+          "max_abs_d": 0.7836669050583945,
+          "mutual_info": 0.396007649903709,
+          "mean_probe_importance": 0.0928424036112386,
+          "family": "SQI",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9265407670485466,
+          "max_abs_cliffs_norm": 0.8897355373098401,
+          "max_abs_d_norm": 0.1005081127452998,
+          "mutual_info_norm": 0.5984399846623947,
+          "mean_probe_importance_norm": 0.1608195310169927,
+          "separability_score": 0.6071173099538235
+        },
+        {
+          "feature": "spurious_peak_density",
+          "max_ks": 0.8801708028737596,
+          "max_abs_cliffs": 0.8913408,
+          "max_abs_d": 2.069854122333366,
+          "mutual_info": 0.3644321751288899,
+          "mean_probe_importance": 0.051001625000627,
+          "family": "QRS detectability",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.9101955186937396,
+          "max_abs_cliffs_norm": 0.8969528546207913,
+          "max_abs_d_norm": 0.2654662716403773,
+          "mutual_info_norm": 0.5507236674535093,
+          "mean_probe_importance_norm": 0.0883438719235454,
+          "separability_score": 0.6008393603740071
+        },
+        {
+          "feature": "low_amp_ratio",
+          "max_ks": 0.8528530788976029,
+          "max_abs_cliffs": 0.86525648,
+          "max_abs_d": 1.7404418300081694,
+          "mutual_info": 0.3641257809729175,
+          "mean_probe_importance": 0.0763476313615274,
+          "family": "Contact/flat/fatal",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.881945922294009,
+          "max_abs_cliffs_norm": 0.8707043026810145,
+          "max_abs_d_norm": 0.2232179546539129,
+          "mutual_info_norm": 0.550260649847548,
+          "mean_probe_importance_norm": 0.132247656159699,
+          "separability_score": 0.5907824075951137
+        },
+        {
+          "feature": "lf_ratio",
+          "max_ks": 0.8931960131731073,
+          "max_abs_cliffs": 0.88702912,
+          "max_abs_d": 0.8071407522743657,
+          "mutual_info": 0.3975008263084119,
+          "mean_probe_importance": 0.0404525619542851,
+          "family": "Motion/frequency",
+          "scope": "inference_safe",
+          "max_ks_norm": 0.923665049841332,
+          "max_abs_cliffs_norm": 0.8926140274469299,
+          "max_abs_d_norm": 0.1035187184852129,
+          "mutual_info_norm": 0.60069644729625,
+          "mean_probe_importance_norm": 0.0700710213100997,
+          "separability_score": 0.589563110987468
+        }
+      ],
+      "probe_results": [
+        {
+          "model": "elastic_net_logreg",
+          "split_mode": "grouped_subject_holdout",
+          "acc": 0.8359342794888405,
+          "balanced_acc": 0.6801975189230353,
+          "macro_f1": 0.7299408152593084,
+          "good_recall": 0.9076567101388304,
+          "medium_recall": 0.7680397727272728,
+          "bad_recall": 0.3648960739030023,
+          "balanced_diag_macro_f1": 0.6716305531761894,
+          "balanced_diag_balanced_acc": 0.6885644768856448
+        },
+        {
+          "model": "linear_svc",
+          "split_mode": "grouped_subject_holdout",
+          "acc": 0.8317531358577234,
+          "balanced_acc": 0.6781279368508178,
+          "macro_f1": 0.7294329433264016,
+          "good_recall": 0.9213294068153134,
+          "medium_recall": 0.7389204545454545,
+          "bad_recall": 0.3741339491916859,
+          "balanced_diag_macro_f1": 0.6699497497304048,
+          "balanced_diag_balanced_acc": 0.6853203568532037
+        },
+        {
+          "model": "random_forest",
+          "split_mode": "grouped_subject_holdout",
+          "acc": 0.8481832636476061,
+          "balanced_acc": 0.6667856152892365,
+          "macro_f1": 0.7119731049196005,
+          "good_recall": 0.8655868742111906,
+          "medium_recall": 0.8599431818181819,
+          "bad_recall": 0.2748267898383372,
+          "balanced_diag_macro_f1": 0.6613664462721066,
+          "balanced_diag_balanced_acc": 0.699918896999189
+        },
+        {
+          "model": "hist_gradient_boosting",
+          "split_mode": "grouped_subject_holdout",
+          "acc": 0.8433543372004004,
+          "balanced_acc": 0.6770459790659066,
+          "macro_f1": 0.7070947946743602,
+          "good_recall": 0.9238535969709718,
+          "medium_recall": 0.7654829545454546,
+          "bad_recall": 0.3418013856812933,
+          "balanced_diag_macro_f1": 0.667746856400581,
+          "balanced_diag_balanced_acc": 0.6934306569343066
+        },
+        {
+          "model": "extra_trees",
+          "split_mode": "grouped_subject_holdout",
+          "acc": 0.8317531358577234,
+          "balanced_acc": 0.6550625128938056,
+          "macro_f1": 0.7008497310751766,
+          "good_recall": 0.8528607488430795,
+          "medium_recall": 0.8375,
+          "bad_recall": 0.2748267898383372,
+          "balanced_diag_macro_f1": 0.6498252293066037,
+          "balanced_diag_balanced_acc": 0.683698296836983
+        },
+        {
+          "model": "small_decision_tree",
+          "split_mode": "grouped_subject_holdout",
+          "acc": 0.7932983923208292,
+          "balanced_acc": 0.6216217906477008,
+          "macro_f1": 0.6700941651514832,
+          "good_recall": 0.8806268405553218,
+          "medium_recall": 0.7071022727272728,
+          "bad_recall": 0.277136258660508,
+          "balanced_diag_macro_f1": 0.6096700929594658,
+          "balanced_diag_balanced_acc": 0.6293592862935928
+        },
+        {
+          "model": "linear_svc",
+          "split_mode": "protocol_train_to_test",
+          "acc": 0.8176241594903858,
+          "balanced_acc": 0.7117374194831226,
+          "macro_f1": 0.7471412539467717,
+          "good_recall": 0.9434065934065934,
+          "medium_recall": 0.7489832806145504,
+          "bad_recall": 0.4428223844282238,
+          "balanced_diag_macro_f1": 0.6926852558472912,
+          "balanced_diag_balanced_acc": 0.7064071370640713
+        },
+        {
+          "model": "elastic_net_logreg",
+          "split_mode": "protocol_train_to_test",
+          "acc": 0.8182139907986316,
+          "balanced_acc": 0.6728119684377663,
+          "macro_f1": 0.7104000882054748,
+          "good_recall": 0.9381868131868132,
+          "medium_recall": 0.7663804789877994,
+          "bad_recall": 0.3138686131386861,
+          "balanced_diag_macro_f1": 0.6444621033701599,
+          "balanced_diag_balanced_acc": 0.6747769667477698
+        },
+        {
+          "model": "random_forest",
+          "split_mode": "protocol_train_to_test",
+          "acc": 0.8223428099563524,
+          "balanced_acc": 0.6673426559276101,
+          "macro_f1": 0.7059155294863801,
+          "good_recall": 0.9255494505494506,
+          "medium_recall": 0.7869408043380027,
+          "bad_recall": 0.2895377128953771,
+          "balanced_diag_macro_f1": 0.6283755628974762,
+          "balanced_diag_balanced_acc": 0.6609894566098945
+        },
+        {
+          "model": "extra_trees",
+          "split_mode": "protocol_train_to_test",
+          "acc": 0.8090126223899965,
+          "balanced_acc": 0.6588323381086615,
+          "macro_f1": 0.6967952915030416,
+          "good_recall": 0.9255494505494506,
+          "medium_recall": 0.7614098508811568,
+          "bad_recall": 0.2895377128953771,
+          "balanced_diag_macro_f1": 0.6222325576584984,
+          "balanced_diag_balanced_acc": 0.6512570965125709
+        },
+        {
+          "model": "hist_gradient_boosting",
+          "split_mode": "protocol_train_to_test",
+          "acc": 0.8109000825763831,
+          "balanced_acc": 0.6628624679360874,
+          "macro_f1": 0.6964415549268294,
+          "good_recall": 0.935989010989011,
+          "medium_recall": 0.7557614098508811,
+          "bad_recall": 0.2968369829683698,
+          "balanced_diag_macro_f1": 0.6251114478378916,
+          "balanced_diag_balanced_acc": 0.656934306569343
+        },
+        {
+          "model": "small_decision_tree",
+          "split_mode": "protocol_train_to_test",
+          "acc": 0.8080688922968031,
+          "balanced_acc": 0.6584900384441748,
+          "macro_f1": 0.6936827731061688,
+          "good_recall": 0.929945054945055,
+          "medium_recall": 0.7559873474920922,
+          "bad_recall": 0.2895377128953771,
+          "balanced_diag_macro_f1": 0.6217212790386138,
+          "balanced_diag_balanced_acc": 0.6536901865369019
+        }
+      ],
+      "cluster_summary": [
+        {
+          "method": "agglomerative6",
+          "cluster": 0,
+          "n": 4109,
+          "good_share": 0.3774641031881236,
+          "medium_share": 0.6188853735702118,
+          "bad_share": 0.0036505232416646,
+          "dominant_class": "medium",
+          "silhouette_sample": 0.3708052686296825,
+          "ari_vs_label": 0.2840147513067512,
+          "nmi_vs_label": 0.4368580044224009
+        },
+        {
+          "method": "agglomerative6",
+          "cluster": 1,
+          "n": 1000,
+          "good_share": 0.259,
+          "medium_share": 0.693,
+          "bad_share": 0.048,
+          "dominant_class": "medium",
+          "silhouette_sample": 0.3708052686296825,
+          "ari_vs_label": 0.2840147513067512,
+          "nmi_vs_label": 0.4368580044224009
+        },
+        {
+          "method": "agglomerative6",
+          "cluster": 2,
+          "n": 1122,
+          "good_share": 0.5008912655971479,
+          "medium_share": 0.4420677361853832,
+          "bad_share": 0.0570409982174688,
+          "dominant_class": "good",
+          "silhouette_sample": 0.3708052686296825,
+          "ari_vs_label": 0.2840147513067512,
+          "nmi_vs_label": 0.4368580044224009
+        },
+        {
+          "method": "agglomerative6",
+          "cluster": 3,
+          "n": 1835,
+          "good_share": 0.0,
+          "medium_share": 0.0,
+          "bad_share": 1.0,
+          "dominant_class": "bad",
+          "silhouette_sample": 0.3708052686296825,
+          "ari_vs_label": 0.2840147513067512,
+          "nmi_vs_label": 0.4368580044224009
+        },
+        {
+          "method": "agglomerative6",
+          "cluster": 4,
+          "n": 1348,
+          "good_share": 0.994807121661721,
+          "medium_share": 0.0051928783382789,
+          "bad_share": 0.0,
+          "dominant_class": "good",
+          "silhouette_sample": 0.3708052686296825,
+          "ari_vs_label": 0.2840147513067512,
+          "nmi_vs_label": 0.4368580044224009
+        },
+        {
+          "method": "agglomerative6",
+          "cluster": 5,
+          "n": 2586,
+          "good_share": 0.9559164733178654,
+          "medium_share": 0.0440835266821345,
+          "bad_share": 0.0,
+          "dominant_class": "good",
+          "silhouette_sample": 0.3708052686296825,
+          "ari_vs_label": 0.2840147513067512,
+          "nmi_vs_label": 0.4368580044224009
+        },
+        {
+          "method": "gmm6",
+          "cluster": 0,
+          "n": 3679,
+          "good_share": 0.5602065778744224,
+          "medium_share": 0.4397934221255776,
+          "bad_share": 0.0,
+          "dominant_class": "good",
+          "silhouette_sample": 0.3812810498556991,
+          "ari_vs_label": 0.2613011385744138,
+          "nmi_vs_label": 0.438491354366488
+        },
+        {
+          "method": "gmm6",
+          "cluster": 1,
+          "n": 2036,
+          "good_share": 0.9656188605108056,
+          "medium_share": 0.0230844793713163,
+          "bad_share": 0.0112966601178781,
+          "dominant_class": "good",
+          "silhouette_sample": 0.3812810498556991,
+          "ari_vs_label": 0.2613011385744138,
+          "nmi_vs_label": 0.438491354366488
+        },
+        {
+          "method": "gmm6",
+          "cluster": 2,
+          "n": 1834,
+          "good_share": 0.0,
+          "medium_share": 0.0,
+          "bad_share": 1.0,
+          "dominant_class": "bad",
+          "silhouette_sample": 0.3812810498556991,
+          "ari_vs_label": 0.2613011385744138,
+          "nmi_vs_label": 0.438491354366488
+        },
+        {
+          "method": "gmm6",
+          "cluster": 3,
+          "n": 1828,
+          "good_share": 0.1553610503282275,
+          "medium_share": 0.8238512035010941,
+          "bad_share": 0.0207877461706783,
+          "dominant_class": "medium",
+          "silhouette_sample": 0.3812810498556991,
+          "ari_vs_label": 0.2613011385744138,
+          "nmi_vs_label": 0.438491354366488
+        },
+        {
+          "method": "gmm6",
+          "cluster": 4,
+          "n": 1140,
+          "good_share": 0.3526315789473684,
+          "medium_share": 0.5912280701754385,
+          "bad_share": 0.0561403508771929,
+          "dominant_class": "medium",
+          "silhouette_sample": 0.3812810498556991,
+          "ari_vs_label": 0.2613011385744138,
+          "nmi_vs_label": 0.438491354366488
+        },
+        {
+          "method": "gmm6",
+          "cluster": 5,
+          "n": 1483,
+          "good_share": 0.9925826028320972,
+          "medium_share": 0.0053944706675657,
+          "bad_share": 0.0020229265003371,
+          "dominant_class": "good",
+          "silhouette_sample": 0.3812810498556991,
+          "ari_vs_label": 0.2613011385744138,
+          "nmi_vs_label": 0.438491354366488
+        },
+        {
+          "method": "kmeans6",
+          "cluster": 0,
+          "n": 1837,
+          "good_share": 0.0,
+          "medium_share": 0.0,
+          "bad_share": 1.0,
+          "dominant_class": "bad",
+          "silhouette_sample": 0.4116882030348522,
+          "ari_vs_label": 0.2556810911261254,
+          "nmi_vs_label": 0.4359190536048266
+        },
+        {
+          "method": "kmeans6",
+          "cluster": 1,
+          "n": 3693,
+          "good_share": 0.4852423503926347,
+          "medium_share": 0.5147576496073653,
+          "bad_share": 0.0,
+          "dominant_class": "medium",
+          "silhouette_sample": 0.4116882030348522,
+          "ari_vs_label": 0.2556810911261254,
+          "nmi_vs_label": 0.4359190536048266
+        },
+        {
+          "method": "kmeans6",
+          "cluster": 2,
+          "n": 1576,
+          "good_share": 0.1821065989847715,
+          "medium_share": 0.7887055837563451,
+          "bad_share": 0.0291878172588832,
+          "dominant_class": "medium",
+          "silhouette_sample": 0.4116882030348522,
+          "ari_vs_label": 0.2556810911261254,
+          "nmi_vs_label": 0.4359190536048266
+        },
+        {
+          "method": "kmeans6",
+          "cluster": 3,
+          "n": 1547,
+          "good_share": 0.984486102133161,
+          "medium_share": 0.0142210730446024,
+          "bad_share": 0.0012928248222365,
+          "dominant_class": "good",
+          "silhouette_sample": 0.4116882030348522,
+          "ari_vs_label": 0.2556810911261254,
+          "nmi_vs_label": 0.4359190536048266
+        },
+        {
+          "method": "kmeans6",
+          "cluster": 4,
+          "n": 1297,
+          "good_share": 0.4294525828835774,
+          "medium_share": 0.5119506553585197,
+          "bad_share": 0.0585967617579028,
+          "dominant_class": "medium",
+          "silhouette_sample": 0.4116882030348522,
+          "ari_vs_label": 0.2556810911261254,
+          "nmi_vs_label": 0.4359190536048266
+        },
+        {
+          "method": "kmeans6",
+          "cluster": 5,
+          "n": 2050,
+          "good_share": 0.9882926829268291,
+          "medium_share": 0.0112195121951219,
+          "bad_share": 0.0004878048780487,
+          "dominant_class": "good",
+          "silhouette_sample": 0.4116882030348522,
+          "ari_vs_label": 0.2556810911261254,
+          "nmi_vs_label": 0.4359190536048266
+        }
+      ],
+      "summary_metrics": [
+        {
+          "metric": "medium_independence_ratio",
+          "value": 0.2378517142389068,
+          "note": "Distance of medium centroid away from the good-bad axis."
+        },
+        {
+          "metric": "local_medium_neighbor_purity_k30",
+          "value": 0.8141621247512761,
+          "note": "How often medium's nearest neighbors are also medium."
+        }
+      ]
+    }
+  },
+  "surface": "report",
+  "sources": [
+    {
+      "id": "atlas_csv",
+      "query": {
+        "engine": "local-csv",
+        "sql": "SELECT * FROM outputs.external_benchmarks.e311_but_separability_atlas_10s_2026_06_06.feature_family_scores",
+        "description": "Loads aggregated BUT separability atlas tables from generated CSV outputs."
+      },
+      "label": "Generated BUT separability atlas CSV tables",
+      "path": "outputs/external_benchmarks/e311_but_separability_atlas_10s_2026_06_06"
+    }
+  ]
+}

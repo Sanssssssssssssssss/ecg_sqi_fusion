@@ -1,0 +1,100 @@
+{
+  "created_at": "2026-06-11T02:11:57",
+  "focus_rows": 1673,
+  "train_val_focus_rows": 1446,
+  "test_rows": 3783,
+  "top_thresholds": [
+    {
+      "feature": "flatline_ratio",
+      "op": ">=",
+      "threshold": 0.1697357886309047,
+      "train_rescue_pass_rate": 0.953125,
+      "train_medium_lost_pass_rate": 0.0029498525073746312,
+      "train_spread": 0.9501751474926253
+    },
+    {
+      "feature": "pc1",
+      "op": "<=",
+      "threshold": -2.660846206651393,
+      "train_rescue_pass_rate": 0.94921875,
+      "train_medium_lost_pass_rate": 0.0,
+      "train_spread": 0.94921875
+    },
+    {
+      "feature": "qrs_visibility",
+      "op": ">=",
+      "threshold": 0.5026219181722926,
+      "train_rescue_pass_rate": 0.94921875,
+      "train_medium_lost_pass_rate": 0.01327433628318584,
+      "train_spread": 0.9359444137168141
+    },
+    {
+      "feature": "pc3",
+      "op": "<=",
+      "threshold": 1.1671711623827932,
+      "train_rescue_pass_rate": 0.94921875,
+      "train_medium_lost_pass_rate": 0.032448377581120944,
+      "train_spread": 0.916770372418879
+    },
+    {
+      "feature": "non_qrs_diff_p95",
+      "op": "<=",
+      "threshold": 0.07623103774385526,
+      "train_rescue_pass_rate": 0.94921875,
+      "train_medium_lost_pass_rate": 0.09734513274336283,
+      "train_spread": 0.8518736172566371
+    },
+    {
+      "feature": "template_corr",
+      "op": ">=",
+      "threshold": 0.6122880279758645,
+      "train_rescue_pass_rate": 0.8893229166666666,
+      "train_medium_lost_pass_rate": 0.11651917404129794,
+      "train_spread": 0.7728037426253687
+    },
+    {
+      "feature": "qrs_prom_p90",
+      "op": ">=",
+      "threshold": 6.004155136421888,
+      "train_rescue_pass_rate": 0.6002604166666666,
+      "train_medium_lost_pass_rate": 0.48672566371681414,
+      "train_spread": 0.11353475294985249
+    }
+  ],
+  "heldout_eval": [
+    {
+      "gate_name": "pc1_only",
+      "split": "test",
+      "gate_flips": 92,
+      "acc": 0.9637853555379329,
+      "macro_f1": 0.9613258679052632,
+      "good_recall": 0.9860805860805861,
+      "medium_recall": 0.9511993382961125,
+      "bad_recall": NaN,
+      "rules_json": "[{\"feature\": \"pc1\", \"op\": \"<=\", \"threshold\": -2.660846206651393, \"train_rescue_pass_rate\": 0.94921875, \"train_medium_lost_pass_rate\": 0.0, \"train_spread\": 0.94921875}]"
+    },
+    {
+      "gate_name": "pc1_flatline",
+      "split": "test",
+      "gate_flips": 92,
+      "acc": 0.9637853555379329,
+      "macro_f1": 0.9613258679052632,
+      "good_recall": 0.9860805860805861,
+      "medium_recall": 0.9511993382961125,
+      "bad_recall": NaN,
+      "rules_json": "[{\"feature\": \"pc1\", \"op\": \"<=\", \"threshold\": -2.660846206651393, \"train_rescue_pass_rate\": 0.94921875, \"train_medium_lost_pass_rate\": 0.0, \"train_spread\": 0.94921875}, {\"feature\": \"flatline_ratio\", \"op\": \">=\", \"threshold\": 0.1697357886309047, \"train_rescue_pass_rate\": 0.953125, \"train_medium_lost_pass_rate\": 0.0029498525073746312, \"train_spread\": 0.9501751474926253}]"
+    },
+    {
+      "gate_name": "pc1_flatline_pc3",
+      "split": "test",
+      "gate_flips": 92,
+      "acc": 0.9637853555379329,
+      "macro_f1": 0.9613258679052632,
+      "good_recall": 0.9860805860805861,
+      "medium_recall": 0.9511993382961125,
+      "bad_recall": NaN,
+      "rules_json": "[{\"feature\": \"pc1\", \"op\": \"<=\", \"threshold\": -2.660846206651393, \"train_rescue_pass_rate\": 0.94921875, \"train_medium_lost_pass_rate\": 0.0, \"train_spread\": 0.94921875}, {\"feature\": \"flatline_ratio\", \"op\": \">=\", \"threshold\": 0.1697357886309047, \"train_rescue_pass_rate\": 0.953125, \"train_medium_lost_pass_rate\": 0.0029498525073746312, \"train_spread\": 0.9501751474926253}, {\"feature\": \"pc3\", \"op\": \"<=\", \"threshold\": 1.1671711623827932, \"train_rescue_pass_rate\": 0.94921875, \"train_medium_lost_pass_rate\": 0.032448377581120944, \"train_spread\": 0.916770372418879}]"
+    }
+  ],
+  "note": "Thresholds estimated on train/val disagreement rows and evaluated on held-out test rows."
+}

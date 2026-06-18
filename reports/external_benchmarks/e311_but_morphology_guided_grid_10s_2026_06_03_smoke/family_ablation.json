@@ -1,0 +1,9 @@
+{
+  "h_medium_rescue": {
+    "n": 1,
+    "best_macro_f1": 0.6188703401786216,
+    "best_balanced_acc": 0.6459341232425627,
+    "best_min_medium_bad": 0.41362530413625304,
+    "best_feature_target_score": 0.7641430061388037
+  }
+}

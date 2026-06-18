@@ -1,0 +1,52 @@
+{
+  "node_id": "N17043_gm_trim_bad",
+  "bad_split_counts": [
+    {
+      "split": "test",
+      "record_id": 122001,
+      "original_region": "near_bad_boundary",
+      "ambiguous_type": "bad_outlier",
+      "n": 119
+    },
+    {
+      "split": "train",
+      "record_id": 105001,
+      "original_region": "right_bad_island",
+      "ambiguous_type": "medium_bad_boundary",
+      "n": 2766
+    },
+    {
+      "split": "train",
+      "record_id": 105001,
+      "original_region": "right_bad_island",
+      "ambiguous_type": "clean_or_target",
+      "n": 1198
+    },
+    {
+      "split": "val",
+      "record_id": 114001,
+      "original_region": "near_bad_boundary",
+      "ambiguous_type": "bad_outlier",
+      "n": 1
+    }
+  ],
+  "high_conf_summary": {
+    "hiconf_keep_conf0p6_margin1p2": {
+      "kept": 19600,
+      "excluded": 12155
+    },
+    "hiconf_keep_conf0p7_purity0p8": {
+      "kept": 15106,
+      "excluded": 16649
+    }
+  },
+  "interpretation": {
+    "bad_zero_on_test_reason": "N17043 train bad is almost entirely record 105001/right_bad_island, while test bad is record 122001/near_bad_boundary bad_outlier. The split-domain mismatch makes test bad look medium-like to the current UFormer.",
+    "action": "Treat test bad as a separate bad-domain/stress bucket or add a small 122001-like near-boundary bad block; do not let this invalidate the good/medium high-confidence subset result."
+  },
+  "figures": [
+    "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\n17043_bad_split_domain_pca.png",
+    "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\n17043_bad_split_feature_boxplots.png",
+    "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\n17043_bad_split_raw_waveforms.png"
+  ]
+}

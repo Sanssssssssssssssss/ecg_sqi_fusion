@@ -1,0 +1,699 @@
+{
+  "created_at": "2026-06-14T15:42:51",
+  "diagnostics": [
+    {
+      "created_at": "2026-06-14T15:41:57",
+      "node_id": "N17043_gm_trim_bad",
+      "variant_id": "nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_uformergeom_geom_balanced",
+      "checkpoint": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\runs\\uformer_geometry\\nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_geom_balanced\\ckpt_best.pt",
+      "model_kind": "uformer_geometry_branch",
+      "prediction_mode": "raw",
+      "feature_schema": "47_nodefull_waveform_geometry_v1",
+      "node_all": {
+        "n": 31755,
+        "acc": 0.8084396158085341,
+        "macro_f1": 0.8480192152032195,
+        "good_recall": 0.720941148858769,
+        "medium_recall": 0.8865261573202861,
+        "bad_recall": 0.9703721841332027,
+        "good_precision": 0.9117690709409321,
+        "medium_precision": 0.6589271977061333,
+        "bad_precision": 0.9957286432160805,
+        "good_to_medium": 4756,
+        "medium_to_good": 1189,
+        "bad_to_medium": 121,
+        "confusion_3x3": [
+          [
+            12287,
+            4756,
+            0
+          ],
+          [
+            1189,
+            9422,
+            17
+          ],
+          [
+            0,
+            121,
+            3963
+          ]
+        ]
+      },
+      "node_test": {
+        "n": 8185,
+        "acc": 0.7927916921197312,
+        "macro_f1": 0.5312197116888617,
+        "good_recall": 0.7601648351648351,
+        "medium_recall": 0.8409399005874378,
+        "bad_recall": 0.0,
+        "good_precision": 0.7992489890236857,
+        "medium_precision": 0.7895630038184133,
+        "bad_precision": 0.0,
+        "good_to_medium": 873,
+        "medium_to_good": 695,
+        "bad_to_medium": 119,
+        "confusion_3x3": [
+          [
+            2767,
+            873,
+            0
+          ],
+          [
+            695,
+            3722,
+            9
+          ],
+          [
+            0,
+            119,
+            0
+          ]
+        ]
+      },
+      "original_buckets": {
+        "original_all_10s+": {
+          "n": 32956,
+          "acc": 0.317210826556621,
+          "macro_f1": 0.25604481932576384,
+          "good_recall": 0.2968960863697706,
+          "medium_recall": 0.4999059089198344,
+          "bad_recall": 0.01532639545884579,
+          "good_precision": 0.373873208216344,
+          "medium_precision": 0.3638044371405095,
+          "bad_precision": 0.016811955168119553,
+          "good_to_medium": 7253,
+          "medium_to_good": 5308,
+          "bad_to_medium": 2038,
+          "confusion_3x3": [
+            [
+              5060,
+              7253,
+              4730
+            ],
+            [
+              5308,
+              5313,
+              7
+            ],
+            [
+              3166,
+              2038,
+              81
+            ]
+          ]
+        },
+        "original_test_all_10s+": {
+          "n": 8477,
+          "acc": 0.3573198065353309,
+          "macro_f1": 0.25815228478933483,
+          "good_recall": 0.175,
+          "medium_recall": 0.5404428377767736,
+          "bad_recall": 0.0,
+          "good_precision": 0.22033898305084745,
+          "medium_precision": 0.6243800574262595,
+          "bad_precision": 0.0,
+          "good_to_medium": 1252,
+          "medium_to_good": 2030,
+          "bad_to_medium": 187,
+          "confusion_3x3": [
+            [
+              637,
+              1252,
+              1751
+            ],
+            [
+              2030,
+              2392,
+              4
+            ],
+            [
+              224,
+              187,
+              0
+            ]
+          ]
+        },
+        "original_test_main_without_bad_stress": {
+          "n": 8185,
+          "acc": 0.3700671960904093,
+          "macro_f1": 0.2622100647426046,
+          "good_recall": 0.175,
+          "medium_recall": 0.5404428377767736,
+          "bad_recall": 0.0,
+          "good_precision": 0.23786407766990292,
+          "medium_precision": 0.6375266524520256,
+          "bad_precision": 0.0,
+          "good_to_medium": 1252,
+          "medium_to_good": 2030,
+          "bad_to_medium": 108,
+          "confusion_3x3": [
+            [
+              637,
+              1252,
+              1751
+            ],
+            [
+              2030,
+              2392,
+              4
+            ],
+            [
+              11,
+              108,
+              0
+            ]
+          ]
+        },
+        "original_bad_core_nearboundary": {
+          "n": 119,
+          "acc": 0.0,
+          "macro_f1": 0.0,
+          "good_recall": 0.0,
+          "medium_recall": 0.0,
+          "bad_recall": 0.0,
+          "good_precision": 0.0,
+          "medium_precision": 0.0,
+          "bad_precision": 0.0,
+          "good_to_medium": 0,
+          "medium_to_good": 0,
+          "bad_to_medium": 108,
+          "confusion_3x3": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              11,
+              108,
+              0
+            ]
+          ]
+        },
+        "original_bad_outlier_stress": {
+          "n": 292,
+          "acc": 0.0,
+          "macro_f1": 0.0,
+          "good_recall": 0.0,
+          "medium_recall": 0.0,
+          "bad_recall": 0.0,
+          "good_precision": 0.0,
+          "medium_precision": 0.0,
+          "bad_precision": 0.0,
+          "good_to_medium": 0,
+          "medium_to_good": 0,
+          "bad_to_medium": 79,
+          "confusion_3x3": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              213,
+              79,
+              0
+            ]
+          ]
+        }
+      },
+      "probs_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\predictions\\nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_uformergeom_geom_balanced_probs.npz",
+      "eligible_useful_094": false,
+      "eligible_promotion_095": false
+    },
+    {
+      "created_at": "2026-06-14T15:42:24",
+      "node_id": "N17043_gm_trim_bad",
+      "variant_id": "nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_uformergeom_geom_medium_guard",
+      "checkpoint": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\runs\\uformer_geometry\\nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_geom_medium_guard\\ckpt_best.pt",
+      "model_kind": "uformer_geometry_branch",
+      "prediction_mode": "raw",
+      "feature_schema": "47_nodefull_waveform_geometry_v1",
+      "node_all": {
+        "n": 31755,
+        "acc": 0.7954652810581011,
+        "macro_f1": 0.8378579440307403,
+        "good_recall": 0.6886698351229243,
+        "medium_recall": 0.8983816334211516,
+        "bad_recall": 0.9733104799216454,
+        "good_precision": 0.9196834351982448,
+        "medium_precision": 0.6381073314174965,
+        "bad_precision": 0.9863523573200993,
+        "good_to_medium": 5306,
+        "medium_to_good": 1025,
+        "bad_to_medium": 109,
+        "confusion_3x3": [
+          [
+            11737,
+            5306,
+            0
+          ],
+          [
+            1025,
+            9548,
+            55
+          ],
+          [
+            0,
+            109,
+            3975
+          ]
+        ]
+      },
+      "node_test": {
+        "n": 8185,
+        "acc": 0.7958460598656079,
+        "macro_f1": 0.5863661752173837,
+        "good_recall": 0.7637362637362637,
+        "medium_recall": 0.8404880253050158,
+        "bad_recall": 0.11764705882352941,
+        "good_precision": 0.8079046788724208,
+        "medium_precision": 0.7940234791889007,
+        "bad_precision": 0.23728813559322035,
+        "good_to_medium": 860,
+        "medium_to_good": 661,
+        "bad_to_medium": 105,
+        "confusion_3x3": [
+          [
+            2780,
+            860,
+            0
+          ],
+          [
+            661,
+            3720,
+            45
+          ],
+          [
+            0,
+            105,
+            14
+          ]
+        ]
+      },
+      "original_buckets": {
+        "original_all_10s+": {
+          "n": 32956,
+          "acc": 0.306499575191164,
+          "macro_f1": 0.24822286980260758,
+          "good_recall": 0.2721351874669952,
+          "medium_recall": 0.5045163718479488,
+          "bad_recall": 0.019110690633869443,
+          "good_precision": 0.3618066931897964,
+          "medium_precision": 0.3512380453294904,
+          "bad_precision": 0.020734962020119072,
+          "good_to_medium": 7676,
+          "medium_to_good": 5225,
+          "bad_to_medium": 2228,
+          "confusion_3x3": [
+            [
+              4638,
+              7676,
+              4729
+            ],
+            [
+              5225,
+              5362,
+              41
+            ],
+            [
+              2956,
+              2228,
+              101
+            ]
+          ]
+        },
+        "original_test_all_10s+": {
+          "n": 8477,
+          "acc": 0.35177539223782,
+          "macro_f1": 0.2529396365789408,
+          "good_recall": 0.16291208791208792,
+          "medium_recall": 0.5397650248531405,
+          "bad_recall": 0.0,
+          "good_precision": 0.20968882602545968,
+          "medium_precision": 0.6161980913077122,
+          "bad_precision": 0.0,
+          "good_to_medium": 1296,
+          "medium_to_good": 2016,
+          "bad_to_medium": 192,
+          "confusion_3x3": [
+            [
+              593,
+              1296,
+              1751
+            ],
+            [
+              2016,
+              2389,
+              21
+            ],
+            [
+              219,
+              192,
+              0
+            ]
+          ]
+        },
+        "original_test_main_without_bad_stress": {
+          "n": 8185,
+          "acc": 0.36432498472816127,
+          "macro_f1": 0.25687704957887963,
+          "good_recall": 0.16291208791208792,
+          "medium_recall": 0.5397650248531405,
+          "bad_recall": 0.0,
+          "good_precision": 0.22668195718654435,
+          "medium_precision": 0.6291809323149855,
+          "bad_precision": 0.0,
+          "good_to_medium": 1296,
+          "medium_to_good": 2016,
+          "bad_to_medium": 112,
+          "confusion_3x3": [
+            [
+              593,
+              1296,
+              1751
+            ],
+            [
+              2016,
+              2389,
+              21
+            ],
+            [
+              7,
+              112,
+              0
+            ]
+          ]
+        },
+        "original_bad_core_nearboundary": {
+          "n": 119,
+          "acc": 0.0,
+          "macro_f1": 0.0,
+          "good_recall": 0.0,
+          "medium_recall": 0.0,
+          "bad_recall": 0.0,
+          "good_precision": 0.0,
+          "medium_precision": 0.0,
+          "bad_precision": 0.0,
+          "good_to_medium": 0,
+          "medium_to_good": 0,
+          "bad_to_medium": 112,
+          "confusion_3x3": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              7,
+              112,
+              0
+            ]
+          ]
+        },
+        "original_bad_outlier_stress": {
+          "n": 292,
+          "acc": 0.0,
+          "macro_f1": 0.0,
+          "good_recall": 0.0,
+          "medium_recall": 0.0,
+          "bad_recall": 0.0,
+          "good_precision": 0.0,
+          "medium_precision": 0.0,
+          "bad_precision": 0.0,
+          "good_to_medium": 0,
+          "medium_to_good": 0,
+          "bad_to_medium": 80,
+          "confusion_3x3": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              212,
+              80,
+              0
+            ]
+          ]
+        }
+      },
+      "probs_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\predictions\\nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_uformergeom_geom_medium_guard_probs.npz",
+      "eligible_useful_094": false,
+      "eligible_promotion_095": false
+    },
+    {
+      "created_at": "2026-06-14T15:42:51",
+      "node_id": "N17043_gm_trim_bad",
+      "variant_id": "nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_uformergeom_geom_bad_guard",
+      "checkpoint": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\runs\\uformer_geometry\\nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_geom_bad_guard\\ckpt_best.pt",
+      "model_kind": "uformer_geometry_branch",
+      "prediction_mode": "raw",
+      "feature_schema": "47_nodefull_waveform_geometry_v1",
+      "node_all": {
+        "n": 31755,
+        "acc": 0.7903322311447016,
+        "macro_f1": 0.8308387155692842,
+        "good_recall": 0.6757026345127032,
+        "medium_recall": 0.9028039141889349,
+        "bad_recall": 0.9760039177277179,
+        "good_precision": 0.9223129905494153,
+        "medium_precision": 0.6350939899391052,
+        "bad_precision": 0.9579428022110069,
+        "good_to_medium": 5415,
+        "medium_to_good": 970,
+        "bad_to_medium": 98,
+        "confusion_3x3": [
+          [
+            11516,
+            5415,
+            112
+          ],
+          [
+            970,
+            9595,
+            63
+          ],
+          [
+            0,
+            98,
+            3986
+          ]
+        ]
+      },
+      "node_test": {
+        "n": 8185,
+        "acc": 0.792302993280391,
+        "macro_f1": 0.6076155453207023,
+        "good_recall": 0.7434065934065934,
+        "medium_recall": 0.8488477180298237,
+        "bad_recall": 0.18487394957983194,
+        "good_precision": 0.8133453561767358,
+        "medium_precision": 0.7849979105725031,
+        "bad_precision": 0.3055555555555556,
+        "good_to_medium": 932,
+        "medium_to_good": 621,
+        "bad_to_medium": 97,
+        "confusion_3x3": [
+          [
+            2706,
+            932,
+            2
+          ],
+          [
+            621,
+            3757,
+            48
+          ],
+          [
+            0,
+            97,
+            22
+          ]
+        ]
+      },
+      "original_buckets": {
+        "original_all_10s+": {
+          "n": 32956,
+          "acc": 0.313690981915281,
+          "macro_f1": 0.26126172444899187,
+          "good_recall": 0.26703045238514345,
+          "medium_recall": 0.5191945803537824,
+          "bad_recall": 0.05089877010406812,
+          "good_precision": 0.36303446075303125,
+          "medium_precision": 0.3580094725231947,
+          "bad_precision": 0.05372478530057919,
+          "good_to_medium": 7761,
+          "medium_to_good": 5103,
+          "bad_to_medium": 2134,
+          "confusion_3x3": [
+            [
+              4551,
+              7761,
+              4731
+            ],
+            [
+              5103,
+              5518,
+              7
+            ],
+            [
+              2882,
+              2134,
+              269
+            ]
+          ]
+        },
+        "original_test_all_10s+": {
+          "n": 8477,
+          "acc": 0.36180252447799927,
+          "macro_f1": 0.2573837341343291,
+          "good_recall": 0.1574175824175824,
+          "medium_recall": 0.5634884771802983,
+          "bad_recall": 0.0,
+          "good_precision": 0.2104296731546089,
+          "medium_precision": 0.6236559139784946,
+          "bad_precision": 0.0,
+          "good_to_medium": 1314,
+          "medium_to_good": 1930,
+          "bad_to_medium": 191,
+          "confusion_3x3": [
+            [
+              573,
+              1314,
+              1753
+            ],
+            [
+              1930,
+              2494,
+              2
+            ],
+            [
+              220,
+              191,
+              0
+            ]
+          ]
+        },
+        "original_test_main_without_bad_stress": {
+          "n": 8185,
+          "acc": 0.37470983506414174,
+          "macro_f1": 0.26135856896410564,
+          "good_recall": 0.1574175824175824,
+          "medium_recall": 0.5634884771802983,
+          "bad_recall": 0.0,
+          "good_precision": 0.22810509554140126,
+          "medium_precision": 0.6365492598264421,
+          "bad_precision": 0.0,
+          "good_to_medium": 1314,
+          "medium_to_good": 1930,
+          "bad_to_medium": 110,
+          "confusion_3x3": [
+            [
+              573,
+              1314,
+              1753
+            ],
+            [
+              1930,
+              2494,
+              2
+            ],
+            [
+              9,
+              110,
+              0
+            ]
+          ]
+        },
+        "original_bad_core_nearboundary": {
+          "n": 119,
+          "acc": 0.0,
+          "macro_f1": 0.0,
+          "good_recall": 0.0,
+          "medium_recall": 0.0,
+          "bad_recall": 0.0,
+          "good_precision": 0.0,
+          "medium_precision": 0.0,
+          "bad_precision": 0.0,
+          "good_to_medium": 0,
+          "medium_to_good": 0,
+          "bad_to_medium": 110,
+          "confusion_3x3": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              9,
+              110,
+              0
+            ]
+          ]
+        },
+        "original_bad_outlier_stress": {
+          "n": 292,
+          "acc": 0.0,
+          "macro_f1": 0.0,
+          "good_recall": 0.0,
+          "medium_recall": 0.0,
+          "bad_recall": 0.0,
+          "good_precision": 0.0,
+          "medium_precision": 0.0,
+          "bad_precision": 0.0,
+          "good_to_medium": 0,
+          "medium_to_good": 0,
+          "bad_to_medium": 81,
+          "confusion_3x3": [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              211,
+              81,
+              0
+            ]
+          ]
+        }
+      },
+      "probs_path": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\predictions\\nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6_uformergeom_geom_bad_guard_probs.npz",
+      "eligible_useful_094": false,
+      "eligible_promotion_095": false
+    }
+  ],
+  "metrics_csv": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\uformer_geometry_branch_diagnostic_metrics.csv"
+}

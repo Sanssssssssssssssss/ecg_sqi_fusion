@@ -1,0 +1,2388 @@
+{
+  "node": {
+    "node_id": "N7000_gm_trim_bad",
+    "level": 7000,
+    "role": "gm_outer_shell_trim_bad",
+    "target_acc": 0.95,
+    "target_good": 0.92,
+    "target_medium": 0.9,
+    "target_bad": 0.9,
+    "train_default": false,
+    "reason": "N7000 good/medium expansion with bad outlier_low_confidence trimmed; bad remains core-island guardrail."
+  },
+  "stage": "scan",
+  "rows": [
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_001_sc_overlap_qrs_visible_comp_89a6607daf66",
+      "family": "bad_qrs_visible_compact_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.45,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.8300000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.19999999999999998,
+      "medium_step_rate": 0.245,
+      "medium_ramp_rate": 0.245,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_qrs_visible_compact_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.18,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_but_texture",
+      "good_target_std": 0.27599999999999997,
+      "good_std_jitter": 0.08,
+      "good_qrs_boost": 0.38,
+      "good_qrs_sharp": 0.085,
+      "good_nonqrs_smooth": 16,
+      "good_nonqrs_blend": 0.74,
+      "good_residual_mix": 0.02,
+      "good_baseline_mix": 0.058,
+      "good_qrsband_noise": 0.0035,
+      "bad_alt_family": "bad_narrow_oscillatory_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_visible_target_std": 0.154,
+      "bad_visible_pulse_amp": 0.74,
+      "bad_visible_qrsband_amp": 0.34,
+      "bad_visible_hf_amp": 0.035,
+      "bad_visible_width": 5.5,
+      "bad_visible_side_lobe": 0.46,
+      "bad_neg_spike_rate": 0.06,
+      "bad_neg_spike_amp": 0.12,
+      "bad_hf_qrs_bias": 0.82,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.58,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_qrs_visible_compact_core_000_0a0d9171f058"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_002_sc_overlap_qrs_visible_comp_147c596f2fa5",
+      "family": "bad_qrs_visible_compact_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.55,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.8300000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.19999999999999998,
+      "medium_step_rate": 0.245,
+      "medium_ramp_rate": 0.245,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_qrs_visible_compact_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.18,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_peak_locked",
+      "good_target_std": 0.282,
+      "good_std_jitter": 0.086,
+      "good_qrs_boost": 0.42000000000000004,
+      "good_qrs_sharp": 0.095,
+      "good_nonqrs_smooth": 18,
+      "good_nonqrs_blend": 0.7799999999999999,
+      "good_residual_mix": 0.024,
+      "good_baseline_mix": 0.064,
+      "good_qrsband_noise": 0.003,
+      "bad_alt_family": "bad_1530_spike_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_visible_target_std": 0.154,
+      "bad_visible_pulse_amp": 0.74,
+      "bad_visible_qrsband_amp": 0.34,
+      "bad_visible_hf_amp": 0.035,
+      "bad_visible_width": 5.5,
+      "bad_visible_side_lobe": 0.46,
+      "bad_neg_spike_rate": 0.06,
+      "bad_neg_spike_amp": 0.12,
+      "bad_hf_qrs_bias": 0.82,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.58,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_qrs_visible_compact_core_001_094786caeef9"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_003_sc_overlap_qrs_visible_comp_e7ab2d24ec67",
+      "family": "bad_qrs_visible_compact_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.60,1.75",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.8300000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.19999999999999998,
+      "medium_step_rate": 0.245,
+      "medium_ramp_rate": 0.245,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_qrs_visible_compact_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.18,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_but_texture",
+      "good_target_std": 0.266,
+      "good_std_jitter": 0.092,
+      "good_qrs_boost": 0.34,
+      "good_qrs_sharp": 0.075,
+      "good_nonqrs_smooth": 14,
+      "good_nonqrs_blend": 0.7,
+      "good_residual_mix": 0.018,
+      "good_baseline_mix": 0.052,
+      "good_qrsband_noise": 0.0045000000000000005,
+      "bad_alt_family": "bad_narrow_oscillatory_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_visible_target_std": 0.154,
+      "bad_visible_pulse_amp": 0.74,
+      "bad_visible_qrsband_amp": 0.34,
+      "bad_visible_hf_amp": 0.035,
+      "bad_visible_width": 5.5,
+      "bad_visible_side_lobe": 0.46,
+      "bad_neg_spike_rate": 0.06,
+      "bad_neg_spike_amp": 0.12,
+      "bad_hf_qrs_bias": 0.82,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.58,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_qrs_visible_compact_core_002_d689da00873f"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_004_sc_overlap_qrs_visible_comp_e8fe8036f1ff",
+      "family": "bad_qrs_visible_compact_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.45,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9100000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.22999999999999998,
+      "medium_step_rate": 0.28500000000000003,
+      "medium_ramp_rate": 0.30500000000000005,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_qrs_visible_compact_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.18,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_peak_locked",
+      "good_target_std": 0.27199999999999996,
+      "good_std_jitter": 0.078,
+      "good_qrs_boost": 0.46,
+      "good_qrs_sharp": 0.08,
+      "good_nonqrs_smooth": 15,
+      "good_nonqrs_blend": 0.72,
+      "good_residual_mix": 0.016,
+      "good_baseline_mix": 0.07,
+      "good_qrsband_noise": 0.0035,
+      "bad_alt_family": "bad_bandlimited_disagree_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_visible_target_std": 0.154,
+      "bad_visible_pulse_amp": 0.74,
+      "bad_visible_qrsband_amp": 0.34,
+      "bad_visible_hf_amp": 0.035,
+      "bad_visible_width": 5.5,
+      "bad_visible_side_lobe": 0.46,
+      "bad_neg_spike_rate": 0.06,
+      "bad_neg_spike_amp": 0.12,
+      "bad_hf_qrs_bias": 0.82,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.58,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_qrs_visible_compact_core_003_c592c16f43fa"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_005_sc_overlap_qrs_visible_comp_7a401ddc685b",
+      "family": "bad_qrs_visible_compact_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.55,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9100000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.22999999999999998,
+      "medium_step_rate": 0.28500000000000003,
+      "medium_ramp_rate": 0.30500000000000005,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_qrs_visible_compact_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.18,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_but_texture",
+      "good_target_std": 0.27599999999999997,
+      "good_std_jitter": 0.08,
+      "good_qrs_boost": 0.38,
+      "good_qrs_sharp": 0.085,
+      "good_nonqrs_smooth": 16,
+      "good_nonqrs_blend": 0.74,
+      "good_residual_mix": 0.02,
+      "good_baseline_mix": 0.058,
+      "good_qrsband_noise": 0.0035,
+      "bad_alt_family": "bad_1530_hfedge_spike_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_visible_target_std": 0.154,
+      "bad_visible_pulse_amp": 0.74,
+      "bad_visible_qrsband_amp": 0.34,
+      "bad_visible_hf_amp": 0.035,
+      "bad_visible_width": 5.5,
+      "bad_visible_side_lobe": 0.46,
+      "bad_neg_spike_rate": 0.06,
+      "bad_neg_spike_amp": 0.12,
+      "bad_hf_qrs_bias": 0.82,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.58,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_qrs_visible_compact_core_004_0f3bd83034b0"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_006_sc_overlap_1530_locked_lowp_1acdcd110a0f",
+      "family": "bad_1530_locked_lowpc2_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.60,1.75",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9100000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.22999999999999998,
+      "medium_step_rate": 0.28500000000000003,
+      "medium_ramp_rate": 0.30500000000000005,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_1530_locked_lowpc2_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.12,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_peak_locked",
+      "good_target_std": 0.282,
+      "good_std_jitter": 0.086,
+      "good_qrs_boost": 0.42000000000000004,
+      "good_qrs_sharp": 0.095,
+      "good_nonqrs_smooth": 18,
+      "good_nonqrs_blend": 0.7799999999999999,
+      "good_residual_mix": 0.024,
+      "good_baseline_mix": 0.064,
+      "good_qrsband_noise": 0.003,
+      "bad_alt_family": "bad_1530_spike_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_compact_target_std": 0.154,
+      "bad_compact_osc_amp": 0.72,
+      "bad_compact_f1": 21.6,
+      "bad_compact_f2": 17.8,
+      "bad_compact_f3": 27.4,
+      "bad_compact_w2": 0.72,
+      "bad_compact_w3": 0.54,
+      "bad_compact_qrs_boost": 0.72,
+      "bad_neg_spike_rate": 0.06,
+      "bad_neg_spike_amp": 0.16,
+      "bad_hf_qrs_bias": 0.72,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.58,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_1530_locked_lowpc2_core_005_2272b017f7c8"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_007_sc_overlap_1530_locked_lowp_4bc9f41c4c28",
+      "family": "bad_1530_locked_lowpc2_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.45,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9900000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.27,
+      "medium_step_rate": 0.32500000000000007,
+      "medium_ramp_rate": 0.3450000000000001,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_1530_locked_lowpc2_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.12,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_but_texture",
+      "good_target_std": 0.266,
+      "good_std_jitter": 0.092,
+      "good_qrs_boost": 0.34,
+      "good_qrs_sharp": 0.075,
+      "good_nonqrs_smooth": 14,
+      "good_nonqrs_blend": 0.7,
+      "good_residual_mix": 0.018,
+      "good_baseline_mix": 0.052,
+      "good_qrsband_noise": 0.0045000000000000005,
+      "bad_alt_family": "bad_1530_spike_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_compact_target_std": 0.154,
+      "bad_compact_osc_amp": 0.72,
+      "bad_compact_f1": 21.6,
+      "bad_compact_f2": 17.8,
+      "bad_compact_f3": 27.4,
+      "bad_compact_w2": 0.72,
+      "bad_compact_w3": 0.54,
+      "bad_compact_qrs_boost": 0.72,
+      "bad_neg_spike_rate": 0.06,
+      "bad_neg_spike_amp": 0.16,
+      "bad_hf_qrs_bias": 0.72,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.58,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_1530_locked_lowpc2_core_006_9f25768a5919"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_008_sc_overlap_1530_locked_lowp_0b5234ad1700",
+      "family": "bad_1530_locked_lowpc2_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.55,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9900000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.27,
+      "medium_step_rate": 0.32500000000000007,
+      "medium_ramp_rate": 0.3450000000000001,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_1530_locked_lowpc2_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.12,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_peak_locked",
+      "good_target_std": 0.27199999999999996,
+      "good_std_jitter": 0.078,
+      "good_qrs_boost": 0.46,
+      "good_qrs_sharp": 0.08,
+      "good_nonqrs_smooth": 15,
+      "good_nonqrs_blend": 0.72,
+      "good_residual_mix": 0.016,
+      "good_baseline_mix": 0.07,
+      "good_qrsband_noise": 0.0035,
+      "bad_alt_family": "bad_narrow_oscillatory_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_compact_target_std": 0.154,
+      "bad_compact_osc_amp": 0.72,
+      "bad_compact_f1": 21.6,
+      "bad_compact_f2": 17.8,
+      "bad_compact_f3": 27.4,
+      "bad_compact_w2": 0.72,
+      "bad_compact_w3": 0.54,
+      "bad_compact_qrs_boost": 0.72,
+      "bad_neg_spike_rate": 0.06,
+      "bad_neg_spike_amp": 0.16,
+      "bad_hf_qrs_bias": 0.72,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.58,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_1530_locked_lowpc2_core_007_efd8149f7026"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_009_sc_overlap_1530_locked_lowp_4e977948afea",
+      "family": "bad_1530_locked_lowpc2_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.60,1.75",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9900000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.27,
+      "medium_step_rate": 0.32500000000000007,
+      "medium_ramp_rate": 0.3450000000000001,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_1530_locked_lowpc2_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.12,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_but_texture",
+      "good_target_std": 0.27599999999999997,
+      "good_std_jitter": 0.08,
+      "good_qrs_boost": 0.38,
+      "good_qrs_sharp": 0.085,
+      "good_nonqrs_smooth": 16,
+      "good_nonqrs_blend": 0.74,
+      "good_residual_mix": 0.02,
+      "good_baseline_mix": 0.058,
+      "good_qrsband_noise": 0.0035,
+      "bad_alt_family": "bad_bandlimited_disagree_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_compact_target_std": 0.154,
+      "bad_compact_osc_amp": 0.72,
+      "bad_compact_f1": 21.6,
+      "bad_compact_f2": 17.8,
+      "bad_compact_f3": 27.4,
+      "bad_compact_w2": 0.72,
+      "bad_compact_w3": 0.54,
+      "bad_compact_qrs_boost": 0.72,
+      "bad_neg_spike_rate": 0.06,
+      "bad_neg_spike_amp": 0.16,
+      "bad_hf_qrs_bias": 0.72,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.58,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_1530_locked_lowpc2_core_008_1616a89d4a07"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_010_sc_overlap_1530_locked_lowp_fd452d0d185f",
+      "family": "bad_1530_locked_lowpc2_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.45,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.8300000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.19999999999999998,
+      "medium_step_rate": 0.245,
+      "medium_ramp_rate": 0.245,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_1530_locked_lowpc2_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.12,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_peak_locked",
+      "good_target_std": 0.282,
+      "good_std_jitter": 0.086,
+      "good_qrs_boost": 0.42000000000000004,
+      "good_qrs_sharp": 0.095,
+      "good_nonqrs_smooth": 18,
+      "good_nonqrs_blend": 0.7799999999999999,
+      "good_residual_mix": 0.024,
+      "good_baseline_mix": 0.064,
+      "good_qrsband_noise": 0.003,
+      "bad_alt_family": "bad_1530_hfedge_spike_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_compact_target_std": 0.154,
+      "bad_compact_osc_amp": 0.72,
+      "bad_compact_f1": 21.6,
+      "bad_compact_f2": 17.8,
+      "bad_compact_f3": 27.4,
+      "bad_compact_w2": 0.72,
+      "bad_compact_w3": 0.54,
+      "bad_compact_qrs_boost": 0.72,
+      "bad_neg_spike_rate": 0.1,
+      "bad_neg_spike_amp": 0.16,
+      "bad_hf_qrs_bias": 0.72,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.62,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_1530_locked_lowpc2_core_009_19b916712f09"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_011_sc_overlap_compact_pca_core_2a88470eba03",
+      "family": "bad_compact_pca_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.55,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.8300000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.19999999999999998,
+      "medium_step_rate": 0.245,
+      "medium_ramp_rate": 0.245,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_compact_pca_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.34,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_but_texture",
+      "good_target_std": 0.266,
+      "good_std_jitter": 0.092,
+      "good_qrs_boost": 0.34,
+      "good_qrs_sharp": 0.075,
+      "good_nonqrs_smooth": 14,
+      "good_nonqrs_blend": 0.7,
+      "good_residual_mix": 0.018,
+      "good_baseline_mix": 0.052,
+      "good_qrsband_noise": 0.0045000000000000005,
+      "bad_alt_family": "bad_bandlimited_disagree_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_compact_target_std": 0.154,
+      "bad_compact_osc_amp": 0.66,
+      "bad_compact_f1": 21.8,
+      "bad_compact_f2": 16.6,
+      "bad_compact_f3": 41.0,
+      "bad_compact_w2": 0.26,
+      "bad_compact_w3": 0.78,
+      "bad_compact_qrs_boost": 0.42,
+      "bad_neg_spike_rate": 0.1,
+      "bad_neg_spike_amp": 0.34,
+      "bad_hf_qrs_bias": 0.62,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.62,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_compact_pca_core_010_e119bca08c71"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_012_sc_overlap_compact_pca_core_a80628065b3b",
+      "family": "bad_compact_pca_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.60,1.75",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.8300000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.19999999999999998,
+      "medium_step_rate": 0.245,
+      "medium_ramp_rate": 0.245,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_compact_pca_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.34,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_peak_locked",
+      "good_target_std": 0.27199999999999996,
+      "good_std_jitter": 0.078,
+      "good_qrs_boost": 0.46,
+      "good_qrs_sharp": 0.08,
+      "good_nonqrs_smooth": 15,
+      "good_nonqrs_blend": 0.72,
+      "good_residual_mix": 0.016,
+      "good_baseline_mix": 0.07,
+      "good_qrsband_noise": 0.0035,
+      "bad_alt_family": "bad_1530_spike_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_compact_target_std": 0.154,
+      "bad_compact_osc_amp": 0.66,
+      "bad_compact_f1": 21.8,
+      "bad_compact_f2": 16.6,
+      "bad_compact_f3": 41.0,
+      "bad_compact_w2": 0.26,
+      "bad_compact_w3": 0.78,
+      "bad_compact_qrs_boost": 0.42,
+      "bad_neg_spike_rate": 0.1,
+      "bad_neg_spike_amp": 0.34,
+      "bad_hf_qrs_bias": 0.62,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.62,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_compact_pca_core_011_421344b1972c"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_013_sc_overlap_compact_pca_core_951d66bb4975",
+      "family": "bad_compact_pca_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.45,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9100000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.22999999999999998,
+      "medium_step_rate": 0.28500000000000003,
+      "medium_ramp_rate": 0.30500000000000005,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_compact_pca_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.34,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_but_texture",
+      "good_target_std": 0.27599999999999997,
+      "good_std_jitter": 0.08,
+      "good_qrs_boost": 0.38,
+      "good_qrs_sharp": 0.085,
+      "good_nonqrs_smooth": 16,
+      "good_nonqrs_blend": 0.74,
+      "good_residual_mix": 0.02,
+      "good_baseline_mix": 0.058,
+      "good_qrsband_noise": 0.0035,
+      "bad_alt_family": "bad_narrow_oscillatory_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_compact_target_std": 0.154,
+      "bad_compact_osc_amp": 0.66,
+      "bad_compact_f1": 21.8,
+      "bad_compact_f2": 16.6,
+      "bad_compact_f3": 41.0,
+      "bad_compact_w2": 0.26,
+      "bad_compact_w3": 0.78,
+      "bad_compact_qrs_boost": 0.42,
+      "bad_neg_spike_rate": 0.1,
+      "bad_neg_spike_amp": 0.34,
+      "bad_hf_qrs_bias": 0.62,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.62,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_compact_pca_core_012_ecc21bee6f4e"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_014_sc_overlap_compact_pca_core_8b486652852a",
+      "family": "bad_compact_pca_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.55,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9100000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.22999999999999998,
+      "medium_step_rate": 0.28500000000000003,
+      "medium_ramp_rate": 0.30500000000000005,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_compact_pca_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.34,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_peak_locked",
+      "good_target_std": 0.282,
+      "good_std_jitter": 0.086,
+      "good_qrs_boost": 0.42000000000000004,
+      "good_qrs_sharp": 0.095,
+      "good_nonqrs_smooth": 18,
+      "good_nonqrs_blend": 0.7799999999999999,
+      "good_residual_mix": 0.024,
+      "good_baseline_mix": 0.064,
+      "good_qrsband_noise": 0.003,
+      "bad_alt_family": "bad_bandlimited_disagree_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_compact_target_std": 0.154,
+      "bad_compact_osc_amp": 0.66,
+      "bad_compact_f1": 21.8,
+      "bad_compact_f2": 16.6,
+      "bad_compact_f3": 41.0,
+      "bad_compact_w2": 0.26,
+      "bad_compact_w3": 0.78,
+      "bad_compact_qrs_boost": 0.42,
+      "bad_neg_spike_rate": 0.1,
+      "bad_neg_spike_amp": 0.34,
+      "bad_hf_qrs_bias": 0.62,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.62,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_compact_pca_core_013_b9d6c4f3d88d"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_015_sc_overlap_compact_pca_core_2a9e4663814f",
+      "family": "bad_compact_pca_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.60,1.75",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9100000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.22999999999999998,
+      "medium_step_rate": 0.28500000000000003,
+      "medium_ramp_rate": 0.30500000000000005,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_compact_pca_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.34,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_but_texture",
+      "good_target_std": 0.266,
+      "good_std_jitter": 0.092,
+      "good_qrs_boost": 0.34,
+      "good_qrs_sharp": 0.075,
+      "good_nonqrs_smooth": 14,
+      "good_nonqrs_blend": 0.7,
+      "good_residual_mix": 0.018,
+      "good_baseline_mix": 0.052,
+      "good_qrsband_noise": 0.0045000000000000005,
+      "bad_alt_family": "bad_1530_hfedge_spike_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_compact_target_std": 0.154,
+      "bad_compact_osc_amp": 0.66,
+      "bad_compact_f1": 21.8,
+      "bad_compact_f2": 16.6,
+      "bad_compact_f3": 41.0,
+      "bad_compact_w2": 0.26,
+      "bad_compact_w3": 0.78,
+      "bad_compact_qrs_boost": 0.42,
+      "bad_neg_spike_rate": 0.1,
+      "bad_neg_spike_amp": 0.34,
+      "bad_hf_qrs_bias": 0.62,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "bad_osc_amp": 0.62,
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_compact_pca_core_014_130b759ecaf1"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_016_sc_overlap_1530_hfedge_spik_fc598fb3676c",
+      "family": "bad_1530_hfedge_spike_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.45,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9900000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.27,
+      "medium_step_rate": 0.32500000000000007,
+      "medium_ramp_rate": 0.3450000000000001,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_1530_hfedge_spike_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.16,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_peak_locked",
+      "good_target_std": 0.27199999999999996,
+      "good_std_jitter": 0.078,
+      "good_qrs_boost": 0.46,
+      "good_qrs_sharp": 0.08,
+      "good_nonqrs_smooth": 15,
+      "good_nonqrs_blend": 0.72,
+      "good_residual_mix": 0.016,
+      "good_baseline_mix": 0.07,
+      "good_qrsband_noise": 0.0035,
+      "bad_alt_family": "bad_narrow_oscillatory_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_osc_amp": 0.62,
+      "bad_osc_f1": 16.9,
+      "bad_osc_f2": 22.0,
+      "bad_osc_f3": 38.0,
+      "bad_osc_w2": 0.28,
+      "bad_osc_w3": 0.44,
+      "bad_osc_qrs_boost": 0.22,
+      "bad_neg_spike_rate": 0.1,
+      "bad_neg_spike_amp": 0.48,
+      "bad_hf_qrs_bias": 0.38,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_1530_hfedge_spike_core_015_bb4d7a0491fa"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_017_sc_overlap_1530_hfedge_spik_8f2fd78d4227",
+      "family": "bad_1530_hfedge_spike_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.55,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9900000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.27,
+      "medium_step_rate": 0.32500000000000007,
+      "medium_ramp_rate": 0.3450000000000001,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_1530_hfedge_spike_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.16,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_but_texture",
+      "good_target_std": 0.27599999999999997,
+      "good_std_jitter": 0.08,
+      "good_qrs_boost": 0.38,
+      "good_qrs_sharp": 0.085,
+      "good_nonqrs_smooth": 16,
+      "good_nonqrs_blend": 0.74,
+      "good_residual_mix": 0.02,
+      "good_baseline_mix": 0.058,
+      "good_qrsband_noise": 0.0035,
+      "bad_alt_family": "bad_1530_spike_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_osc_amp": 0.62,
+      "bad_osc_f1": 16.9,
+      "bad_osc_f2": 22.0,
+      "bad_osc_f3": 38.0,
+      "bad_osc_w2": 0.28,
+      "bad_osc_w3": 0.44,
+      "bad_osc_qrs_boost": 0.22,
+      "bad_neg_spike_rate": 0.1,
+      "bad_neg_spike_amp": 0.48,
+      "bad_hf_qrs_bias": 0.38,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_1530_hfedge_spike_core_016_df4785b026eb"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_018_sc_overlap_1530_hfedge_spik_15689c9e0c8e",
+      "family": "bad_1530_hfedge_spike_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.60,1.75",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9900000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.27,
+      "medium_step_rate": 0.32500000000000007,
+      "medium_ramp_rate": 0.3450000000000001,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_1530_hfedge_spike_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.16,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_peak_locked",
+      "good_target_std": 0.282,
+      "good_std_jitter": 0.086,
+      "good_qrs_boost": 0.42000000000000004,
+      "good_qrs_sharp": 0.095,
+      "good_nonqrs_smooth": 18,
+      "good_nonqrs_blend": 0.7799999999999999,
+      "good_residual_mix": 0.024,
+      "good_baseline_mix": 0.064,
+      "good_qrsband_noise": 0.003,
+      "bad_alt_family": "bad_narrow_oscillatory_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_osc_amp": 0.62,
+      "bad_osc_f1": 16.9,
+      "bad_osc_f2": 22.0,
+      "bad_osc_f3": 38.0,
+      "bad_osc_w2": 0.28,
+      "bad_osc_w3": 0.44,
+      "bad_osc_qrs_boost": 0.22,
+      "bad_neg_spike_rate": 0.1,
+      "bad_neg_spike_amp": 0.48,
+      "bad_hf_qrs_bias": 0.38,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_1530_hfedge_spike_core_017_abcab69605f1"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_019_sc_overlap_1530_hfedge_spik_216fb77cfac4",
+      "family": "bad_1530_hfedge_spike_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.45,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.8300000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.19999999999999998,
+      "medium_step_rate": 0.245,
+      "medium_ramp_rate": 0.245,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_1530_hfedge_spike_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.16,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_but_texture",
+      "good_target_std": 0.266,
+      "good_std_jitter": 0.092,
+      "good_qrs_boost": 0.34,
+      "good_qrs_sharp": 0.075,
+      "good_nonqrs_smooth": 14,
+      "good_nonqrs_blend": 0.7,
+      "good_residual_mix": 0.018,
+      "good_baseline_mix": 0.052,
+      "good_qrsband_noise": 0.0045000000000000005,
+      "bad_alt_family": "bad_bandlimited_disagree_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_osc_amp": 0.54,
+      "bad_osc_f1": 16.9,
+      "bad_osc_f2": 22.0,
+      "bad_osc_f3": 38.0,
+      "bad_osc_w2": 0.28,
+      "bad_osc_w3": 0.44,
+      "bad_osc_qrs_boost": 0.22,
+      "bad_neg_spike_rate": 0.04,
+      "bad_neg_spike_amp": 0.48,
+      "bad_hf_qrs_bias": 0.38,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_1530_hfedge_spike_core_018_66f34be74b97"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_020_sc_overlap_1530_hfedge_spik_ec23289e260f",
+      "family": "bad_1530_hfedge_spike_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.55,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.8300000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.19999999999999998,
+      "medium_step_rate": 0.245,
+      "medium_ramp_rate": 0.245,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_1530_hfedge_spike_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.16,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_peak_locked",
+      "good_target_std": 0.27199999999999996,
+      "good_std_jitter": 0.078,
+      "good_qrs_boost": 0.46,
+      "good_qrs_sharp": 0.08,
+      "good_nonqrs_smooth": 15,
+      "good_nonqrs_blend": 0.72,
+      "good_residual_mix": 0.016,
+      "good_baseline_mix": 0.07,
+      "good_qrsband_noise": 0.0035,
+      "bad_alt_family": "bad_1530_hfedge_spike_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_osc_amp": 0.54,
+      "bad_osc_f1": 16.9,
+      "bad_osc_f2": 22.0,
+      "bad_osc_f3": 38.0,
+      "bad_osc_w2": 0.28,
+      "bad_osc_w3": 0.44,
+      "bad_osc_qrs_boost": 0.22,
+      "bad_neg_spike_rate": 0.04,
+      "bad_neg_spike_amp": 0.48,
+      "bad_hf_qrs_bias": 0.38,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_1530_hfedge_spike_core_019_932669d6a9dd"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_021_sc_overlap_1530_spike_core__0521d6ed35a3",
+      "family": "bad_1530_spike_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.60,1.75",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.8300000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.19999999999999998,
+      "medium_step_rate": 0.245,
+      "medium_ramp_rate": 0.245,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_1530_spike_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.18,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_but_texture",
+      "good_target_std": 0.27599999999999997,
+      "good_std_jitter": 0.08,
+      "good_qrs_boost": 0.38,
+      "good_qrs_sharp": 0.085,
+      "good_nonqrs_smooth": 16,
+      "good_nonqrs_blend": 0.74,
+      "good_residual_mix": 0.02,
+      "good_baseline_mix": 0.058,
+      "good_qrsband_noise": 0.0035,
+      "bad_alt_family": "bad_1530_spike_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_osc_amp": 0.54,
+      "bad_osc_f1": 16.8,
+      "bad_osc_f2": 22.5,
+      "bad_osc_f3": 36.0,
+      "bad_osc_w2": 0.36,
+      "bad_osc_w3": 0.16,
+      "bad_osc_qrs_boost": 0.28,
+      "bad_neg_spike_rate": 0.04,
+      "bad_neg_spike_amp": 0.34,
+      "bad_hf_qrs_bias": 0.48,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_1530_spike_core_020_7d4ca9acedaa"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_022_sc_overlap_1530_spike_core__c0c140f536dd",
+      "family": "bad_1530_spike_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.45,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9100000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.22999999999999998,
+      "medium_step_rate": 0.28500000000000003,
+      "medium_ramp_rate": 0.30500000000000005,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_1530_spike_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.18,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_peak_locked",
+      "good_target_std": 0.282,
+      "good_std_jitter": 0.086,
+      "good_qrs_boost": 0.42000000000000004,
+      "good_qrs_sharp": 0.095,
+      "good_nonqrs_smooth": 18,
+      "good_nonqrs_blend": 0.7799999999999999,
+      "good_residual_mix": 0.024,
+      "good_baseline_mix": 0.064,
+      "good_qrsband_noise": 0.003,
+      "bad_alt_family": "bad_1530_spike_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_osc_amp": 0.54,
+      "bad_osc_f1": 16.8,
+      "bad_osc_f2": 22.5,
+      "bad_osc_f3": 36.0,
+      "bad_osc_w2": 0.36,
+      "bad_osc_w3": 0.16,
+      "bad_osc_qrs_boost": 0.28,
+      "bad_neg_spike_rate": 0.04,
+      "bad_neg_spike_amp": 0.34,
+      "bad_hf_qrs_bias": 0.48,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_1530_spike_core_021_a5150f7d4d11"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_023_sc_overlap_1530_spike_core__18faed17d2e5",
+      "family": "bad_1530_spike_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.55,1.70",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9100000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.22999999999999998,
+      "medium_step_rate": 0.28500000000000003,
+      "medium_ramp_rate": 0.30500000000000005,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_1530_spike_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.18,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_but_texture",
+      "good_target_std": 0.266,
+      "good_std_jitter": 0.092,
+      "good_qrs_boost": 0.34,
+      "good_qrs_sharp": 0.075,
+      "good_nonqrs_smooth": 14,
+      "good_nonqrs_blend": 0.7,
+      "good_residual_mix": 0.018,
+      "good_baseline_mix": 0.052,
+      "good_qrsband_noise": 0.0045000000000000005,
+      "bad_alt_family": "bad_narrow_oscillatory_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_osc_amp": 0.54,
+      "bad_osc_f1": 16.8,
+      "bad_osc_f2": 22.5,
+      "bad_osc_f3": 36.0,
+      "bad_osc_w2": 0.36,
+      "bad_osc_w3": 0.16,
+      "bad_osc_qrs_boost": 0.28,
+      "bad_neg_spike_rate": 0.04,
+      "bad_neg_spike_amp": 0.34,
+      "bad_hf_qrs_bias": 0.48,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_1530_spike_core_022_e402e38a9a22"
+    },
+    {
+      "id": "nl_n7000_gm_trim_bad_scan_024_sc_overlap_1530_spike_core__a5187589709c",
+      "family": "bad_1530_spike_core",
+      "snr_profile": {
+        "name": "paper_table_strict",
+        "good": [
+          16.0,
+          18.0
+        ],
+        "medium": [
+          5.0,
+          14.0
+        ],
+        "bad": [
+          -5.0,
+          -3.0
+        ],
+        "sampler": "uniform",
+        "note": "Sensors2025 Table-1-like bins; target SNR uses EM+MA only."
+      },
+      "mix": {
+        "name": "em_ma_quiet_core",
+        "em_weight": 0.35,
+        "ma_weight": 0.65,
+        "bw_overlay": {
+          "good": [
+            0.001,
+            0.008
+          ],
+          "medium": [
+            0.01,
+            0.03
+          ],
+          "bad": [
+            0.02,
+            0.06
+          ]
+        }
+      },
+      "cinc_bad_fraction": 0.0,
+      "class_weight": "1.00,1.60,1.75",
+      "paper_constraints": {
+        "target_snr_noise": "EM+MA only",
+        "bw_participates_in_target_snr": false,
+        "model_input_protocol": "project mainline 10s@125Hz, not paper 5s@200Hz"
+      },
+      "medium_event_prob": 0.9100000000000001,
+      "medium_pseudo_peak_rate": 0.05,
+      "medium_inverse_peak_rate": 0.22999999999999998,
+      "medium_step_rate": 0.28500000000000003,
+      "medium_ramp_rate": 0.30500000000000005,
+      "medium_contact_rate": 0.02,
+      "medium_qrs_preserve": 0.999,
+      "secondary_prob": 0.0,
+      "bad_primary_family": "bad_1530_spike_core",
+      "bad_intensity_name": "tight",
+      "bad_core_gain": 0.18,
+      "bad_core_smooth": 21,
+      "bad_core_flat_prob": 0.0,
+      "bad_core_flat_len": [
+        36,
+        120
+      ],
+      "bad_qrs_attenuation": 0.0,
+      "bad_qrs_smooth": 21,
+      "bad_pseudo_peak_rate": 0.18,
+      "bad_baseline_step_rate": 0.22,
+      "bad_clip_quantile": 0.7,
+      "good_mode": "g_peak_locked",
+      "good_target_std": 0.27199999999999996,
+      "good_std_jitter": 0.078,
+      "good_qrs_boost": 0.46,
+      "good_qrs_sharp": 0.08,
+      "good_nonqrs_smooth": 15,
+      "good_nonqrs_blend": 0.72,
+      "good_residual_mix": 0.016,
+      "good_baseline_mix": 0.07,
+      "good_qrsband_noise": 0.0035,
+      "bad_alt_family": "bad_bandlimited_disagree_core",
+      "bad_alt_cluster_prob": 0.46,
+      "selection_basis": "Original-aware SemiCleanBUT node N7000_gm_trim_bad region-aware 64D/PCA target; no original BUT test metric is used for generator selection.",
+      "bad_osc_amp": 0.54,
+      "bad_osc_f1": 16.8,
+      "bad_osc_f2": 22.5,
+      "bad_osc_f3": 36.0,
+      "bad_osc_w2": 0.36,
+      "bad_osc_w3": 0.16,
+      "bad_osc_qrs_boost": 0.28,
+      "bad_neg_spike_rate": 0.04,
+      "bad_neg_spike_amp": 0.34,
+      "bad_hf_qrs_bias": 0.48,
+      "medium_mode": "m0",
+      "note": "SemiCleanBUT overlap target; good/medium are intentionally less pristine and keep boundary overlap, bad targets the separated right island.",
+      "node_id": "N7000_gm_trim_bad",
+      "node_level": 7000,
+      "node_role": "gm_outer_shell_trim_bad",
+      "base_spec_id": "sc_overlap_1530_spike_core_023_d57c1b7939c2"
+    }
+  ]
+}

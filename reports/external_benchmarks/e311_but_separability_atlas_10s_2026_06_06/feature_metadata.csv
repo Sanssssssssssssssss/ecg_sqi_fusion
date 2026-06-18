@@ -1,0 +1,65 @@
+feature,family,scope,description
+rms,Amplitude/global,inference_safe,Amplitude/global
+std,Amplitude/global,inference_safe,Amplitude/global
+ptp_p99_p01,Amplitude/global,inference_safe,Amplitude/global
+mean_abs,Amplitude/global,inference_safe,Amplitude/global
+low_amp_ratio,Contact/flat/fatal,inference_safe,Contact/flat/fatal
+flatline_ratio,Contact/flat/fatal,inference_safe,Contact/flat/fatal
+contact_loss_win_ratio,Contact/flat/fatal,inference_safe,Contact/flat/fatal
+local_rms_cv,Contact/flat/fatal,inference_safe,Contact/flat/fatal
+baseline_step,Contact/flat/fatal,inference_safe,Contact/flat/fatal
+diff_abs_median,Detail reliability,inference_safe,Detail reliability
+diff_abs_p95,Detail reliability,inference_safe,Detail reliability
+detail_instability,Detail reliability,inference_safe,Detail reliability
+lf_ratio,Motion/frequency,inference_safe,Motion/frequency
+hf_ratio,Motion/frequency,inference_safe,Motion/frequency
+qrs_band_ratio,QRS detectability,inference_safe,QRS detectability
+spectral_entropy,Motion/frequency,inference_safe,Motion/frequency
+qrs_peak_count,QRS detectability,inference_safe,QRS detectability
+aggressive_peak_count,QRS detectability,inference_safe,QRS detectability
+spurious_peak_density,QRS detectability,inference_safe,QRS detectability
+qrs_prom_median,QRS detectability,inference_safe,QRS detectability
+qrs_prom_p90,QRS detectability,inference_safe,QRS detectability
+qrs_width_median,QRS detectability,inference_safe,QRS detectability
+qrs_slope_median,QRS detectability,inference_safe,QRS detectability
+qrs_count_low,QRS detectability,inference_safe,QRS detectability
+qrs_count_high,QRS detectability,inference_safe,QRS detectability
+qrs_count_deviation,QRS detectability,inference_safe,QRS detectability
+periodicity,QRS detectability,inference_safe,QRS detectability
+qrs_visibility,QRS detectability,inference_safe,QRS detectability
+clipping_like_ratio,Contact/flat/fatal,inference_safe,Contact/flat/fatal
+fatal_or_score,Contact/flat/fatal,inference_safe,Contact/flat/fatal
+medium_detail_unreliable_score,Detail reliability,inference_safe,Detail reliability
+sqi_iSQI,SQI,inference_safe,SQI
+sqi_bSQI,SQI,inference_safe,SQI
+sqi_pSQI,SQI,inference_safe,SQI
+sqi_sSQI,SQI,inference_safe,SQI
+sqi_kSQI,SQI,inference_safe,SQI
+sqi_fSQI,SQI,inference_safe,SQI
+sqi_basSQI,SQI,inference_safe,SQI
+hjorth_activity,Motion/frequency,inference_safe,Motion/frequency
+hjorth_mobility,Motion/frequency,inference_safe,Motion/frequency
+hjorth_complexity,Motion/frequency,inference_safe,Motion/frequency
+zero_crossing_rate,Motion/frequency,inference_safe,Motion/frequency
+diff_zero_crossing_rate,Motion/frequency,inference_safe,Motion/frequency
+sample_entropy_proxy,Detail reliability,inference_safe,Detail reliability
+amplitude_entropy,Detail reliability,inference_safe,Detail reliability
+higuchi_fd_proxy,Detail reliability,inference_safe,Detail reliability
+template_corr,QRS detectability,inference_safe,QRS detectability
+detector_count_std,QRS detectability,inference_safe,QRS detectability
+detector_agreement,QRS detectability,inference_safe,QRS detectability
+rr_count_detector_a,QRS detectability,inference_safe,QRS detectability
+rr_count_detector_b,QRS detectability,inference_safe,QRS detectability
+rr_count_detector_c,QRS detectability,inference_safe,QRS detectability
+non_qrs_rms_ratio,Detail reliability,inference_safe,Detail reliability
+non_qrs_diff_p95,Detail reliability,inference_safe,Detail reliability
+band_0p3_1,Motion/frequency,inference_safe,Motion/frequency
+band_1_5,Motion/frequency,inference_safe,Motion/frequency
+band_5_15,Motion/frequency,inference_safe,Motion/frequency
+band_15_30,Motion/frequency,inference_safe,Motion/frequency
+band_30_45,Motion/frequency,inference_safe,Motion/frequency
+wavelet_e0,Motion/frequency,inference_safe,Motion/frequency
+wavelet_e1,Motion/frequency,inference_safe,Motion/frequency
+wavelet_e2,Motion/frequency,inference_safe,Motion/frequency
+wavelet_e3,Motion/frequency,inference_safe,Motion/frequency
+wavelet_e4,Motion/frequency,inference_safe,Motion/frequency

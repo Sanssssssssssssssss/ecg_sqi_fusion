@@ -1,0 +1,3 @@
+clean_tier,added_n,added_rate
+ambiguous_boundary,180,0.9
+clean_core_strict,20,0.1

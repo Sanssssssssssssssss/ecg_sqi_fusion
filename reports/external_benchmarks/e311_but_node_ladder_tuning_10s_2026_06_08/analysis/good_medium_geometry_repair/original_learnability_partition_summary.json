@@ -1,0 +1,90 @@
+{
+  "overall": {
+    "axis_pred": {
+      "n": 8477,
+      "acc": 0.9081042821752978,
+      "macro_f1": 0.8399097910824929,
+      "good_recall": 0.9082417582417582,
+      "medium_recall": 0.9338002711251695,
+      "bad_recall": 0.6301703163017032,
+      "good_precision": 0.9362786745964317,
+      "medium_precision": 0.8990646073526213,
+      "bad_precision": 0.7421203438395415,
+      "good_f1": 0.9220471342908939,
+      "medium_f1": 0.9161032915881636,
+      "bad_f1": 0.6815789473684211,
+      "support_good": 3640,
+      "support_medium": 4426,
+      "support_bad": 411,
+      "confusion_3x3": [
+        [
+          3306,
+          324,
+          10
+        ],
+        [
+          213,
+          4133,
+          80
+        ],
+        [
+          12,
+          140,
+          259
+        ]
+      ]
+    },
+    "axis2_pred": {
+      "n": 8477,
+      "acc": 0.9102276748849829,
+      "macro_f1": 0.8473872837980255,
+      "good_recall": 0.9082417582417582,
+      "medium_recall": 0.9340262087663804,
+      "bad_recall": 0.6715328467153284,
+      "good_precision": 0.9405405405405406,
+      "medium_precision": 0.9016357688113413,
+      "bad_precision": 0.7320954907161804,
+      "good_f1": 0.9241090146750525,
+      "medium_f1": 0.9175452225058263,
+      "bad_f1": 0.700507614213198,
+      "support_good": 3640,
+      "support_medium": 4426,
+      "support_bad": 411,
+      "confusion_3x3": [
+        [
+          3306,
+          324,
+          10
+        ],
+        [
+          201,
+          4134,
+          91
+        ],
+        [
+          8,
+          127,
+          276
+        ]
+      ]
+    }
+  },
+  "partition_counts": {
+    "in_domain_high_conf": 3176,
+    "in_domain_soft_boundary": 1959,
+    "in_domain_low_margin": 1604,
+    "domain_centroid_conflict_low_margin": 1091,
+    "bad_outlier_stress": 292,
+    "label_geometry_conflict": 236,
+    "bad_core_or_near_boundary": 119
+  },
+  "artifacts": {
+    "rows": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\original_learnability_partition_rows.csv",
+    "metrics": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\original_learnability_partition_metrics.csv",
+    "counts": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\original_learnability_partition_counts.csv",
+    "diagnostic_subsets": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\original_learnability_diagnostic_subset_metrics.csv",
+    "feature_gaps": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\original_learnability_partition_feature_gaps.csv",
+    "pca": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\original_learnability_partition_pca.png",
+    "accuracy": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\original_learnability_partition_accuracy.png"
+  }
+}

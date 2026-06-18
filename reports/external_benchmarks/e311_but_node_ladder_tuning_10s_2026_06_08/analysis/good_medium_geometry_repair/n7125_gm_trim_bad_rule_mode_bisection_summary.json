@@ -1,0 +1,184 @@
+{
+  "base_key": "nl_n7125_gm_trim_bad_geom_addedring_n7100base_g002_m010_g_959a357114d7::raw",
+  "alt_key": "nl_n7125_gm_trim_bad_geom_addedring_n7100base_g004_m014_g_e48e7d59927b::medium_guarded_pmed001",
+  "threshold": 0.5177264406520425,
+  "disagreement_rows": 1706,
+  "trainval_disagreement_rows": 1395,
+  "test_disagreement_rows": 311,
+  "gate_flips": 1251,
+  "group_counts": {
+    "unused": 16726,
+    "gate_fixed_medium": 1138,
+    "remaining_medium_to_good": 369,
+    "remaining_good_to_medium": 101
+  },
+  "base_all": {
+    "n": 18334,
+    "acc": 0.9125668157521545,
+    "macro_f1": 0.9228833469454498,
+    "good_recall": 0.9956491228070176,
+    "medium_recall": 0.7911578947368421,
+    "bad_recall": 0.9794319294809011,
+    "good_precision": 0.8245002324500232,
+    "medium_precision": 0.9837696335078534,
+    "bad_precision": 1.0,
+    "support_good": 7125,
+    "support_medium": 7125,
+    "support_bad": 4084,
+    "confusion_3x3": [
+      [
+        7094,
+        31,
+        0
+      ],
+      [
+        1488,
+        5637,
+        0
+      ],
+      [
+        22,
+        62,
+        4000
+      ]
+    ]
+  },
+  "alt_all": {
+    "n": 18334,
+    "acc": 0.9439838551325407,
+    "macro_f1": 0.9500140474498405,
+    "good_recall": 0.9236491228070175,
+    "medium_recall": 0.9490526315789474,
+    "bad_recall": 0.970617042115573,
+    "good_precision": 0.9477246543778802,
+    "medium_precision": 0.9105844330729868,
+    "bad_precision": 1.0,
+    "support_good": 7125,
+    "support_medium": 7125,
+    "support_bad": 4084,
+    "confusion_3x3": [
+      [
+        6581,
+        544,
+        0
+      ],
+      [
+        363,
+        6762,
+        0
+      ],
+      [
+        0,
+        120,
+        3964
+      ]
+    ]
+  },
+  "gated_all": {
+    "n": 18334,
+    "acc": 0.9697829169848369,
+    "macro_f1": 0.9726165821149001,
+    "good_recall": 0.9858245614035088,
+    "medium_recall": 0.9482105263157895,
+    "bad_recall": 0.9794319294809011,
+    "good_precision": 0.9500879210063574,
+    "medium_precision": 0.9733467800028814,
+    "bad_precision": 1.0,
+    "support_good": 7125,
+    "support_medium": 7125,
+    "support_bad": 4084,
+    "confusion_3x3": [
+      [
+        7024,
+        101,
+        0
+      ],
+      [
+        369,
+        6756,
+        0
+      ],
+      [
+        0,
+        84,
+        4000
+      ]
+    ]
+  },
+  "gated_trainval": {
+    "n": 14353,
+    "acc": 0.9796558210827004,
+    "macro_f1": 0.9809970040639979,
+    "good_recall": 0.9837950862519603,
+    "medium_recall": 0.9574101957410196,
+    "bad_recall": 0.9997477931904162,
+    "good_precision": 0.9661190965092402,
+    "medium_precision": 0.9793179317931793,
+    "bad_precision": 1.0,
+    "support_good": 5739,
+    "support_medium": 4649,
+    "support_bad": 3965,
+    "confusion_3x3": [
+      [
+        5646,
+        93,
+        0
+      ],
+      [
+        198,
+        4451,
+        0
+      ],
+      [
+        0,
+        1,
+        3964
+      ]
+    ]
+  },
+  "gated_test": {
+    "n": 3981,
+    "acc": 0.9341873901029892,
+    "macro_f1": 0.7832504569959399,
+    "good_recall": 0.9942279942279942,
+    "medium_recall": 0.9309369951534734,
+    "bad_recall": 0.3025210084033613,
+    "good_precision": 0.8896061975468044,
+    "medium_precision": 0.9620200333889817,
+    "bad_precision": 1.0,
+    "support_good": 1386,
+    "support_medium": 2476,
+    "support_bad": 119,
+    "confusion_3x3": [
+      [
+        1378,
+        8,
+        0
+      ],
+      [
+        171,
+        2305,
+        0
+      ],
+      [
+        0,
+        83,
+        36
+      ]
+    ]
+  },
+  "delta_acc_vs_base": 0.05721610123268239,
+  "delta_good_recall_vs_base": -0.009824561403508736,
+  "delta_medium_recall_vs_base": 0.15705263157894744,
+  "delta_bad_recall_vs_base": 0.0,
+  "eligible_by_node_gates": true,
+  "trainval_objective": 1.3159287300082063,
+  "created_at": "2026-06-11T10:07:51",
+  "node_id": "N7125_gm_trim_bad",
+  "artifact_id": "rule_n7125_gm_trim_bad_qrslow_bisect_959a357114d7_e48e7d59927b",
+  "base_variant": "nl_n7125_gm_trim_bad_geom_addedring_n7100base_g002_m010_g_959a357114d7",
+  "base_prediction_mode": "raw",
+  "alt_variant": "nl_n7125_gm_trim_bad_geom_addedring_n7100base_g004_m014_g_e48e7d59927b",
+  "alt_prediction_mode": "medium_guarded_pmed001",
+  "rule_description": "if endpoints disagree good-vs-medium and qrs_visibility <= 0.51772644, use alt endpoint; otherwise use base endpoint"
+}

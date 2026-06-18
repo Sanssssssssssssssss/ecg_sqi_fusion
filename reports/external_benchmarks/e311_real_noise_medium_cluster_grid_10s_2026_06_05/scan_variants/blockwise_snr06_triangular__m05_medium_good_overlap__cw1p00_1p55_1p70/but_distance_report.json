@@ -1,0 +1,137 @@
+{
+  "variant_id": "blockwise_snr06_triangular__m05_medium_good_overlap__cw1p00_1p55_1p70",
+  "family": "real_noise_medium_cluster",
+  "spec": {
+    "id": "blockwise_snr06_triangular__m05_medium_good_overlap__cw1p00_1p55_1p70",
+    "family": "real_noise_medium_cluster",
+    "mix": {
+      "name": "blockwise_switch",
+      "mode": "blockwise",
+      "choices": [
+        "em",
+        "ma",
+        "bw"
+      ]
+    },
+    "snr": {
+      "good": [
+        12,
+        16
+      ],
+      "medium": [
+        6,
+        12
+      ],
+      "bad": [
+        -2,
+        4
+      ],
+      "sampler": "triangular"
+    },
+    "class_weight": "1.00,1.55,1.70",
+    "qrs": {
+      "good_qrs_noise_gain": 0.65,
+      "good_nonqrs_noise_gain": 1.05,
+      "medium_qrs_noise_gain": 0.55,
+      "medium_nonqrs_noise_gain": 1.8,
+      "medium_tst_noise_gain": 2.1,
+      "bad_qrs_noise_gain": 1.35,
+      "bad_nonqrs_noise_gain": 1.0,
+      "bad_tst_noise_gain": 1.05,
+      "bad_qrs_atten": 0.16
+    },
+    "base_variant_id": "blockwise_snr06_triangular",
+    "medium_profile": "m05_medium_good_overlap",
+    "note": "Medium-focused real NSTDB grid: QRS usable, non-QRS/P/T/ST detail unreliable; bad keeps mild fatal-QRS mechanism."
+  },
+  "variant_dir": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_real_noise_medium_cluster_grid_10s_2026_06_05\\scan_variants\\blockwise_snr06_triangular__m05_medium_good_overlap__cw1p00_1p55_1p70",
+  "morph_overall_distance": 0.42641887946278306,
+  "morph_medium_distance": 0.26510545905707195,
+  "morph_by_class": {
+    "good": 0.4205822550401771,
+    "medium": 0.26510545905707195,
+    "bad": 0.5935689242911002
+  },
+  "sqi_overall_distance": 0.44047619047619047,
+  "sqi_by_class": {
+    "good": 0.39285714285714285,
+    "medium": 0.255952380952381,
+    "bad": 0.6726190476190476
+  },
+  "domain_separability_bal_acc": 0.9095238095238095,
+  "overall_but_like_score": 0.436509614019469,
+  "audit": {
+    "spec": {
+      "id": "blockwise_snr06_triangular__m05_medium_good_overlap__cw1p00_1p55_1p70",
+      "family": "real_noise_medium_cluster",
+      "mix": {
+        "name": "blockwise_switch",
+        "mode": "blockwise",
+        "choices": [
+          "em",
+          "ma",
+          "bw"
+        ]
+      },
+      "snr": {
+        "good": [
+          12,
+          16
+        ],
+        "medium": [
+          6,
+          12
+        ],
+        "bad": [
+          -2,
+          4
+        ],
+        "sampler": "triangular"
+      },
+      "class_weight": "1.00,1.55,1.70",
+      "qrs": {
+        "good_qrs_noise_gain": 0.65,
+        "good_nonqrs_noise_gain": 1.05,
+        "medium_qrs_noise_gain": 0.55,
+        "medium_nonqrs_noise_gain": 1.8,
+        "medium_tst_noise_gain": 2.1,
+        "bad_qrs_noise_gain": 1.35,
+        "bad_nonqrs_noise_gain": 1.0,
+        "bad_tst_noise_gain": 1.05,
+        "bad_qrs_atten": 0.16
+      },
+      "base_variant_id": "blockwise_snr06_triangular",
+      "medium_profile": "m05_medium_good_overlap",
+      "note": "Medium-focused real NSTDB grid: QRS usable, non-QRS/P/T/ST detail unreliable; bad keeps mild fatal-QRS mechanism."
+    },
+    "rows": 180,
+    "sample_per_class": 60,
+    "split_counts": {
+      "test": 32,
+      "train": 119,
+      "val": 29
+    },
+    "class_counts": {
+      "bad": 60,
+      "good": 60,
+      "medium": 60
+    },
+    "snr_by_class": {
+      "good": {
+        "mean": 13.995497703552246,
+        "min": 12.308670997619629,
+        "max": 15.320944786071777
+      },
+      "medium": {
+        "mean": 8.787209510803223,
+        "min": 6.222020626068115,
+        "max": 11.412663459777832
+      },
+      "bad": {
+        "mean": 2.0145103931427,
+        "min": -0.9779286980628967,
+        "max": 4.4025373458862305
+      }
+    }
+  }
+}
