@@ -1,0 +1,32 @@
+{
+  "policy": "segment_10_20s_keep_outlier_source80_seed20260619",
+  "source_policy": "segment_10_20s_keep_outlier",
+  "split_strategy": "window_level_stratified_by_record_class_region_source_80_10_10",
+  "seed": 20260619,
+  "train_frac": 0.8,
+  "val_frac": 0.1,
+  "n": 904,
+  "counts": [
+    {
+      "split": "test",
+      "n": 91,
+      "good": 48,
+      "medium": 39,
+      "bad": 4
+    },
+    {
+      "split": "train",
+      "n": 707,
+      "good": 367,
+      "medium": 302,
+      "bad": 38
+    },
+    {
+      "split": "val",
+      "n": 106,
+      "good": 54,
+      "medium": 47,
+      "bad": 5
+    }
+  ]
+}

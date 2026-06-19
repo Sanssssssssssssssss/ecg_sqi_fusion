@@ -1,0 +1,237 @@
+{
+  "n_figures": 33,
+  "output_dir": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics",
+  "figures": [
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_01_split_balance.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_01_split_balance.pdf",
+      "name": "diag_01_split_balance",
+      "description": "Set-a-only class balance, synthetic noisy-poor counts, and source-record leakage check.",
+      "report_candidate": "Strong report candidate for methods/QC appendix."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_02_qrs_detector_counts.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_02_qrs_detector_counts.pdf",
+      "name": "diag_02_qrs_detector_counts",
+      "description": "wqrs/eplimited count plausibility, detector agreement, and bSQI lead-level behavior.",
+      "report_candidate": "Good appendix candidate when discussing QRS alignment risk."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_03_feature_integrity.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_03_feature_integrity.pdf",
+      "name": "diag_03_feature_integrity",
+      "description": "84-feature nonfinite/range/scale checks.",
+      "report_candidate": "Good methods appendix candidate."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_04_pooled_sqi_distributions.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_04_pooled_sqi_distributions.pdf",
+      "name": "diag_04_pooled_sqi_distributions",
+      "description": "Pooled feature distributions by label for all seven SQIs.",
+      "report_candidate": "Useful appendix candidate; can support explanations of fSQI/basSQI gaps."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_05_lead_median_profiles.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_05_lead_median_profiles.pdf",
+      "name": "diag_05_lead_median_profiles",
+      "description": "Median SQI values by lead and label.",
+      "report_candidate": "Useful for appendix or internal validation."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_06_normalization_train_test.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_06_normalization_train_test.pdf",
+      "name": "diag_06_normalization_train_test",
+      "description": "Train/test distribution check before and after normalization for lead-II sSQI and kSQI.",
+      "report_candidate": "Internal QC; mention only if normalization needs defense."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_07_noise_allocation_snr.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_07_noise_allocation_snr.pdf",
+      "name": "diag_07_noise_allocation_snr",
+      "description": "NSTDB segment allocation, em/ma balance, and example per-lead SNR checks.",
+      "report_candidate": "Good methods/QC appendix candidate."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_08_resampling_wave_psd.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_08_resampling_wave_psd.pdf",
+      "name": "diag_08_resampling_wave_psd",
+      "description": "Raw 500 Hz versus resampled 125 Hz waveform and PSD comparison.",
+      "report_candidate": "Internal QC; useful if preprocessing details are challenged."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_09_qrs_overlay_12lead.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_09_qrs_overlay_12lead.pdf",
+      "name": "diag_09_qrs_overlay_12lead",
+      "description": "12-lead ECG with cached wqrs and EP Limited detections.",
+      "report_candidate": "Good appendix candidate for detector validation."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_10_raw_seta_qc.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_10_raw_seta_qc.pdf",
+      "name": "diag_10_raw_seta_qc",
+      "description": "Raw Set-a 500 Hz waveform, per-lead amplitude spread, and PSD sanity check.",
+      "report_candidate": "Good preprocessing appendix candidate."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_11_resample_alias_reference.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_11_resample_alias_reference.pdf",
+      "name": "diag_11_resample_alias_reference",
+      "description": "Current 125 Hz cache versus steep reference resampling error plots.",
+      "report_candidate": "Strong preprocessing/QC appendix candidate."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_12_noise_wave12_gallery.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_12_noise_wave12_gallery.pdf",
+      "name": "diag_12_noise_wave12_gallery",
+      "description": "Full 12-lead paper-aligned em/ma synthetic noise residual gallery.",
+      "report_candidate": "Strong augmentation appendix candidate."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_13_single_feature_auc_top20.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_13_single_feature_auc_top20.pdf",
+      "name": "diag_13_single_feature_auc_top20",
+      "description": "Top-20 single-feature SQI separability across the current paper-aligned 84-feature table.",
+      "report_candidate": "Good analysis figure for feature behavior."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_14_qrs_hr_by_lead.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\diag_14_qrs_hr_by_lead.pdf",
+      "name": "diag_14_qrs_hr_by_lead",
+      "description": "HR-by-lead boxplots and pooled HR distributions from the current QRS cache.",
+      "report_candidate": "Good detector sanity appendix candidate."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_III_7sqi_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_III_7sqi_jitter.pdf",
+      "name": "diag_lead_III_7sqi_jitter",
+      "description": "III lead profile across all seven SQIs.",
+      "report_candidate": "Exploratory diagnostic; useful for lead-specific implementation checks."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_II_7sqi_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_II_7sqi_jitter.pdf",
+      "name": "diag_lead_II_7sqi_jitter",
+      "description": "II lead profile across all seven SQIs.",
+      "report_candidate": "Exploratory diagnostic; useful for lead-specific implementation checks."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_I_7sqi_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_I_7sqi_jitter.pdf",
+      "name": "diag_lead_I_7sqi_jitter",
+      "description": "I lead profile across all seven SQIs.",
+      "report_candidate": "Exploratory diagnostic; useful for lead-specific implementation checks."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_V1_7sqi_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_V1_7sqi_jitter.pdf",
+      "name": "diag_lead_V1_7sqi_jitter",
+      "description": "V1 lead profile across all seven SQIs.",
+      "report_candidate": "Exploratory diagnostic; useful for lead-specific implementation checks."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_V2_7sqi_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_V2_7sqi_jitter.pdf",
+      "name": "diag_lead_V2_7sqi_jitter",
+      "description": "V2 lead profile across all seven SQIs.",
+      "report_candidate": "Exploratory diagnostic; useful for lead-specific implementation checks."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_V3_7sqi_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_V3_7sqi_jitter.pdf",
+      "name": "diag_lead_V3_7sqi_jitter",
+      "description": "V3 lead profile across all seven SQIs.",
+      "report_candidate": "Exploratory diagnostic; useful for lead-specific implementation checks."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_V4_7sqi_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_V4_7sqi_jitter.pdf",
+      "name": "diag_lead_V4_7sqi_jitter",
+      "description": "V4 lead profile across all seven SQIs.",
+      "report_candidate": "Exploratory diagnostic; useful for lead-specific implementation checks."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_V5_7sqi_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_V5_7sqi_jitter.pdf",
+      "name": "diag_lead_V5_7sqi_jitter",
+      "description": "V5 lead profile across all seven SQIs.",
+      "report_candidate": "Exploratory diagnostic; useful for lead-specific implementation checks."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_V6_7sqi_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_V6_7sqi_jitter.pdf",
+      "name": "diag_lead_V6_7sqi_jitter",
+      "description": "V6 lead profile across all seven SQIs.",
+      "report_candidate": "Exploratory diagnostic; useful for lead-specific implementation checks."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_aVF_7sqi_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_aVF_7sqi_jitter.pdf",
+      "name": "diag_lead_aVF_7sqi_jitter",
+      "description": "aVF lead profile across all seven SQIs.",
+      "report_candidate": "Exploratory diagnostic; useful for lead-specific implementation checks."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_aVL_7sqi_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_aVL_7sqi_jitter.pdf",
+      "name": "diag_lead_aVL_7sqi_jitter",
+      "description": "aVL lead profile across all seven SQIs.",
+      "report_candidate": "Exploratory diagnostic; useful for lead-specific implementation checks."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_aVR_7sqi_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_lead\\diag_lead_aVR_7sqi_jitter.pdf",
+      "name": "diag_lead_aVR_7sqi_jitter",
+      "description": "aVR lead profile across all seven SQIs.",
+      "report_candidate": "Exploratory diagnostic; useful for lead-specific implementation checks."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_sqi\\diag_sqi_bSQI_12lead_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_sqi\\diag_sqi_bSQI_12lead_jitter.pdf",
+      "name": "diag_sqi_bSQI_12lead_jitter",
+      "description": "bSQI jitter distribution by class across all 12 leads.",
+      "report_candidate": "Exploratory diagnostic; use only if a specific SQI behavior needs illustration."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_sqi\\diag_sqi_basSQI_12lead_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_sqi\\diag_sqi_basSQI_12lead_jitter.pdf",
+      "name": "diag_sqi_basSQI_12lead_jitter",
+      "description": "basSQI jitter distribution by class across all 12 leads.",
+      "report_candidate": "Exploratory diagnostic; use only if a specific SQI behavior needs illustration."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_sqi\\diag_sqi_fSQI_12lead_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_sqi\\diag_sqi_fSQI_12lead_jitter.pdf",
+      "name": "diag_sqi_fSQI_12lead_jitter",
+      "description": "fSQI jitter distribution by class across all 12 leads.",
+      "report_candidate": "Exploratory diagnostic; use only if a specific SQI behavior needs illustration."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_sqi\\diag_sqi_iSQI_12lead_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_sqi\\diag_sqi_iSQI_12lead_jitter.pdf",
+      "name": "diag_sqi_iSQI_12lead_jitter",
+      "description": "iSQI jitter distribution by class across all 12 leads.",
+      "report_candidate": "Exploratory diagnostic; use only if a specific SQI behavior needs illustration."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_sqi\\diag_sqi_kSQI_12lead_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_sqi\\diag_sqi_kSQI_12lead_jitter.pdf",
+      "name": "diag_sqi_kSQI_12lead_jitter",
+      "description": "kSQI jitter distribution by class across all 12 leads.",
+      "report_candidate": "Exploratory diagnostic; use only if a specific SQI behavior needs illustration."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_sqi\\diag_sqi_pSQI_12lead_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_sqi\\diag_sqi_pSQI_12lead_jitter.pdf",
+      "name": "diag_sqi_pSQI_12lead_jitter",
+      "description": "pSQI jitter distribution by class across all 12 leads.",
+      "report_candidate": "Exploratory diagnostic; use only if a specific SQI behavior needs illustration."
+    },
+    {
+      "file_png": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_sqi\\diag_sqi_sSQI_12lead_jitter.png",
+      "file_pdf": "E:\\GPTProject2\\ecg\\reports\\sqi_paper_aligned\\exploratory_diagnostics\\individual_sqi\\diag_sqi_sSQI_12lead_jitter.pdf",
+      "name": "diag_sqi_sSQI_12lead_jitter",
+      "description": "sSQI jitter distribution by class across all 12 leads.",
+      "report_candidate": "Exploratory diagnostic; use only if a specific SQI behavior needs illustration."
+    }
+  ]
+}

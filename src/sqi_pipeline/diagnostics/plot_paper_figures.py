@@ -17,6 +17,7 @@ import seaborn as sns
 import torch
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Patch, Rectangle
+from matplotlib.colors import LinearSegmentedColormap
 from scipy.signal import butter, filtfilt
 from sklearn.metrics import auc, roc_curve
 from sklearn.pipeline import Pipeline
@@ -72,6 +73,22 @@ COLORS = {
     "olive": {"xlight": "#D8ECBD", "light": "#BEEB96", "base": "#A3D576", "mid": "#71B436", "dark": "#386411"},
     "pink": {"xlight": "#FCDAD6", "light": "#F5BACC", "base": "#F390CA", "mid": "#BD569B", "dark": "#8A3A6F"},
 }
+SCI = {
+    "purple": "#1F4E79",
+    "purple_light": "#9FBDD3",
+    "gold": "#8B1E3F",
+    "gold_light": "#D99AAA",
+    "teal": "#247C7A",
+    "red": "#A23B52",
+}
+SCI_BLUE = SCI["purple"]
+SCI_BLUE_LIGHT = "#D7E4EF"
+SCI_RED = SCI["gold"]
+SCI_RED_LIGHT = "#EAC4CC"
+SCI_NEUTRAL = "#4A535D"
+CMAP_BLUE = LinearSegmentedColormap.from_list("sqi_blue", ["#FFFFFF", SCI_BLUE_LIGHT, SCI_BLUE])
+CMAP_RED = LinearSegmentedColormap.from_list("sqi_red", ["#FFFFFF", SCI_RED_LIGHT, SCI_RED])
+CMAP_DIVERGE = LinearSegmentedColormap.from_list("sqi_diverge", [SCI_RED, "#FFFFFF", SCI_BLUE])
 
 
 def use_theme() -> None:
@@ -157,6 +174,26 @@ def metric_heatmap(
     ax.set_ylabel("")
 
 
+def rank_heatmap(ax: plt.Axes, data: pd.DataFrame, *, cmap: str | Any) -> None:
+    sns.heatmap(
+        data,
+        ax=ax,
+        cmap=cmap,
+        vmin=1,
+        vmax=max(2, float(np.nanmax(data.to_numpy(dtype=float)))),
+        cbar=False,
+        linewidths=0.7,
+        linecolor="#FFFFFF",
+        annot=data.astype(int).astype(str).to_numpy(),
+        fmt="",
+        annot_kws={"fontsize": 8.2, "color": TOKENS["ink"]},
+    )
+    ax.tick_params(axis="x", rotation=0, labelsize=8.5)
+    ax.tick_params(axis="y", rotation=0, labelsize=8.5)
+    ax.set_xlabel("")
+    ax.set_ylabel("")
+
+
 def outline_heatmap_row(ax: plt.Axes, row_idx: int, *, color: str = "#1F2430") -> None:
     n_cols = len(ax.get_xticklabels())
     ax.add_patch(Rectangle((0, row_idx), n_cols, 1, fill=False, edgecolor=color, linewidth=1.2, clip_on=False))
@@ -208,57 +245,76 @@ def draw_arrow(ax: plt.Axes, a: tuple[float, float], b: tuple[float, float], *, 
 
 
 def fig_01_pipeline(out_dir: Path) -> None:
-    fig, ax = plt.subplots(figsize=(11.5, 5.8))
+    fig, ax = plt.subplots(figsize=(11.7, 6.0))
     ax.set_axis_off()
-    ax.set_xlim(0, 10)
-    ax.set_ylim(0, 5.6)
+    ax.set_xlim(0, 11.55)
+    ax.set_ylim(0, 6.1)
 
     nodes = {
-        "labels": (1.0, 4.55, "Set-a labels\nacceptable / unacceptable"),
-        "clean": (1.0, 3.1, "Set-a ECG\n10 s, 12 leads"),
-        "nstdb": (1.0, 1.65, "NSTDB\nem + ma"),
-        "pca": (3.0, 1.65, "PCA\n2 noise leads"),
-        "dower": (4.75, 1.65, "third component\n+ inverse Dower"),
-        "snr": (6.45, 1.65, "-6 dB\nsynthetic poor"),
-        "balance": (6.45, 3.1, "balanced Set-a\n773 / 773"),
-        "split": (8.15, 3.1, "group split\nsource_record_id"),
-        "resample": (8.15, 4.55, "125 Hz\nresampling"),
-        "qrs": (6.45, 4.55, "QRS\nwqrs + eplimited"),
-        "sqi": (4.75, 4.55, "84 SQIs\n12 leads x 7"),
-        "models": (3.0, 4.55, "MLP / SVM\nvalidation threshold"),
-        "sub": (8.7, 1.05, "Set-a-only substitution\n(no Set-b, no single-lead labels)"),
+        "paper_labels": (1.15, 5.2, "paper labels\nSet-a + Set-b"),
+        "paper_single": (3.05, 5.2, "single-lead\nmanual labels"),
+        "paper_eval": (5.0, 5.2, "paper eval\nSet-b / MIT-BIH"),
+        "seta": (0.8, 3.65, "Set-a\nlabels"),
+        "clean": (2.05, 3.65, "12-lead ECG\n10 s, 500 Hz"),
+        "balance": (3.45, 3.65, "balanced Set-a\n773 / 773"),
+        "split": (4.85, 3.65, "group split\nsource_record_id"),
+        "resample": (6.25, 3.65, "125 Hz\nresampling"),
+        "qrs": (7.65, 3.65, "QRS\nwqrs + eplimited"),
+        "sqi": (9.05, 3.65, "84 SQIs\n12 leads x 7"),
+        "models": (10.25, 3.65, "MLP / SVM\nval threshold"),
+        "nstdb": (0.8, 2.25, "NSTDB\nem + ma"),
+        "pca": (2.05, 2.25, "PCA noise\n+ third axis"),
+        "dower": (3.45, 2.25, "inverse Dower\n12-lead noise"),
+        "snr": (4.85, 2.25, "-6 dB\nsynthetic poor"),
     }
     fills = {
-        "labels": COLORS["blue"]["xlight"],
-        "clean": COLORS["blue"]["xlight"],
-        "nstdb": COLORS["gold"]["xlight"],
-        "pca": COLORS["gold"]["xlight"],
-        "dower": COLORS["gold"]["xlight"],
-        "snr": COLORS["orange"]["xlight"],
-        "balance": COLORS["orange"]["xlight"],
-        "split": COLORS["olive"]["xlight"],
-        "resample": COLORS["olive"]["xlight"],
-        "qrs": COLORS["pink"]["xlight"],
-        "sqi": COLORS["pink"]["xlight"],
-        "models": COLORS["blue"]["xlight"],
-        "sub": TOKENS["panel"],
+        "paper_labels": NEUTRAL["xlight"],
+        "paper_single": NEUTRAL["xlight"],
+        "paper_eval": NEUTRAL["xlight"],
+        "seta": SCI_BLUE_LIGHT,
+        "clean": SCI_BLUE_LIGHT,
+        "nstdb": SCI_RED_LIGHT,
+        "pca": SCI_RED_LIGHT,
+        "dower": SCI_RED_LIGHT,
+        "snr": SCI_RED_LIGHT,
+        "balance": SCI_BLUE_LIGHT,
+        "split": SCI_BLUE_LIGHT,
+        "resample": SCI_BLUE_LIGHT,
+        "qrs": SCI_BLUE_LIGHT,
+        "sqi": SCI_BLUE_LIGHT,
+        "models": SCI_BLUE_LIGHT,
+    }
+    widths = {
+        "seta": 1.05,
+        "clean": 1.3,
+        "balance": 1.25,
+        "split": 1.25,
+        "resample": 1.2,
+        "qrs": 1.25,
+        "sqi": 1.25,
+        "models": 1.15,
+        "nstdb": 1.05,
+        "pca": 1.25,
+        "dower": 1.25,
+        "snr": 1.15,
     }
     for key, (x, y, text) in nodes.items():
-        draw_node(ax, (x, y), text, fc=fills[key], dashed=(key == "sub"), w=2.0 if key == "sub" else 1.62)
+        draw_node(ax, (x, y), text, fc=fills[key], dashed=key.startswith("paper"), w=widths.get(key, 1.68))
 
     arrow_pairs = [
-        ("nstdb", "pca"),
-        ("pca", "dower"),
-        ("dower", "snr"),
+        ("paper_labels", "paper_single"),
+        ("paper_single", "paper_eval"),
+        ("seta", "clean"),
         ("clean", "balance"),
-        ("snr", "balance"),
         ("balance", "split"),
         ("split", "resample"),
         ("resample", "qrs"),
         ("qrs", "sqi"),
         ("sqi", "models"),
-        ("labels", "models"),
-        ("sub", "split"),
+        ("nstdb", "pca"),
+        ("pca", "dower"),
+        ("dower", "snr"),
+        ("snr", "balance"),
     ]
     for a_key, b_key in arrow_pairs:
         a = nodes[a_key]
@@ -268,14 +324,19 @@ def fig_01_pipeline(out_dir: Path) -> None:
         length = math.hypot(dx, dy) or 1.0
         ux = dx / length
         uy = dy / length
+        x_pad = min(0.44, length * 0.28)
+        y_pad = min(0.28, length * 0.20)
         draw_arrow(
             ax,
-            (a[0] + 0.9 * ux, a[1] + 0.36 * uy),
-            (b[0] - 0.9 * ux, b[1] - 0.36 * uy),
-            dashed=(a_key == "sub"),
+            (a[0] + x_pad * ux, a[1] + y_pad * uy),
+            (b[0] - x_pad * ux, b[1] - y_pad * uy),
+            dashed=a_key.startswith("paper"),
         )
 
-    ax.text(0.6, 0.35, "Dashed path marks the paper-aligned Set-a-only replacement for unavailable Set-b and single-lead labels.", fontsize=8.5, color=TOKENS["muted"])
+    ax.plot([0.35, 10.25], [4.65, 4.65], color=NEUTRAL["light"], linewidth=1.0)
+    ax.text(0.35, 5.78, "paper branch unavailable in this repository", fontsize=9.0, color=NEUTRAL["dark"], ha="left")
+    ax.text(0.35, 4.48, "implemented 12-lead paper-aligned branch", fontsize=9.0, color=TOKENS["ink"], ha="left")
+    ax.text(0.55, 0.72, "Dashed nodes/arrows indicate paper resources replaced by a Set-a-only protocol; solid path is the complete 12-lead rerun.", fontsize=8.4, color=TOKENS["muted"])
     finish(fig, out_dir / "fig_01_reproduction_pipeline.pdf")
 
 
@@ -300,17 +361,23 @@ def fig_02_noise_examples(out_dir: Path, artifacts_dir: Path) -> None:
     n = int(10 * FS_RAW)
     t = np.arange(n) / FS_RAW
 
-    fig, axes = plt.subplots(2, 1, figsize=(9.5, 5.5), sharex=True)
-    for ax, noise, color in zip(axes, ["em", "ma"], [COLORS["orange"]["mid"], COLORS["olive"]["mid"]]):
+    fig, axes = plt.subplots(2, 1, figsize=(8.8, 4.9), sharex=True)
+    fig.subplots_adjust(hspace=0.28, top=0.93, bottom=0.13)
+    for ax, noise, color, title in zip(
+        axes,
+        ["em", "ma"],
+        [SCI["purple"], SCI["gold"]],
+        ["Electrode motion (em)", "Muscle artifact (ma)"],
+    ):
         noisy, _ = load_case(cases_dir, noisy_ids[noise])
         ax.plot(t, clean[:n, li], color=NEUTRAL["dark"], linewidth=0.9, label="clean")
-        ax.plot(t, noisy[:n, li], color=color, linewidth=0.8, alpha=0.92, label=f"clean + {noise}")
-        panel_header(ax, f"record {source}, lead {lead}; SNR {SNR_DB:.0f} dB; noise {noise}")
+        ax.plot(t, noisy[:n, li], color=color, linewidth=0.82, alpha=0.96, label=f"clean + {noise}")
+        ax.set_title(title, loc="left", fontsize=10, fontweight="semibold")
+        ax.text(0.01, 0.94, f"record {source}, lead {lead}, SNR {SNR_DB:.0f} dB", transform=ax.transAxes, ha="left", va="top", fontsize=8.3, color=TOKENS["muted"])
         ax.set_ylabel("mV")
-        ax.legend(loc="lower right", bbox_to_anchor=(1.0, 1.01), frameon=False, fontsize=8.5, ncol=2, borderaxespad=0)
+        ax.legend(loc="upper right", frameon=False, fontsize=8.4, ncol=2)
         ax.grid(True, axis="x", color=TOKENS["grid"])
     axes[-1].set_xlabel("Time (s)")
-    fig.subplots_adjust(hspace=0.34)
     finish(fig, out_dir / "fig_02_noise_generation_examples.pdf")
 
 
@@ -336,10 +403,11 @@ def fig_03_bassqi_examples(out_dir: Path, artifacts_dir: Path) -> None:
     high = visual_candidate(df[(df["record_y"].eq(1)) & (df["is_augmented"].eq(0))], ascending=False, p2p_min=0.5, p2p_max=4.0)
     low = visual_candidate(df[(df["record_y"].eq(-1)) & (df["is_augmented"].eq(0))], ascending=True, p2p_min=0.5, p2p_max=10.0)
 
-    fig, axes = plt.subplots(2, 1, figsize=(9.5, 5.5), sharex=True)
+    fig, axes = plt.subplots(2, 1, figsize=(8.8, 4.9), sharex=True)
+    fig.subplots_adjust(hspace=0.30, top=0.93, bottom=0.13)
     for ax, row, label, color in [
-        (axes[0], high, "acceptable high-basSQI", COLORS["blue"]["mid"]),
-        (axes[1], low, "unacceptable low-basSQI", COLORS["orange"]["mid"]),
+        (axes[0], high, "High basSQI", SCI["purple"]),
+        (axes[1], low, "Low basSQI", SCI["gold"]),
     ]:
         sig, leads = load_case(cases_dir, str(row["record_id"]))
         li = leads.index(str(row["lead"]))
@@ -349,11 +417,10 @@ def fig_03_bassqi_examples(out_dir: Path, artifacts_dir: Path) -> None:
         baseline = lowpass_baseline(x, FS_RAW)
         ax.plot(t, x, color=color, linewidth=0.8, label="raw ECG")
         ax.plot(t, baseline, color=TOKENS["ink"], linestyle="--", linewidth=1.0, label="1 Hz baseline")
-        panel_header(ax, f"{label}; record {row['record_id']}, lead {row['lead']}; basSQI={float(row['basSQI']):.4f}")
+        ax.set_title(f"{label} = {float(row['basSQI']):.4f}", loc="left", fontsize=10, fontweight="semibold")
         ax.set_ylabel("mV")
-        ax.legend(loc="lower right", bbox_to_anchor=(1.0, 1.01), frameon=False, fontsize=8.5, ncol=2, borderaxespad=0)
+        ax.legend(loc="upper right", frameon=False, fontsize=8.0, ncol=2, handlelength=1.6)
     axes[-1].set_xlabel("Time (s)")
-    fig.subplots_adjust(hspace=0.34)
     finish(fig, out_dir / "fig_03_bassqi_examples.pdf")
 
 
@@ -407,8 +474,8 @@ def fig_04_roc(out_dir: Path, artifacts_dir: Path) -> None:
     fig, ax = plt.subplots(figsize=(6.6, 5.4))
     y = scores["y_test"]
     for name, key, thr, color, auc_label in [
-        ("MLP", "mlp", scores["mlp_threshold"], COLORS["blue"]["mid"], auc_mlp_label),
-        ("SVM", "svm", scores["svm_threshold"], COLORS["orange"]["mid"], auc_svm_label),
+        ("MLP", "mlp", scores["mlp_threshold"], SCI_BLUE, auc_mlp_label),
+        ("SVM", "svm", scores["svm_threshold"], SCI_RED, auc_svm_label),
     ]:
         fpr, tpr, _ = roc_curve(y, scores[key])
         ax.plot(fpr, tpr, color=color, linewidth=1.2, label=f"{name} AUC {auc_label:.3f}")
@@ -437,20 +504,20 @@ def fig_05a_single_sqi(out_dir: Path, reports_dir: Path) -> None:
     df = df.sort_values("paper_rank", ascending=True).set_index("SQI")
     acc = df[["paper_Ac_test", "run_Ac_test"]].rename(columns={"paper_Ac_test": "Paper Ac", "run_Ac_test": "Run Ac"})
     delta = df[["delta_Ac_test"]].rename(columns={"delta_Ac_test": "Run-Paper Ac"})
-    profile = df[["run_Se_test", "run_Sp_test"]].rename(columns={"run_Se_test": "Run Se", "run_Sp_test": "Run Sp"})
+    ranks = df[["paper_rank", "run_rank"]].rename(columns={"paper_rank": "Paper rank", "run_rank": "Run rank"}).astype(int)
 
-    fig, axes = plt.subplots(1, 3, figsize=(9.7, 4.8), gridspec_kw={"width_ratios": [2.1, 1.15, 2.1], "wspace": 0.08})
-    metric_heatmap(axes[0], acc, cmap=sns.light_palette(COLORS["blue"]["mid"], as_cmap=True), vmin=0.55, vmax=0.96)
-    metric_heatmap(axes[1], delta, cmap="vlag", vmin=-0.18, vmax=0.08, center=0.0, fmt_signed=True)
-    metric_heatmap(axes[2], profile, cmap=sns.light_palette(COLORS["olive"]["mid"], as_cmap=True), vmin=0.0, vmax=1.0)
+    fig, axes = plt.subplots(1, 3, figsize=(9.0, 4.8), gridspec_kw={"width_ratios": [2.15, 1.2, 1.65], "wspace": 0.08})
+    metric_heatmap(axes[0], acc, cmap=CMAP_BLUE, vmin=0.55, vmax=0.96)
+    metric_heatmap(axes[1], delta, cmap=CMAP_DIVERGE, vmin=-0.18, vmax=0.08, center=0.0, fmt_signed=True)
+    rank_heatmap(axes[2], ranks, cmap=sns.light_palette(NEUTRAL["dark"], as_cmap=True))
     panel_header(axes[0], "accuracy (%)")
     panel_header(axes[1], "accuracy delta (pp)")
-    panel_header(axes[2], "run operating profile (%)")
+    panel_header(axes[2], "rank (1 = best)")
     for ax in axes[1:]:
         ax.set_yticklabels([])
     fsqi_y = list(df.index).index("fSQI")
     for ax in axes:
-        outline_heatmap_row(ax, fsqi_y, color=COLORS["orange"]["dark"])
+        outline_heatmap_row(ax, fsqi_y, color=SCI_RED)
     finish(fig, out_dir / "fig_05a_single_sqi_dumbbell.pdf")
 
 
@@ -461,26 +528,31 @@ def fig_05b_combo(out_dir: Path, reports_dir: Path) -> None:
     df = df.sort_values("Group", ascending=True).set_index("Group")
     acc = df[["paper_Ac_test", "run_Ac_test"]].rename(columns={"paper_Ac_test": "Paper Ac", "run_Ac_test": "Run Ac"})
     delta = df[["delta_Ac_test"]].rename(columns={"delta_Ac_test": "Run-Paper Ac"})
+    ranks = df[["paper_rank", "run_rank"]].rename(columns={"paper_rank": "Paper rank", "run_rank": "Run rank"}).astype(int)
 
-    fig, axes = plt.subplots(1, 3, figsize=(10.2, 4.55), gridspec_kw={"width_ratios": [2.1, 1.15, 3.1], "wspace": 0.08})
-    metric_heatmap(axes[0], acc, cmap=sns.light_palette(COLORS["blue"]["mid"], as_cmap=True), vmin=0.89, vmax=0.955)
-    metric_heatmap(axes[1], delta, cmap="vlag", vmin=-0.05, vmax=0.01, center=0.0, fmt_signed=True)
+    fig, axes = plt.subplots(1, 4, figsize=(11.7, 4.55), gridspec_kw={"width_ratios": [2.05, 1.15, 1.55, 3.25], "wspace": 0.08})
+    metric_heatmap(axes[0], acc, cmap=CMAP_BLUE, vmin=0.89, vmax=0.955)
+    metric_heatmap(axes[1], delta, cmap=CMAP_DIVERGE, vmin=-0.05, vmax=0.01, center=0.0, fmt_signed=True)
+    rank_heatmap(axes[2], ranks, cmap=sns.light_palette(NEUTRAL["dark"], as_cmap=True))
     panel_header(axes[0], "accuracy (%)")
     panel_header(axes[1], "accuracy delta (pp)")
+    panel_header(axes[2], "rank (1 = best)")
     axes[1].set_yticklabels([])
+    axes[2].set_yticklabels([])
     q_y = list(df.index.astype(str)).index("Quintuplets")
-    outline_heatmap_row(axes[0], q_y, color=COLORS["olive"]["dark"])
-    outline_heatmap_row(axes[1], q_y, color=COLORS["olive"]["dark"])
+    outline_heatmap_row(axes[0], q_y, color=SCI_BLUE)
+    outline_heatmap_row(axes[1], q_y, color=SCI_BLUE)
+    outline_heatmap_row(axes[2], q_y, color=SCI_BLUE)
 
-    axes[2].set_axis_off()
-    axes[2].set_ylim(len(df), 0)
-    axes[2].set_xlim(0, 1)
-    panel_header(axes[2], "selected SQIs")
+    axes[3].set_axis_off()
+    axes[3].set_ylim(len(df), 0)
+    axes[3].set_xlim(0, 1)
+    panel_header(axes[3], "selected SQIs")
     for i, (_, row) in enumerate(df.iterrows()):
         txt = textwrap.fill(str(row["paper_Selected_SQI"]), width=34, break_long_words=False)
-        color = COLORS["olive"]["dark"] if i == q_y else TOKENS["ink"]
+        color = SCI_BLUE if i == q_y else TOKENS["ink"]
         weight = "semibold" if i == q_y else "normal"
-        axes[2].text(0.0, i + 0.5, txt, ha="left", va="center", fontsize=8.0, color=color, fontweight=weight)
+        axes[3].text(0.0, i + 0.5, txt, ha="left", va="center", fontsize=8.0, color=color, fontweight=weight)
     finish(fig, out_dir / "fig_05b_sqi_combination_paired.pdf")
 
 
@@ -505,9 +577,9 @@ def fig_06_fsqi(out_dir: Path, artifacts_dir: Path) -> None:
     rec["fSQI_plot"] = np.log10(rec["fSQI"].astype(float) + eps)
     order = ["original acceptable", "original unacceptable", "synthetic poor"]
     palette = {
-        "original acceptable": COLORS["blue"]["mid"],
-        "original unacceptable": COLORS["orange"]["mid"],
-        "synthetic poor": COLORS["olive"]["mid"],
+        "original acceptable": SCI_BLUE,
+        "original unacceptable": SCI_RED,
+        "synthetic poor": SCI_NEUTRAL,
     }
     fig, ax = plt.subplots(figsize=(8.2, 5.0))
     sns.boxplot(
@@ -542,6 +614,7 @@ def fig_06_fsqi(out_dir: Path, artifacts_dir: Path) -> None:
 
 def fig_07_mitbih(out_dir: Path, artifacts_dir: Path) -> None:
     overall = pd.read_csv(artifacts_dir / "extra_experiments" / "mitbih_transfer_overall_summary.csv")
+    per_record = pd.read_csv(artifacts_dir / "extra_experiments" / "mitbih_transfer_per_record_summary.csv")
     rows = []
     for _, row in overall.iterrows():
         model = "SVM" if "svm" in str(row["model"]) else "MLP"
@@ -549,11 +622,12 @@ def fig_07_mitbih(out_dir: Path, artifacts_dir: Path) -> None:
         rows.append({"model": model, "status": "rejected", "share": float(row["false_rejection_rate_proxy"])})
     df = pd.DataFrame(rows)
     order = ["MLP", "SVM"]
-    fig, ax = plt.subplots(figsize=(7.0, 3.0))
+    fig, axes = plt.subplots(1, 2, figsize=(10.5, 3.85), gridspec_kw={"width_ratios": [1.25, 1.0], "wspace": 0.28})
+    ax = axes[0]
     left = np.zeros(len(order))
     status_order = ["accepted", "rejected"]
-    colors = {"accepted": "#D8E3F7", "rejected": "#F2C1A5"}
-    edges = {"accepted": COLORS["blue"]["dark"], "rejected": COLORS["orange"]["dark"]}
+    colors = {"accepted": SCI_BLUE_LIGHT, "rejected": SCI_RED_LIGHT}
+    edges = {"accepted": SCI_BLUE, "rejected": SCI_RED}
     for status in status_order:
         vals = [float(df[(df["model"].eq(m)) & (df["status"].eq(status))]["share"].iloc[0]) for m in order]
         bars = ax.barh(order, vals, left=left, color=colors[status], edgecolor=edges[status], linewidth=1.0, label=status)
@@ -564,26 +638,114 @@ def fig_07_mitbih(out_dir: Path, artifacts_dir: Path) -> None:
     ax.set_ylabel("Proxy model")
     ax.set_xlim(0, 1)
     ax.xaxis.set_major_formatter(mticker.PercentFormatter(1.0))
-    ax.legend(loc="lower left", bbox_to_anchor=(0, 1.03), ncol=2, frameon=False, borderaxespad=0)
-    ax.text(0.0, -0.42, "MIT-BIH has no signal-quality ground truth; rejected share is proxy false-rejection.", transform=ax.transAxes, ha="left", va="top", fontsize=8.3, color=TOKENS["muted"], clip_on=False)
+    ax.legend(loc="lower left", bbox_to_anchor=(0, 1.18), ncol=2, frameon=False, borderaxespad=0)
+    panel_header(ax, "overall lead-window acceptance", y=1.08)
+
+    dist = pd.DataFrame(
+        {
+            "SVM": per_record["svm_acceptance_rate"].astype(float),
+            "MLP": per_record["mlp_acceptance_rate"].astype(float),
+        }
+    ).melt(var_name="model", value_name="acceptance_rate")
+    ax2 = axes[1]
+    sns.boxplot(
+        data=dist,
+        x="model",
+        y="acceptance_rate",
+        order=order,
+        ax=ax2,
+        width=0.42,
+        showfliers=False,
+        linewidth=0.9,
+        palette={"MLP": SCI_BLUE_LIGHT, "SVM": SCI_RED_LIGHT},
+        hue="model",
+        legend=False,
+    )
+    rng = np.random.default_rng(0)
+    for i, model in enumerate(order):
+        vals = dist.loc[dist["model"].eq(model), "acceptance_rate"].to_numpy()
+        ax2.scatter(rng.normal(i, 0.045, size=len(vals)), vals, s=14, color=SCI_BLUE if model == "MLP" else SCI_RED, alpha=0.55, linewidths=0)
+        ax2.text(i, min(1.02, np.median(vals) + 0.035), f"median {np.median(vals):.1%}", ha="center", va="bottom", fontsize=8.0, color=TOKENS["ink"])
+    ax2.set_ylim(0, 1.04)
+    ax2.yaxis.set_major_formatter(mticker.PercentFormatter(1.0))
+    ax2.set_xlabel("Proxy model")
+    ax2.set_ylabel("Per-record acceptance rate")
+    panel_header(ax2, "48 MIT-BIH records", y=1.08)
+    fig.text(0.08, -0.02, "MIT-BIH has no signal-quality ground truth; rejected share is proxy false-rejection, not accuracy.", ha="left", va="top", fontsize=8.3, color=TOKENS["muted"])
     finish(fig, out_dir / "fig_07_mitbih_acceptance.pdf")
 
 
 def fig_08_runtime(out_dir: Path, artifacts_dir: Path) -> None:
+    comp = pd.read_csv(artifacts_dir / "extra_experiments" / "component_timing_summary.csv")
     end = pd.read_csv(artifacts_dir / "extra_experiments" / "end_to_end_timing_summary.csv")
+    paper_ref = pd.read_csv(artifacts_dir / "extra_experiments" / "paper_table8_reference.csv")
     qrs = float(end.loc[end["component"].eq("qrs_ms"), "mean_ms"].iloc[0])
+    feature = float(end.loc[end["component"].eq("feature84_ms"), "mean_ms"].iloc[0])
+    predict = float(end.loc[end["component"].isin(["svm_predict_ms", "mlp_predict_ms"]), "mean_ms"].sum())
     total = float(end.loc[end["component"].eq("total_ms"), "mean_ms"].iloc[0])
-    other = total - qrs
+    remainder = max(0.0, total - qrs - feature - predict)
     share = qrs / total
-    fig, ax = plt.subplots(figsize=(6.2, 2.8))
-    ax.barh(["12-lead end-to-end"], [qrs], color="#E8D0E4", edgecolor=COLORS["pink"]["dark"], linewidth=1.0, label=f"QRS {qrs:.1f} ms")
-    ax.barh(["12-lead end-to-end"], [other], left=[qrs], color="#D8E3F7", edgecolor=COLORS["blue"]["dark"], linewidth=1.0, label=f"Other {other:.1f} ms")
-    ax.text(qrs / 2, 0, f"QRS {qrs:.1f} ms\n{share:.1%}", ha="center", va="center", fontsize=9.0, color=TOKENS["ink"])
-    ax.annotate(f"other {other:.1f} ms", xy=(qrs + other, 0), xytext=(total * 1.08, 0.18), ha="left", va="center", arrowprops={"arrowstyle": "-", "color": NEUTRAL["dark"], "lw": 0.8}, fontsize=8.8, color=TOKENS["ink"])
-    ax.set_xlabel("Mean elapsed time (ms)")
+
+    fig, axes = plt.subplots(1, 2, figsize=(10.3, 3.2), gridspec_kw={"width_ratios": [1.0, 1.35], "wspace": 0.34})
+    ax = axes[0]
+    detectors = pd.DataFrame(
+        [
+            {
+                "detector": "wqrs",
+                "run_ms": float(comp.loc[comp["component"].eq("wqrs"), "mean_ms"].iloc[0]),
+                "paper_ms": float(paper_ref.loc[paper_ref["component"].eq("wqrs"), "paper_ms"].iloc[0]),
+            },
+            {
+                "detector": "eplimited / P&T",
+                "run_ms": float(comp.loc[comp["component"].eq("eplimited_PandT"), "mean_ms"].iloc[0]),
+                "paper_ms": float(paper_ref.loc[paper_ref["component"].eq("P&T/eplimited"), "paper_ms"].iloc[0]),
+            },
+        ]
+    )
+    y = np.arange(len(detectors))
+    ax.barh(y, detectors["run_ms"], color=SCI_BLUE_LIGHT, edgecolor=SCI_BLUE, linewidth=1.0)
+    ax.scatter(detectors["paper_ms"], y, marker="D", s=34, facecolors=TOKENS["panel"], edgecolors=TOKENS["ink"], linewidths=1.0)
+    for yi, row in enumerate(detectors.itertuples()):
+        ax.text(row.run_ms + 2.0, yi, f"{row.run_ms:.1f}", va="center", ha="left", fontsize=8.2, color=TOKENS["ink"])
+        ax.text(row.paper_ms + 2.0, yi + 0.16, f"{row.paper_ms:.1f}", va="center", ha="left", fontsize=7.8, color=NEUTRAL["dark"])
+    ax.set_yticks(y, detectors["detector"])
+    ax.set_xlabel("Per-lead mean time (ms)")
     ax.set_ylabel("")
-    ax.set_xlim(0, total * 1.18)
-    ax.legend(loc="lower left", bbox_to_anchor=(0, 1.06), ncol=2, frameon=False, borderaxespad=0)
+    ax.set_xlim(0, max(detectors["run_ms"].max(), detectors["paper_ms"].max()) * 1.35)
+    ax.text(0.02, 0.04, "bar: this run; diamond: paper Table 8", transform=ax.transAxes, ha="left", va="bottom", fontsize=8.0, color=TOKENS["muted"])
+    panel_header(ax, "detector comparison", y=1.08)
+
+    ax2 = axes[1]
+    non_qrs = feature + predict + remainder
+    parts = [
+        ("QRS", qrs, SCI_RED_LIGHT, SCI_RED),
+        ("84 SQIs", feature, SCI_BLUE_LIGHT, SCI_BLUE),
+        ("predict", predict, "#DCE3E8", SCI_NEUTRAL),
+        ("overhead", remainder, NEUTRAL["light"], NEUTRAL["dark"]),
+    ]
+    left = 0.0
+    for label, value, fill, edge in parts:
+        if value <= 0:
+            continue
+        ax2.barh(["12-lead"], [value], left=[left], color=fill, edgecolor=edge, linewidth=1.0, label=f"{label} {value:.1f} ms")
+        if value > 8:
+            ax2.text(left + value / 2, 0, f"{label}\n{value:.1f}", ha="center", va="center", fontsize=8.5, color=TOKENS["ink"])
+        left += value
+    ax2.text(qrs / 2, -0.36, f"QRS share {share:.1%}", ha="center", va="top", fontsize=8.6, color=TOKENS["ink"], clip_on=False)
+    ax2.annotate(
+        f"non-QRS {non_qrs:.1f} ms",
+        xy=(qrs + non_qrs, 0),
+        xytext=(total * 1.03, 0.28),
+        ha="left",
+        va="center",
+        arrowprops={"arrowstyle": "-", "color": NEUTRAL["dark"], "lw": 0.8},
+        fontsize=8.5,
+        color=TOKENS["ink"],
+    )
+    ax2.set_xlabel("Mean elapsed time (ms)")
+    ax2.set_ylabel("")
+    ax2.set_xlim(0, total * 1.18)
+    panel_header(ax2, "12-lead runtime decomposition", y=1.08)
     finish(fig, out_dir / "fig_08_runtime_breakdown.pdf")
 
 
@@ -638,18 +800,32 @@ def fig_A1_warmup(out_dir: Path, artifacts_dir: Path) -> None:
     ex = find_warmup_example(artifacts_dir)
     x = ex["sig"]
     t = np.arange(len(x)) / FS_RESAMPLED
-    fig, axes = plt.subplots(2, 1, figsize=(9.4, 5.2), sharex=True, sharey=True)
+    fig, axes = plt.subplots(2, 1, figsize=(8.8, 4.8), sharex=True, sharey=True)
+    fig.subplots_adjust(hspace=0.28, top=0.93, bottom=0.13)
     configs = [
-        (axes[0], "no warm-up", ex["det0"], COLORS["orange"]["mid"]),
-        (axes[1], "8 s warm-up", ex["det8"], COLORS["blue"]["mid"]),
+        (axes[0], "No warm-up", ex["det0"], SCI["gold"]),
+        (axes[1], "8 s warm-up", ex["det8"], SCI["purple"]),
     ]
     for ax, label, det, color in configs:
         ax.plot(t, x, color=NEUTRAL["dark"], linewidth=0.8, label="ECG")
         det_t = np.asarray(det, dtype=float) / FS_RESAMPLED
         in_view = det_t[(det_t >= 0) & (det_t <= 10.0)]
         ymin, ymax = np.nanpercentile(x, [1, 99])
-        ax.vlines(in_view, ymin, ymax, color=color, linewidth=0.9, alpha=0.95, label=f"{label} detections")
-        ax.text(0.01, 0.92, f"record {ex['record_id']}, lead {ex['lead']}; {label}; n={len(det)}", transform=ax.transAxes, ha="left", va="top", fontsize=8.6, color=TOKENS["ink"])
+        ax.vlines(in_view, ymin, ymax, color=color, linewidth=1.45, alpha=0.98, label=f"{label} detections")
+        if len(in_view):
+            ax.scatter(
+                in_view,
+                np.full_like(in_view, ymax),
+                marker="v",
+                s=28,
+                color=color,
+                edgecolors="#FFFFFF",
+                linewidths=0.35,
+                zorder=5,
+                clip_on=False,
+            )
+        ax.set_title(label, loc="left", fontsize=10, fontweight="semibold")
+        ax.text(0.01, 0.94, f"record {ex['record_id']}, lead {ex['lead']}, n={len(det)}", transform=ax.transAxes, ha="left", va="top", fontsize=8.3, color=TOKENS["muted"])
         ax.legend(loc="upper right", frameon=False, fontsize=8.4)
         ax.set_ylabel("mV")
         ax.set_xlim(0, 10)
@@ -680,7 +856,7 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Generate paper-aligned SQI report figures as vector PDFs.")
     p.add_argument("--artifacts_dir", default=str(root / "outputs" / "sqi_paper_aligned"))
     p.add_argument("--reports_dir", default=str(root / "reports" / "sqi_paper_aligned"))
-    p.add_argument("--out_dir", default=str(root / "reports" / "sqi_paper_aligned" / "figures"))
+    p.add_argument("--out_dir", default=str(root / "reports" / "sqi_paper_aligned" / "images"))
     p.add_argument("--seed", type=int, default=0)
     return p.parse_args()
 

@@ -1,0 +1,15 @@
+# Clean BUT Protocol Waveform Visuals
+
+Fixed 10s windows only. Each trace is robust-scaled for visual comparison; labels/regions come from the materialized protocol atlas.
+
+## margin_ge_5s_drop_outlier
+
+![margin_ge_5s_drop_outlier](E:\GPTProject2\ecg\reports\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\analysis\good_medium_geometry_repair\clean_but_protocol_visuals\margin_ge_5s_drop_outlier_waveform_examples.png)
+
+Rows: `E:\GPTProject2\ecg\reports\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\analysis\good_medium_geometry_repair\clean_but_protocol_visuals\margin_ge_5s_drop_outlier_waveform_examples_rows.csv`
+
+## margin_ge_5s_keep_outlier
+
+![margin_ge_5s_keep_outlier](E:\GPTProject2\ecg\reports\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\analysis\good_medium_geometry_repair\clean_but_protocol_visuals\margin_ge_5s_keep_outlier_waveform_examples.png)
+
+Rows: `E:\GPTProject2\ecg\reports\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\analysis\good_medium_geometry_repair\clean_but_protocol_visuals\margin_ge_5s_keep_outlier_waveform_examples_rows.csv`

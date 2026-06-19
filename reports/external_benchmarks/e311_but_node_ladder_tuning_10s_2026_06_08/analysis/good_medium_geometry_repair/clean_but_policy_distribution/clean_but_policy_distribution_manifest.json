@@ -1,0 +1,12 @@
+{
+  "report": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_policy_distribution\\clean_but_policy_distribution_report.md",
+  "figures": [
+    "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_policy_distribution\\fig1_policy_class_retention.png",
+    "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_policy_distribution\\fig2_region_composition.png",
+    "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_policy_distribution\\fig3_margin_distribution_by_region.png",
+    "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_policy_distribution\\fig4_pca_clean_vs_stress.png",
+    "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_policy_distribution\\fig5_waveform_feature_boxes.png",
+    "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_policy_distribution\\fig6_cleaning_contract.png"
+  ],
+  "counts_csv": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_policy_distribution\\clean_but_policy_distribution_counts.csv"
+}

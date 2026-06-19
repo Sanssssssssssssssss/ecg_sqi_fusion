@@ -1,0 +1,29 @@
+{
+  "ptb_before": {
+    "name": "PTB base synthetic before target-aware replay",
+    "n": 9229,
+    "class_counts": {
+      "good": 2331,
+      "medium": 5579,
+      "bad": 1319
+    }
+  },
+  "ptb_after": {
+    "name": "PTB target-aware synthetic after replay/matching",
+    "n": 4850,
+    "class_counts": {
+      "good": 900,
+      "medium": 2500,
+      "bad": 1450
+    }
+  },
+  "but_clean": {
+    "name": "BUT clean retained protocol",
+    "n": 21575,
+    "class_counts": {
+      "good": 11228,
+      "medium": 6265,
+      "bad": 4082
+    }
+  }
+}

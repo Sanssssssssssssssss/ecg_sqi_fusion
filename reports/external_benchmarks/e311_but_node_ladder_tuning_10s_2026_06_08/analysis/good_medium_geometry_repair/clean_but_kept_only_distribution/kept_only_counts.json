@@ -1,0 +1,32 @@
+{
+  "n": 21575,
+  "class_counts": {
+    "good": 11228,
+    "medium": 6265,
+    "bad": 4082
+  },
+  "region_counts": {
+    "good_medium_overlap": 12607,
+    "clean_core": 4877,
+    "right_bad_island": 3963,
+    "near_bad_boundary": 119,
+    "medium_bad_overlap": 9
+  },
+  "split_class_counts": {
+    "test": {
+      "medium": 2077,
+      "good": 1004,
+      "bad": 118
+    },
+    "train": {
+      "good": 9603,
+      "medium": 4145,
+      "bad": 3963
+    },
+    "val": {
+      "good": 621,
+      "medium": 43,
+      "bad": 1
+    }
+  }
+}
