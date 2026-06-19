@@ -226,6 +226,7 @@ class LocalSQIQueryConformer(nn.Module):
             nn.GroupNorm(max(1, min(8, width // 8)), width),
             nn.GELU(),
         )
+        self.recon_head = nn.Conv1d(width, in_ch, kernel_size=1)
         self.pos = PositionalEncoding(width, max_len=1024)
         self.query_names = [
             "QRS",
@@ -274,6 +275,7 @@ class LocalSQIQueryConformer(nn.Module):
         else:
             low = self.context_to_local(ctx.transpose(1, 2))
             local_logits = F.interpolate(low, size=hi_ch.shape[-1], mode="linear", align_corners=False)
+        recon = F.interpolate(self.recon_head(hi_ch), size=x.shape[-1], mode="linear", align_corners=False)
         factor_pred = self.factor_head(query[:, :6, :].reshape(x.shape[0], -1))
         gm_repr = query[:, 6, :] if self.use_sqi_queries else self.pool(ctx)
         bad_repr = query[:, 7, :] if self.use_sqi_queries else self.pool(ctx)
@@ -318,6 +320,7 @@ class LocalSQIQueryConformer(nn.Module):
             "medium_logit": medium_logit,
             "factor_pred": factor_pred,
             "local_logits": local_logits,
+            "recon": recon,
             "hi_tokens": tok["hi_tokens"],
             "context_tokens": ctx,
             "query_tokens": query,
@@ -531,6 +534,48 @@ def artifact_specificity_loss(out: dict[str, torch.Tensor], artifact: torch.Tens
     return artifact_loss + 0.75 * specificity
 
 
+def make_time_mask(x: torch.Tensor, mask_frac: float = 0.18, block: int = 48) -> torch.Tensor:
+    b, _, n = x.shape
+    mask = torch.zeros((b, 1, n), dtype=torch.bool, device=x.device)
+    spans = max(1, int((float(mask_frac) * n) // max(1, int(block))))
+    for i in range(b):
+        for _ in range(spans):
+            start = int(torch.randint(0, max(1, n - int(block)), (1,), device=x.device).item())
+            mask[i, 0, start : start + int(block)] = True
+    return mask
+
+
+def pretrain_model(model: nn.Module, loader: DataLoader, cfg: dict[str, Any], args: argparse.Namespace, device: torch.device) -> list[dict[str, Any]]:
+    mode = str(cfg.get("pretrain_mode", "none"))
+    epochs = int(cfg.get("pretrain_epochs", 0))
+    if mode == "none" or epochs <= 0:
+        return []
+    opt = torch.optim.AdamW(model.parameters(), lr=float(cfg["lr"]) * 0.75, weight_decay=1e-4)
+    logs: list[dict[str, Any]] = []
+    for epoch in range(1, epochs + 1):
+        model.train()
+        losses = []
+        for batch in loader:
+            x = batch["x"].to(device=device, dtype=torch.float32)
+            mask = make_time_mask(x)
+            x_masked = x.masked_fill(mask, 0.0)
+            out = model(x_masked)
+            recon_loss = F.smooth_l1_loss(out["recon"].masked_select(mask.expand_as(x)), x.masked_select(mask.expand_as(x)))
+            loss = recon_loss
+            if mode in {"masked_factor", "factorized_proxy"}:
+                factor, _ = factor_loss(out, batch, device)
+                local, _ = local_map_loss(out["local_logits"], x)
+                loss = loss + 0.35 * factor + 0.25 * local
+            opt.zero_grad(set_to_none=True)
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
+            opt.step()
+            losses.append(float(loss.detach().cpu()))
+        logs.append({"phase": f"pretrain_{mode}", "epoch": epoch, "loss": float(np.mean(losses))})
+        print(f"pretrain {mode} epoch={epoch}/{epochs} loss={np.mean(losses):.4f}", flush=True)
+    return logs
+
+
 def metric_report(y_true: np.ndarray, probs: np.ndarray) -> dict[str, Any]:
     y_pred = np.argmax(probs, axis=1)
     rep = GEOM.metric_report(y_true, y_pred, probs)
@@ -693,6 +738,7 @@ def train_model(candidate: str, cfg: dict[str, Any], args: argparse.Namespace, s
         fusion_mode=str(cfg.get("fusion_mode", "none")),
     ).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=float(cfg["lr"]), weight_decay=1e-4)
+    pretrain_logs = pretrain_model(model, train_loader, cfg, args, device)
     best_state = None
     best_score = -1e9
     logs: list[dict[str, Any]] = []
@@ -723,7 +769,7 @@ def train_model(candidate: str, cfg: dict[str, Any], args: argparse.Namespace, s
                 gradient_audit.extend(gradient_snapshot(model, batch, cfg, device, epoch))
         val_rep, _, _, _ = eval_loader(model, val_loader, device)
         score = float(val_rep["macro_f1"]) + 0.20 * float(min(val_rep["good_recall"], val_rep["medium_recall"], val_rep["bad_recall"])) - 0.05 * float(val_rep["bad_fpr_nonbad"])
-        row = {"epoch": epoch, "train_loss": float(np.mean(losses)), **{f"val_{k}": v for k, v in val_rep.items() if k != "confusion_3x3"}}
+        row = {"phase": "finetune", "epoch": epoch, "train_loss": float(np.mean(losses)), **{f"val_{k}": v for k, v in val_rep.items() if k != "confusion_3x3"}}
         row.update(local_parts)
         row.update({k: v for k, v in factor_parts.items() if k in {"factor_detector_agreement", "factor_qrs_visibility", "factor_sqi_basSQI"}})
         logs.append(row)
@@ -755,7 +801,7 @@ def train_model(candidate: str, cfg: dict[str, Any], args: argparse.Namespace, s
         },
         run_path / "ckpt_best.pt",
     )
-    pd.DataFrame(logs).to_csv(run_path / "train_log.csv", index=False)
+    pd.DataFrame(pretrain_logs + logs).to_csv(run_path / "train_log.csv", index=False)
     if gradient_audit:
         pd.DataFrame(gradient_audit).to_csv(run_path / "gradient_audit.csv", index=False)
     np.savez_compressed(run_path / "test_predictions.npz", probs=test_probs, factor_pred=test_factor, factor_true=test_true_factor)
@@ -837,6 +883,12 @@ def candidate_grid(stage: str) -> dict[str, dict[str, Any]]:
         return {
             "C0_query_hier_local": {**base, "use_highres_path": True, "use_sqi_queries": True, "use_hierarchical_head": True, "seed": 20260720},
         }
+    if stage == "stage_d":
+        return {
+            "D0_no_pretrain": {**base, "use_highres_path": False, "use_sqi_queries": True, "use_hierarchical_head": True, "local_weight": 0.0, "pretrain_mode": "none", "pretrain_epochs": 0, "seed": 20260740},
+            "D1_masked_recon_pretrain": {**base, "use_highres_path": False, "use_sqi_queries": True, "use_hierarchical_head": True, "local_weight": 0.0, "pretrain_mode": "masked", "pretrain_epochs": 1, "seed": 20260741},
+            "D2_masked_factor_pretrain": {**base, "use_highres_path": False, "use_sqi_queries": True, "use_hierarchical_head": True, "local_weight": 0.0, "pretrain_mode": "masked_factor", "pretrain_epochs": 1, "seed": 20260742},
+        }
     if stage == "sqi_fusion_ladder":
         return {
             "L0_waveform_only": {**base, "use_highres_path": True, "use_sqi_queries": True, "use_hierarchical_head": True, "fusion_mode": "none", "seed": 20260730},
@@ -869,8 +921,9 @@ def run_train_stage(args: argparse.Namespace, stage: str) -> None:
         recovery.extend(summary["recovery"])
     metrics = pd.DataFrame(rows)
     rec = pd.DataFrame(recovery)
-    metrics_path = OUT_DIR / f"{stage}_metrics.csv"
-    rec_path = OUT_DIR / f"{stage}_feature_recovery.csv"
+    prefix = f"{stage}_fold{int(args.fold)}"
+    metrics_path = OUT_DIR / f"{prefix}_metrics.csv"
+    rec_path = OUT_DIR / f"{prefix}_feature_recovery.csv"
     metrics.to_csv(metrics_path, index=False)
     rec.to_csv(rec_path, index=False)
     payload = {
@@ -883,10 +936,14 @@ def run_train_stage(args: argparse.Namespace, stage: str) -> None:
         "feature_recovery_csv": str(rec_path),
         "summaries": summaries,
     }
-    (OUT_DIR / f"{stage}_summary.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False, default=str), encoding="utf-8")
+    summary_path = OUT_DIR / f"{prefix}_summary.json"
+    summary_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False, default=str), encoding="utf-8")
     report = render_stage_report(stage, metrics, rec, payload)
-    (OUT_DIR / f"{stage}_report.md").write_text(report, encoding="utf-8")
-    (REPORT_OUT_DIR / f"{stage}_report.md").write_text(report, encoding="utf-8")
+    (OUT_DIR / f"{prefix}_report.md").write_text(report, encoding="utf-8")
+    (REPORT_OUT_DIR / f"{prefix}_report.md").write_text(report, encoding="utf-8")
+    metrics.to_csv(REPORT_OUT_DIR / f"{prefix}_metrics.csv", index=False)
+    rec.to_csv(REPORT_OUT_DIR / f"{prefix}_feature_recovery.csv", index=False)
+    (REPORT_OUT_DIR / f"{prefix}_summary.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False, default=str), encoding="utf-8")
     print(report)
 
 
@@ -935,7 +992,7 @@ def run_probe_token_vs_pool(args: argparse.Namespace) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--stage", type=str, default="stage_a", choices=["build_recordheldout_splits", "stage_a", "stage_b", "stage_c", "sqi_fusion_ladder", "probe_token_vs_pool", "audit_loss_gradients", "all"])
+    parser.add_argument("--stage", type=str, default="stage_a", choices=["build_recordheldout_splits", "stage_a", "stage_b", "stage_c", "stage_d", "sqi_fusion_ladder", "probe_token_vs_pool", "audit_loss_gradients", "all"])
     parser.add_argument("--policy", type=str, default=DEFAULT_POLICY)
     parser.add_argument("--folds", type=int, default=5)
     parser.add_argument("--fold", type=int, default=0)
@@ -966,6 +1023,9 @@ def main() -> None:
     if args.stage == "stage_c":
         run_train_stage(args, "stage_c")
         return
+    if args.stage == "stage_d":
+        run_train_stage(args, "stage_d")
+        return
     if args.stage == "sqi_fusion_ladder":
         run_train_stage(args, "sqi_fusion_ladder")
         return
@@ -981,6 +1041,9 @@ def main() -> None:
         build_recordheldout_splits(str(args.policy), int(args.folds), int(args.split_seed))
         run_train_stage(args, "stage_a")
         run_train_stage(args, "stage_b")
+        run_train_stage(args, "stage_c")
+        run_train_stage(args, "sqi_fusion_ladder")
+        run_train_stage(args, "stage_d")
         return
 
 

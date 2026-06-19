@@ -1,0 +1,3 @@
+candidate,bucket,n,acc,macro_f1,good_recall,medium_recall,bad_recall,good_precision,medium_precision,bad_precision,good_to_medium,medium_to_good,bad_to_medium,confusion_3x3,macro_f1_sklearn,gm_balanced_acc,bad_fpr_nonbad,artifact_positive_nonbad_bad_fpr,factor_mae
+C0_query_hier_local,clean_val,319,0.8526645768025078,0.5663285318184892,0.7799043062200957,1.0,0.0,1.0,0.6987179487179487,0.0,46,0,1,"[[163, 46, 0], [0, 109, 0], [0, 1, 0]]",0.5663285318184892,0.8899521531100478,0.0,0.0,1.5575178861618042
+C0_query_hier_local,clean_test,853,0.8757327080890973,0.836863661490527,0.8384146341463414,1.0,1.0,1.0,0.42702702702702705,1.0,106,0,0,"[[550, 106, 0], [0, 79, 0], [0, 0, 118]]",0.836863661490527,0.9192073170731707,0.0,0.0,1.4836938381195068
