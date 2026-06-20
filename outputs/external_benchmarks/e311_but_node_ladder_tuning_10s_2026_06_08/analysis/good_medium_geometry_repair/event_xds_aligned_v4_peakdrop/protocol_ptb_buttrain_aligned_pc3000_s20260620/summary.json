@@ -1,0 +1,103 @@
+{
+  "created_at": "2026-06-20 19:01:34",
+  "n": 9000,
+  "per_class": 3000,
+  "class_counts": {
+    "good": 3000,
+    "bad": 3000,
+    "medium": 3000
+  },
+  "split_counts": [
+    {
+      "split": "test",
+      "class_name": "bad",
+      "n": 514
+    },
+    {
+      "split": "test",
+      "class_name": "good",
+      "n": 452
+    },
+    {
+      "split": "test",
+      "class_name": "medium",
+      "n": 506
+    },
+    {
+      "split": "train",
+      "class_name": "bad",
+      "n": 2047
+    },
+    {
+      "split": "train",
+      "class_name": "good",
+      "n": 2105
+    },
+    {
+      "split": "train",
+      "class_name": "medium",
+      "n": 2014
+    },
+    {
+      "split": "val",
+      "class_name": "bad",
+      "n": 439
+    },
+    {
+      "split": "val",
+      "class_name": "good",
+      "n": 443
+    },
+    {
+      "split": "val",
+      "class_name": "medium",
+      "n": 480
+    }
+  ],
+  "alignment_target": "clean BUT train split only; no clean BUT test rows used for matching",
+  "match_features": [
+    "qrs_visibility",
+    "detector_agreement",
+    "baseline_step",
+    "flatline_ratio",
+    "sqi_basSQI",
+    "non_qrs_diff_p95",
+    "qrs_band_ratio",
+    "template_corr",
+    "amplitude_entropy",
+    "contact_loss_win_ratio",
+    "rms",
+    "mean_abs",
+    "band_15_30",
+    "band_30_45"
+  ],
+  "pool_files": [
+    [
+      "ptb_combo_boundary_bank",
+      "ptb_combo_balanced2500_block_corebad_ctl10_gm_keepout_blocks_v3"
+    ],
+    [
+      "ptb_combo_boundary_bank",
+      "ptb_combo_balanced2500_block_corebad_ctl10_gm_keepout_diverse_v2"
+    ],
+    [
+      "ptb_combo_boundary_bank",
+      "ptb_combo_keepbad5s_controlled_block_gm_cvfold2_wavefact_v1"
+    ],
+    [
+      "ptb_gm_boundary_replay_bank",
+      "ptb_gm_boundary_replay_keep_outlier_cvfold2_wavefact_blocks_v3"
+    ],
+    [
+      "ptb_medium_shell_bank",
+      "ptb_medium_shell_match_clean_drop_train_qrsrms"
+    ],
+    [
+      "ptb_bad_waveform_feature_match",
+      "ptb_bad_waveform_feature_match_keepbad5s_train_controlled__a3fb38c6d8bb"
+    ]
+  ],
+  "but_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_protocols\\margin_ge_5s_drop_outlier",
+  "variant": "v4_peakdrop",
+  "morphology_calibration": true
+}
