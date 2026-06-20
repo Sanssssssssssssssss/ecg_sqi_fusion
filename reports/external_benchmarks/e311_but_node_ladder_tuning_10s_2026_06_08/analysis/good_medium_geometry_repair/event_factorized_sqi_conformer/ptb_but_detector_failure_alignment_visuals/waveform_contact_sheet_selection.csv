@@ -1,0 +1,121 @@
+source,label,rank,row_idx
+BUT train,good,1,987
+BUT train,good,2,17401
+BUT train,good,3,10522
+BUT train,good,4,5688
+BUT train,good,5,13219
+BUT train,good,6,1403
+BUT train,good,7,10806
+BUT train,good,8,2702
+BUT train,good,9,10643
+BUT train,good,10,13284
+BUT train,medium,1,11540
+BUT train,medium,2,12382
+BUT train,medium,3,12429
+BUT train,medium,4,4209
+BUT train,medium,5,3172
+BUT train,medium,6,16244
+BUT train,medium,7,10369
+BUT train,medium,8,5022
+BUT train,medium,9,12027
+BUT train,medium,10,3271
+BUT train,bad,1,8422
+BUT train,bad,2,8106
+BUT train,bad,3,6402
+BUT train,bad,4,8594
+BUT train,bad,5,6919
+BUT train,bad,6,9205
+BUT train,bad,7,6810
+BUT train,bad,8,8391
+BUT train,bad,9,7136
+BUT train,bad,10,8182
+BUT test,good,1,2739
+BUT test,good,2,1863
+BUT test,good,3,1996
+BUT test,good,4,1998
+BUT test,good,5,2811
+BUT test,good,6,2770
+BUT test,good,7,2775
+BUT test,good,8,1868
+BUT test,good,9,2146
+BUT test,good,10,1841
+BUT test,medium,1,1390
+BUT test,medium,2,941
+BUT test,medium,3,1335
+BUT test,medium,4,2441
+BUT test,medium,5,1425
+BUT test,medium,6,751
+BUT test,medium,7,890
+BUT test,medium,8,403
+BUT test,medium,9,1510
+BUT test,medium,10,2475
+BUT test,bad,1,3068
+BUT test,bad,2,3016
+BUT test,bad,3,2981
+BUT test,bad,4,3064
+BUT test,bad,5,3011
+BUT test,bad,6,3010
+BUT test,bad,7,3060
+BUT test,bad,8,3023
+BUT test,bad,9,3095
+BUT test,bad,10,2990
+PTB v10 extremeMed,good,1,6434
+PTB v10 extremeMed,good,2,6154
+PTB v10 extremeMed,good,3,3880
+PTB v10 extremeMed,good,4,3053
+PTB v10 extremeMed,good,5,5791
+PTB v10 extremeMed,good,6,8204
+PTB v10 extremeMed,good,7,1821
+PTB v10 extremeMed,good,8,2849
+PTB v10 extremeMed,good,9,5545
+PTB v10 extremeMed,good,10,2817
+PTB v10 extremeMed,medium,1,3264
+PTB v10 extremeMed,medium,2,8103
+PTB v10 extremeMed,medium,3,8851
+PTB v10 extremeMed,medium,4,8258
+PTB v10 extremeMed,medium,5,8918
+PTB v10 extremeMed,medium,6,5187
+PTB v10 extremeMed,medium,7,3127
+PTB v10 extremeMed,medium,8,4724
+PTB v10 extremeMed,medium,9,4457
+PTB v10 extremeMed,medium,10,7125
+PTB v10 extremeMed,bad,1,7342
+PTB v10 extremeMed,bad,2,5137
+PTB v10 extremeMed,bad,3,3848
+PTB v10 extremeMed,bad,4,4494
+PTB v10 extremeMed,bad,5,5415
+PTB v10 extremeMed,bad,6,7600
+PTB v10 extremeMed,bad,7,4987
+PTB v10 extremeMed,bad,8,2024
+PTB v10 extremeMed,bad,9,3247
+PTB v10 extremeMed,bad,10,1872
+PTB v11 styleReplay,good,1,6570
+PTB v11 styleReplay,good,2,2896
+PTB v11 styleReplay,good,3,2991
+PTB v11 styleReplay,good,4,1624
+PTB v11 styleReplay,good,5,5399
+PTB v11 styleReplay,good,6,6658
+PTB v11 styleReplay,good,7,1304
+PTB v11 styleReplay,good,8,3774
+PTB v11 styleReplay,good,9,8716
+PTB v11 styleReplay,good,10,2616
+PTB v11 styleReplay,medium,1,752
+PTB v11 styleReplay,medium,2,3979
+PTB v11 styleReplay,medium,3,5444
+PTB v11 styleReplay,medium,4,7997
+PTB v11 styleReplay,medium,5,2305
+PTB v11 styleReplay,medium,6,4466
+PTB v11 styleReplay,medium,7,6761
+PTB v11 styleReplay,medium,8,4535
+PTB v11 styleReplay,medium,9,2779
+PTB v11 styleReplay,medium,10,1981
+PTB v11 styleReplay,bad,1,3993
+PTB v11 styleReplay,bad,2,7614
+PTB v11 styleReplay,bad,3,749
+PTB v11 styleReplay,bad,4,5804
+PTB v11 styleReplay,bad,5,5102
+PTB v11 styleReplay,bad,6,1903
+PTB v11 styleReplay,bad,7,7431
+PTB v11 styleReplay,bad,8,4974
+PTB v11 styleReplay,bad,9,462
+PTB v11 styleReplay,bad,10,2256

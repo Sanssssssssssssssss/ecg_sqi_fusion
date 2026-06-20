@@ -112,6 +112,26 @@ def configure_variant(variant: str) -> None:
         CROSS_OUT = ANALYSIS_DIR / "event_xds_aligned_v6_lowqrs_aggressive"
         CROSS_REPORT = REPORT_DIR / "event_factorized_sqi_conformer" / "event_factorized_cross_dataset_aligned_ptb_v6_lowqrs_aggressive_report.md"
         CROSS_RUN_DIR = OUT_ROOT / "runs" / "event_xds_aligned_v6_lowqrs_aggressive"
+    elif variant == "v7_mixed_detectorfail":
+        CROSS_OUT = ANALYSIS_DIR / "event_xds_aligned_v7_mixed_detectorfail"
+        CROSS_REPORT = REPORT_DIR / "event_factorized_sqi_conformer" / "event_factorized_cross_dataset_aligned_ptb_v7_mixed_detectorfail_report.md"
+        CROSS_RUN_DIR = OUT_ROOT / "runs" / "event_xds_aligned_v7_mixed_detectorfail"
+    elif variant == "v8_visibleqrs_detailmatch":
+        CROSS_OUT = ANALYSIS_DIR / "event_xds_aligned_v8_visibleqrs_detailmatch"
+        CROSS_REPORT = REPORT_DIR / "event_factorized_sqi_conformer" / "event_factorized_cross_dataset_aligned_ptb_v8_visibleqrs_detailmatch_report.md"
+        CROSS_RUN_DIR = OUT_ROOT / "runs" / "event_xds_aligned_v8_visibleqrs_detailmatch"
+    elif variant == "v9_strong_visibleqrs_medium":
+        CROSS_OUT = ANALYSIS_DIR / "event_xds_aligned_v9_strong_visibleqrs_medium"
+        CROSS_REPORT = REPORT_DIR / "event_factorized_sqi_conformer" / "event_factorized_cross_dataset_aligned_ptb_v9_strong_visibleqrs_medium_report.md"
+        CROSS_RUN_DIR = OUT_ROOT / "runs" / "event_xds_aligned_v9_strong_visibleqrs_medium"
+    elif variant == "v10_butmedium_extreme":
+        CROSS_OUT = ANALYSIS_DIR / "event_xds_aligned_v10_butmedium_extreme"
+        CROSS_REPORT = REPORT_DIR / "event_factorized_sqi_conformer" / "event_factorized_cross_dataset_aligned_ptb_v10_butmedium_extreme_report.md"
+        CROSS_RUN_DIR = OUT_ROOT / "runs" / "event_xds_aligned_v10_butmedium_extreme"
+    elif variant == "v11_buttrain_style_replay":
+        CROSS_OUT = ANALYSIS_DIR / "event_xds_aligned_v11_buttrain_style_replay"
+        CROSS_REPORT = REPORT_DIR / "event_factorized_sqi_conformer" / "event_factorized_cross_dataset_aligned_ptb_v11_buttrain_style_replay_report.md"
+        CROSS_RUN_DIR = OUT_ROOT / "runs" / "event_xds_aligned_v11_buttrain_style_replay"
     else:
         raise ValueError(f"unknown variant: {variant}")
 
@@ -552,6 +572,220 @@ def rejection_detector_failure_signals(x: np.ndarray, selected: pd.DataFrame, se
     return out.astype(np.float32)
 
 
+def mixed_detector_failure_signals(x: np.ndarray, selected: pd.DataFrame, seed: int) -> tuple[np.ndarray, pd.Series]:
+    """Blend BUT-like detector-failure morphology into PTB without replacing the whole class.
+
+    The earlier aggressive variant moved all medium/bad examples toward low-QRS
+    detector-failure shapes. That made the synthetic source distribution too
+    narrow and encouraged class shortcuts. This variant keeps the aligned PTB
+    body as the anchor and only injects a controlled detector-failure slice.
+    """
+    rng = np.random.default_rng(int(seed) + 7707)
+    generated = rejection_detector_failure_signals(x, selected, seed, aggressive_lowqrs=True)
+    labels = selected["y_class"].astype(str).to_numpy()
+    probs = np.zeros(len(selected), dtype=np.float32)
+    probs[labels == "good"] = 0.06
+    probs[labels == "medium"] = 0.46
+    probs[labels == "bad"] = 0.42
+    replace = rng.random(len(selected)) < probs
+
+    out = np.asarray(x, dtype=np.float32).copy()
+    out[replace] = generated[replace]
+    block = pd.Series(np.where(replace, "butlike_detector_failure_mix", "aligned_ptb_body"), index=selected.index)
+    return out.astype(np.float32), block
+
+
+def visible_qrs_detailmatch_signals(
+    x: np.ndarray,
+    selected: pd.DataFrame,
+    seed: int,
+    strong_medium: bool = False,
+    extreme_but_medium: bool = False,
+) -> tuple[np.ndarray, pd.Series]:
+    """Match clean BUT morphology: QRS remains visible while detail/baseline degrade.
+
+    The clean retained BUT protocol's medium windows are not mostly no-QRS.
+    They show strong QRS evidence plus elevated baseline/detail corruption.
+    This generator therefore preserves or sharpens QRS-like peaks and injects
+    non-QRS detail/baseline artifacts in a controlled class-specific mixture.
+    """
+    rng = np.random.default_rng(int(seed) + 8808)
+    x = np.asarray(x, dtype=np.float32)
+    out = x.copy()
+    n_rows, n_samples = x.shape
+    time = np.linspace(0.0, 10.0, n_samples, dtype=np.float32)
+
+    def standard(row: np.ndarray) -> np.ndarray:
+        row = np.asarray(row, dtype=np.float32)
+        return ((row - np.median(row)) / (np.std(row) + 1e-6)).astype(np.float32)
+
+    def robust(row: np.ndarray) -> np.ndarray:
+        med = np.median(row)
+        q75 = np.percentile(row, 75)
+        q25 = np.percentile(row, 25)
+        scale = (q75 - q25) / 1.349
+        std = np.std(row)
+        if not np.isfinite(scale) or scale <= 1e-6:
+            scale = std if std > 1e-6 else 1.0
+        return ((row - med) / scale).astype(np.float32)
+
+    def qrs_emphasis(z: np.ndarray) -> np.ndarray:
+        absz = np.abs(z)
+        thr = max(float(np.percentile(absz, 90)), float(np.mean(absz) + 0.45 * np.std(absz)))
+        peak_idx: list[int] = []
+        last = -9999
+        min_gap = 26
+        for j in range(2, n_samples - 2):
+            if absz[j] < thr or j - last < min_gap:
+                continue
+            if absz[j] >= absz[j - 1] and absz[j] >= absz[j + 1]:
+                peak_idx.append(j)
+                last = j
+        if not peak_idx:
+            return np.zeros(n_samples, dtype=np.float32)
+        grid = np.arange(n_samples, dtype=np.float32)
+        pulse = np.zeros(n_samples, dtype=np.float32)
+        width = float(rng.uniform(2.5, 5.0))
+        for p in peak_idx[:18]:
+            pulse += float(np.sign(z[p]) or 1.0) * np.exp(-0.5 * ((grid - float(p)) / width) ** 2).astype(np.float32)
+        return standard(pulse)
+
+    def baseline_steps() -> np.ndarray:
+        sig = np.zeros(n_samples, dtype=np.float32)
+        for _ in range(int(rng.integers(2, 6))):
+            pos = int(rng.integers(n_samples // 12, 11 * n_samples // 12))
+            amp = float(rng.normal(0.0, 1.0))
+            width = float(rng.uniform(2.0, 18.0))
+            grid = np.arange(n_samples, dtype=np.float32)
+            sig += amp * (1.0 / (1.0 + np.exp(-(grid - pos) / width))).astype(np.float32)
+        sig += 0.35 * np.sin(2.0 * np.pi * rng.uniform(0.15, 0.55) * time + rng.uniform(0, 2 * np.pi)).astype(np.float32)
+        return standard(sig)
+
+    def detail_noise() -> np.ndarray:
+        noise = rng.normal(0.0, 1.0, n_samples).astype(np.float32)
+        high = noise - moving_average_1d(noise, 11)
+        mid = moving_average_1d(noise, 17) - moving_average_1d(noise, 83)
+        burst = np.zeros(n_samples, dtype=np.float32)
+        for _ in range(int(rng.integers(2, 5))):
+            center = int(rng.integers(n_samples // 10, 9 * n_samples // 10))
+            width = float(rng.uniform(18.0, 80.0))
+            freq = float(rng.uniform(12.0, 32.0))
+            env = np.exp(-0.5 * ((np.arange(n_samples, dtype=np.float32) - center) / width) ** 2)
+            burst += env.astype(np.float32) * np.sin(2.0 * np.pi * freq * time + rng.uniform(0, 2 * np.pi)).astype(np.float32)
+        return standard(0.45 * high + 0.25 * mid + 0.30 * burst)
+
+    labels = selected["y_class"].astype(str).to_numpy()
+    block = np.full(n_rows, "aligned_ptb_body", dtype=object)
+    for i in range(n_rows):
+        cls = labels[i]
+        z = robust(x[i])
+        qrs = qrs_emphasis(z)
+        base = baseline_steps()
+        detail = detail_noise()
+        if cls == "good":
+            if rng.random() < 0.14:
+                sig = 0.88 * z + 0.18 * qrs + 0.08 * base + 0.06 * detail
+                block[i] = "visible_qrs_light_good_boundary"
+            else:
+                sig = z
+        elif cls == "medium":
+            if extreme_but_medium and rng.random() < 0.94:
+                sig = 0.20 * z + 4.70 * qrs + 0.90 * base + 1.25 * detail
+                block[i] = "extreme_butlike_visible_qrs_medium"
+            elif strong_medium and rng.random() < 0.92:
+                sig = 0.44 * z + 1.65 * qrs + 0.78 * base + 1.05 * detail
+                block[i] = "strong_visible_qrs_medium_detail_baseline"
+            elif rng.random() < 0.74:
+                sig = 0.76 * z + 0.35 * qrs + 0.42 * base + 0.38 * detail
+                block[i] = "visible_qrs_medium_detail_baseline"
+            else:
+                sig = z
+        elif cls == "bad":
+            if rng.random() < 0.62:
+                sig = 0.56 * z + 0.16 * qrs + 0.38 * base + 0.88 * detail
+                block[i] = "controlled_bad_visibleqrs_stress"
+            else:
+                sig = z
+        else:
+            sig = z
+        out[i] = standard(sig)
+    return out.astype(np.float32), pd.Series(block, index=selected.index)
+
+
+def buttrain_style_replay_signals(x: np.ndarray, selected: pd.DataFrame, but_protocol: Path, seed: int) -> tuple[np.ndarray, pd.Series]:
+    """Replay clean BUT train artifact morphology onto PTB rows without using BUT test.
+
+    This is a diagnostic generator: it tests whether the remaining PTB->BUT gap
+    is mainly caused by hand-written artifact synthesis failing to match real
+    BUT morphology. It uses only the clean BUT train split as style/residual
+    templates and keeps the selected PTB labels/splits.
+    """
+    rng = np.random.default_rng(int(seed) + 11111)
+    x = np.asarray(x, dtype=np.float32)
+    out = x.copy()
+
+    zfile = np.load(but_protocol / "signals.npz")
+    key = "X" if "X" in zfile.files else zfile.files[0]
+    but_x = np.asarray(zfile[key], dtype=np.float32)
+    if but_x.ndim == 3:
+        but_x = but_x[:, 0, :]
+    but_atlas = pd.read_csv(but_protocol / "original_region_atlas.csv")
+    train_mask = but_atlas["split"].astype(str).eq("train").to_numpy()
+    but_x = but_x[train_mask]
+    but_atlas = but_atlas.loc[train_mask].reset_index(drop=True)
+    by_class = {
+        cls: np.flatnonzero(but_atlas["class_name"].astype(str).to_numpy() == cls)
+        for cls in ["good", "medium", "bad"]
+    }
+
+    def standard(row: np.ndarray) -> np.ndarray:
+        row = np.asarray(row, dtype=np.float32)
+        return ((row - np.median(row)) / (np.std(row) + 1e-6)).astype(np.float32)
+
+    def robust(row: np.ndarray) -> np.ndarray:
+        med = np.median(row)
+        q75 = np.percentile(row, 75)
+        q25 = np.percentile(row, 25)
+        scale = (q75 - q25) / 1.349
+        std = np.std(row)
+        if not np.isfinite(scale) or scale <= 1e-6:
+            scale = std if std > 1e-6 else 1.0
+        return ((row - med) / scale).astype(np.float32)
+
+    labels = selected["y_class"].astype(str).to_numpy()
+    block = np.full(len(selected), "aligned_ptb_body", dtype=object)
+    for i, cls in enumerate(labels):
+        idx_pool = by_class.get(cls, np.asarray([], dtype=np.int64))
+        if len(idx_pool) == 0:
+            continue
+        if cls == "good":
+            use_style = rng.random() < 0.18
+        elif cls == "medium":
+            use_style = rng.random() < 0.82
+        elif cls == "bad":
+            use_style = rng.random() < 0.72
+        else:
+            use_style = False
+        if not use_style:
+            continue
+        style = robust(but_x[int(rng.choice(idx_pool))])
+        base = moving_average_1d(style, 251)
+        detail = style - moving_average_1d(style, 21)
+        mid = moving_average_1d(style, 17) - moving_average_1d(style, 83)
+        z = robust(x[i])
+        if cls == "good":
+            sig = 0.78 * z + 0.24 * base + 0.14 * detail
+            block[i] = "buttrain_light_good_style"
+        elif cls == "medium":
+            sig = 0.24 * z + 0.42 * moving_average_1d(z, 9) + 1.10 * base + 1.10 * detail + 0.45 * mid
+            block[i] = "buttrain_medium_style_replay"
+        else:
+            sig = 0.15 * z + 0.95 * style + 0.55 * detail
+            block[i] = "buttrain_bad_style_replay"
+        out[i] = standard(sig)
+    return out.astype(np.float32), pd.Series(block, index=selected.index)
+
+
 def select_aligned_rows(
     pool_frame: pd.DataFrame,
     pool_features: pd.DataFrame,
@@ -664,7 +898,22 @@ def materialize_aligned_protocol(args: argparse.Namespace) -> Path:
         x_selected = rejection_detector_failure_signals(x_selected, selected, int(args.seed))
     elif str(args.variant) == "v6_lowqrs_aggressive":
         x_selected = rejection_detector_failure_signals(x_selected, selected, int(args.seed), aggressive_lowqrs=True)
-    if str(args.variant) in {"v2_morphcal", "v3_detectorfail", "v4_peakdrop", "v5_reject_detectorfail", "v6_lowqrs_aggressive"}:
+    elif str(args.variant) == "v7_mixed_detectorfail":
+        x_selected, detector_mix_block = mixed_detector_failure_signals(x_selected, selected, int(args.seed))
+        selected["detector_mix_block"] = detector_mix_block.to_numpy()
+    elif str(args.variant) == "v8_visibleqrs_detailmatch":
+        x_selected, detector_mix_block = visible_qrs_detailmatch_signals(x_selected, selected, int(args.seed))
+        selected["detector_mix_block"] = detector_mix_block.to_numpy()
+    elif str(args.variant) == "v9_strong_visibleqrs_medium":
+        x_selected, detector_mix_block = visible_qrs_detailmatch_signals(x_selected, selected, int(args.seed), strong_medium=True)
+        selected["detector_mix_block"] = detector_mix_block.to_numpy()
+    elif str(args.variant) == "v10_butmedium_extreme":
+        x_selected, detector_mix_block = visible_qrs_detailmatch_signals(x_selected, selected, int(args.seed), extreme_but_medium=True)
+        selected["detector_mix_block"] = detector_mix_block.to_numpy()
+    elif str(args.variant) == "v11_buttrain_style_replay":
+        x_selected, detector_mix_block = buttrain_style_replay_signals(x_selected, selected, but_protocol, int(args.seed))
+        selected["detector_mix_block"] = detector_mix_block.to_numpy()
+    if str(args.variant) in {"v2_morphcal", "v3_detectorfail", "v4_peakdrop", "v5_reject_detectorfail", "v6_lowqrs_aggressive", "v7_mixed_detectorfail", "v8_visibleqrs_detailmatch", "v9_strong_visibleqrs_medium", "v10_butmedium_extreme", "v11_buttrain_style_replay"}:
         selected_primitives = GEOM_FEATURES.compute_primitives(x_selected)
         selected_y = selected["y_class"].astype(str).map(EVENT.CLASS_TO_INT).to_numpy(dtype=np.int64)
         selected_state = GEOM_FEATURES.fit_feature_state(selected_primitives, selected_y, selected["split"].astype(str).eq("train").to_numpy())
@@ -690,6 +939,7 @@ def materialize_aligned_protocol(args: argparse.Namespace) -> Path:
             "original_region": selected.get("profile_block", selected.get("target_original_region", pd.Series(["ptb_aligned"] * len(selected)))).fillna("ptb_aligned").astype(str).to_numpy(),
             "bank_role": selected.get("bank_role", pd.Series([""] * len(selected))).fillna("").astype(str).to_numpy(),
             "profile_block": selected.get("profile_block", pd.Series([""] * len(selected))).fillna("").astype(str).to_numpy(),
+            "detector_mix_block": selected.get("detector_mix_block", pd.Series(["aligned_ptb_body"] * len(selected))).fillna("aligned_ptb_body").astype(str).to_numpy(),
             "pool_file": selected["pool_file"].astype(str).to_numpy(),
             "pool_folder": selected["pool_folder"].astype(str).to_numpy(),
             "pool_row": selected["pool_row"].astype(int).to_numpy(),
@@ -721,7 +971,7 @@ def materialize_aligned_protocol(args: argparse.Namespace) -> Path:
         "pool_files": POOL_FILES,
         "but_protocol": str(but_protocol),
         "variant": str(args.variant),
-        "morphology_calibration": str(args.variant) in {"v2_morphcal", "v3_detectorfail", "v4_peakdrop", "v5_reject_detectorfail", "v6_lowqrs_aggressive"},
+        "morphology_calibration": str(args.variant) in {"v2_morphcal", "v3_detectorfail", "v4_peakdrop", "v5_reject_detectorfail", "v6_lowqrs_aggressive", "v7_mixed_detectorfail", "v8_visibleqrs_detailmatch", "v9_strong_visibleqrs_medium", "v10_butmedium_extreme", "v11_buttrain_style_replay"},
     }
     (protocol / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return protocol
@@ -836,7 +1086,7 @@ def main() -> None:
         "--variant",
         type=str,
         default="v1",
-        choices=["v1", "v2_morphcal", "v3_detectorfail", "v4_peakdrop", "v5_reject_detectorfail", "v6_lowqrs_aggressive"],
+        choices=["v1", "v2_morphcal", "v3_detectorfail", "v4_peakdrop", "v5_reject_detectorfail", "v6_lowqrs_aggressive", "v7_mixed_detectorfail", "v8_visibleqrs_detailmatch", "v9_strong_visibleqrs_medium", "v10_butmedium_extreme", "v11_buttrain_style_replay"],
     )
     parser.add_argument("--but-protocol", type=str, default=str(DEFAULT_BUT_PROTOCOL))
     parser.add_argument("--per-class", type=int, default=3000)

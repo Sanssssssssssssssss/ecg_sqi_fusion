@@ -1,0 +1,28 @@
+source,class_name,n
+BUT test,bad,118
+BUT test,good,1004
+BUT test,medium,2077
+BUT train,bad,3963
+BUT train,good,9603
+BUT train,medium,4145
+PTB v1,bad,3000
+PTB v1,good,3000
+PTB v1,medium,3000
+PTB v10 extremeMed,bad,3000
+PTB v10 extremeMed,good,3000
+PTB v10 extremeMed,medium,3000
+PTB v11 styleReplay,bad,3000
+PTB v11 styleReplay,good,3000
+PTB v11 styleReplay,medium,3000
+PTB v6 aggressive,bad,3000
+PTB v6 aggressive,good,3000
+PTB v6 aggressive,medium,3000
+PTB v7 mixed,bad,3000
+PTB v7 mixed,good,3000
+PTB v7 mixed,medium,3000
+PTB v8 visibleQRS,bad,3000
+PTB v8 visibleQRS,good,3000
+PTB v8 visibleQRS,medium,3000
+PTB v9 strongMed,bad,3000
+PTB v9 strongMed,good,3000
+PTB v9 strongMed,medium,3000
