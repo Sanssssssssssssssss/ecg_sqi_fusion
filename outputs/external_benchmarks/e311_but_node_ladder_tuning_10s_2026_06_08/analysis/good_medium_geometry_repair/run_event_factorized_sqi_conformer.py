@@ -987,6 +987,39 @@ def pcgrad_backward(losses: dict[str, torch.Tensor], model: nn.Module) -> None:
         p.grad = torch.stack([g[p_idx] for g in grads], dim=0).mean(dim=0)
 
 
+def cagrad_light_backward(losses: dict[str, torch.Tensor], model: nn.Module, conflict_scale: float = 0.50) -> None:
+    """Conflict-averse gradient composition for the phase-2 optimizer ablation.
+
+    This is a compact CAGrad-style variant: task gradients are measured against
+    the mean gradient, tasks that conflict with the mean receive lower simplex
+    weight, and the weighted gradient is blended back with the mean. It is meant
+    as an honest conflict-averse comparator, not a full optimizer replacement.
+    """
+
+    params = [p for p in model.parameters() if p.requires_grad]
+    grads = []
+    flats = []
+    for loss in losses.values():
+        model.zero_grad(set_to_none=True)
+        loss.backward(retain_graph=True)
+        task_grad = [torch.zeros_like(p) if p.grad is None else p.grad.detach().clone() for p in params]
+        grads.append(task_grad)
+        flats.append(torch.cat([g.flatten() for g in task_grad]))
+    mat = torch.stack(flats, dim=0)
+    mean = mat.mean(dim=0)
+    denom = (torch.norm(mat, dim=1) * torch.norm(mean)).clamp_min(1e-12)
+    cosine = torch.mv(mat, mean) / denom
+    weights = torch.softmax(float(conflict_scale) * cosine, dim=0)
+    weighted_flat = torch.sum(mat * weights[:, None], dim=0)
+    final_flat = 0.50 * mean + 0.50 * weighted_flat
+    model.zero_grad(set_to_none=True)
+    offset = 0
+    for p in params:
+        n = p.numel()
+        p.grad = final_flat[offset : offset + n].view_as(p).clone()
+        offset += n
+
+
 def candidate_grid(stage: str, seed: int) -> dict[str, dict[str, Any]]:
     base = {
         "width": 96,
@@ -1014,7 +1047,7 @@ def candidate_grid(stage: str, seed: int) -> dict[str, dict[str, Any]]:
         return {
             "O0_e4_ordinary": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "optimizer_mode": "ordinary"},
             "O1_e4_pcgrad_class_artifact": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "optimizer_mode": "pcgrad_class_artifact"},
-            "O2_e4_cagrad_placeholder": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "optimizer_mode": "ordinary"},
+            "O2_e4_cagrad_light": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "optimizer_mode": "cagrad_light"},
             "O3_e4_upperblock_branch": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "branch_upper_block": True},
         }
     if stage == "phase3":
@@ -1100,7 +1133,7 @@ def train_model(candidate: str, cfg: dict[str, Any], args: argparse.Namespace, s
         epoch_parts: list[dict[str, float]] = []
         losses = []
         for step, batch in enumerate(train_loader):
-            if str(cfg.get("optimizer_mode", "ordinary")) == "pcgrad_class_artifact":
+            if str(cfg.get("optimizer_mode", "ordinary")) in {"pcgrad_class_artifact", "cagrad_light"}:
                 x = batch["x"].to(device=device, dtype=torch.float32)
                 y = batch["y"].to(device=device)
                 out = model(x)
@@ -1108,7 +1141,14 @@ def train_model(candidate: str, cfg: dict[str, Any], args: argparse.Namespace, s
                     "class": hierarchical_nll(out, y) if bool(cfg.get("use_hierarchical_head", True)) else F.cross_entropy(out["logits"], y),
                     "artifact": artifact_loss(out, batch, device)[0],
                 }
-                pcgrad_backward(losses_dict, model)
+                if str(cfg.get("optimizer_mode", "ordinary")) == "pcgrad_class_artifact":
+                    pcgrad_backward(losses_dict, model)
+                else:
+                    factor_task = factor_loss(out, batch, device)[0]
+                    local_task = local_map_loss(out, x)[0] if bool(cfg.get("use_local_supervision", True)) else torch.zeros((), device=device)
+                    losses_dict["factor"] = factor_task
+                    losses_dict["local"] = local_task
+                    cagrad_light_backward(losses_dict, model)
                 opt.step()
                 opt.zero_grad(set_to_none=True)
                 total_loss = sum(losses_dict.values())
