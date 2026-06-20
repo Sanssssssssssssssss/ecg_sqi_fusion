@@ -1,0 +1,139 @@
+{
+  "created_at": "2026-06-20 22:19:47",
+  "n": 32975,
+  "ptb_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v11_buttrain_style_replay\\protocol_ptb_buttrain_aligned_pc3000_s20260620",
+  "but_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_protocols\\margin_ge_5s_drop_outlier",
+  "bad_extra_protocols": [
+    "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v1\\protocol_ptb_buttrain_aligned_pc3000_s20260620",
+    "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v10_butmedium_extreme\\protocol_ptb_buttrain_aligned_pc3000_s20260620"
+  ],
+  "bad_extra_per_source": 1200,
+  "class_counts": {
+    "good": 14228,
+    "bad": 9482,
+    "medium": 9265
+  },
+  "source_split_counts": [
+    {
+      "source_domain": "clean_but",
+      "split": "test",
+      "class_name": "bad",
+      "n": 118
+    },
+    {
+      "source_domain": "clean_but",
+      "split": "test",
+      "class_name": "good",
+      "n": 1004
+    },
+    {
+      "source_domain": "clean_but",
+      "split": "test",
+      "class_name": "medium",
+      "n": 2077
+    },
+    {
+      "source_domain": "clean_but",
+      "split": "train",
+      "class_name": "bad",
+      "n": 3963
+    },
+    {
+      "source_domain": "clean_but",
+      "split": "train",
+      "class_name": "good",
+      "n": 9603
+    },
+    {
+      "source_domain": "clean_but",
+      "split": "train",
+      "class_name": "medium",
+      "n": 4145
+    },
+    {
+      "source_domain": "clean_but",
+      "split": "val",
+      "class_name": "bad",
+      "n": 1
+    },
+    {
+      "source_domain": "clean_but",
+      "split": "val",
+      "class_name": "good",
+      "n": 621
+    },
+    {
+      "source_domain": "clean_but",
+      "split": "val",
+      "class_name": "medium",
+      "n": 43
+    },
+    {
+      "source_domain": "ptb_bad_extra_0",
+      "split": "train",
+      "class_name": "bad",
+      "n": 1200
+    },
+    {
+      "source_domain": "ptb_bad_extra_1",
+      "split": "train",
+      "class_name": "bad",
+      "n": 1200
+    },
+    {
+      "source_domain": "ptb_v11_style_replay",
+      "split": "test",
+      "class_name": "bad",
+      "n": 514
+    },
+    {
+      "source_domain": "ptb_v11_style_replay",
+      "split": "test",
+      "class_name": "good",
+      "n": 452
+    },
+    {
+      "source_domain": "ptb_v11_style_replay",
+      "split": "test",
+      "class_name": "medium",
+      "n": 506
+    },
+    {
+      "source_domain": "ptb_v11_style_replay",
+      "split": "train",
+      "class_name": "bad",
+      "n": 2047
+    },
+    {
+      "source_domain": "ptb_v11_style_replay",
+      "split": "train",
+      "class_name": "good",
+      "n": 2105
+    },
+    {
+      "source_domain": "ptb_v11_style_replay",
+      "split": "train",
+      "class_name": "medium",
+      "n": 2014
+    },
+    {
+      "source_domain": "ptb_v11_style_replay",
+      "split": "val",
+      "class_name": "bad",
+      "n": 439
+    },
+    {
+      "source_domain": "ptb_v11_style_replay",
+      "split": "val",
+      "class_name": "good",
+      "n": 443
+    },
+    {
+      "source_domain": "ptb_v11_style_replay",
+      "split": "val",
+      "class_name": "medium",
+      "n": 480
+    }
+  ],
+  "input_contract": "waveform-derived channels only; SQI/factors are teacher targets and diagnostics"
+}
