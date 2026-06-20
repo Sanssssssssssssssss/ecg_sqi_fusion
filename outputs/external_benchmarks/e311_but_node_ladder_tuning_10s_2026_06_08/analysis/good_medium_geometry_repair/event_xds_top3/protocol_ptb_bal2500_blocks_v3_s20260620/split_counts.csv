@@ -1,0 +1,10 @@
+split,class_name,n
+test,bad,403
+test,good,390
+test,medium,387
+train,bad,1735
+train,good,1722
+train,medium,1741
+val,bad,362
+val,good,388
+val,medium,372
