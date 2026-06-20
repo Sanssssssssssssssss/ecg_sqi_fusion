@@ -1379,7 +1379,7 @@ def main() -> None:
     parser.add_argument("--max-val-rows", type=int, default=0)
     parser.add_argument("--max-test-rows", type=int, default=0)
     parser.add_argument("--record-balanced-sampler", action="store_true", default=True)
-    parser.add_argument("--audit-gradients", action="store_true", default=True)
+    parser.add_argument("--audit-gradients", action="store_true", default=False)
     parser.add_argument("--gradient-batches", type=int, default=30)
     parser.add_argument("--candidates", type=str, default="")
     args = parser.parse_args()
