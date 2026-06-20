@@ -68,6 +68,30 @@ V3 introduced monotonic/contact-like detector-failure samples, but it overshot a
 
 This validates the direction, but post-hoc protocol-level waveform edits are not enough. The generator must create a continuous detector-failure family at source.
 
+### V5/V6 rejection sampling confirms post-hoc generation is insufficient
+
+Additional variants:
+
+- `event_xds_aligned_v5_reject_detectorfail`: generated multiple waveform candidates per selected row, recomputed waveform features, and selected the closest candidate to BUT-like feature bands.
+- `event_xds_aligned_v6_lowqrs_aggressive`: increased the penalty on high `qrs_visibility` and high `qrs_band_ratio` to force low-QRS medium/bad candidates.
+
+V5 feature audit:
+
+`outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysis/good_medium_geometry_repair/event_xds_aligned_v5_reject_detectorfail/aligned_feature_distribution_audit.csv`
+
+V6 feature audit:
+
+`outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysis/good_medium_geometry_repair/event_xds_aligned_v6_lowqrs_aggressive/aligned_feature_distribution_audit.csv`
+
+V6 did reduce the synthetic medium median `qrs_visibility` to about 0.517, but it still stayed far from BUT test medium at 0.150. It also left `qrs_band_ratio` at about 1.888, while BUT test medium is about 0.453.
+
+V6 cross-dataset result:
+
+- PTB-v6 -> BUT, `E2_query_highres`, `cross_test`: acc 0.3507, macro-F1 0.4161, good/medium/bad recall 1.0000 / 0.0000 / 1.0000.
+- BUT -> PTB-v6, `E2_query_highres`, `cross_test`: acc 0.3750, macro-F1 0.2334, good/medium/bad recall 0.0265 / 1.0000 / 0.0661.
+
+This is worse than V1. The aggressive low-QRS protocol creates a brittle endpoint distribution: medium/bad no longer bridge the real BUT boundary, and the model learns a synthetic shortcut.
+
 ## Root Cause
 
 Current PTB generation contains:
@@ -77,6 +101,8 @@ Current PTB generation contains:
 - too little low-QRS, low `qrs_band_ratio`, baseline/contact detector-failure morphology.
 
 Clean BUT contains many medium and bad rows where quality is poor because the detector cannot reliably identify stable QRS/RR structure, not simply because SNR is lower.
+
+The v5/v6 rejection experiments show that post-hoc waveform edits do not provide a smooth enough bridge between readable QRS, medium detector failure, and bad stress. This must be generated as a source-level artifact family with stored artifact provenance, not patched after the bank is already built.
 
 ## Required Next Fix
 
@@ -91,6 +117,13 @@ Target feature bands should be generated with rejection sampling against `comput
 - good boundary target: keep QRS/RR readable while adding mild baseline/flat/contact ambiguity.
 
 The generator must store local artifact provenance/masks so Event-Factorized SQI Conformer can train local/event heads consistently.
+
+Do not merely force all medium/bad into low-QRS endpoints. The required family must be continuous:
+
+- readable-QRS medium,
+- low-QRS medium with baseline/contact artifact,
+- bad stress with low-QRS plus high detail/band corruption,
+- extreme bad as report-only stress.
 
 ## Current Decision
 

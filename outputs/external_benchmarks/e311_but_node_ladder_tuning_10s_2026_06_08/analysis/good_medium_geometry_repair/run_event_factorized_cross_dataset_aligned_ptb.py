@@ -104,6 +104,14 @@ def configure_variant(variant: str) -> None:
         CROSS_OUT = ANALYSIS_DIR / "event_xds_aligned_v4_peakdrop"
         CROSS_REPORT = REPORT_DIR / "event_factorized_sqi_conformer" / "event_factorized_cross_dataset_aligned_ptb_v4_peakdrop_report.md"
         CROSS_RUN_DIR = OUT_ROOT / "runs" / "event_xds_aligned_v4_peakdrop"
+    elif variant == "v5_reject_detectorfail":
+        CROSS_OUT = ANALYSIS_DIR / "event_xds_aligned_v5_reject_detectorfail"
+        CROSS_REPORT = REPORT_DIR / "event_factorized_sqi_conformer" / "event_factorized_cross_dataset_aligned_ptb_v5_reject_detectorfail_report.md"
+        CROSS_RUN_DIR = OUT_ROOT / "runs" / "event_xds_aligned_v5_reject_detectorfail"
+    elif variant == "v6_lowqrs_aggressive":
+        CROSS_OUT = ANALYSIS_DIR / "event_xds_aligned_v6_lowqrs_aggressive"
+        CROSS_REPORT = REPORT_DIR / "event_factorized_sqi_conformer" / "event_factorized_cross_dataset_aligned_ptb_v6_lowqrs_aggressive_report.md"
+        CROSS_RUN_DIR = OUT_ROOT / "runs" / "event_xds_aligned_v6_lowqrs_aggressive"
     else:
         raise ValueError(f"unknown variant: {variant}")
 
@@ -395,6 +403,155 @@ def peakdrop_signals(x: np.ndarray, selected: pd.DataFrame, seed: int) -> np.nda
     return out.astype(np.float32)
 
 
+def rejection_detector_failure_signals(x: np.ndarray, selected: pd.DataFrame, seed: int, aggressive_lowqrs: bool = False) -> np.ndarray:
+    """Generate multiple interpretable candidates and keep the closest to BUT feature bands."""
+    rng = np.random.default_rng(int(seed) + 2025)
+    x = np.asarray(x, dtype=np.float32)
+    n_rows, n_samples = x.shape
+    out = np.empty_like(x)
+    grid = np.linspace(-1.0, 1.0, n_samples, dtype=np.float32)
+    time = np.linspace(0.0, 10.0, n_samples, dtype=np.float32)
+    feature_cols = [
+        "qrs_visibility",
+        "qrs_band_ratio",
+        "baseline_step",
+        "non_qrs_diff_p95",
+        "band_15_30",
+        "band_30_45",
+        "amplitude_entropy",
+        "flatline_ratio",
+        "template_corr",
+    ]
+    centers = {
+        "good": np.asarray([0.55, 0.70, 0.32, 0.055, 0.22, 0.02, 0.62, 0.28, 0.68], dtype=np.float32),
+        "medium": np.asarray([0.22, 0.55, 0.55, 0.11, 0.24, 0.04, 0.70, 0.09, 0.56], dtype=np.float32),
+        "bad": np.asarray([0.18, 0.60, 0.16, 0.40, 0.55, 0.18, 0.88, 0.02, 0.20], dtype=np.float32),
+    }
+    scales = {
+        "good": np.asarray([0.35, 0.55, 0.35, 0.05, 0.18, 0.03, 0.14, 0.20, 0.20], dtype=np.float32),
+        "medium": np.asarray([0.22, 0.40, 0.35, 0.09, 0.16, 0.05, 0.12, 0.10, 0.22], dtype=np.float32),
+        "bad": np.asarray([0.20, 0.45, 0.18, 0.22, 0.30, 0.16, 0.13, 0.04, 0.18], dtype=np.float32),
+    }
+    if aggressive_lowqrs:
+        centers["medium"] = np.asarray([0.08, 0.18, 0.32, 0.10, 0.22, 0.04, 0.70, 0.10, 0.45], dtype=np.float32)
+        centers["bad"] = np.asarray([0.06, 0.18, 0.12, 0.36, 0.45, 0.16, 0.86, 0.03, 0.18], dtype=np.float32)
+        scales["medium"] = np.asarray([0.10, 0.18, 0.38, 0.09, 0.18, 0.06, 0.15, 0.12, 0.25], dtype=np.float32)
+        scales["bad"] = np.asarray([0.10, 0.20, 0.20, 0.24, 0.30, 0.18, 0.14, 0.05, 0.20], dtype=np.float32)
+
+    def robust(row: np.ndarray) -> np.ndarray:
+        med = np.median(row)
+        q75 = np.percentile(row, 75)
+        q25 = np.percentile(row, 25)
+        scale = (q75 - q25) / 1.349
+        std = np.std(row)
+        if not np.isfinite(scale) or scale <= 1e-6:
+            scale = std if std > 1e-6 else 1.0
+        return ((row - med) / scale).astype(np.float32)
+
+    def standard(row: np.ndarray) -> np.ndarray:
+        row = np.asarray(row, dtype=np.float32)
+        return ((row - np.median(row)) / (np.std(row) + 1e-6)).astype(np.float32)
+
+    def random_walk() -> np.ndarray:
+        inc = rng.normal(0.0, 1.0, n_samples).astype(np.float32)
+        rw = np.cumsum(moving_average_1d(inc, 33)).astype(np.float32)
+        return standard(rw)
+
+    def piecewise_step() -> np.ndarray:
+        sig = np.zeros(n_samples, dtype=np.float32)
+        n_steps = int(rng.integers(1, 5))
+        for _ in range(n_steps):
+            pos = int(rng.integers(n_samples // 8, 7 * n_samples // 8))
+            sig[pos:] += float(rng.normal(0.0, 1.0))
+        sig += 0.10 * random_walk()
+        return standard(sig)
+
+    def low_sine() -> np.ndarray:
+        freq = float(rng.uniform(0.35, 1.35))
+        phase = float(rng.uniform(0.0, 2.0 * np.pi))
+        sig = np.sin(2.0 * np.pi * freq * time + phase).astype(np.float32)
+        sig += 0.15 * np.sin(2.0 * np.pi * rng.uniform(1.5, 3.0) * time + phase / 2.0).astype(np.float32)
+        return standard(sig)
+
+    def high_detail() -> np.ndarray:
+        noise = rng.normal(0.0, 1.0, n_samples).astype(np.float32)
+        high = noise - moving_average_1d(noise, 9)
+        mid = moving_average_1d(noise, 19) - moving_average_1d(noise, 75)
+        return standard(0.65 * high + 0.35 * mid)
+
+    def monotonic_step() -> np.ndarray:
+        pos = float(rng.uniform(-0.45, 0.45))
+        width = float(rng.uniform(0.006, 0.08))
+        sign = -1.0 if rng.random() < 0.5 else 1.0
+        return standard(sign * (0.55 * grid + np.tanh((grid - pos) / width).astype(np.float32)))
+
+    def candidate_set(row: np.ndarray, cls: str) -> np.ndarray:
+        z = robust(row)
+        base = [
+            z,
+            0.70 * z + 0.25 * piecewise_step() + 0.04 * high_detail(),
+            0.45 * z + 0.45 * low_sine() + 0.08 * high_detail(),
+            0.25 * z + 0.65 * piecewise_step() + 0.08 * high_detail(),
+            0.10 * z + 0.85 * piecewise_step(),
+            0.08 * z + 0.80 * monotonic_step() + 0.08 * high_detail(),
+            0.05 * z + 0.80 * low_sine() + 0.10 * high_detail(),
+            high_detail(),
+            0.20 * z + 0.35 * piecewise_step() + 0.55 * high_detail(),
+            0.05 * z + 0.25 * piecewise_step() + 0.75 * high_detail(),
+            0.02 * z + 0.98 * piecewise_step(),
+            0.02 * z + 0.98 * monotonic_step(),
+        ]
+        if cls == "good":
+            weights = [1.0, 1.0, 0.9, 0.35, 0.15, 0.12, 0.4, 0.05, 0.1, 0.02, 0.05, 0.05]
+        elif cls == "medium":
+            weights = [0.2, 0.65, 0.85, 1.0, 1.0, 0.95, 0.95, 0.25, 0.7, 0.35, 0.9, 0.8]
+        else:
+            weights = [0.08, 0.2, 0.15, 0.55, 0.6, 0.55, 0.25, 0.9, 1.0, 1.0, 0.55, 0.35]
+        rows = [standard(sig) for sig, w in zip(base, weights) if rng.random() <= w]
+        if not rows:
+            rows = [standard(base[0])]
+        return np.stack(rows).astype(np.float32)
+
+    for start in range(0, n_rows, 128):
+        end = min(n_rows, start + 128)
+        cand_rows: list[np.ndarray] = []
+        owners: list[int] = []
+        classes: list[str] = []
+        for local_i, idx in enumerate(range(start, end)):
+            cls = str(selected.iloc[idx]["y_class"])
+            cands = candidate_set(x[idx], cls)
+            cand_rows.append(cands)
+            owners.extend([idx] * len(cands))
+            classes.extend([cls] * len(cands))
+        cand_x = np.concatenate(cand_rows, axis=0)
+        cand_features = GEOM_FEATURES.compute_primitives(cand_x)
+        fmat = cand_features[feature_cols].to_numpy(dtype=np.float32)
+        scores = np.zeros(len(cand_x), dtype=np.float32)
+        for i, cls in enumerate(classes):
+            diff = (fmat[i] - centers[cls]) / scales[cls]
+            scores[i] = float(np.nanmean(diff * diff))
+            # Penalize the exact failure we saw: high-QRS synthetic medium/bad.
+            if cls in {"medium", "bad"}:
+                qrs_band = fmat[i, feature_cols.index("qrs_band_ratio")]
+                qrs_vis = fmat[i, feature_cols.index("qrs_visibility")]
+                if aggressive_lowqrs:
+                    scores[i] += 12.0 * max(0.0, qrs_band - 0.90)
+                    scores[i] += 8.0 * max(0.0, qrs_vis - 0.45)
+                    # Allow true no-peak rows; they are exactly missing from the PTB pool.
+                    scores[i] -= 0.8 if (qrs_band < 0.35 and qrs_vis < 0.20) else 0.0
+                else:
+                    scores[i] += 4.0 * max(0.0, qrs_band - 1.15)
+                    scores[i] += 3.0 * max(0.0, qrs_vis - 0.65)
+            if cls == "good":
+                scores[i] += 1.5 * max(0.0, 0.18 - fmat[i, feature_cols.index("qrs_visibility")])
+        owner_arr = np.asarray(owners, dtype=np.int64)
+        for idx in range(start, end):
+            mask = owner_arr == idx
+            best = np.flatnonzero(mask)[np.argmin(scores[mask])]
+            out[idx] = cand_x[best]
+    return out.astype(np.float32)
+
+
 def select_aligned_rows(
     pool_frame: pd.DataFrame,
     pool_features: pd.DataFrame,
@@ -503,7 +660,11 @@ def materialize_aligned_protocol(args: argparse.Namespace) -> Path:
         x_selected = detector_failure_signals(x_selected, selected, int(args.seed))
     elif str(args.variant) == "v4_peakdrop":
         x_selected = peakdrop_signals(x_selected, selected, int(args.seed))
-    if str(args.variant) in {"v2_morphcal", "v3_detectorfail", "v4_peakdrop"}:
+    elif str(args.variant) == "v5_reject_detectorfail":
+        x_selected = rejection_detector_failure_signals(x_selected, selected, int(args.seed))
+    elif str(args.variant) == "v6_lowqrs_aggressive":
+        x_selected = rejection_detector_failure_signals(x_selected, selected, int(args.seed), aggressive_lowqrs=True)
+    if str(args.variant) in {"v2_morphcal", "v3_detectorfail", "v4_peakdrop", "v5_reject_detectorfail", "v6_lowqrs_aggressive"}:
         selected_primitives = GEOM_FEATURES.compute_primitives(x_selected)
         selected_y = selected["y_class"].astype(str).map(EVENT.CLASS_TO_INT).to_numpy(dtype=np.int64)
         selected_state = GEOM_FEATURES.fit_feature_state(selected_primitives, selected_y, selected["split"].astype(str).eq("train").to_numpy())
@@ -560,7 +721,7 @@ def materialize_aligned_protocol(args: argparse.Namespace) -> Path:
         "pool_files": POOL_FILES,
         "but_protocol": str(but_protocol),
         "variant": str(args.variant),
-        "morphology_calibration": str(args.variant) in {"v2_morphcal", "v3_detectorfail", "v4_peakdrop"},
+        "morphology_calibration": str(args.variant) in {"v2_morphcal", "v3_detectorfail", "v4_peakdrop", "v5_reject_detectorfail", "v6_lowqrs_aggressive"},
     }
     (protocol / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return protocol
@@ -671,7 +832,12 @@ def run(args: argparse.Namespace) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--stage", type=str, default="run", choices=["materialize_protocol", "run"])
-    parser.add_argument("--variant", type=str, default="v1", choices=["v1", "v2_morphcal", "v3_detectorfail", "v4_peakdrop"])
+    parser.add_argument(
+        "--variant",
+        type=str,
+        default="v1",
+        choices=["v1", "v2_morphcal", "v3_detectorfail", "v4_peakdrop", "v5_reject_detectorfail", "v6_lowqrs_aggressive"],
+    )
     parser.add_argument("--but-protocol", type=str, default=str(DEFAULT_BUT_PROTOCOL))
     parser.add_argument("--per-class", type=int, default=3000)
     parser.add_argument("--force-protocol", action="store_true")
