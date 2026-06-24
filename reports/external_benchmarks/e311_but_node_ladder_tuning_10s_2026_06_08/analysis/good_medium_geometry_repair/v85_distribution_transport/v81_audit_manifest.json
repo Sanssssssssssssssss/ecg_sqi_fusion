@@ -1,0 +1,6 @@
+{
+  "v81_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v81_feature_transport\\protocol_v85_bad_quasiperiodic_transport_pc1500_cpa8_s20260685",
+  "metric_csv": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\v85_distribution_transport\\v81_distribution_metrics.csv",
+  "feature_gap_csv": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\v85_distribution_transport\\v81_feature_median_gap.csv",
+  "created_at": "2026-06-24 05:28:08"
+}

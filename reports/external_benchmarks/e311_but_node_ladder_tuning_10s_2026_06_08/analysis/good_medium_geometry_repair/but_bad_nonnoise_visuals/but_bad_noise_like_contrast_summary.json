@@ -1,0 +1,24 @@
+{
+  "bad_total": 4082,
+  "counts_by_bucket": {
+    "right_bad_island / medium_bad_boundary": 2765,
+    "right_bad_island / clean_or_target": 1198,
+    "near_bad_boundary / bad_outlier": 119
+  },
+  "counts_by_record": {
+    "105001": 3963,
+    "122001": 118,
+    "114001": 1
+  },
+  "figures": {
+    "counts": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\but_bad_nonnoise_visuals\\but_bad_retained_bucket_counts.png",
+    "features": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\but_bad_nonnoise_visuals\\but_bad_retained_feature_distributions.png",
+    "wave_examples": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\but_bad_nonnoise_visuals\\but_bad_retained_waveform_examples.png",
+    "wave_contact_10_each": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\but_bad_nonnoise_visuals\\but_bad_retained_waveform_contact_sheet_10_each.png",
+    "least_noise_like_zoom": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\but_bad_nonnoise_visuals\\but_bad_least_noise_like_zoom_examples.png",
+    "most_noise_like_zoom": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\but_bad_nonnoise_visuals\\but_bad_most_noise_like_zoom_examples.png",
+    "noise_like_contrast_zoom": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\but_bad_nonnoise_visuals\\but_bad_noise_like_contrast_zoom.png"
+  },
+  "interpretation_hint": "Current clean BUT bad excludes outlier_low_confidence; retained bad is right_bad_island plus near_bad_boundary/bad_outlier.",
+  "least_noise_like_score_definition": "higher qrs_visibility/qrs_band_ratio/detector_agreement/template_corr and lower non_qrs_diff_p95/flatline_ratio/baseline_step within bad"
+}

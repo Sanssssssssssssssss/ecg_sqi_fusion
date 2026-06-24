@@ -1,0 +1,11 @@
+source,metric,median,iqr,n
+BUT target,peak_count,25.0,2.0,5156
+BUT target,rr_cv,0.3280360584428611,0.0768061878904156,5156
+BUT target,peak_amp_p90,2.348335862159729,0.606701135635376,5156
+BUT target,template_consistency,0.19175291675385725,0.14335979010702699,5156
+BUT target,detector_agreement_recomputed,0.0,0.0,5156
+PTB generated,peak_count,2.0,22.0,3000
+PTB generated,rr_cv,0.2935717899384928,0.3953718174883815,2469
+PTB generated,peak_amp_p90,1.6146209836006165,0.9674606919288635,3000
+PTB generated,template_consistency,0.2064313151469463,0.4968211671403122,3000
+PTB generated,detector_agreement_recomputed,0.08333333333333337,0.16666666666666663,3000

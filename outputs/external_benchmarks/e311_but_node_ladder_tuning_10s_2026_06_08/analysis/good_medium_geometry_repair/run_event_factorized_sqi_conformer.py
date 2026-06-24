@@ -57,10 +57,12 @@ FACTOR_COLUMNS_REQUESTED = [
     "flatline_ratio",
     "sqi_basSQI",
     "non_qrs_diff_p95",
+    "non_qrs_rms_ratio",
     "qrs_band_ratio",
     "template_corr",
     "amplitude_entropy",
     "contact_loss_win_ratio",
+    "band_0p3_1",
 ]
 RATIO_LIKE = {
     "qrs_visibility",
@@ -71,6 +73,8 @@ RATIO_LIKE = {
     "sqi_basSQI",
     "amplitude_entropy",
     "contact_loss_win_ratio",
+    "non_qrs_rms_ratio",
+    "band_0p3_1",
 }
 LOCAL_MAP_NAMES = [
     "qrs_event_a",
@@ -81,6 +85,61 @@ LOCAL_MAP_NAMES = [
     "flatline",
     "detail",
 ]
+GM_SUBTYPE_NAMES = [
+    "good_clean_core",
+    "good_overlap_boundary",
+    "good_isolated_low_purity",
+    "good_mild_artifact_outlier",
+    "good_hard_baseline_lowqrs",
+    "medium_clean_core",
+    "medium_overlap_boundary",
+    "medium_isolated_lowqrs",
+    "medium_visible_qrs_detail",
+    "medium_outlier_or_bad_boundary",
+    "medium_hard_baseline_lowqrs",
+]
+BAD_SUBTYPE_NAMES = [
+    "bad_dense_right_island",
+    "bad_detector_template_disagree",
+    "bad_baseline_wander_lowfreq",
+    "bad_contact_reset_flatline",
+    "bad_low_qrs_visibility",
+    "bad_highfreq_detail_noise",
+    "bad_other_boundary",
+]
+QUALITY_SUBTYPE_NAMES = GM_SUBTYPE_NAMES + BAD_SUBTYPE_NAMES
+QUALITY_SUBTYPE_TO_INT = {name: i for i, name in enumerate(QUALITY_SUBTYPE_NAMES)}
+QUALITY_SUBTYPE_CLASS = [
+    CLASS_TO_INT["good"] if name.startswith("good_") else CLASS_TO_INT["medium"] if name.startswith("medium_") else CLASS_TO_INT["bad"]
+    for name in QUALITY_SUBTYPE_NAMES
+]
+BOUNDARY_FAMILY_NAMES = ["isolated_lowqrs", "mildartifact_hardbaseline"]
+BOUNDARY_SUBTYPE_TO_FAMILY = {
+    "good_isolated_low_purity": 0,
+    "medium_isolated_lowqrs": 0,
+    "good_mild_artifact_outlier": 1,
+    "medium_hard_baseline_lowqrs": 1,
+}
+BOUNDARY_SUBTYPE_TO_LABEL = {
+    "good_isolated_low_purity": 0,
+    "good_mild_artifact_outlier": 0,
+    "medium_isolated_lowqrs": 1,
+    "medium_hard_baseline_lowqrs": 1,
+}
+BOUNDARY_MEDIUM_EVIDENCE_FEATURES = ["baseline_step", "band_0p3_1", "non_qrs_rms_ratio"]
+BOUNDARY_GOOD_EVIDENCE_FEATURES = ["sqi_basSQI", "qrs_band_ratio", "template_corr"]
+ARTIFACT_TYPE_NAMES = [
+    "none",
+    "explicit",
+    "baseline",
+    "flatline",
+    "contact",
+    "detail",
+    "bad_region",
+]
+GM_SUBTYPE_TO_INT = {name: i for i, name in enumerate(GM_SUBTYPE_NAMES)}
+BAD_SUBTYPE_TO_INT = {name: i for i, name in enumerate(BAD_SUBTYPE_NAMES)}
+ARTIFACT_TYPE_TO_INT = {name: i for i, name in enumerate(ARTIFACT_TYPE_NAMES)}
 
 
 def load_dual_module() -> Any:
@@ -260,6 +319,20 @@ def infer_artifact_targets(frame: pd.DataFrame, y: np.ndarray, thresholds: Artif
     )
 
 
+def infer_display_subtype(frame: pd.DataFrame) -> pd.Series:
+    """Return a stable subtype label when an experiment protocol provides one."""
+
+    for col in ["display_subtype", "transport_subtype", "subtype_id", "target_subtype", "target_bad_subtype", "computed_subtype", "subtype_for_split"]:
+        if col in frame.columns:
+            vals = frame[col].fillna("").astype(str)
+            mask = vals.ne("") & vals.ne("nan")
+            if mask.any():
+                out = pd.Series("unknown", index=frame.index, dtype=object)
+                out.loc[mask] = vals.loc[mask]
+                return out
+    return frame.get("original_region", pd.Series(["unknown"] * len(frame))).fillna("unknown").astype(str)
+
+
 def pseudo_local_targets(x: torch.Tensor) -> dict[str, torch.Tensor]:
     # x channels from DUAL.make_dualview_channels:
     # physical, robust z, dz, baseline_long, highpass, detail_fast, detail_slow, physical_trend.
@@ -366,6 +439,27 @@ class CleanProtocolDataset(Dataset):
         self.diagnostic_bad = targets["diagnostic_bad"].astype(float).to_numpy(dtype=np.float32)
         self.artifact_severity = targets["artifact_severity"].astype(float).to_numpy(dtype=np.float32)
         self.artifact_type = targets["artifact_type"].astype(str).to_numpy()
+        self.display_subtype = infer_display_subtype(self.frame).astype(str).to_numpy()
+        self.gm_subtype = np.full(len(self.frame), -100, dtype=np.int64)
+        self.bad_subtype = np.full(len(self.frame), -100, dtype=np.int64)
+        self.quality_subtype = np.full(len(self.frame), -100, dtype=np.int64)
+        self.boundary_family = np.full(len(self.frame), -100, dtype=np.int64)
+        self.boundary_label = np.full(len(self.frame), -100, dtype=np.int64)
+        self.artifact_type_target = np.zeros(len(self.frame), dtype=np.int64)
+        for row_i, name in enumerate(self.display_subtype):
+            if int(self.y[row_i]) in {CLASS_TO_INT["good"], CLASS_TO_INT["medium"]} and name in GM_SUBTYPE_TO_INT:
+                self.gm_subtype[row_i] = int(GM_SUBTYPE_TO_INT[name])
+            if int(self.y[row_i]) == CLASS_TO_INT["bad"] and name in BAD_SUBTYPE_TO_INT:
+                self.bad_subtype[row_i] = int(BAD_SUBTYPE_TO_INT[name])
+            if name in QUALITY_SUBTYPE_TO_INT:
+                expected_class = int(QUALITY_SUBTYPE_CLASS[QUALITY_SUBTYPE_TO_INT[name]])
+                if int(self.y[row_i]) == expected_class:
+                    self.quality_subtype[row_i] = int(QUALITY_SUBTYPE_TO_INT[name])
+            if name in BOUNDARY_SUBTYPE_TO_FAMILY:
+                self.boundary_family[row_i] = int(BOUNDARY_SUBTYPE_TO_FAMILY[name])
+                self.boundary_label[row_i] = int(BOUNDARY_SUBTYPE_TO_LABEL[name])
+            art_name = str(self.artifact_type[row_i])
+            self.artifact_type_target[row_i] = int(ARTIFACT_TYPE_TO_INT.get(art_name, 0))
         self.record_id = self.frame.get("record_id", pd.Series(["unknown"] * len(self.frame))).fillna("unknown").astype(str).to_numpy()
         self.source_idx = self.frame.get("source_idx", self.frame.get("idx", pd.Series(np.arange(len(self.frame))))).fillna(-1).astype(int).to_numpy()
         self.pair_id = self.source_idx.copy()
@@ -387,6 +481,12 @@ class CleanProtocolDataset(Dataset):
             "artifact_presence": torch.tensor(float(self.artifact_presence[i]), dtype=torch.float32),
             "diagnostic_bad": torch.tensor(float(self.diagnostic_bad[i]), dtype=torch.float32),
             "artifact_severity": torch.tensor(float(self.artifact_severity[i]), dtype=torch.float32),
+            "gm_subtype": torch.tensor(int(self.gm_subtype[i]), dtype=torch.long),
+            "bad_subtype": torch.tensor(int(self.bad_subtype[i]), dtype=torch.long),
+            "quality_subtype": torch.tensor(int(self.quality_subtype[i]), dtype=torch.long),
+            "boundary_family": torch.tensor(int(self.boundary_family[i]), dtype=torch.long),
+            "boundary_label": torch.tensor(int(self.boundary_label[i]), dtype=torch.long),
+            "artifact_type_target": torch.tensor(int(self.artifact_type_target[i]), dtype=torch.long),
             "source_idx": torch.tensor(int(self.source_idx[i]), dtype=torch.long),
             "pair_id": torch.tensor(int(self.pair_id[i]), dtype=torch.long),
             "record_id": self.record_id[i],
@@ -521,6 +621,12 @@ class EventFactorizedSQIConformer(nn.Module):
         self.severity_head = nn.Sequential(nn.LayerNorm(width), nn.Linear(width, 64), nn.GELU(), nn.Linear(64, 1))
         self.bad_head = nn.Sequential(nn.LayerNorm(width), nn.Linear(width, 64), nn.GELU(), nn.Linear(64, 1))
         self.medium_head = nn.Sequential(nn.LayerNorm(width), nn.Linear(width, 64), nn.GELU(), nn.Linear(64, 1))
+        self.gm_subtype_head = nn.Sequential(nn.LayerNorm(width), nn.Linear(width, 64), nn.GELU(), nn.Linear(64, len(GM_SUBTYPE_NAMES)))
+        self.bad_subtype_head = nn.Sequential(nn.LayerNorm(width), nn.Linear(width, 64), nn.GELU(), nn.Linear(64, len(BAD_SUBTYPE_NAMES)))
+        self.quality_subtype_head = nn.Sequential(nn.LayerNorm(width * 2), nn.Linear(width * 2, 128), nn.GELU(), nn.Linear(128, len(QUALITY_SUBTYPE_NAMES)))
+        self.boundary_family_head = nn.Sequential(nn.LayerNorm(width), nn.Linear(width, 64), nn.GELU(), nn.Linear(64, len(BOUNDARY_FAMILY_NAMES)))
+        self.boundary_label_head = nn.Sequential(nn.LayerNorm(width), nn.Linear(width, 64), nn.GELU(), nn.Linear(64, 1))
+        self.artifact_type_head = nn.Sequential(nn.LayerNorm(width), nn.Linear(width, 64), nn.GELU(), nn.Linear(64, len(ARTIFACT_TYPE_NAMES)))
         self.ce_head = nn.Sequential(nn.LayerNorm(width * 2), nn.Linear(width * 2, 128), nn.GELU(), nn.Dropout(0.08), nn.Linear(128, 3))
         self.recon_head = nn.Conv1d(width, in_ch, kernel_size=1)
 
@@ -564,6 +670,13 @@ class EventFactorizedSQIConformer(nn.Module):
         bad_repr = query[:, 7, :]
         artifact_logit = self.artifact_head(bad_repr).squeeze(1)
         severity_pred = torch.sigmoid(self.severity_head(bad_repr).squeeze(1))
+        gm_subtype_logits = self.gm_subtype_head(gm_repr)
+        bad_subtype_logits = self.bad_subtype_head(bad_repr)
+        quality_repr = torch.cat([gm_repr, bad_repr], dim=1)
+        quality_subtype_logits = self.quality_subtype_head(quality_repr)
+        boundary_family_logits = self.boundary_family_head(gm_repr)
+        boundary_label_logit = self.boundary_label_head(gm_repr).squeeze(1)
+        artifact_type_logits = self.artifact_type_head(bad_repr)
         if self.use_hierarchical_head:
             bad_logit = self.bad_head(bad_repr).squeeze(1)
             medium_logit = self.medium_head(gm_repr).squeeze(1)
@@ -592,6 +705,12 @@ class EventFactorizedSQIConformer(nn.Module):
             "medium_logit": medium_logit,
             "artifact_logit": artifact_logit,
             "artifact_severity": severity_pred,
+            "gm_subtype_logits": gm_subtype_logits,
+            "bad_subtype_logits": bad_subtype_logits,
+            "quality_subtype_logits": quality_subtype_logits,
+            "boundary_family_logits": boundary_family_logits,
+            "boundary_label_logit": boundary_label_logit,
+            "artifact_type_logits": artifact_type_logits,
             "factor_pred": factor_pred,
             "detector_agreement": detector_agreement,
             "local_logits": local_logits,
@@ -670,6 +789,112 @@ def artifact_loss(out: dict[str, torch.Tensor], batch: dict[str, torch.Tensor], 
     }
 
 
+def subtype_class_probs_from_leaf(quality_logits: torch.Tensor) -> torch.Tensor:
+    leaf_probs = torch.softmax(quality_logits, dim=1)
+    class_ids = torch.tensor(QUALITY_SUBTYPE_CLASS, dtype=torch.long, device=quality_logits.device)
+    class_probs = []
+    for cls_idx in range(len(CLASS_TO_INT)):
+        class_probs.append(leaf_probs[:, class_ids == cls_idx].sum(dim=1))
+    return torch.stack(class_probs, dim=1).clamp(1e-6, 1.0)
+
+
+def boundary_feature_direction_loss(out: dict[str, torch.Tensor], batch: dict[str, torch.Tensor], device: torch.device) -> tuple[torch.Tensor, dict[str, float]]:
+    family = batch.get("boundary_family")
+    label = batch.get("boundary_label")
+    if family is None or label is None:
+        return out["logits"].new_tensor(0.0), {}
+    family = family.to(device=device).long()
+    label = label.to(device=device).long()
+    mask = (family >= 0) & (label >= 0)
+    if not torch.any(mask):
+        return out["logits"].new_tensor(0.0), {}
+
+    losses: list[torch.Tensor] = []
+    parts: dict[str, float] = {}
+    family_loss = F.cross_entropy(out["boundary_family_logits"][mask], family[mask])
+    label_target = label[mask].float()
+    label_loss = F.binary_cross_entropy_with_logits(out["boundary_label_logit"][mask], label_target)
+    losses.extend([family_loss, label_loss])
+    parts["boundary_family_loss"] = float(family_loss.detach().cpu())
+    parts["boundary_label_loss"] = float(label_loss.detach().cpu())
+
+    pred = out["factor_pred"]
+    medium_terms = [pred[:, FACTOR_COLUMNS.index(name)] for name in BOUNDARY_MEDIUM_EVIDENCE_FEATURES if name in FACTOR_COLUMNS]
+    good_terms = [pred[:, FACTOR_COLUMNS.index(name)] for name in BOUNDARY_GOOD_EVIDENCE_FEATURES if name in FACTOR_COLUMNS]
+    if medium_terms and good_terms:
+        medium_evidence = torch.stack(medium_terms, dim=0).mean(dim=0)
+        good_evidence = torch.stack(good_terms, dim=0).mean(dim=0)
+        feature_logit = medium_evidence - good_evidence
+        feature_loss = F.binary_cross_entropy_with_logits(feature_logit[mask], label_target)
+        losses.append(feature_loss)
+        parts["boundary_feature_direction_loss"] = float(feature_loss.detach().cpu())
+
+    total = torch.stack(losses).mean()
+    parts["boundary_aux_loss"] = float(total.detach().cpu())
+    parts["boundary_rows"] = float(mask.sum().detach().cpu())
+    return total, parts
+
+
+def unified_subtype_aux_loss(out: dict[str, torch.Tensor], batch: dict[str, torch.Tensor], device: torch.device) -> tuple[torch.Tensor, dict[str, float]]:
+    target = batch.get("quality_subtype")
+    if target is None:
+        return out["logits"].new_tensor(0.0), {}
+    target = target.to(device=device).long()
+    mask = target >= 0
+    if not torch.any(mask):
+        return out["logits"].new_tensor(0.0), {}
+
+    leaf_loss = F.cross_entropy(out["quality_subtype_logits"], target, ignore_index=-100)
+    subtype_class_probs = subtype_class_probs_from_leaf(out["quality_subtype_logits"])
+    y = batch["y"].to(device=device).long()
+    subtype_class_loss = F.nll_loss(torch.log(subtype_class_probs), y)
+    main_probs = out["probs"].clamp(1e-6, 1.0)
+    consistency = 0.5 * (
+        F.kl_div(torch.log(subtype_class_probs), main_probs.detach(), reduction="batchmean")
+        + F.kl_div(torch.log(main_probs), subtype_class_probs.detach(), reduction="batchmean")
+    )
+    boundary, boundary_parts = boundary_feature_direction_loss(out, batch, device)
+    total = leaf_loss + 0.55 * subtype_class_loss + 0.35 * consistency + 0.70 * boundary
+    parts = {
+        "quality_subtype_leaf_loss": float(leaf_loss.detach().cpu()),
+        "quality_subtype_class_loss": float(subtype_class_loss.detach().cpu()),
+        "quality_subtype_consistency_loss": float(consistency.detach().cpu()),
+        "quality_subtype_aux_loss": float(total.detach().cpu()),
+    }
+    parts.update(boundary_parts)
+    return total, parts
+
+
+def subtype_aux_loss(out: dict[str, torch.Tensor], batch: dict[str, torch.Tensor], device: torch.device) -> tuple[torch.Tensor, dict[str, float]]:
+    losses: list[torch.Tensor] = []
+    parts: dict[str, float] = {}
+    gm_target = batch.get("gm_subtype")
+    if gm_target is not None:
+        gm_target = gm_target.to(device=device).long()
+        if (gm_target >= 0).any():
+            gm_loss = F.cross_entropy(out["gm_subtype_logits"], gm_target, ignore_index=-100)
+            losses.append(gm_loss)
+            parts["gm_subtype_loss"] = float(gm_loss.detach().cpu())
+    bad_target = batch.get("bad_subtype")
+    if bad_target is not None:
+        bad_target = bad_target.to(device=device).long()
+        if (bad_target >= 0).any():
+            bad_loss = F.cross_entropy(out["bad_subtype_logits"], bad_target, ignore_index=-100)
+            losses.append(bad_loss)
+            parts["bad_subtype_loss"] = float(bad_loss.detach().cpu())
+    artifact_target = batch.get("artifact_type_target")
+    if artifact_target is not None:
+        artifact_target = artifact_target.to(device=device).long()
+        artifact_type = F.cross_entropy(out["artifact_type_logits"], artifact_target)
+        losses.append(artifact_type)
+        parts["artifact_type_loss"] = float(artifact_type.detach().cpu())
+    if not losses:
+        return out["logits"].new_tensor(0.0), parts
+    total = torch.stack(losses).mean()
+    parts["subtype_aux_loss"] = float(total.detach().cpu())
+    return total, parts
+
+
 def model_loss(model: nn.Module, batch: dict[str, torch.Tensor], cfg: dict[str, Any], device: torch.device) -> tuple[torch.Tensor, dict[str, float], dict[str, torch.Tensor]]:
     x = batch["x"].to(device=device, dtype=torch.float32)
     y = batch["y"].to(device=device)
@@ -684,11 +909,25 @@ def model_loss(model: nn.Module, batch: dict[str, torch.Tensor], cfg: dict[str, 
     art_parts: dict[str, float] = {}
     if bool(cfg.get("use_artifact_aux", True)):
         art, art_parts = artifact_loss(out, batch, device)
-    total = cls + float(cfg.get("factor_weight", 0.30)) * factor + float(cfg.get("local_weight", 0.25)) * local + float(cfg.get("artifact_weight", 0.25)) * art
-    parts = {"loss_total": float(total.detach().cpu()), "loss_cls": float(cls.detach().cpu()), "loss_factor": float(factor.detach().cpu()), "loss_local": float(local.detach().cpu()), "loss_artifact": float(art.detach().cpu())}
+    subtype = torch.zeros((), device=device)
+    subtype_parts: dict[str, float] = {}
+    if float(cfg.get("subtype_weight", 0.0)) > 0.0:
+        if bool(cfg.get("use_unified_subtype_head", False)):
+            subtype, subtype_parts = unified_subtype_aux_loss(out, batch, device)
+        else:
+            subtype, subtype_parts = subtype_aux_loss(out, batch, device)
+    total = (
+        cls
+        + float(cfg.get("factor_weight", 0.30)) * factor
+        + float(cfg.get("local_weight", 0.25)) * local
+        + float(cfg.get("artifact_weight", 0.25)) * art
+        + float(cfg.get("subtype_weight", 0.0)) * subtype
+    )
+    parts = {"loss_total": float(total.detach().cpu()), "loss_cls": float(cls.detach().cpu()), "loss_factor": float(factor.detach().cpu()), "loss_local": float(local.detach().cpu()), "loss_artifact": float(art.detach().cpu()), "loss_subtype": float(subtype.detach().cpu())}
     parts.update({k: v for k, v in factor_parts.items() if k in {"factor_detector_agreement", "factor_qrs_visibility", "factor_sqi_basSQI"}})
     parts.update(local_parts)
     parts.update(art_parts)
+    parts.update(subtype_parts)
     return total, parts, out
 
 
@@ -841,7 +1080,7 @@ def record_metric_rows(candidate: str, y: np.ndarray, probs: np.ndarray, record_
 
 
 @torch.no_grad()
-def eval_loader(model: nn.Module, loader: DataLoader, device: torch.device, candidate: str) -> tuple[dict[str, Any], np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, list[dict[str, Any]], dict[str, Any]]:
+def eval_loader(model: nn.Module, loader: DataLoader, device: torch.device, candidate: str) -> tuple[dict[str, Any], np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, list[dict[str, Any]], dict[str, Any], dict[str, np.ndarray]]:
     model.eval()
     ys: list[np.ndarray] = []
     probs: list[np.ndarray] = []
@@ -849,6 +1088,12 @@ def eval_loader(model: nn.Module, loader: DataLoader, device: torch.device, cand
     factor_targets: list[np.ndarray] = []
     artifacts: list[np.ndarray] = []
     records: list[np.ndarray] = []
+    quality_targets: list[np.ndarray] = []
+    quality_probs: list[np.ndarray] = []
+    boundary_families: list[np.ndarray] = []
+    boundary_family_preds: list[np.ndarray] = []
+    boundary_labels: list[np.ndarray] = []
+    boundary_label_probs: list[np.ndarray] = []
     for batch in loader:
         x = batch["x"].to(device=device, dtype=torch.float32)
         out = model(x)
@@ -859,21 +1104,65 @@ def eval_loader(model: nn.Module, loader: DataLoader, device: torch.device, cand
         factor_targets.append(batch["factor"].numpy())
         artifacts.append(batch["artifact_presence"].numpy())
         records.append(np.asarray(batch["record_id"], dtype=object))
+        quality_targets.append(batch["quality_subtype"].numpy())
+        quality_probs.append(torch.softmax(out["quality_subtype_logits"], dim=1).detach().cpu().numpy())
+        boundary_families.append(batch["boundary_family"].numpy())
+        boundary_family_preds.append(torch.argmax(out["boundary_family_logits"], dim=1).detach().cpu().numpy())
+        boundary_labels.append(batch["boundary_label"].numpy())
+        boundary_label_probs.append(torch.sigmoid(out["boundary_label_logit"]).detach().cpu().numpy())
     y_np = np.concatenate(ys)
     p_np = np.concatenate(probs)
     pred_factor = np.concatenate(factors)
     true_factor = np.concatenate(factor_targets)
     artifact_np = np.concatenate(artifacts)
     record_np = np.concatenate(records).astype(str)
+    quality_target_np = np.concatenate(quality_targets)
+    quality_prob_np = np.concatenate(quality_probs)
+    boundary_family_np = np.concatenate(boundary_families)
+    boundary_family_pred_np = np.concatenate(boundary_family_preds)
+    boundary_label_np = np.concatenate(boundary_labels)
+    boundary_label_prob_np = np.concatenate(boundary_label_probs)
     rep = basic_metric(y_np, p_np, supported_only=False)
     y_pred = np.argmax(p_np, axis=1)
     art_nonbad = (artifact_np > 0.5) & (y_np != CLASS_TO_INT["bad"])
     rep["artifact_positive_nonbad_count"] = int(np.sum(art_nonbad))
     rep["artifact_positive_nonbad_bad_fpr"] = float(np.mean(y_pred[art_nonbad] == CLASS_TO_INT["bad"])) if np.any(art_nonbad) else np.nan
     rep["factor_mae"] = float(np.mean(np.abs(pred_factor - true_factor)))
+    q_mask = quality_target_np >= 0
+    q_pred = np.argmax(quality_prob_np, axis=1)
+    rep["quality_subtype_rows"] = int(np.sum(q_mask))
+    rep["quality_subtype_acc"] = float(np.mean(q_pred[q_mask] == quality_target_np[q_mask])) if np.any(q_mask) else np.nan
+    subtype_class_probs = np.zeros((quality_prob_np.shape[0], 3), dtype=np.float32)
+    class_ids = np.asarray(QUALITY_SUBTYPE_CLASS, dtype=np.int64)
+    for cls_idx in range(3):
+        subtype_class_probs[:, cls_idx] = quality_prob_np[:, class_ids == cls_idx].sum(axis=1)
+    rep["quality_subtype_class_acc"] = float(np.mean(np.argmax(subtype_class_probs, axis=1) == y_np)) if len(y_np) else np.nan
+    b_mask = (boundary_family_np >= 0) & (boundary_label_np >= 0)
+    b_pred = (boundary_label_prob_np >= 0.5).astype(np.int64)
+    rep["boundary_four_rows"] = int(np.sum(b_mask))
+    rep["boundary_label_acc"] = float(np.mean(b_pred[b_mask] == boundary_label_np[b_mask])) if np.any(b_mask) else np.nan
+    rep["boundary_family_acc"] = float(np.mean(boundary_family_pred_np[b_mask] == boundary_family_np[b_mask])) if np.any(b_mask) else np.nan
+    if np.any(b_mask):
+        recalls = []
+        for lbl in [0, 1]:
+            lm = b_mask & (boundary_label_np == lbl)
+            if np.any(lm):
+                recalls.append(float(np.mean(b_pred[lm] == lbl)))
+        rep["boundary_label_balanced_acc"] = float(np.mean(recalls)) if recalls else np.nan
+    else:
+        rep["boundary_label_balanced_acc"] = np.nan
     rec_rows, rec_summary = record_metric_rows(candidate, y_np, p_np, record_np, artifact_np)
     rep.update(rec_summary)
-    return rep, p_np, pred_factor, true_factor, y_np, artifact_np, rec_rows, rec_summary
+    extra = {
+        "quality_subtype_target": quality_target_np,
+        "quality_subtype_probs": quality_prob_np,
+        "boundary_family": boundary_family_np,
+        "boundary_family_pred": boundary_family_pred_np,
+        "boundary_label": boundary_label_np,
+        "boundary_label_prob": boundary_label_prob_np,
+        "subtype_class_probs": subtype_class_probs,
+    }
+    return rep, p_np, pred_factor, true_factor, y_np, artifact_np, rec_rows, rec_summary, extra
 
 
 def factor_recovery_rows(candidate: str, bucket: str, pred: np.ndarray, true: np.ndarray, y: np.ndarray) -> list[dict[str, Any]]:
@@ -909,6 +1198,8 @@ def gradient_snapshot(model: nn.Module, batch: dict[str, torch.Tensor], cfg: dic
         losses["local"] = local_map_loss(out, x)[0]
     if bool(cfg.get("use_artifact_aux", True)):
         losses["artifact"] = artifact_loss(out, batch, device)[0]
+    if float(cfg.get("subtype_weight", 0.0)) > 0.0:
+        losses["subtype"] = unified_subtype_aux_loss(out, batch, device)[0] if bool(cfg.get("use_unified_subtype_head", False)) else subtype_aux_loss(out, batch, device)[0]
     layers = {
         "hi_stem": "hi_stem",
         "ctx_down": "ctx_down",
@@ -1031,6 +1322,7 @@ def candidate_grid(stage: str, seed: int) -> dict[str, dict[str, Any]]:
         "artifact_weight": 0.25,
         "seed": int(seed),
         "use_hierarchical_head": True,
+        "use_unified_subtype_head": False,
         "optimizer_mode": "ordinary",
         "pretrain_mode": "none",
         "pretrain_epochs": 0,
@@ -1039,9 +1331,28 @@ def candidate_grid(stage: str, seed: int) -> dict[str, dict[str, Any]]:
         return {
             "E0_noquery_nohi_nolocal_noart": {**base, "use_queries": False, "use_highres_fusion": False, "use_local_supervision": False, "use_artifact_aux": False},
             "E1_query_only": {**base, "use_queries": True, "use_highres_fusion": False, "use_local_supervision": False, "use_artifact_aux": False},
+            "E1_query_only_subtype_aux": {**base, "use_queries": True, "use_highres_fusion": False, "use_local_supervision": False, "use_artifact_aux": False, "subtype_weight": 0.18},
+            "E1_query_only_unified_subtype": {**base, "use_queries": True, "use_highres_fusion": False, "use_local_supervision": False, "use_artifact_aux": False, "use_unified_subtype_head": True, "subtype_weight": 0.28},
             "E2_query_highres": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": False, "use_artifact_aux": False},
             "E3_query_highres_local": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": False},
             "E4_query_highres_local_art": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True},
+            "E4_query_highres_local_art_subtype_aux": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "subtype_weight": 0.18},
+            "E4_query_highres_local_art_unified_subtype": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "use_unified_subtype_head": True, "subtype_weight": 0.28},
+            "E4_query_highres_local_art_subtype_aux_lr1e4": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "subtype_weight": 0.18, "lr": 1.0e-4},
+            "E4_query_highres_local_art_subtype_aux_lr15e4": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "subtype_weight": 0.18, "lr": 1.5e-4},
+            "E4_query_highres_local_art_subtype_aux_lr75e5": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "subtype_weight": 0.18, "lr": 7.5e-5},
+            "E4_query_highres_local_art_subtype_aux_lowaux_lr15e4": {
+                **base,
+                "use_queries": True,
+                "use_highres_fusion": True,
+                "use_local_supervision": True,
+                "use_artifact_aux": True,
+                "factor_weight": 0.18,
+                "local_weight": 0.18,
+                "artifact_weight": 0.20,
+                "subtype_weight": 0.12,
+                "lr": 1.5e-4,
+            },
         }
     if stage == "phase2":
         return {
@@ -1055,6 +1366,8 @@ def candidate_grid(stage: str, seed: int) -> dict[str, dict[str, Any]]:
             "P0_no_pretrain": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True},
             "P1_generic_mask": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "pretrain_mode": "generic_mask", "pretrain_epochs": 2},
             "P2_ecg_beat_rhythm_mask": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "pretrain_mode": "ecg_mask", "pretrain_epochs": 2},
+            "P2_ecg_beat_rhythm_mask_subtype_aux": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "pretrain_mode": "ecg_mask", "pretrain_epochs": 2, "subtype_weight": 0.18},
+            "P2_ecg_beat_rhythm_mask_lowfactor_subtype": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "pretrain_mode": "ecg_mask", "pretrain_epochs": 2, "subtype_weight": 0.18, "factor_weight": 0.12},
             "P3_clean_noisy_physio_distill": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "pretrain_mode": "factorized_proxy", "pretrain_epochs": 2},
         }
     raise ValueError(f"unknown stage {stage}")
@@ -1164,7 +1477,7 @@ def train_model(candidate: str, cfg: dict[str, Any], args: argparse.Namespace, s
             if bool(args.audit_gradients) and grad_seen < int(args.gradient_batches):
                 gradient_rows.extend(gradient_snapshot(model, batch, cfg, device, epoch, grad_seen))
                 grad_seen += 1
-        val_rep, _, _, _, _, _, _, _ = eval_loader(model, val_loader, device, candidate)
+        val_rep, _, _, _, _, _, _, _, _ = eval_loader(model, val_loader, device, candidate)
         score = float(val_rep["record_macro_supported_f1"]) + 0.20 * min(float(val_rep["good_recall"]), float(val_rep["medium_recall"]), float(val_rep["bad_recall"])) - 0.05 * float(val_rep["bad_fpr_nonbad"])
         mean_parts = pd.DataFrame(epoch_parts).mean(numeric_only=True).to_dict() if epoch_parts else {}
         log_row = {"phase": "finetune", "epoch": epoch, "train_loss": float(np.mean(losses)), **{f"train_{k}": v for k, v in mean_parts.items()}, **{f"val_{k}": v for k, v in val_rep.items() if k != "confusion_3x3"}}
@@ -1180,8 +1493,8 @@ def train_model(candidate: str, cfg: dict[str, Any], args: argparse.Namespace, s
             best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
     assert best_state is not None
     model.load_state_dict(best_state)
-    val_rep, val_probs, val_factor, val_true_factor, val_y, val_artifact, val_rec_rows, _ = eval_loader(model, val_loader, device, candidate)
-    test_rep, test_probs, test_factor, test_true_factor, test_y, test_artifact, test_rec_rows, _ = eval_loader(model, test_loader, device, candidate)
+    val_rep, val_probs, val_factor, val_true_factor, val_y, val_artifact, val_rec_rows, _, val_extra = eval_loader(model, val_loader, device, candidate)
+    test_rep, test_probs, test_factor, test_true_factor, test_y, test_artifact, test_rec_rows, _, test_extra = eval_loader(model, test_loader, device, candidate)
     run_name = f"{candidate}_fold{fold}_seed{seed_index}"
     run_path = RUN_DIR / run_name
     run_path.mkdir(parents=True, exist_ok=True)
@@ -1191,6 +1504,9 @@ def train_model(candidate: str, cfg: dict[str, Any], args: argparse.Namespace, s
             "candidate_config": cfg,
             "factor_columns": FACTOR_COLUMNS,
             "local_map_names": LOCAL_MAP_NAMES,
+            "quality_subtype_names": QUALITY_SUBTYPE_NAMES,
+            "quality_subtype_class": QUALITY_SUBTYPE_CLASS,
+            "boundary_family_names": BOUNDARY_FAMILY_NAMES,
             "input_contract": "waveform-derived channels only; factors are teacher targets only",
             "model_kind": "EventFactorizedSQIConformer",
             "no_warm_start": True,
@@ -1200,7 +1516,24 @@ def train_model(candidate: str, cfg: dict[str, Any], args: argparse.Namespace, s
     pd.DataFrame(pretrain_logs + logs).to_csv(run_path / "train_log.csv", index=False)
     if gradient_rows:
         pd.DataFrame(gradient_rows).to_csv(run_path / "gradient_audit.csv", index=False)
-    np.savez_compressed(run_path / "test_predictions.npz", probs=test_probs, factor_pred=test_factor, factor_true=test_true_factor, y=test_y, artifact_presence=test_artifact)
+    np.savez_compressed(
+        run_path / "test_predictions.npz",
+        probs=test_probs,
+        factor_pred=test_factor,
+        factor_true=test_true_factor,
+        y=test_y,
+        artifact_presence=test_artifact,
+        **{f"test_{k}": v for k, v in test_extra.items()},
+    )
+    np.savez_compressed(
+        run_path / "val_predictions.npz",
+        probs=val_probs,
+        factor_pred=val_factor,
+        factor_true=val_true_factor,
+        y=val_y,
+        artifact_presence=val_artifact,
+        **{f"val_{k}": v for k, v in val_extra.items()},
+    )
     return {
         "candidate": candidate,
         "fold": int(fold),

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import math
 import textwrap
+import string
 from pathlib import Path
 from typing import Any
 
@@ -17,7 +18,7 @@ import seaborn as sns
 import torch
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Patch, Rectangle
-from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.colors import LinearSegmentedColormap, Normalize, TwoSlopeNorm
 from scipy.signal import butter, filtfilt
 from sklearn.metrics import auc, roc_curve
 from sklearn.pipeline import Pipeline
@@ -54,10 +55,10 @@ FIGURE_NAMES = [
 TOKENS = {
     "surface": "#FFFFFF",
     "panel": "#FFFFFF",
-    "ink": "#1F2430",
-    "muted": "#6F768A",
-    "grid": "#E7E9EF",
-    "axis": "#B8BDC8",
+    "ink": "#272727",
+    "muted": "#767676",
+    "grid": "#E6E6E6",
+    "axis": "#4D4D4D",
 }
 NEUTRAL = {
     "xlight": "#F4F5F7",
@@ -74,17 +75,17 @@ COLORS = {
     "pink": {"xlight": "#FCDAD6", "light": "#F5BACC", "base": "#F390CA", "mid": "#BD569B", "dark": "#8A3A6F"},
 }
 SCI = {
-    "purple": "#1F4E79",
-    "purple_light": "#9FBDD3",
-    "gold": "#8B1E3F",
-    "gold_light": "#D99AAA",
+    "purple": "#0F4D92",
+    "purple_light": "#D9E7F5",
+    "gold": "#B64342",
+    "gold_light": "#F6CFCB",
     "teal": "#247C7A",
     "red": "#A23B52",
 }
 SCI_BLUE = SCI["purple"]
-SCI_BLUE_LIGHT = "#D7E4EF"
+SCI_BLUE_LIGHT = SCI["purple_light"]
 SCI_RED = SCI["gold"]
-SCI_RED_LIGHT = "#EAC4CC"
+SCI_RED_LIGHT = SCI["gold_light"]
 SCI_NEUTRAL = "#4A535D"
 CMAP_BLUE = LinearSegmentedColormap.from_list("sqi_blue", ["#FFFFFF", SCI_BLUE_LIGHT, SCI_BLUE])
 CMAP_RED = LinearSegmentedColormap.from_list("sqi_red", ["#FFFFFF", SCI_RED_LIGHT, SCI_RED])
@@ -93,7 +94,7 @@ CMAP_DIVERGE = LinearSegmentedColormap.from_list("sqi_diverge", [SCI_RED, "#FFFF
 
 def use_theme() -> None:
     sns.set_theme(
-        style="whitegrid",
+        style="white",
         rc={
             "figure.facecolor": TOKENS["surface"],
             "figure.edgecolor": "none",
@@ -102,15 +103,19 @@ def use_theme() -> None:
             "axes.facecolor": TOKENS["panel"],
             "axes.edgecolor": TOKENS["axis"],
             "axes.labelcolor": TOKENS["ink"],
-            "axes.grid": True,
+            "axes.grid": False,
             "grid.color": TOKENS["grid"],
             "grid.linewidth": 0.8,
             "font.family": "sans-serif",
-            "font.sans-serif": ["Aptos", "Inter", "Segoe UI", "DejaVu Sans", "Arial", "sans-serif"],
+            "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans", "Liberation Sans", "sans-serif"],
             "font.monospace": ["Consolas", "DejaVu Sans Mono", "monospace"],
+            "font.size": 8,
             "axes.unicode_minus": False,
+            "svg.fonttype": "none",
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
+            "axes.linewidth": 0.8,
+            "legend.frameon": False,
         },
     )
     plt.rcParams.update({"axes.spines.top": False, "axes.spines.right": False})
@@ -118,9 +123,25 @@ def use_theme() -> None:
 
 def finish(fig: plt.Figure, out_path: Path) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path.with_suffix(".svg"), format="svg", bbox_inches="tight")
     fig.savefig(out_path, format="pdf", bbox_inches="tight")
-    fig.savefig(out_path.with_suffix(".png"), format="png", dpi=300, bbox_inches="tight")
+    fig.savefig(out_path.with_suffix(".png"), format="png", dpi=450, bbox_inches="tight")
     plt.close(fig)
+
+
+def add_panel_label(ax: plt.Axes, label: str, *, x: float = -0.075, y: float = 1.055) -> None:
+    ax.text(
+        x,
+        y,
+        label,
+        transform=ax.transAxes,
+        ha="left",
+        va="bottom",
+        fontsize=9,
+        fontweight="bold",
+        color=TOKENS["ink"],
+        clip_on=False,
+    )
 
 
 def panel_header(ax: plt.Axes, text: str, *, x: float = 0.0, y: float = 1.045) -> None:
@@ -154,20 +175,27 @@ def metric_heatmap(
     fmt_signed: bool = False,
     cbar: bool = False,
 ) -> None:
+    cmap_obj = plt.get_cmap(cmap) if isinstance(cmap, str) else cmap
     sns.heatmap(
         data,
         ax=ax,
-        cmap=cmap,
+        cmap=cmap_obj,
         vmin=vmin,
         vmax=vmax,
         center=center,
         cbar=cbar,
         linewidths=0.7,
         linecolor="#FFFFFF",
-        annot=np.vectorize(lambda x: pct_label(float(x), signed=fmt_signed))(data.to_numpy()),
-        fmt="",
-        annot_kws={"fontsize": 8.2, "color": TOKENS["ink"]},
+        annot=False,
     )
+    norm = TwoSlopeNorm(vmin=vmin, vcenter=center, vmax=vmax) if center is not None else Normalize(vmin=vmin, vmax=vmax)
+    for i in range(data.shape[0]):
+        for j in range(data.shape[1]):
+            val = float(data.iat[i, j])
+            r, g, b, _ = cmap_obj(norm(val))
+            lum = 0.299 * r + 0.587 * g + 0.114 * b
+            color = "#FFFFFF" if lum < 0.42 else TOKENS["ink"]
+            ax.text(j + 0.5, i + 0.5, pct_label(val, signed=fmt_signed), ha="center", va="center", fontsize=8.2, color=color)
     ax.tick_params(axis="x", rotation=0, labelsize=8.5)
     ax.tick_params(axis="y", rotation=0, labelsize=8.5)
     ax.set_xlabel("")
@@ -175,19 +203,26 @@ def metric_heatmap(
 
 
 def rank_heatmap(ax: plt.Axes, data: pd.DataFrame, *, cmap: str | Any) -> None:
+    cmap_obj = plt.get_cmap(cmap) if isinstance(cmap, str) else cmap
     sns.heatmap(
         data,
         ax=ax,
-        cmap=cmap,
+        cmap=cmap_obj,
         vmin=1,
         vmax=max(2, float(np.nanmax(data.to_numpy(dtype=float)))),
         cbar=False,
         linewidths=0.7,
         linecolor="#FFFFFF",
-        annot=data.astype(int).astype(str).to_numpy(),
-        fmt="",
-        annot_kws={"fontsize": 8.2, "color": TOKENS["ink"]},
+        annot=False,
     )
+    norm = Normalize(vmin=1, vmax=max(2, float(np.nanmax(data.to_numpy(dtype=float)))))
+    for i in range(data.shape[0]):
+        for j in range(data.shape[1]):
+            val = float(data.iat[i, j])
+            r, g, b, _ = cmap_obj(norm(val))
+            lum = 0.299 * r + 0.587 * g + 0.114 * b
+            color = "#FFFFFF" if lum < 0.42 else TOKENS["ink"]
+            ax.text(j + 0.5, i + 0.5, f"{int(val)}", ha="center", va="center", fontsize=8.2, color=color)
     ax.tick_params(axis="x", rotation=0, labelsize=8.5)
     ax.tick_params(axis="y", rotation=0, labelsize=8.5)
     ax.set_xlabel("")
@@ -245,10 +280,10 @@ def draw_arrow(ax: plt.Axes, a: tuple[float, float], b: tuple[float, float], *, 
 
 
 def fig_01_pipeline(out_dir: Path) -> None:
-    fig, ax = plt.subplots(figsize=(11.7, 6.0))
+    fig, ax = plt.subplots(figsize=(11.7, 4.6))
     ax.set_axis_off()
     ax.set_xlim(0, 11.55)
-    ax.set_ylim(0, 6.1)
+    ax.set_ylim(1.45, 6.0)
 
     nodes = {
         "paper_labels": (1.15, 5.2, "paper labels\nSet-a + Set-b"),
@@ -336,7 +371,6 @@ def fig_01_pipeline(out_dir: Path) -> None:
     ax.plot([0.35, 10.25], [4.65, 4.65], color=NEUTRAL["light"], linewidth=1.0)
     ax.text(0.35, 5.78, "paper branch unavailable in this repository", fontsize=9.0, color=NEUTRAL["dark"], ha="left")
     ax.text(0.35, 4.48, "implemented 12-lead paper-aligned branch", fontsize=9.0, color=TOKENS["ink"], ha="left")
-    ax.text(0.55, 0.72, "Dashed nodes/arrows indicate paper resources replaced by a Set-a-only protocol; solid path is the complete 12-lead rerun.", fontsize=8.4, color=TOKENS["muted"])
     finish(fig, out_dir / "fig_01_reproduction_pipeline.pdf")
 
 
@@ -366,7 +400,7 @@ def fig_02_noise_examples(out_dir: Path, artifacts_dir: Path) -> None:
     for ax, noise, color, title in zip(
         axes,
         ["em", "ma"],
-        [SCI["purple"], SCI["gold"]],
+        [SCI_BLUE, SCI_RED],
         ["Electrode motion (em)", "Muscle artifact (ma)"],
     ):
         noisy, _ = load_case(cases_dir, noisy_ids[noise])
@@ -376,7 +410,9 @@ def fig_02_noise_examples(out_dir: Path, artifacts_dir: Path) -> None:
         ax.text(0.01, 0.94, f"record {source}, lead {lead}, SNR {SNR_DB:.0f} dB", transform=ax.transAxes, ha="left", va="top", fontsize=8.3, color=TOKENS["muted"])
         ax.set_ylabel("mV")
         ax.legend(loc="upper right", frameon=False, fontsize=8.4, ncol=2)
-        ax.grid(True, axis="x", color=TOKENS["grid"])
+        ax.grid(False)
+    for label, ax in zip("ab", axes):
+        add_panel_label(ax, label)
     axes[-1].set_xlabel("Time (s)")
     finish(fig, out_dir / "fig_02_noise_generation_examples.pdf")
 
@@ -406,8 +442,8 @@ def fig_03_bassqi_examples(out_dir: Path, artifacts_dir: Path) -> None:
     fig, axes = plt.subplots(2, 1, figsize=(8.8, 4.9), sharex=True)
     fig.subplots_adjust(hspace=0.30, top=0.93, bottom=0.13)
     for ax, row, label, color in [
-        (axes[0], high, "High basSQI", SCI["purple"]),
-        (axes[1], low, "Low basSQI", SCI["gold"]),
+        (axes[0], high, "High basSQI", SCI_BLUE),
+        (axes[1], low, "Low basSQI", SCI_RED),
     ]:
         sig, leads = load_case(cases_dir, str(row["record_id"]))
         li = leads.index(str(row["lead"]))
@@ -420,6 +456,8 @@ def fig_03_bassqi_examples(out_dir: Path, artifacts_dir: Path) -> None:
         ax.set_title(f"{label} = {float(row['basSQI']):.4f}", loc="left", fontsize=10, fontweight="semibold")
         ax.set_ylabel("mV")
         ax.legend(loc="upper right", frameon=False, fontsize=8.0, ncol=2, handlelength=1.6)
+    for label, ax in zip("ab", axes):
+        add_panel_label(ax, label)
     axes[-1].set_xlabel("Time (s)")
     finish(fig, out_dir / "fig_03_bassqi_examples.pdf")
 
@@ -471,14 +509,14 @@ def fig_04_roc(out_dir: Path, artifacts_dir: Path) -> None:
     auc_svm_label = float(metrics.loc[metrics["model"].eq("singlelead_weak_svm"), "test_AUC"].iloc[0])
     auc_mlp_label = float(metrics.loc[metrics["model"].eq("singlelead_weak_lm_mlp_J5"), "test_AUC"].iloc[0])
 
-    fig, ax = plt.subplots(figsize=(6.6, 5.4))
+    fig, ax = plt.subplots(figsize=(4.15, 3.4))
     y = scores["y_test"]
     for name, key, thr, color, auc_label in [
         ("MLP", "mlp", scores["mlp_threshold"], SCI_BLUE, auc_mlp_label),
         ("SVM", "svm", scores["svm_threshold"], SCI_RED, auc_svm_label),
     ]:
         fpr, tpr, _ = roc_curve(y, scores[key])
-        ax.plot(fpr, tpr, color=color, linewidth=1.2, label=f"{name} AUC {auc_label:.3f}")
+        ax.plot(fpr, tpr, color=color, linewidth=1.25, drawstyle="steps-post", label=f"{name} AUC {auc_label:.3f}")
         pred = (scores[key] > thr).astype(int)
         fp = int(((pred == 1) & (y == 0)).sum())
         tn = int(((pred == 0) & (y == 0)).sum())
@@ -486,16 +524,44 @@ def fig_04_roc(out_dir: Path, artifacts_dir: Path) -> None:
         fn = int(((pred == 0) & (y == 1)).sum())
         op_fpr = fp / max(1, fp + tn)
         op_tpr = tp / max(1, tp + fn)
-        ax.scatter([op_fpr], [op_tpr], s=46, facecolors=TOKENS["panel"], edgecolors=color, linewidths=1.4, zorder=4)
-    ax.plot([0, 1], [0, 1], color=NEUTRAL["mid"], linestyle=":", linewidth=1.0)
-    ax.set_xlabel("False positive rate")
-    ax.set_ylabel("True positive rate")
-    ax.set_xlim(0, 1)
-    ax.set_ylim(0, 1.02)
+        ax.scatter([op_fpr], [op_tpr], s=34, facecolors=TOKENS["panel"], edgecolors=color, linewidths=1.15, zorder=4)
+    ax.plot([0, 1], [0, 1], color=NEUTRAL["mid"], linestyle=(0, (1.2, 2.0)), linewidth=0.8, zorder=0)
+    ax.set_xlabel("1-Sp", fontsize=8.0)
+    ax.set_ylabel("Se", fontsize=8.0)
+    ax.set_xlim(-0.005, 1.005)
+    ax.set_ylim(-0.005, 1.02)
+    ax.set_aspect("equal", adjustable="box")
+    ax.set_xticks([0.0, 0.25, 0.5, 0.75, 1.0])
+    ax.set_yticks([0.0, 0.25, 0.5, 0.75, 1.0])
+    ax.xaxis.set_major_formatter(mticker.FormatStrFormatter("%.2g"))
+    ax.yaxis.set_major_formatter(mticker.FormatStrFormatter("%.2g"))
+    ax.tick_params(axis="both", labelsize=7.3, length=3.0, width=0.75)
+    ax.grid(color=TOKENS["grid"], linewidth=0.45, alpha=0.72)
     handles, labels = ax.get_legend_handles_labels()
-    handles.append(Line2D([], [], marker="o", linestyle="None", markerfacecolor=TOKENS["panel"], markeredgecolor=TOKENS["ink"], label="validation-selected operating point"))
-    labels.append("validation-selected operating point")
-    ax.legend(handles=handles, labels=labels, loc="lower right", frameon=False, fontsize=8.8)
+    handles.append(
+        Line2D(
+            [],
+            [],
+            marker="o",
+            linestyle="None",
+            markersize=4.8,
+            markerfacecolor=TOKENS["panel"],
+            markeredgecolor=TOKENS["ink"],
+            markeredgewidth=1.1,
+        )
+    )
+    labels.append("validation point")
+    ax.legend(
+        handles=handles,
+        labels=labels,
+        loc="lower right",
+        frameon=False,
+        fontsize=7.0,
+        handlelength=1.55,
+        handletextpad=0.48,
+        labelspacing=0.32,
+        borderaxespad=0.22,
+    )
     finish(fig, out_dir / "fig_04_single_lead_proxy_roc.pdf")
 
 
@@ -507,6 +573,8 @@ def fig_05a_single_sqi(out_dir: Path, reports_dir: Path) -> None:
     ranks = df[["paper_rank", "run_rank"]].rename(columns={"paper_rank": "Paper rank", "run_rank": "Run rank"}).astype(int)
 
     fig, axes = plt.subplots(1, 3, figsize=(9.0, 4.8), gridspec_kw={"width_ratios": [2.15, 1.2, 1.65], "wspace": 0.08})
+    for label, ax in zip("abc", axes):
+        add_panel_label(ax, label, y=1.08)
     metric_heatmap(axes[0], acc, cmap=CMAP_BLUE, vmin=0.55, vmax=0.96)
     metric_heatmap(axes[1], delta, cmap=CMAP_DIVERGE, vmin=-0.18, vmax=0.08, center=0.0, fmt_signed=True)
     rank_heatmap(axes[2], ranks, cmap=sns.light_palette(NEUTRAL["dark"], as_cmap=True))
@@ -531,6 +599,8 @@ def fig_05b_combo(out_dir: Path, reports_dir: Path) -> None:
     ranks = df[["paper_rank", "run_rank"]].rename(columns={"paper_rank": "Paper rank", "run_rank": "Run rank"}).astype(int)
 
     fig, axes = plt.subplots(1, 4, figsize=(11.7, 4.55), gridspec_kw={"width_ratios": [2.05, 1.15, 1.55, 3.25], "wspace": 0.08})
+    for label, ax in zip("abcd", axes):
+        add_panel_label(ax, label, y=1.08)
     metric_heatmap(axes[0], acc, cmap=CMAP_BLUE, vmin=0.89, vmax=0.955)
     metric_heatmap(axes[1], delta, cmap=CMAP_DIVERGE, vmin=-0.05, vmax=0.01, center=0.0, fmt_signed=True)
     rank_heatmap(axes[2], ranks, cmap=sns.light_palette(NEUTRAL["dark"], as_cmap=True))
@@ -574,7 +644,7 @@ def fig_06_fsqi(out_dir: Path, artifacts_dir: Path) -> None:
     )
     rec = rec[rec["group"].ne("other")].copy()
     eps = 1e-4
-    rec["fSQI_plot"] = np.log10(rec["fSQI"].astype(float) + eps)
+    rec["fSQI_plot"] = rec["fSQI"].astype(float).clip(lower=eps)
     order = ["original acceptable", "original unacceptable", "synthetic poor"]
     palette = {
         "original acceptable": SCI_BLUE,
@@ -582,6 +652,7 @@ def fig_06_fsqi(out_dir: Path, artifacts_dir: Path) -> None:
         "synthetic poor": SCI_NEUTRAL,
     }
     fig, ax = plt.subplots(figsize=(8.2, 5.0))
+    add_panel_label(ax, "a")
     sns.boxplot(
         data=rec,
         x="group",
@@ -600,14 +671,25 @@ def fig_06_fsqi(out_dir: Path, artifacts_dir: Path) -> None:
         vals = rec.loc[rec["group"].eq(group), "fSQI"].to_numpy(dtype=float)
         sample = vals if len(vals) <= 700 else rng.choice(vals, 700, replace=False)
         x = rng.normal(i, 0.055, size=len(sample))
-        ax.scatter(x, np.log10(sample + eps), s=7, facecolors=palette[group], edgecolors="none", alpha=0.22)
+        ax.scatter(x, np.clip(sample, eps, None), s=7, facecolors=palette[group], edgecolors="none", alpha=0.22)
         med = float(np.median(vals))
-        ax.text(i, np.log10(med + eps) + 0.12, f"median {med:.4f}", ha="center", va="bottom", fontsize=8.4, color=TOKENS["ink"])
+        q75 = float(np.quantile(vals, 0.75))
+        label_y = min(0.35, max(med * 1.45, q75 * 1.08, 0.0018))
+        ax.text(
+            i,
+            label_y,
+            f"median {med:.4f}",
+            ha="center",
+            va="bottom",
+            fontsize=8.2,
+            color=TOKENS["ink"],
+            bbox={"facecolor": "#FFFFFF", "edgecolor": "none", "alpha": 0.72, "pad": 0.8},
+        )
     ax.set_xlabel("")
-    ax.set_ylabel("Record mean fSQI (log10 scale)")
-    ticks = np.asarray([0.0, 0.001, 0.01, 0.1, 1.0])
-    ax.set_yticks(np.log10(ticks + eps), ["0", "0.001", "0.01", "0.1", "1"])
-    ax.set_ylim(np.log10(eps), np.log10(1.0 + eps) + 0.08)
+    ax.set_ylabel("Record mean fSQI")
+    ax.set_yscale("log")
+    ax.set_yticks([1e-4, 1e-3, 1e-2, 1e-1, 1.0], ["0.0001", "0.001", "0.01", "0.1", "1"])
+    ax.set_ylim(1e-4, 1.15)
     ax.tick_params(axis="x", labelrotation=8)
     finish(fig, out_dir / "fig_06_fsqi_by_mechanism.pdf")
 
@@ -623,6 +705,8 @@ def fig_07_mitbih(out_dir: Path, artifacts_dir: Path) -> None:
     df = pd.DataFrame(rows)
     order = ["MLP", "SVM"]
     fig, axes = plt.subplots(1, 2, figsize=(10.5, 3.85), gridspec_kw={"width_ratios": [1.25, 1.0], "wspace": 0.28})
+    for label, ax_panel in zip("ab", axes):
+        add_panel_label(ax_panel, label, y=1.10)
     ax = axes[0]
     left = np.zeros(len(order))
     status_order = ["accepted", "rejected"]
@@ -687,6 +771,8 @@ def fig_08_runtime(out_dir: Path, artifacts_dir: Path) -> None:
     share = qrs / total
 
     fig, axes = plt.subplots(1, 2, figsize=(10.3, 3.2), gridspec_kw={"width_ratios": [1.0, 1.35], "wspace": 0.34})
+    for label, ax_panel in zip("ab", axes):
+        add_panel_label(ax_panel, label, y=1.10)
     ax = axes[0]
     detectors = pd.DataFrame(
         [
@@ -712,7 +798,19 @@ def fig_08_runtime(out_dir: Path, artifacts_dir: Path) -> None:
     ax.set_xlabel("Per-lead mean time (ms)")
     ax.set_ylabel("")
     ax.set_xlim(0, max(detectors["run_ms"].max(), detectors["paper_ms"].max()) * 1.35)
-    ax.text(0.02, 0.04, "bar: this run; diamond: paper Table 8", transform=ax.transAxes, ha="left", va="bottom", fontsize=8.0, color=TOKENS["muted"])
+    ax.legend(
+        handles=[
+            Patch(facecolor=SCI_BLUE_LIGHT, edgecolor=SCI_BLUE, label="this run"),
+            Line2D([], [], marker="D", linestyle="None", markerfacecolor=TOKENS["panel"], markeredgecolor=TOKENS["ink"], label="paper Table 8"),
+        ],
+        loc="lower right",
+        bbox_to_anchor=(1.0, 1.02),
+        ncol=2,
+        frameon=False,
+        fontsize=7.8,
+        handlelength=1.2,
+        borderaxespad=0.0,
+    )
     panel_header(ax, "detector comparison", y=1.08)
 
     ax2 = axes[1]
@@ -728,7 +826,7 @@ def fig_08_runtime(out_dir: Path, artifacts_dir: Path) -> None:
         if value <= 0:
             continue
         ax2.barh(["12-lead"], [value], left=[left], color=fill, edgecolor=edge, linewidth=1.0, label=f"{label} {value:.1f} ms")
-        if value > 8:
+        if label == "QRS":
             ax2.text(left + value / 2, 0, f"{label}\n{value:.1f}", ha="center", va="center", fontsize=8.5, color=TOKENS["ink"])
         left += value
     ax2.text(qrs / 2, -0.36, f"QRS share {share:.1%}", ha="center", va="top", fontsize=8.6, color=TOKENS["ink"], clip_on=False)
@@ -803,8 +901,8 @@ def fig_A1_warmup(out_dir: Path, artifacts_dir: Path) -> None:
     fig, axes = plt.subplots(2, 1, figsize=(8.8, 4.8), sharex=True, sharey=True)
     fig.subplots_adjust(hspace=0.28, top=0.93, bottom=0.13)
     configs = [
-        (axes[0], "No warm-up", ex["det0"], SCI["gold"]),
-        (axes[1], "8 s warm-up", ex["det8"], SCI["purple"]),
+        (axes[0], "No warm-up", ex["det0"], SCI_RED),
+        (axes[1], "8 s warm-up", ex["det8"], SCI_BLUE),
     ]
     for ax, label, det, color in configs:
         ax.plot(t, x, color=NEUTRAL["dark"], linewidth=0.8, label="ECG")
@@ -829,6 +927,8 @@ def fig_A1_warmup(out_dir: Path, artifacts_dir: Path) -> None:
         ax.legend(loc="upper right", frameon=False, fontsize=8.4)
         ax.set_ylabel("mV")
         ax.set_xlim(0, 10)
+    for label, ax in zip("ab", axes):
+        add_panel_label(ax, label)
     axes[-1].set_xlabel("Time (s)")
     finish(fig, out_dir / "fig_A1_eplimited_warmup.pdf")
 

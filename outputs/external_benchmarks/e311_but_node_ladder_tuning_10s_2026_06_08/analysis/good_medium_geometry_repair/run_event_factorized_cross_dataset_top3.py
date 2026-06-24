@@ -77,6 +77,16 @@ def ensure_dirs() -> None:
     CROSS_RUN_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def configure_outputs(tag: str) -> None:
+    global CROSS_OUT, CROSS_REPORT, CROSS_RUN_DIR
+    clean = "".join(ch if ch.isalnum() or ch in {"_", "-"} else "_" for ch in str(tag)).strip("_")
+    if not clean:
+        return
+    CROSS_OUT = ANALYSIS_DIR / f"event_xds_top3_{clean}"
+    CROSS_REPORT = REPORT_DIR / "event_factorized_sqi_conformer" / f"event_factorized_cross_dataset_top3_{clean}_report.md"
+    CROSS_RUN_DIR = OUT_ROOT / "runs" / f"event_xds_top3_{clean}"
+
+
 def split_groups_stratified(frame: pd.DataFrame, seed: int) -> np.ndarray:
     """Assign train/val/test by source_idx groups, with class balance as far as possible."""
 
@@ -407,7 +417,7 @@ def write_report(summary: pd.DataFrame, metrics_path: Path, records_path: Path, 
         "- Scope: external-only experiment; no `src/sqi_pipeline` changes.",
         "- Formal input: waveform-derived channels only.",
         "- Factor/SQI targets: training teacher/diagnostic only, not inference input.",
-        "- Top-3 definition: pooled clean BUT internal ranking from Event-Factorized full report: `E1`, `E0`, `E2`.",
+        "- Candidate definition: supplied phase/candidate list; checkpoints are trained from scratch.",
         "",
         "## Protocols",
         "",
@@ -429,17 +439,39 @@ def write_report(summary: pd.DataFrame, metrics_path: Path, records_path: Path, 
     CROSS_REPORT.write_text("\n".join(report), encoding="utf-8")
 
 
+def parse_candidate_specs(spec: str) -> list[tuple[str, str]]:
+    text = str(spec).strip()
+    if not text:
+        return list(TOP3)
+    out: list[tuple[str, str]] = []
+    for item in text.split(","):
+        part = item.strip()
+        if not part:
+            continue
+        if ":" in part:
+            stage, candidate = part.split(":", 1)
+        else:
+            stage, candidate = "phase1", part
+        out.append((stage.strip(), candidate.strip()))
+    if not out:
+        raise ValueError("empty candidate specs")
+    return out
+
+
 def run(args: argparse.Namespace) -> None:
     ensure_dirs()
-    ptb_protocol = materialize_ptb_protocol(seed=int(args.ptb_split_seed), force=bool(args.force_protocol))
+    ptb_protocol = Path(args.ptb_protocol) if str(args.ptb_protocol).strip() else materialize_ptb_protocol(seed=int(args.ptb_split_seed), force=bool(args.force_protocol))
+    if not (ptb_protocol / "original_region_atlas.csv").exists() or not (ptb_protocol / "signals.npz").exists():
+        raise FileNotFoundError(f"invalid PTB protocol: {ptb_protocol}")
     but_protocol = Path(args.but_protocol)
     seeds = [int(args.seed) + 1000 * i for i in range(int(args.seeds))]
+    candidate_specs = parse_candidate_specs(str(args.candidate_specs))
     metric_rows: list[dict[str, Any]] = []
     record_rows: list[dict[str, Any]] = []
     recovery_rows: list[dict[str, Any]] = []
 
     for seed_index, seed in enumerate(seeds):
-        for stage, candidate in TOP3:
+        for stage, candidate in candidate_specs:
             cfg = EVENT.candidate_grid(stage, int(seed))[candidate]
             cfg["stage"] = stage
             for direction, train_protocol, test_protocol in [
@@ -468,7 +500,10 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--stage", type=str, default="run", choices=["materialize_protocol", "run"])
     parser.add_argument("--ptb-split-seed", type=int, default=20260620)
+    parser.add_argument("--ptb-protocol", type=str, default="", help="Use an existing PTB synthetic protocol instead of materializing the legacy top3 bank.")
     parser.add_argument("--but-protocol", type=str, default=str(DEFAULT_BUT_PROTOCOL))
+    parser.add_argument("--experiment-tag", type=str, default="", help="Suffix output/report/run directories so custom protocols do not overwrite legacy outputs.")
+    parser.add_argument("--candidate-specs", type=str, default="", help="Comma list like phase1:E4_query_highres_local_art,phase3:P2_ecg_beat_rhythm_mask. Defaults to legacy top3.")
     parser.add_argument("--force-protocol", action="store_true")
     parser.add_argument("--seed", type=int, default=20260620)
     parser.add_argument("--seeds", type=int, default=1)
@@ -482,6 +517,7 @@ def main() -> None:
     parser.add_argument("--max-cross-rows", type=int, default=0)
     parser.add_argument("--max-cross-all-rows", type=int, default=0)
     args = parser.parse_args()
+    configure_outputs(str(args.experiment_tag))
     ensure_dirs()
     if args.stage == "materialize_protocol":
         print(materialize_ptb_protocol(seed=int(args.ptb_split_seed), force=bool(args.force_protocol)))

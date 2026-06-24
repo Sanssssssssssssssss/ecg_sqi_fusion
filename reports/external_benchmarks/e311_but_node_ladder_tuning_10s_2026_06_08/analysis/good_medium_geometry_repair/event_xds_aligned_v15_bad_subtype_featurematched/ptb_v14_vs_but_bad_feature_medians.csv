@@ -1,0 +1,13 @@
+feature,group,median
+baseline_step,BUT keep bad,0.027805033350936002
+baseline_step,PTB v14 bad,0.0541030652821064
+qrs_visibility,BUT keep bad,0.2462702383570051
+qrs_visibility,PTB v14 bad,0.9919682741165161
+qrs_band_ratio,BUT keep bad,0.8095484326642155
+qrs_band_ratio,PTB v14 bad,3.045927047729492
+detector_agreement,BUT keep bad,0.4449944320643648
+detector_agreement,PTB v14 bad,0.0
+non_qrs_diff_p95,BUT keep bad,0.37469379901885985
+non_qrs_diff_p95,PTB v14 bad,2.6922411918640137
+band_30_45,BUT keep bad,0.10372041553682855
+band_30_45,PTB v14 bad,0.3018146753311157

@@ -1,0 +1,3 @@
+| cardinality | n_validation_records | best_val_Ac | one_validation_error | n_subsets_within_one_error | fraction_subsets_within_one_error | paper_subset_rank | paper_gap_to_best_val_Ac | interpretation              |
+| ----------- | -------------------- | ----------- | -------------------- | -------------------------- | --------------------------------- | ----------------- | ------------------------ | --------------------------- |
+| 5           | 232                  | 0.961207    | 0.00431034           | 5                          | 0.238095                          | 6                 | 0.00862069               | changed_selection_structure |

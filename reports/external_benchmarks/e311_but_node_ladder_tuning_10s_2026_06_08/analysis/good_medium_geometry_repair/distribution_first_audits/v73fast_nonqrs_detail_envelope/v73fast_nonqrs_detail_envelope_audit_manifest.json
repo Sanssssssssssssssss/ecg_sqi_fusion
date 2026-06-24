@@ -1,0 +1,10 @@
+{
+  "ptb_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v73fast_nonqrs_detail_envelope\\protocol_v73fast_nonqrs_detail_envelope_pc1500_s20260674",
+  "but_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_protocols\\margin_ge_5s_keep_outlier_drop_mediumlike_bad_seed20260623",
+  "figures": {
+    "shared_pca": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\distribution_first_audits\\v73fast_nonqrs_detail_envelope\\v73fast_nonqrs_detail_envelope_shared_pca_but_vs_ptb.png",
+    "feature_cdf": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\distribution_first_audits\\v73fast_nonqrs_detail_envelope\\v73fast_nonqrs_detail_envelope_key_feature_cdf_overlap.png",
+    "waveforms": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\distribution_first_audits\\v73fast_nonqrs_detail_envelope\\v73fast_nonqrs_detail_envelope_representative_waveforms_by_label.png"
+  },
+  "feature_gap_csv": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\distribution_first_audits\\v73fast_nonqrs_detail_envelope\\v73fast_nonqrs_detail_envelope_feature_median_gap.csv"
+}
