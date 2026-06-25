@@ -1,0 +1,40 @@
+{
+  "protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v81_feature_transport\\protocol_v111_large_hybrid_coverage_v108legacy_v109coverage_s20260740",
+  "but_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_protocols\\margin_ge_5s_keep_outlier_drop_mediumlike_bad_seed20260623_v37subtype_fixed",
+  "v108_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v81_feature_transport\\protocol_v108_legacy_large_anchor_direct_v101x4_cpa8m10b24_s20260739",
+  "v109_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v81_feature_transport\\protocol_v109_large_anchor_coverage_repair_v101x4_cpa8m10b48_s20260738",
+  "rows": 13968,
+  "source_counts": {
+    "v109": 9680,
+    "v108": 4288
+  },
+  "class_counts": {
+    "bad": 6000,
+    "medium": 4184,
+    "good": 3784
+  },
+  "subtype_metric_summary": {
+    "bad": {
+      "median_rbf_mmd": 1.3302886966826801,
+      "median_sliced_wasserstein": 9.063852476267627,
+      "median_quantile_loss": 6.228018940686548,
+      "median_domain_auc": 1.0,
+      "median_pca_density_overlap": 0.0
+    },
+    "good": {
+      "median_rbf_mmd": 0.36780027945257043,
+      "median_sliced_wasserstein": 1.1476398165863864,
+      "median_quantile_loss": 1.1591278088899568,
+      "median_domain_auc": 1.0,
+      "median_pca_density_overlap": 0.2835420188897505
+    },
+    "medium": {
+      "median_rbf_mmd": 0.24536126606419154,
+      "median_sliced_wasserstein": 0.6223597806522232,
+      "median_quantile_loss": 0.5409994329277796,
+      "median_domain_auc": 1.0,
+      "median_pca_density_overlap": 0.3583872640661858
+    }
+  },
+  "report_dir": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\v111_large_hybrid_coverage"
+}

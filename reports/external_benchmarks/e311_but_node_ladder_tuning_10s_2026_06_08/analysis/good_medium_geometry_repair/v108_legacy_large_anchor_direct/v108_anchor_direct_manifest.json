@@ -1,0 +1,89 @@
+{
+  "protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v81_feature_transport\\protocol_v108_legacy_large_anchor_direct_v101x4_cpa8m10b24_s20260739",
+  "but_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_protocols\\margin_ge_5s_keep_outlier_drop_mediumlike_bad_seed20260623_v37subtype_fixed",
+  "carrier_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\raw_ptbxl_carrier_protocols\\raw_ptbxl_lead1_clean_noise_notes_max9000_seed20260680",
+  "reference_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v99_boundary_repair\\protocol_v101_boundary_anchor_v95plus_hardgm_s20260726",
+  "rows": 13968,
+  "scale": 4,
+  "candidates_per_anchor": 8,
+  "medium_candidates_per_anchor": 10,
+  "bad_candidates_per_anchor": 24,
+  "bad_mode": "legacy",
+  "mmd_repair_rounds": 1,
+  "class_counts": {
+    "bad": 6000,
+    "medium": 4184,
+    "good": 3784
+  },
+  "split_counts": [
+    {
+      "split": "test",
+      "class_name": "bad",
+      "n": 904
+    },
+    {
+      "split": "test",
+      "class_name": "good",
+      "n": 572
+    },
+    {
+      "split": "test",
+      "class_name": "medium",
+      "n": 624
+    },
+    {
+      "split": "train",
+      "class_name": "bad",
+      "n": 4200
+    },
+    {
+      "split": "train",
+      "class_name": "good",
+      "n": 2640
+    },
+    {
+      "split": "train",
+      "class_name": "medium",
+      "n": 2920
+    },
+    {
+      "split": "val",
+      "class_name": "bad",
+      "n": 896
+    },
+    {
+      "split": "val",
+      "class_name": "good",
+      "n": 572
+    },
+    {
+      "split": "val",
+      "class_name": "medium",
+      "n": 640
+    }
+  ],
+  "subtype_metric_summary": {
+    "bad": {
+      "median_rbf_mmd": 1.3555509513130612,
+      "median_sliced_wasserstein": 9.273827655173179,
+      "median_quantile_loss": 6.228019121351252,
+      "median_domain_auc": 1.0,
+      "median_pca_density_overlap": 0.0
+    },
+    "good": {
+      "median_rbf_mmd": 0.36778118603372395,
+      "median_sliced_wasserstein": 1.026350390871051,
+      "median_quantile_loss": 0.9185053148106957,
+      "median_domain_auc": 1.0,
+      "median_pca_density_overlap": 0.27835516083550155
+    },
+    "medium": {
+      "median_rbf_mmd": 0.25365196642179655,
+      "median_sliced_wasserstein": 0.6363966527472286,
+      "median_quantile_loss": 0.5343102647238915,
+      "median_domain_auc": 1.0,
+      "median_pca_density_overlap": 0.35739354320669203
+    }
+  },
+  "report_dir": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\v108_legacy_large_anchor_direct"
+}

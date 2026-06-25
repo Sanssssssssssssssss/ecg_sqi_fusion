@@ -765,6 +765,22 @@ def factor_loss(out: dict[str, torch.Tensor], batch: dict[str, torch.Tensor], de
     return torch.stack(losses).mean(), parts
 
 
+def class_weight_tensor(cfg: dict[str, Any], device: torch.device) -> torch.Tensor | None:
+    weights = cfg.get("class_weights")
+    if weights is None:
+        return None
+    if len(weights) != len(CLASS_TO_INT):
+        raise ValueError(f"class_weights must have {len(CLASS_TO_INT)} entries")
+    return torch.tensor([float(v) for v in weights], dtype=torch.float32, device=device)
+
+
+def class_nll(out: dict[str, torch.Tensor], y: torch.Tensor, cfg: dict[str, Any], device: torch.device) -> torch.Tensor:
+    weights = class_weight_tensor(cfg, device)
+    if bool(cfg.get("use_hierarchical_head", True)):
+        return F.nll_loss(out["logits"], y, weight=weights)
+    return F.cross_entropy(out["logits"], y, weight=weights)
+
+
 def hierarchical_nll(out: dict[str, torch.Tensor], y: torch.Tensor) -> torch.Tensor:
     return F.nll_loss(out["logits"], y)
 
@@ -899,7 +915,7 @@ def model_loss(model: nn.Module, batch: dict[str, torch.Tensor], cfg: dict[str, 
     x = batch["x"].to(device=device, dtype=torch.float32)
     y = batch["y"].to(device=device)
     out = model(x)
-    cls = hierarchical_nll(out, y) if bool(cfg.get("use_hierarchical_head", True)) else F.cross_entropy(out["logits"], y)
+    cls = class_nll(out, y, cfg, device)
     factor, factor_parts = factor_loss(out, batch, device)
     local = torch.zeros((), device=device)
     local_parts: dict[str, float] = {}
@@ -1192,7 +1208,7 @@ def gradient_snapshot(model: nn.Module, batch: dict[str, torch.Tensor], cfg: dic
     total, parts, out = model_loss(model, batch, cfg, device)
     x = batch["x"].to(device=device, dtype=torch.float32)
     y = batch["y"].to(device=device)
-    losses["class"] = hierarchical_nll(out, y) if bool(cfg.get("use_hierarchical_head", True)) else F.cross_entropy(out["logits"], y)
+    losses["class"] = class_nll(out, y, cfg, device)
     losses["factor"] = factor_loss(out, batch, device)[0]
     if bool(cfg.get("use_local_supervision", True)):
         losses["local"] = local_map_loss(out, x)[0]
@@ -1332,12 +1348,55 @@ def candidate_grid(stage: str, seed: int) -> dict[str, dict[str, Any]]:
             "E0_noquery_nohi_nolocal_noart": {**base, "use_queries": False, "use_highres_fusion": False, "use_local_supervision": False, "use_artifact_aux": False},
             "E1_query_only": {**base, "use_queries": True, "use_highres_fusion": False, "use_local_supervision": False, "use_artifact_aux": False},
             "E1_query_only_subtype_aux": {**base, "use_queries": True, "use_highres_fusion": False, "use_local_supervision": False, "use_artifact_aux": False, "subtype_weight": 0.18},
+            "E1_query_only_unified_subtype_tiny": {**base, "use_queries": True, "use_highres_fusion": False, "use_local_supervision": False, "use_artifact_aux": False, "use_unified_subtype_head": True, "subtype_weight": 0.05},
+            "E1_query_only_unified_subtype_low": {**base, "use_queries": True, "use_highres_fusion": False, "use_local_supervision": False, "use_artifact_aux": False, "use_unified_subtype_head": True, "subtype_weight": 0.10},
+            "E1_query_only_unified_subtype_low_lr1e4": {**base, "use_queries": True, "use_highres_fusion": False, "use_local_supervision": False, "use_artifact_aux": False, "use_unified_subtype_head": True, "subtype_weight": 0.10, "lr": 1.0e-4},
+            "E1_query_only_unified_subtype_low_lr15e4": {**base, "use_queries": True, "use_highres_fusion": False, "use_local_supervision": False, "use_artifact_aux": False, "use_unified_subtype_head": True, "subtype_weight": 0.10, "lr": 1.5e-4},
+            "E1_query_only_unified_subtype_low_lr75e5": {**base, "use_queries": True, "use_highres_fusion": False, "use_local_supervision": False, "use_artifact_aux": False, "use_unified_subtype_head": True, "subtype_weight": 0.10, "lr": 7.5e-5},
+            "E1_query_only_unified_subtype_mid": {**base, "use_queries": True, "use_highres_fusion": False, "use_local_supervision": False, "use_artifact_aux": False, "use_unified_subtype_head": True, "subtype_weight": 0.18},
             "E1_query_only_unified_subtype": {**base, "use_queries": True, "use_highres_fusion": False, "use_local_supervision": False, "use_artifact_aux": False, "use_unified_subtype_head": True, "subtype_weight": 0.28},
             "E2_query_highres": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": False, "use_artifact_aux": False},
             "E3_query_highres_local": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": False},
             "E4_query_highres_local_art": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True},
             "E4_query_highres_local_art_subtype_aux": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "subtype_weight": 0.18},
             "E4_query_highres_local_art_unified_subtype": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "use_unified_subtype_head": True, "subtype_weight": 0.28},
+            "E4_query_highres_local_art_unified_lowaux_lr15e4": {
+                **base,
+                "use_queries": True,
+                "use_highres_fusion": True,
+                "use_local_supervision": True,
+                "use_artifact_aux": True,
+                "use_unified_subtype_head": True,
+                "subtype_weight": 0.16,
+                "lr": 1.5e-4,
+            },
+            "E4_query_highres_local_art_unified_factorprotect_lr15e4": {
+                **base,
+                "use_queries": True,
+                "use_highres_fusion": True,
+                "use_local_supervision": True,
+                "use_artifact_aux": True,
+                "use_unified_subtype_head": True,
+                "factor_weight": 0.38,
+                "local_weight": 0.22,
+                "artifact_weight": 0.18,
+                "subtype_weight": 0.16,
+                "lr": 1.5e-4,
+            },
+            "E4_query_highres_local_art_unified_gmweighted_lr15e4": {
+                **base,
+                "use_queries": True,
+                "use_highres_fusion": True,
+                "use_local_supervision": True,
+                "use_artifact_aux": True,
+                "use_unified_subtype_head": True,
+                "factor_weight": 0.34,
+                "local_weight": 0.22,
+                "artifact_weight": 0.18,
+                "subtype_weight": 0.16,
+                "class_weights": [1.30, 1.12, 0.78],
+                "lr": 1.5e-4,
+            },
             "E4_query_highres_local_art_subtype_aux_lr1e4": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "subtype_weight": 0.18, "lr": 1.0e-4},
             "E4_query_highres_local_art_subtype_aux_lr15e4": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "subtype_weight": 0.18, "lr": 1.5e-4},
             "E4_query_highres_local_art_subtype_aux_lr75e5": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "subtype_weight": 0.18, "lr": 7.5e-5},
@@ -1369,6 +1428,37 @@ def candidate_grid(stage: str, seed: int) -> dict[str, dict[str, Any]]:
             "P2_ecg_beat_rhythm_mask_subtype_aux": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "pretrain_mode": "ecg_mask", "pretrain_epochs": 2, "subtype_weight": 0.18},
             "P2_ecg_beat_rhythm_mask_lowfactor_subtype": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "pretrain_mode": "ecg_mask", "pretrain_epochs": 2, "subtype_weight": 0.18, "factor_weight": 0.12},
             "P3_clean_noisy_physio_distill": {**base, "use_queries": True, "use_highres_fusion": True, "use_local_supervision": True, "use_artifact_aux": True, "pretrain_mode": "factorized_proxy", "pretrain_epochs": 2},
+            "P2_ecg_mask_unified_lowaux_v112": {
+                **base,
+                "use_queries": True,
+                "use_highres_fusion": True,
+                "use_local_supervision": True,
+                "use_artifact_aux": True,
+                "use_unified_subtype_head": True,
+                "pretrain_mode": "ecg_mask",
+                "pretrain_epochs": 2,
+                "factor_weight": 0.34,
+                "local_weight": 0.22,
+                "artifact_weight": 0.18,
+                "subtype_weight": 0.16,
+                "lr": 1.5e-4,
+            },
+            "P3_factorized_proxy_unified_gmweighted_v112": {
+                **base,
+                "use_queries": True,
+                "use_highres_fusion": True,
+                "use_local_supervision": True,
+                "use_artifact_aux": True,
+                "use_unified_subtype_head": True,
+                "pretrain_mode": "factorized_proxy",
+                "pretrain_epochs": 2,
+                "factor_weight": 0.34,
+                "local_weight": 0.22,
+                "artifact_weight": 0.18,
+                "subtype_weight": 0.16,
+                "class_weights": [1.24, 1.10, 0.82],
+                "lr": 1.5e-4,
+            },
         }
     raise ValueError(f"unknown stage {stage}")
 
@@ -1451,7 +1541,7 @@ def train_model(candidate: str, cfg: dict[str, Any], args: argparse.Namespace, s
                 y = batch["y"].to(device=device)
                 out = model(x)
                 losses_dict = {
-                    "class": hierarchical_nll(out, y) if bool(cfg.get("use_hierarchical_head", True)) else F.cross_entropy(out["logits"], y),
+                    "class": class_nll(out, y, cfg, device),
                     "artifact": artifact_loss(out, batch, device)[0],
                 }
                 if str(cfg.get("optimizer_mode", "ordinary")) == "pcgrad_class_artifact":

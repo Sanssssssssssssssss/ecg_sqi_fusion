@@ -1,56 +1,68 @@
 # Phase 0 Correctness Report
 
-- Generated: 2026-06-20 01:06:27
-- Policy: `margin_ge_5s_drop_outlier`
+- Generated: 2026-06-25 04:07:27
+- Policy: `ptb_v112_gm_buffered_large_hybrid_s20260741`
 - Scope: external experiment runner only; no `src/sqi_pipeline` changes.
 - Artifact target rule excludes `clean_policy` text. `clean_policy=margin_ge_5s_drop_outlier` is no longer treated as artifact evidence.
 
 ## Acceptance Checks
 
-- `artifact_positive_nonbad_count`: `2780`
+- `artifact_positive_nonbad_count`: `2498`
 - `artifact_positive_nonbad_equals_all_nonbad`: `False`
 - `clean_policy_used_as_artifact_evidence`: `False`
-- `detector_grad_norm`: `1.68694`
+- `detector_grad_norm`: `2.0261`
 - `detector_same_value_in_factor_and_report`: `True`
-- `detector_range`: `{'min': 0.8716700077056885, 'max': 0.9380949139595032, 'mean': 0.9115002155303955}`
+- `detector_range`: `{'min': 0.8845213651657104, 'max': 0.9471899271011353, 'mean': 0.9229362607002258}`
 
 ## Artifact x Class Crosstab
 
 | split | class_name | False | True | All |
 | --- | --- | --- | --- | --- |
-| test | bad | 0 | 118 | 118 |
-| test | good | 776 | 228 | 1004 |
-| test | medium | 1499 | 578 | 2077 |
-| train | bad | 0 | 3963 | 3963 |
-| train | good | 8441 | 1162 | 9603 |
-| train | medium | 3531 | 614 | 4145 |
-| val | bad | 0 | 1 | 1 |
-| val | good | 446 | 175 | 621 |
-| val | medium | 20 | 23 | 43 |
-| All |  | 14713 | 6862 | 21575 |
+| test | bad | 0 | 904 | 904 |
+| test | good | 186 | 199 | 385 |
+| test | medium | 331 | 184 | 515 |
+| train | bad | 0 | 4200 | 4200 |
+| train | good | 926 | 887 | 1813 |
+| train | medium | 1570 | 831 | 2401 |
+| val | bad | 0 | 896 | 896 |
+| val | good | 209 | 208 | 417 |
+| val | medium | 354 | 189 | 543 |
+| All |  | 3576 | 8498 | 12074 |
 
 ## Record Support Preview
 
 | split | record_id | bad | good | medium |
 | --- | --- | --- | --- | --- |
-| test | 111001 | 0 | 927 | 2053 |
-| test | 122001 | 118 | 70 | 24 |
-| test | 125001 | 0 | 7 | 0 |
-| train | 100001 | 0 | 4457 | 1669 |
-| train | 100002 | 0 | 56 | 23 |
-| train | 104001 | 0 | 0 | 42 |
-| train | 105001 | 3963 | 4554 | 2250 |
-| train | 113001 | 0 | 125 | 29 |
-| train | 115001 | 0 | 116 | 22 |
-| train | 118001 | 0 | 116 | 29 |
-| train | 121001 | 0 | 89 | 0 |
-| train | 123001 | 0 | 90 | 2 |
-| train | 124001 | 0 | 0 | 79 |
-| val | 103001 | 0 | 95 | 12 |
-| val | 103002 | 0 | 175 | 0 |
-| val | 103003 | 0 | 37 | 1 |
-| val | 114001 | 1 | 209 | 30 |
-| val | 126001 | 0 | 105 | 0 |
+| test | v108_ptb_ptbxl_10006 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10018 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10070 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10101 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_1011 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10137 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10166 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10176 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10179 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10191 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_102 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10206 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10240 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_1031 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10321 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10332 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10435 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10444 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10445 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10455 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10462 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10496 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10550 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_1056 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10573 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10606 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10621 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10701 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10702 | 1 | 0 | 0 |
+| test | v108_ptb_ptbxl_10727 | 1 | 0 | 0 |
 
 ## Output Files
 

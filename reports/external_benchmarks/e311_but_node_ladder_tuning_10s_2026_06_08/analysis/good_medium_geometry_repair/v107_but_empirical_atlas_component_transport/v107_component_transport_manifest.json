@@ -1,0 +1,806 @@
+{
+  "protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v81_feature_transport\\protocol_v107_but_empirical_atlas_component_transport_v101x4_from_v104_s20260732",
+  "but_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_protocols\\margin_ge_5s_keep_outlier_drop_mediumlike_bad_seed20260623_v37subtype_fixed",
+  "source_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v81_feature_transport\\protocol_v104_brutal_cover_pc9000_cpa8_s20260729",
+  "reference_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v99_boundary_repair\\protocol_v101_boundary_anchor_v95plus_hardgm_s20260726",
+  "rows": 13968,
+  "scale": 4,
+  "grid_bins": 6,
+  "features": [
+    "raw_rms",
+    "raw_ptp_p99_p01",
+    "raw_diff_abs_p95",
+    "rms",
+    "std",
+    "mean_abs",
+    "ptp_p99_p01",
+    "low_amp_ratio",
+    "flatline_ratio",
+    "contact_loss_win_ratio",
+    "baseline_step",
+    "diff_abs_p95",
+    "detail_instability",
+    "qrs_band_ratio",
+    "qrs_visibility",
+    "qrs_prom_median",
+    "qrs_prom_p90",
+    "periodicity",
+    "template_corr",
+    "detector_agreement",
+    "non_qrs_rms_ratio",
+    "non_qrs_diff_p95",
+    "band_0p3_1",
+    "band_1_5",
+    "band_5_15",
+    "band_15_30",
+    "band_30_45",
+    "sqi_iSQI",
+    "sqi_bSQI",
+    "sqi_pSQI",
+    "sqi_sSQI",
+    "sqi_kSQI",
+    "sqi_fSQI",
+    "sqi_basSQI",
+    "hjorth_activity",
+    "hjorth_mobility",
+    "hjorth_complexity",
+    "sample_entropy_proxy",
+    "amplitude_entropy",
+    "wavelet_e0",
+    "wavelet_e1",
+    "wavelet_e2",
+    "wavelet_e3",
+    "wavelet_e4"
+  ],
+  "class_counts": {
+    "bad": 6000,
+    "medium": 4184,
+    "good": 3784
+  },
+  "split_counts": [
+    {
+      "split": "test",
+      "class_name": "bad",
+      "n": 904
+    },
+    {
+      "split": "test",
+      "class_name": "good",
+      "n": 572
+    },
+    {
+      "split": "test",
+      "class_name": "medium",
+      "n": 624
+    },
+    {
+      "split": "train",
+      "class_name": "bad",
+      "n": 4200
+    },
+    {
+      "split": "train",
+      "class_name": "good",
+      "n": 2640
+    },
+    {
+      "split": "train",
+      "class_name": "medium",
+      "n": 2920
+    },
+    {
+      "split": "val",
+      "class_name": "bad",
+      "n": 896
+    },
+    {
+      "split": "val",
+      "class_name": "good",
+      "n": 572
+    },
+    {
+      "split": "val",
+      "class_name": "medium",
+      "n": 640
+    }
+  ],
+  "component_counts": [
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_baseline_wander_lowfreq",
+      "v107_component": "core",
+      "n": 290
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_baseline_wander_lowfreq",
+      "v107_component": "left_ridge",
+      "n": 14
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_baseline_wander_lowfreq",
+      "v107_component": "lower_shell",
+      "n": 166
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_baseline_wander_lowfreq",
+      "v107_component": "right_ridge",
+      "n": 110
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_baseline_wander_lowfreq",
+      "v107_component": "sparse_tail",
+      "n": 97
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_baseline_wander_lowfreq",
+      "v107_component": "upper_shell",
+      "n": 179
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_contact_reset_flatline",
+      "v107_component": "core",
+      "n": 260
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_contact_reset_flatline",
+      "v107_component": "left_ridge",
+      "n": 82
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_contact_reset_flatline",
+      "v107_component": "lower_shell",
+      "n": 173
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_contact_reset_flatline",
+      "v107_component": "right_ridge",
+      "n": 73
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_contact_reset_flatline",
+      "v107_component": "sparse_tail",
+      "n": 86
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_contact_reset_flatline",
+      "v107_component": "upper_shell",
+      "n": 182
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_dense_right_island",
+      "v107_component": "core",
+      "n": 236
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_dense_right_island",
+      "v107_component": "left_ridge",
+      "n": 85
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_dense_right_island",
+      "v107_component": "lower_shell",
+      "n": 181
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_dense_right_island",
+      "v107_component": "right_ridge",
+      "n": 95
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_dense_right_island",
+      "v107_component": "sparse_tail",
+      "n": 87
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_dense_right_island",
+      "v107_component": "upper_shell",
+      "n": 176
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_detector_template_disagree",
+      "v107_component": "core",
+      "n": 235
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_detector_template_disagree",
+      "v107_component": "left_ridge",
+      "n": 85
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_detector_template_disagree",
+      "v107_component": "lower_shell",
+      "n": 185
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_detector_template_disagree",
+      "v107_component": "right_ridge",
+      "n": 93
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_detector_template_disagree",
+      "v107_component": "sparse_tail",
+      "n": 87
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_detector_template_disagree",
+      "v107_component": "upper_shell",
+      "n": 175
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_highfreq_detail_noise",
+      "v107_component": "core",
+      "n": 156
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_highfreq_detail_noise",
+      "v107_component": "left_ridge",
+      "n": 125
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_highfreq_detail_noise",
+      "v107_component": "lower_shell",
+      "n": 187
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_highfreq_detail_noise",
+      "v107_component": "right_ridge",
+      "n": 93
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_highfreq_detail_noise",
+      "v107_component": "sparse_tail",
+      "n": 93
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_highfreq_detail_noise",
+      "v107_component": "upper_shell",
+      "n": 202
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_low_qrs_visibility",
+      "v107_component": "core",
+      "n": 315
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_low_qrs_visibility",
+      "v107_component": "left_ridge",
+      "n": 45
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_low_qrs_visibility",
+      "v107_component": "lower_shell",
+      "n": 203
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_low_qrs_visibility",
+      "v107_component": "right_ridge",
+      "n": 45
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_low_qrs_visibility",
+      "v107_component": "sparse_tail",
+      "n": 90
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_low_qrs_visibility",
+      "v107_component": "upper_shell",
+      "n": 158
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_other_boundary",
+      "v107_component": "core",
+      "n": 239
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_other_boundary",
+      "v107_component": "left_ridge",
+      "n": 86
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_other_boundary",
+      "v107_component": "lower_shell",
+      "n": 171
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_other_boundary",
+      "v107_component": "right_ridge",
+      "n": 88
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_other_boundary",
+      "v107_component": "sparse_tail",
+      "n": 86
+    },
+    {
+      "class_name": "bad",
+      "transport_subtype": "bad_other_boundary",
+      "v107_component": "upper_shell",
+      "n": 186
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_clean_core",
+      "v107_component": "core",
+      "n": 280
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_clean_core",
+      "v107_component": "left_ridge",
+      "n": 142
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_clean_core",
+      "v107_component": "lower_shell",
+      "n": 223
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_clean_core",
+      "v107_component": "right_ridge",
+      "n": 162
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_clean_core",
+      "v107_component": "sparse_tail",
+      "n": 120
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_clean_core",
+      "v107_component": "upper_shell",
+      "n": 273
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_hard_baseline_lowqrs",
+      "v107_component": "core",
+      "n": 452
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_hard_baseline_lowqrs",
+      "v107_component": "left_ridge",
+      "n": 29
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_hard_baseline_lowqrs",
+      "v107_component": "lower_shell",
+      "n": 228
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_hard_baseline_lowqrs",
+      "v107_component": "right_ridge",
+      "n": 109
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_hard_baseline_lowqrs",
+      "v107_component": "sparse_tail",
+      "n": 120
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_hard_baseline_lowqrs",
+      "v107_component": "upper_shell",
+      "n": 262
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_isolated_low_purity",
+      "v107_component": "core",
+      "n": 22
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_isolated_low_purity",
+      "v107_component": "left_ridge",
+      "n": 8
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_isolated_low_purity",
+      "v107_component": "lower_shell",
+      "n": 19
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_isolated_low_purity",
+      "v107_component": "right_ridge",
+      "n": 12
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_isolated_low_purity",
+      "v107_component": "sparse_tail",
+      "n": 12
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_isolated_low_purity",
+      "v107_component": "upper_shell",
+      "n": 19
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_mild_artifact_outlier",
+      "v107_component": "core",
+      "n": 22
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_mild_artifact_outlier",
+      "v107_component": "left_ridge",
+      "n": 4
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_mild_artifact_outlier",
+      "v107_component": "lower_shell",
+      "n": 18
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_mild_artifact_outlier",
+      "v107_component": "right_ridge",
+      "n": 14
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_mild_artifact_outlier",
+      "v107_component": "sparse_tail",
+      "n": 12
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_mild_artifact_outlier",
+      "v107_component": "upper_shell",
+      "n": 22
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_overlap_boundary",
+      "v107_component": "core",
+      "n": 332
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_overlap_boundary",
+      "v107_component": "left_ridge",
+      "n": 111
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_overlap_boundary",
+      "v107_component": "lower_shell",
+      "n": 248
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_overlap_boundary",
+      "v107_component": "right_ridge",
+      "n": 136
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_overlap_boundary",
+      "v107_component": "sparse_tail",
+      "n": 120
+    },
+    {
+      "class_name": "good",
+      "transport_subtype": "good_overlap_boundary",
+      "v107_component": "upper_shell",
+      "n": 253
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_clean_core",
+      "v107_component": "core",
+      "n": 226
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_clean_core",
+      "v107_component": "left_ridge",
+      "n": 105
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_clean_core",
+      "v107_component": "lower_shell",
+      "n": 220
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_clean_core",
+      "v107_component": "right_ridge",
+      "n": 147
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_clean_core",
+      "v107_component": "sparse_tail",
+      "n": 100
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_clean_core",
+      "v107_component": "upper_shell",
+      "n": 202
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_hard_baseline_lowqrs",
+      "v107_component": "core",
+      "n": 23
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_hard_baseline_lowqrs",
+      "v107_component": "left_ridge",
+      "n": 7
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_hard_baseline_lowqrs",
+      "v107_component": "lower_shell",
+      "n": 21
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_hard_baseline_lowqrs",
+      "v107_component": "right_ridge",
+      "n": 10
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_hard_baseline_lowqrs",
+      "v107_component": "sparse_tail",
+      "n": 12
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_hard_baseline_lowqrs",
+      "v107_component": "upper_shell",
+      "n": 19
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_isolated_lowqrs",
+      "v107_component": "core",
+      "n": 28
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_isolated_lowqrs",
+      "v107_component": "left_ridge",
+      "n": 7
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_isolated_lowqrs",
+      "v107_component": "lower_shell",
+      "n": 18
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_isolated_lowqrs",
+      "v107_component": "right_ridge",
+      "n": 7
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_isolated_lowqrs",
+      "v107_component": "sparse_tail",
+      "n": 12
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_isolated_lowqrs",
+      "v107_component": "upper_shell",
+      "n": 20
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_outlier_or_bad_boundary",
+      "v107_component": "core",
+      "n": 270
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_outlier_or_bad_boundary",
+      "v107_component": "left_ridge",
+      "n": 69
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_outlier_or_bad_boundary",
+      "v107_component": "lower_shell",
+      "n": 193
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_outlier_or_bad_boundary",
+      "v107_component": "right_ridge",
+      "n": 152
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_outlier_or_bad_boundary",
+      "v107_component": "sparse_tail",
+      "n": 101
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_outlier_or_bad_boundary",
+      "v107_component": "upper_shell",
+      "n": 215
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_overlap_boundary",
+      "v107_component": "core",
+      "n": 273
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_overlap_boundary",
+      "v107_component": "left_ridge",
+      "n": 49
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_overlap_boundary",
+      "v107_component": "lower_shell",
+      "n": 193
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_overlap_boundary",
+      "v107_component": "right_ridge",
+      "n": 156
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_overlap_boundary",
+      "v107_component": "sparse_tail",
+      "n": 101
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_overlap_boundary",
+      "v107_component": "upper_shell",
+      "n": 228
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_visible_qrs_detail",
+      "v107_component": "core",
+      "n": 237
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_visible_qrs_detail",
+      "v107_component": "left_ridge",
+      "n": 100
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_visible_qrs_detail",
+      "v107_component": "lower_shell",
+      "n": 215
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_visible_qrs_detail",
+      "v107_component": "right_ridge",
+      "n": 143
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_visible_qrs_detail",
+      "v107_component": "sparse_tail",
+      "n": 100
+    },
+    {
+      "class_name": "medium",
+      "transport_subtype": "medium_visible_qrs_detail",
+      "v107_component": "upper_shell",
+      "n": 205
+    }
+  ],
+  "component_shortage_total": 10787,
+  "component_mean_occupancy_recall": 0.2849390524751934,
+  "subtype_metric_summary": {
+    "bad": {
+      "median_rbf_mmd": 1.315184158696657,
+      "median_sliced_wasserstein": 8.24816853427093,
+      "median_quantile_loss": 6.214437582946205,
+      "median_domain_auc": 1.0,
+      "median_pca_density_overlap": 0.0
+    },
+    "good": {
+      "median_rbf_mmd": 0.447947437608066,
+      "median_sliced_wasserstein": 0.8299170904751069,
+      "median_quantile_loss": 0.6930708866717323,
+      "median_domain_auc": 1.0,
+      "median_pca_density_overlap": 0.3346844904412822
+    },
+    "medium": {
+      "median_rbf_mmd": 0.31003648258732597,
+      "median_sliced_wasserstein": 0.7016323134762419,
+      "median_quantile_loss": 0.5489097112306912,
+      "median_domain_auc": 1.0,
+      "median_pca_density_overlap": 0.35331265816865276
+    }
+  },
+  "component_metric_summary": {
+    "bad": {
+      "median_rbf_mmd": 1.294182680973309,
+      "median_sliced_wasserstein": 10.16616091792131,
+      "median_quantile_loss": 7.26081312850207,
+      "median_domain_auc": 1.0,
+      "median_pca_density_overlap": 0.0
+    },
+    "good": {
+      "median_rbf_mmd": 0.5610817682460733,
+      "median_sliced_wasserstein": 1.273766966695029,
+      "median_quantile_loss": 1.0270708764715903,
+      "median_domain_auc": 1.0,
+      "median_pca_density_overlap": 0.05477748557682507
+    },
+    "medium": {
+      "median_rbf_mmd": 0.42509129547164637,
+      "median_sliced_wasserstein": 0.9422117544725188,
+      "median_quantile_loss": 0.8173745160609951,
+      "median_domain_auc": 1.0,
+      "median_pca_density_overlap": 0.10988192100742136
+    }
+  },
+  "report_dir": "E:\\GPTProject2\\ecg\\reports\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\v107_but_empirical_atlas_component_transport"
+}

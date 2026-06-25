@@ -1,0 +1,23 @@
+{
+  "protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v81_feature_transport\\protocol_v112_gm_buffered_large_hybrid_s20260741",
+  "input_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\event_xds_aligned_v81_feature_transport\\protocol_v111_large_hybrid_coverage_v108legacy_v109coverage_s20260740",
+  "but_protocol": "E:\\GPTProject2\\ecg\\outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\clean_but_protocols\\margin_ge_5s_keep_outlier_drop_mediumlike_bad_seed20260623_v37subtype_fixed",
+  "rows_before": 13968,
+  "rows_after": 12074,
+  "removed_rows": 1894,
+  "contradiction_threshold": 0.85,
+  "but_trainval_gm_auc": 0.966958937465512,
+  "removed_by_class_subtype": {
+    "good/good_clean_core": 323,
+    "good/good_hard_baseline_lowqrs": 514,
+    "good/good_isolated_low_purity": 22,
+    "good/good_mild_artifact_outlier": 20,
+    "good/good_overlap_boundary": 290,
+    "medium/medium_clean_core": 45,
+    "medium/medium_hard_baseline_lowqrs": 4,
+    "medium/medium_isolated_lowqrs": 5,
+    "medium/medium_outlier_or_bad_boundary": 391,
+    "medium/medium_overlap_boundary": 111,
+    "medium/medium_visible_qrs_detail": 169
+  }
+}

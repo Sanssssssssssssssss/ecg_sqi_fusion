@@ -19,6 +19,7 @@ from supplemental_sqi_experiments.common import project_root, validate_integrity
 from supplemental_sqi_experiments.final_claims import run_final_claims
 from supplemental_sqi_experiments.fsqi_mechanism import run_fsqi_mechanism
 from supplemental_sqi_experiments.model_diagnostics import run_model_diagnostics
+from supplemental_sqi_experiments.model_seed_stability import run_model_seed_stability
 from supplemental_sqi_experiments.noise_isolation import audit_noise_overlap, build_isolated_dataset
 from supplemental_sqi_experiments.report import write_summary
 from supplemental_sqi_experiments.stability import run_stability
@@ -199,7 +200,7 @@ def run_isolated_pipeline(args: argparse.Namespace) -> dict[str, Any]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Supplemental protocol experiments for the SQI paper-aligned reproduction.")
-    parser.add_argument("command", choices=["diagnose-existing", "strict-table6", "model-diagnostics", "fsqi", "ablation", "generalization", "final-claims", "stability", "audit-existing-noise", "build-isolated", "run-isolated"])
+    parser.add_argument("command", choices=["diagnose-existing", "strict-table6", "model-diagnostics", "fsqi", "ablation", "generalization", "final-claims", "stability", "model-seed-stability", "audit-existing-noise", "build-isolated", "run-isolated"])
     parser.add_argument("--artifacts-dir", default=None)
     parser.add_argument("--out-dir", default=None)
     parser.add_argument("--report-dir", default=None)
@@ -212,6 +213,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--noise-stride-s", type=float, default=1.0)
     parser.add_argument("--split-seeds", default="0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19")
     parser.add_argument("--mlp-init-seeds", default="0,1,2,3,4,5,6,7,8,9")
+    parser.add_argument("--model-seeds", default="0,1,2,3,4,5,6,7,8,9")
     parser.add_argument("--include-mlp", action="store_true")
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--verbose", action="store_true")
@@ -267,6 +269,13 @@ def main() -> None:
             split_seeds=split_seeds,
             mlp_init_seeds=mlp_init_seeds,
             include_mlp=bool(args.include_mlp),
+        )
+    elif args.command == "model-seed-stability":
+        model_seeds = [int(x) for x in str(args.model_seeds).split(",") if x.strip()]
+        out = run_model_seed_stability(
+            artifacts_dir=paths["paper_artifacts"],
+            out_dir=paths["out_root"] / "existing_seed0" / "model_seed_stability",
+            model_seeds=model_seeds,
         )
     elif args.command == "audit-existing-noise":
         out = run_noise_audit(args)
