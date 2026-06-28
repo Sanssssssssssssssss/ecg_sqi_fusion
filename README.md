@@ -1,15 +1,17 @@
 # ECG SQI Fusion
 
-Research code for ECG signal-quality assessment, noise-aware ECG denoising, and Transformer-based SQI classification.
+Research code for ECG signal-quality assessment and waveform Transformer-based SQI classification.
+
+`main` is the active official line. Use the v116 data pipeline and E31 model below unless you are intentionally reproducing an old baseline.
 
 The repository has two deliberately separated lines:
 
 1. `src/sqi_pipeline/`: classical SQI baselines. This line is preserved as-is.
 2. `src/transformer_pipeline/`: waveform Transformer SQI research and the current v116/E31 mainline.
 
-## Current Mainline
+## Official Mainline
 
-The current Transformer mainline is data v1/v116 plus `E31_wave_mechanism_conformer`:
+The Transformer mainline is data v1/v116 plus `E31_wave_mechanism_conformer`:
 
 ```text
 BUT gap5 originals
@@ -49,13 +51,15 @@ val/test: original_but only
 sampler: raw rows, no record-balanced sampler
 ```
 
-## Mainline Rerun Snapshot
+## Current Snapshot
 
-Clean v116 source rerun, seed `20260876`:
+Latest full v116 + E31 run, seed `20260876`:
 
-- E31 test acc: `0.9470`
-- E31 macro F1: `0.9574`
-- Good/medium/bad recall: `0.9354 / 0.9541 / 0.9939`
+- E31 test acc: `0.9362`
+- E31 macro F1: `0.9483`
+- Good/medium/bad recall: `0.9250 / 0.9399 / 0.9939`
+
+This is the current checked-in mainline; model soft-parameter tuning continues from here.
 
 ## Repository Layout
 
@@ -67,6 +71,9 @@ Current v116 data build, audit, plot, report, and E31 training-check entrypoint.
 
 `src/transformer_pipeline/models/mtl_transformer.py`
 Legacy multi-task Transformer baseline, retained for reproduction.
+
+`src/transformer_pipeline/models/uformer1d.py`
+Compatibility shim for archived experiments. The old Uformer mainline has been removed.
 
 `reports/experiment_archive/e311_lineage_2026_06_02/`
 GitHub-readable experiment lineage archive: registry, metadata snapshots, selected figures, and reference experiment scripts.
@@ -112,4 +119,4 @@ python -m src.transformer_pipeline.run_preprocess_all --verbose
 python -m src.transformer_pipeline.run_transformer_all --verbose
 ```
 
-The old train step writes under `outputs/transformer/`; the current mainline is `data_v1_gapfill`.
+The old train step writes under `outputs/transformer/`; the official mainline is `data_v1_gapfill`.
