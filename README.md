@@ -53,13 +53,14 @@ sampler: raw rows, no record-balanced sampler
 
 ## Current Snapshot
 
-Latest full v116 + E31 run, seed `20260876`:
+Latest full v116 + soft-tuned E31 run, seed `20260876`:
 
-- E31 test acc: `0.9362`
-- E31 macro F1: `0.9483`
-- Good/medium/bad recall: `0.9250 / 0.9399 / 0.9939`
+- E31 test acc: `0.9432`
+- E31 macro F1: `0.9525`
+- Good/medium/bad recall: `0.9421 / 0.9320 / 0.9939`
 
-This is the current checked-in mainline; model soft-parameter tuning continues from here.
+This is the current checked-in mainline. The E31 architecture is unchanged; the
+soft tuning only updates class weights to `[1.03, 1.05, 1.08]`.
 
 ## Repository Layout
 

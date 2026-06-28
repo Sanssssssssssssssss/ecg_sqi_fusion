@@ -1388,7 +1388,7 @@ def suite_candidates() -> list[tuple[str, dict[str, Any]]]:
                 "hard_gm_weight": 0.0,
                 "medium_bad_guard_weight": 0.0,
                 "lr": 1.5e-4,
-                "class_weights": [1.0, 1.08, 1.08],
+                "class_weights": [1.03, 1.05, 1.08],
             },
         ),
         (

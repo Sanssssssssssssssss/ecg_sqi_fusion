@@ -145,9 +145,9 @@ E24:
   test recalls: good 0.9326, medium 0.8924, bad 0.9939
 
 E31_wave_mechanism_conformer:
-  val  acc 0.9432, macro F1 0.9488
-  test acc 0.9470, macro F1 0.9574
-  test recalls: good 0.9354, medium 0.9541, bad 0.9939
+  val  acc 0.9508, macro F1 0.9569
+  test acc 0.9432, macro F1 0.9525
+  test recalls: good 0.9421, medium 0.9320, bad 0.9939
 ```
 
 ## Reproduction Commands
