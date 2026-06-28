@@ -1,8 +1,0 @@
-focus_group,record_id,class_name,pred_class,n
-correct medium,111001,medium,medium,4097
-correct good,111001,good,good,3080
-111001 good->medium,111001,good,medium,246
-111001 medium->good,111001,medium,good,213
-111001 bad->medium,111001,bad,medium,140
-correct bad,122001,bad,bad,119
-125001 good->medium,125001,good,medium,75

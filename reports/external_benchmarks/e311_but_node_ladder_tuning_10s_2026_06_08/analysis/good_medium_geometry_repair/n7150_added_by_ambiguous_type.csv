@@ -1,6 +1,0 @@
-ambiguous_type,n,rate
-good_medium_boundary,80,0.8
-clean_or_target,10,0.1
-isolated_good,5,0.05
-good_medium_low_purity,3,0.03
-isolated_medium,2,0.02

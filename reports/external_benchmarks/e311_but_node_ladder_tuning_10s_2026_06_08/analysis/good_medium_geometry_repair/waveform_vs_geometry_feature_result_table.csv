@@ -1,7 +1,0 @@
-model,input,original_test_acc,good,medium,bad,formal_waveform_only
-47_feature_tabular_upper_bound,all 47 features incl. target geometry,0.963548,0.956319,0.972887,0.927007,False
-reduced_top14_balanced_mlp,14 features incl. pca_margin/region_confidence,0.898431,0.892308,0.896521,0.973236,False
-waveform_proxy_logreg_l2,279 deterministic waveform stats only,0.827415,0.920879,0.799593,0.29927,True
-p20_waveform_transformer,waveform + teacher loss only,0.822225,0.858,0.8441,0.2701,True
-eventqrs_qrsheavy_transformer,waveform event-QRS tokens + teacher loss,0.819394,0.894,0.8041,0.3236,True
-top14_teacher_transformer,"waveform, predicted top14 teacher fusion",0.781998,0.8525,0.7677,0.3114,True

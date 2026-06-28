@@ -1,5 +1,0 @@
-split,record_id,original_region,ambiguous_type,n
-test,122001,near_bad_boundary,bad_outlier,119
-train,105001,right_bad_island,medium_bad_boundary,2766
-train,105001,right_bad_island,clean_or_target,1198
-val,114001,near_bad_boundary,bad_outlier,1

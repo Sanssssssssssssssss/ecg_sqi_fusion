@@ -1,7 +1,0 @@
-family,n_features,mean_score,max_score,top_features
-Detail reliability,9,0.7122889763396381,0.9616425832101476,"sample_entropy_proxy, higuchi_fd_proxy, non_qrs_diff_p95, diff_abs_median, non_qrs_rms_ratio, detail_instability"
-SQI,7,0.5683514516474532,0.8028424195456153,"sqi_bSQI, sqi_pSQI, sqi_sSQI, sqi_kSQI, sqi_basSQI, sqi_fSQI"
-QRS detectability,19,0.510440837656078,0.7684774105246746,"template_corr, rr_count_detector_b, qrs_prom_p90, qrs_width_median, aggressive_peak_count, qrs_band_ratio"
-Motion/frequency,18,0.6502020109290592,0.7443561385144779,"zero_crossing_rate, band_30_45, hjorth_mobility, wavelet_e4, diff_zero_crossing_rate, band_5_15"
-Contact/flat/fatal,7,0.3863572348139135,0.6835485955990228,"flatline_ratio, baseline_step, low_amp_ratio, local_rms_cv, fatal_or_score, contact_loss_win_ratio"
-Amplitude/global,4,0.5764621707771296,0.6637790635878815,"rms, std, ptp_p99_p01, mean_abs"

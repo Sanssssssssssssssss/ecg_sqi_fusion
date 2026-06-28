@@ -1,5 +1,0 @@
-row,split,region,true,pred_raw,pred_badcal,correct_raw,correct_badcal,prob_good,prob_medium,prob_bad,is_test,is_bad_core,is_bad_outlier
-26080,test,outlier_low_confidence,medium,bad,bad,False,False,0.03825190290808678,0.1840618997812271,0.7776862382888794,True,False,False
-26228,test,outlier_low_confidence,medium,bad,bad,False,False,0.11433380842208862,0.4139808714389801,0.4716852903366089,True,False,False
-26232,test,outlier_low_confidence,medium,bad,bad,False,False,0.03680526465177536,0.1331038475036621,0.8300908803939819,True,False,False
-26484,test,outlier_low_confidence,medium,bad,bad,False,False,0.08059807866811752,0.38303032517433167,0.5363715887069702,True,False,False

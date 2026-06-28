@@ -1,6 +1,0 @@
-group,n,records,base_pred_counts,badstress_pred_counts,region_counts
-all_non_test_bad_core,1,114001,"{""medium"": 1}","{""good"": 1}","{""near_bad_boundary"": 1}"
-all_non_test_bad_outlier,69,"100001,105001,113001,114001,124001","{""medium"": 67, ""good"": 2}","{""medium"": 61, ""good"": 8}","{""outlier_low_confidence"": 69}"
-badstress_predicted_bad_reference,4810,"105001,111001,114001","{""bad"": 4799, ""medium"": 11}","{""bad"": 4810}","{""right_bad_island"": 3964, ""outlier_low_confidence"": 846}"
-test_bad_core_missed,119,122001,"{""medium"": 119}","{""medium"": 119}","{""near_bad_boundary"": 119}"
-test_bad_outlier_missed,286,111001,"{""medium"": 252, ""good"": 34}","{""medium"": 241, ""good"": 45}","{""outlier_low_confidence"": 286}"

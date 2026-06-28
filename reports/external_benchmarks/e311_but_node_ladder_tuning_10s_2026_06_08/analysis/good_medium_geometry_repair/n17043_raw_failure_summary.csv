@@ -1,3 +1,0 @@
-variant,variant_id,acc,good_recall,medium_recall,bad_recall,count_good_correct,count_medium_correct,count_bad_correct,count_good_to_medium,count_medium_to_good,count_bad_to_nonbad,count_medium_to_bad,count_good_to_bad
-goodsafe,nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6,0.8245315698315226,0.78078976705979,0.8385397064358299,0.970617042115573,13307,8912,3964,3736,1716,120,,
-gooddominant,nl_n17043_gm_trim_bad_boundaryblocks_teacherfull_gooddomi_a698ae934c10,0.8199653597858605,0.798040251129496,0.7967632668423034,0.9718413320274241,13601,8468,3969,3440,2147,115,13.0,2.0

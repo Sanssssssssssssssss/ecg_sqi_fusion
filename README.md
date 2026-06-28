@@ -2,7 +2,7 @@
 
 Research code for ECG signal-quality assessment and waveform Transformer-based SQI classification.
 
-`main` is the active official line. Use the v116 data pipeline and E31 model below unless you are intentionally reproducing an old baseline.
+`main` is the active official line. Use the v116 data pipeline and E31 model below unless you are working on the classical SQI baseline.
 
 The repository has two deliberately separated lines:
 
@@ -36,7 +36,7 @@ python -m src.transformer_pipeline.data_v1_gapfill pipeline --run --train E31
 Useful checks:
 
 ```bash
-python -m compileall -q src/transformer_pipeline/data_v1_gapfill src/transformer_pipeline/models
+python -m compileall -q src/sqi_pipeline src/transformer_pipeline/data_v1_gapfill src/utils
 python -m src.transformer_pipeline.data_v1_gapfill audit
 python -m src.transformer_pipeline.data_v1_gapfill train-check --model E31
 ```
@@ -70,18 +70,6 @@ Classical SQI/ML pipeline and baseline command line entrypoint.
 `src/transformer_pipeline/data_v1_gapfill/`
 Current v116 data build, audit, plot, report, and E31 training-check entrypoint.
 
-`src/transformer_pipeline/models/mtl_transformer.py`
-Legacy multi-task Transformer baseline, retained for reproduction.
-
-`src/transformer_pipeline/models/uformer1d.py`
-Compatibility shim for archived experiments. The old Uformer mainline has been removed.
-
-`reports/experiment_archive/e311_lineage_2026_06_02/`
-GitHub-readable experiment lineage archive: registry, metadata snapshots, selected figures, and reference experiment scripts.
-
-`outputs/experiment_archive/e311_lineage_2026_06_02/`
-Local mirror of archive metadata and pointers to full raw outputs. Large checkpoints and NPZ files stay outside git.
-
 ## Environment
 
 Use Python 3.11 if possible.
@@ -108,16 +96,5 @@ Useful flags:
 python -m src.sqi_pipeline.cli --fresh
 python -m src.sqi_pipeline.cli --only manifest_raw,split_seta,record84
 python -m src.sqi_pipeline.cli --force
-python -m src.sqi_pipeline.validate_outputs --write outputs/sqi/validation/current_seed0.json
+python -m src.sqi_pipeline.validate_outputs --write tmp/sqi/validation/current_seed0.json
 ```
-
-## Legacy PTB-XL Transformer Workflow
-
-The old preprocessing and legacy MTL Transformer workflow are retained for reproduction and ablation context:
-
-```bash
-python -m src.transformer_pipeline.run_preprocess_all --verbose
-python -m src.transformer_pipeline.run_transformer_all --verbose
-```
-
-The old train step writes under `outputs/transformer/`; the official mainline is `data_v1_gapfill`.
