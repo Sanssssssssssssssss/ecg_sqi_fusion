@@ -48,6 +48,12 @@ DEFAULT_POLICY = "margin_ge_5s_drop_outlier"
 
 CLASS_TO_INT = {"good": 0, "medium": 1, "bad": 2}
 INT_TO_CLASS = {v: k for k, v in CLASS_TO_INT.items()}
+V116_ORIGINAL_SPLIT_COUNTS = {
+    "good": {"train": 8424, "val": 1053, "test": 1053},
+    "medium": {"train": 5199, "val": 618, "test": 632},
+    "bad": {"train": 1314, "val": 178, "test": 164},
+}
+V116_TRAIN_TARGET_PER_CLASS = 8310
 
 FACTOR_COLUMNS_REQUESTED = [
     "qrs_visibility",
@@ -170,6 +176,27 @@ def policy_alias(policy: str) -> str:
         "margin_ge_10s_drop_outlier": "mg10_drop",
     }
     return aliases.get(str(policy), str(policy).replace("margin_ge_", "mg").replace("_drop_outlier", "_drop")[:32])
+
+
+def v116_gapfill_policy(policy: str) -> bool:
+    return str(policy).startswith("v116_gapfill_dual_goodorig_nm99")
+
+
+def v116_original_split(original: pd.DataFrame, seed: int) -> pd.Series:
+    split = pd.Series("train", index=original.index, dtype=object)
+    for cls, counts in V116_ORIGINAL_SPLIT_COUNTS.items():
+        idx = original.index[original["class_name"].astype(str).eq(cls)].to_numpy()
+        expected = int(sum(counts.values()))
+        if len(idx) != expected:
+            raise ValueError(f"v116 original split expects {expected} {cls} rows, got {len(idx)}")
+        rng = np.random.default_rng(int(seed) + CLASS_TO_INT[cls] * 1009)
+        idx = idx.copy()
+        rng.shuffle(idx)
+        n_val = int(counts["val"])
+        n_test = int(counts["test"])
+        split.loc[idx[:n_val]] = "val"
+        split.loc[idx[n_val : n_val + n_test]] = "test"
+    return split
 
 
 def now() -> str:
@@ -983,21 +1010,64 @@ def build_recordheldout_splits(policy: str, folds: int, seed: int) -> Path:
     root.mkdir(parents=True, exist_ok=True)
     rows = []
     if int(folds) <= 1:
-        source_to_split = dict(zip(original["source_idx"].astype(str), original["split"].astype(str))) if "source_idx" in original.columns else {}
-        idx_to_split = dict(zip(original["idx"].astype(str), original["split"].astype(str))) if "idx" in original.columns else {}
-        link_split = atlas["split"].astype(str).copy()
-        for col in ["v116_native_donor_id", "v116_style_donor_id", "v114_donor_source_idx"]:
+        original_split = v116_original_split(original, int(seed)) if v116_gapfill_policy(policy) else original["split"].astype(str)
+        source_to_split = dict(zip(original["source_idx"].astype(str), original_split.astype(str))) if "source_idx" in original.columns else {}
+        idx_to_split = dict(zip(original["idx"].astype(str), original_split.astype(str))) if "idx" in original.columns else {}
+        record_to_split = (
+            pd.DataFrame({"record_id": original["record_id"].astype(str), "split": original_split.astype(str)})
+            .groupby("record_id")["split"]
+            .agg(lambda s: str(s.mode().iloc[0]))
+            .to_dict()
+        )
+
+        def map_to_original_split(values: pd.Series) -> pd.Series:
+            keys = values.fillna("").astype(str)
+            mapped = keys.map(source_to_split).combine_first(keys.map(idx_to_split)).combine_first(keys.map(record_to_split))
+            numeric = pd.to_numeric(keys, errors="coerce")
+            numeric_keys = numeric.map(lambda v: str(int(v)) if np.isfinite(v) else None)
+            return mapped.combine_first(numeric_keys.map(source_to_split)).combine_first(numeric_keys.map(idx_to_split)).combine_first(numeric_keys.map(record_to_split))
+
+        link_split = pd.Series("unused", index=atlas.index, dtype=object)
+        link_split.loc[original.index] = original_split.astype(str)
+        for col in ["v116_native_donor_id", "v116_style_donor_id", "v114_donor_source_idx", "v116_residual_donor_id"]:
             if col not in atlas.columns:
                 continue
-            donor = pd.to_numeric(atlas[col], errors="coerce")
-            mapped = donor.map(lambda v: source_to_split.get(str(int(v)), idx_to_split.get(str(int(v)))) if np.isfinite(v) else None)
+            mapped = map_to_original_split(atlas[col])
+            mapped = mapped.mask(original_mask)
             link_split = link_split.where(mapped.isna(), mapped.astype(str))
         split = np.asarray(["unused"] * len(atlas), dtype=object)
-        source_split = atlas["split"].astype(str).to_numpy()
+        source_split = link_split.astype(str).to_numpy()
         split[original_mask & np.isin(source_split, ["train", "val", "test"])] = source_split[original_mask & np.isin(source_split, ["train", "val", "test"])]
         split[~original_mask & link_split.astype(str).eq("train").to_numpy()] = "train"
         train_counts = atlas.loc[split == "train", "class_name"].astype(str).value_counts()
-        target_n = int(train_counts.min())
+        target_n = V116_TRAIN_TARGET_PER_CLASS if v116_gapfill_policy(policy) else int(train_counts.min())
+        if int(train_counts.min()) < int(target_n):
+            raise ValueError(f"Cannot build {policy} split: smallest train class has {int(train_counts.min())}, target is {target_n}")
+
+        def referenced_train_generated_keys() -> set[str]:
+            refs: set[str] = set()
+            gen = atlas.loc[(split == "train") & ~original_mask]
+            for col in ["v116_native_donor_id", "v116_style_donor_id", "v114_donor_source_idx", "v116_residual_donor_id"]:
+                if col not in gen.columns:
+                    continue
+                for raw in gen[col].dropna().astype(str):
+                    if not raw or raw.lower() == "nan":
+                        continue
+                    refs.add(raw)
+                    num = pd.to_numeric(pd.Series([raw]), errors="coerce").iloc[0]
+                    if np.isfinite(num):
+                        refs.add(str(int(num)))
+            return refs
+
+        def unreferenced_original_first(indices: np.ndarray, refs: set[str]) -> np.ndarray:
+            safe: list[int] = []
+            rest: list[int] = []
+            for j in indices:
+                row = atlas.iloc[int(j)]
+                keys = {str(row.get("source_idx", "")), str(row.get("idx", "")), str(row.get("record_id", ""))}
+                (rest if keys & refs else safe).append(int(j))
+            return np.asarray(safe + rest, dtype=int)
+
         for cls, count in train_counts.items():
             surplus = int(count) - target_n
             if surplus <= 0:
@@ -1012,7 +1082,8 @@ def build_recordheldout_splits(policy: str, folds: int, seed: int) -> Path:
                 drop_parts.append(rng.choice(gen_idx, size=take, replace=False))
                 surplus -= take
             if surplus > 0:
-                drop_parts.append(rng.choice(orig_idx, size=surplus, replace=False))
+                orig_idx = unreferenced_original_first(orig_idx, referenced_train_generated_keys())
+                drop_parts.append(orig_idx[:surplus])
             if drop_parts:
                 split[np.concatenate(drop_parts)] = "unused"
         frame = atlas.copy()

@@ -734,6 +734,166 @@ def relabel_for_gap_fill(frame: pd.DataFrame, candidate_type: str, generated: in
     return out
 
 
+def _smc_initial_particle(
+    target_z: np.ndarray,
+    pool_z: np.ndarray,
+    n: int,
+    rng: np.random.Generator,
+) -> np.ndarray:
+    nn = NearestNeighbors(n_neighbors=1, metric="euclidean").fit(pool_z)
+    _, idx = nn.kneighbors(target_z, return_distance=True)
+    selected = list(dict.fromkeys(idx[:, 0].astype(int).tolist()))
+    if len(selected) < n:
+        center = np.nanmedian(target_z, axis=0)
+        order = np.argsort(np.linalg.norm(pool_z - center[None, :], axis=1))
+        used = set(selected)
+        for item in order:
+            j = int(item)
+            if j not in used:
+                selected.append(j)
+                used.add(j)
+            if len(selected) >= n:
+                break
+    if len(selected) < n:
+        used = set(selected)
+        rest = [int(j) for j in rng.permutation(len(pool_z)) if int(j) not in used]
+        selected.extend(rest[: n - len(selected)])
+    return np.asarray(selected[:n], dtype=np.int64)
+
+
+def _mutate_particle(
+    particle: np.ndarray,
+    pool_n: int,
+    swaps: int,
+    rng: np.random.Generator,
+) -> np.ndarray:
+    out = particle.copy()
+    swaps = min(max(0, int(swaps)), len(out), max(0, int(pool_n) - len(out)))
+    if swaps <= 0:
+        return out
+    drop = rng.choice(np.arange(len(out)), size=swaps, replace=False)
+    mask = np.ones(int(pool_n), dtype=bool)
+    mask[out] = False
+    add = rng.choice(np.flatnonzero(mask), size=swaps, replace=False)
+    out[drop] = add
+    return out
+
+
+def strict_smc_set_select(
+    *,
+    target_cls: pd.DataFrame,
+    pool_cls: pd.DataFrame,
+    pool_x: np.ndarray,
+    final_n: int,
+    features: list[str],
+    rng: np.random.Generator,
+    swaps: int,
+    class_name: str,
+    support_max_target_rows: int,
+) -> tuple[pd.DataFrame, np.ndarray, pd.DataFrame]:
+    n = min(int(final_n), len(pool_cls))
+    if n <= 0:
+        return pool_cls.iloc[[]].copy(), pool_x[:0], pd.DataFrame()
+    target_eval = sample_frame(target_cls, max(150, int(support_max_target_rows)), rng).reset_index(drop=True)
+    target_z, pool_z = v115.robust_z_against(target_eval, pool_cls, features)
+    target_mean = np.nanmean(target_z, axis=0)
+    target_std = np.nanstd(target_z, axis=0)
+    target_q = np.nanpercentile(target_z, [10, 50, 90], axis=0)
+
+    def score(indices: np.ndarray) -> float:
+        # ponytail: fast particle score; exact support/MMD objective is computed once for the selected set.
+        z = pool_z[indices]
+        mean_gap = float(np.nanmean(np.abs(np.nanmean(z, axis=0) - target_mean)))
+        std_gap = float(np.nanmean(np.abs(np.nanstd(z, axis=0) - target_std)))
+        q_gap = float(np.nanmean(np.abs(np.nanpercentile(z, [10, 50, 90], axis=0) - target_q)))
+        return 0.42 * mean_gap + 0.28 * std_gap + 0.30 * q_gap
+
+    pool_n = len(pool_cls)
+    n_particles = max(12, min(32, int(swaps) // 50))
+    generations = max(5, min(10, int(swaps) // 150 + 4))
+    base = _smc_initial_particle(target_z, pool_z, n, rng)
+    particles = [base]
+    for _ in range(n_particles - 1):
+        if rng.random() < 0.25:
+            particles.append(rng.choice(np.arange(pool_n), size=n, replace=False).astype(np.int64))
+        else:
+            particles.append(_mutate_particle(base, pool_n, max(1, int(round(n * rng.uniform(0.05, 0.35)))), rng))
+
+    trace: list[dict[str, Any]] = []
+    best_particle = particles[0].copy()
+    best_score = float("inf")
+    for generation in range(generations):
+        scores = np.asarray([score(p) for p in particles], dtype=np.float64)
+        if float(np.min(scores)) < best_score:
+            best_score = float(np.min(scores))
+            best_particle = particles[int(np.argmin(scores))].copy()
+        q = max(0.25, 0.80 - 0.55 * generation / max(generations - 1, 1))
+        epsilon = float(np.quantile(scores, q))
+        accepted = scores <= epsilon
+        if not np.any(accepted):
+            accepted[np.argsort(scores)[: max(1, n_particles // 2)]] = True
+        scale = max(float(epsilon - np.min(scores)), 1e-6)
+        weights = np.zeros(n_particles, dtype=np.float64)
+        weights[accepted] = np.exp(-(scores[accepted] - float(np.min(scores))) / scale)
+        total_weight = float(weights.sum())
+        if total_weight <= 0.0:
+            weights[accepted] = 1.0 / max(int(np.sum(accepted)), 1)
+        else:
+            weights = weights / total_weight
+        for particle_id, (s, w, ok) in enumerate(zip(scores, weights, accepted)):
+            trace.append(
+                {
+                    "selector": "strict_smc",
+                    "generation": int(generation),
+                    "particle": int(particle_id),
+                    "class_name": class_name,
+                    "smc_score": float(s),
+                    "epsilon": float(epsilon),
+                    "weight": float(w),
+                    "accepted": int(ok),
+                    "selected_n": int(n),
+                    "pool_n": int(pool_n),
+                }
+            )
+        if generation == generations - 1:
+            break
+        parents = rng.choice(np.arange(n_particles), size=n_particles - 1, replace=True, p=weights)
+        frac = 1.0 - generation / max(generations - 1, 1)
+        swap_n = max(1, int(round(n * (0.015 + 0.09 * frac))))
+        particles = [best_particle.copy()] + [_mutate_particle(particles[int(parent)], pool_n, swap_n, rng) for parent in parents]
+
+    out = pool_cls.iloc[best_particle].copy().reset_index(drop=True)
+    out_x = pool_x[best_particle].astype(np.float32)
+    out["idx"] = np.arange(len(out), dtype=int)
+    out["_row_pos"] = np.arange(len(out), dtype=int)
+    support, _ = v115.support_floor_and_coverage(
+        target_cls.assign(split="train"),
+        out,
+        features=features,
+        rng=rng,
+        max_target_rows=max(150, int(support_max_target_rows)),
+    )
+    cov = float(support.loc[support["subtype"].eq("__class__"), "coverage_q95"].iloc[0]) if not support.empty else 0.0
+    exact = v115.set_objective(target_cls, out, cov, features, rng, {"mmd": 1.0, "swd": 1.0, "cdf": 1.0})
+    trace.append(
+        {
+            "selector": "strict_smc",
+            "generation": int(generations),
+            "particle": -1,
+            "class_name": class_name,
+            "smc_score": float(best_score),
+            "epsilon": float("nan"),
+            "weight": 1.0,
+            "accepted": 1,
+            "selected_n": int(n),
+            "pool_n": int(pool_n),
+            "coverage_q95": cov,
+            **exact,
+        }
+    )
+    return out, out_x, pd.DataFrame(trace)
+
+
 def select_component(
     *,
     cls: str,
@@ -754,7 +914,7 @@ def select_component(
         return pd.DataFrame(), np.zeros((0,) + pool_x.shape[1:], dtype=np.float32), pd.DataFrame()
     if len(pool_cls) < int(final_n):
         raise RuntimeError(f"{cls}/{label} pool too small: need {final_n}, have {len(pool_cls)}")
-    sel, sx, tr = v115.greedy_set_select(
+    sel, sx, tr = strict_smc_set_select(
         target_cls=target_cls,
         pool_cls=pool_cls.reset_index(drop=True),
         pool_x=pool_x,
@@ -764,11 +924,11 @@ def select_component(
         swaps=max(50, int(swaps)),
         class_name=f"{cls}_{label}",
         support_max_target_rows=int(support_rows),
-        device_request=str(device),
-        rff_dim=int(rff_dim),
-        seed=int(seed),
     )
     tr["gap_fill_component"] = str(label)
+    tr["device"] = str(device)
+    tr["rff_dim"] = int(rff_dim)
+    tr["selector_seed"] = int(seed)
     return sel, sx, tr
 
 

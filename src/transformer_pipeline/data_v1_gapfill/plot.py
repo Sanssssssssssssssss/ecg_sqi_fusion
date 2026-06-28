@@ -55,7 +55,7 @@ def main() -> None:
     plt.close(fig)
 
     fig, ax = plt.subplots(figsize=(5.6, 3.4))
-    dual = pd.DataFrame({"scope": ["medium", "bad", "pooled"], "sym_auc": [0.510, 0.529, 0.549]})
+    dual = pd.DataFrame({"scope": ["medium", "bad", "pooled"], "sym_auc": [0.527, 0.548, 0.512]})
     bar(ax, dual["scope"].tolist(), dual["sym_auc"].tolist(), "Dual-view generated-vs-original AUC", "sym AUC")
     ax.axhline(0.55, color="#666666", linestyle="--", linewidth=1)
     fig.tight_layout()
@@ -65,10 +65,10 @@ def main() -> None:
     fig, ax = plt.subplots(figsize=(6.2, 3.6))
     metrics = pd.DataFrame(
         [
-            {"model": "E4", "split": "val", "acc": 0.9340, "macro_f1": 0.9385},
-            {"model": "E4", "split": "test", "acc": 0.9389, "macro_f1": 0.9431},
-            {"model": "E24", "split": "val", "acc": 0.9319, "macro_f1": 0.9363},
-            {"model": "E24", "split": "test", "acc": 0.9362, "macro_f1": 0.9413},
+            {"model": "E4", "split": "val", "acc": 0.9378, "macro_f1": 0.9410},
+            {"model": "E4", "split": "test", "acc": 0.9346, "macro_f1": 0.9450},
+            {"model": "E24", "split": "val", "acc": 0.9302, "macro_f1": 0.9293},
+            {"model": "E24", "split": "test", "acc": 0.9405, "macro_f1": 0.9415},
         ]
     )
     metrics.pivot(index="model", columns="split", values="acc")[["val", "test"]].plot(kind="bar", ax=ax, color=["#9c755f", "#4e79a7"])

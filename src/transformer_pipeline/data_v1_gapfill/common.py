@@ -9,7 +9,7 @@ from src.utils.paths import project_root
 
 ROOT = project_root()
 RUN_TAG = "e311_but_node_ladder_tuning_10s_2026_06_08"
-POLICY = "v116_gapfill_dual_goodorig_nm99_ms10_rnd_s20260876"
+POLICY = "v116_gapfill_dual_goodorig_nm99_ms10_smc_s20260876"
 SPLIT_ALIAS = "v116_gapfill_dual_goodorig_nm99__k1_s20260876"
 ANALYSIS = ROOT / "outputs" / "external_benchmarks" / RUN_TAG / "analysis" / "good_medium_geometry_repair"
 SUPPORT = Path(__file__).resolve().parent / "support"

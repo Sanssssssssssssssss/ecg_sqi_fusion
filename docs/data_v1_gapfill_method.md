@@ -11,7 +11,7 @@ training split. Validation and test remain native BUT originals.
 Fixed protocol:
 
 ```text
-policy: v116_gapfill_dual_goodorig_nm99_ms10_rnd_s20260876
+policy: v116_gapfill_dual_goodorig_nm99_ms10_smc_s20260876
 seed: 20260876
 final protocol rows: 31590
 final class rows: good 10530, medium 10530, bad 10530
@@ -68,6 +68,11 @@ Rules:
 - `clean_style` is capped to a tiny supplement and is not a main component.
 - Generated rows are allowed in train only when their donor/linkage resolves to
   original train support.
+- Final medium/bad gap fill uses strict SMC over the generated candidate pools:
+  particles are candidate subsets, each generation scores class-conditional
+  robust-z waveform distribution distance, applies an epsilon accept mask,
+  reweights particles, resamples, and mutates by row swaps. The large candidate
+  bank is a proposal bank, not exact replay.
 
 Current exact train composition:
 
@@ -77,27 +82,28 @@ good:
 
 medium:
   original_but      5199
-  but_native_morph  3050
-  clean_style         30
-  ptb_morph           31
+  but_native_morph  3039
+  clean_style         33
+  ptb_morph           39
 
 bad:
   original_but      1314
-  but_native_morph  6867
-  clean_style         62
-  ptb_morph           67
+  but_native_morph  6837
+  clean_style         71
+  ptb_morph           88
 ```
 
 ## Audits
 
 Main data-side acceptance is dual-view waveform generated-vs-original
 separability, evaluated only on `medium` and `bad`; `good` is excluded because
-it has no generated rows by design.
+it has no generated rows by design. The reported audit is a 5-fold logistic AUC
+over waveform-only dual-view channel summary features.
 
 ```text
-medium sym AUC 0.510
-bad    sym AUC 0.529
-pooled sym AUC 0.549
+medium sym AUC 0.527
+bad    sym AUC 0.548
+pooled sym AUC 0.512
 ```
 
 Leakage and integrity checks:
@@ -129,14 +135,14 @@ Exact-balanced checks:
 
 ```text
 E4:
-  val  acc 0.9340, macro F1 0.9385
-  test acc 0.9389, macro F1 0.9431
-  test recalls: good 0.9687, medium 0.8813, bad 0.9695
+  val  acc 0.9378, macro F1 0.9410
+  test acc 0.9346, macro F1 0.9450
+  test recalls: good 0.9354, medium 0.9209, bad 0.9817
 
 E24:
-  val  acc 0.9319, macro F1 0.9363
-  test acc 0.9362, macro F1 0.9413
-  test recalls: good 0.9592, medium 0.8877, bad 0.9756
+  val  acc 0.9302, macro F1 0.9293
+  test acc 0.9405, macro F1 0.9415
+  test recalls: good 0.9421, medium 0.9256, bad 0.9878
 ```
 
 ## Reproduction Commands

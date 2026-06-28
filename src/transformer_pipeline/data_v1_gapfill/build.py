@@ -34,7 +34,7 @@ def command() -> list[str]:
         "--gap-native-morph-min-frac",
         "0.99",
         "--gap-native-morph-selection",
-        "random",
+        "smc",
         "--max-ptb-carriers",
         "9000",
         "--floor-draws",
