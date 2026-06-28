@@ -1427,8 +1427,7 @@ def main() -> None:
         )
         if args.run_model or args.stage == "model_validation":
             cmd = (
-                ".\\.venv\\Scripts\\python.exe outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\run_event_factorized_sqi_conformer.py "
-                f"--stage phase1 --policy {name} --folds 3 --seed {int(args.seed)} --split-seed {int(args.seed)} --epochs 8 --batch-size 96 --no-record-balanced-sampler"
+                f"python -m src.transformer_pipeline.cli train --model E31 --run # policy={name}, seed={int(args.seed)}, no-record-balanced-sampler"
             )
             (report_root / "model_validation_commands.txt").write_text(cmd + "\n", encoding="utf-8")
         print(json.dumps({"report": str(report_root), "protocol": str(PROTOCOL_ROOT / name)}, indent=2), flush=True)
@@ -1548,8 +1547,7 @@ def main() -> None:
         commands = []
         for row in protocol_rows:
             commands.append(
-                ".\\.venv\\Scripts\\python.exe outputs\\external_benchmarks\\e311_but_node_ladder_tuning_10s_2026_06_08\\analysis\\good_medium_geometry_repair\\run_event_factorized_sqi_conformer.py "
-                f"--stage phase1 --policy {row['protocol']} --folds 3 --seed {int(args.seed)} --split-seed {int(args.seed)} --epochs 8 --batch-size 96 --no-record-balanced-sampler"
+                f"python -m src.transformer_pipeline.cli train --model E31 --run # policy={row['protocol']}, seed={int(args.seed)}, no-record-balanced-sampler"
             )
         (report_root / "model_validation_commands.txt").write_text("\n".join(commands) + "\n", encoding="utf-8")
     print(json.dumps({"report": str(report_root), "pareto": str(report_root / "native_budget_pareto.csv")}, indent=2), flush=True)

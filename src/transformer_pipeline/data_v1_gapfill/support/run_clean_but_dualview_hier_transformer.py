@@ -37,8 +37,8 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 PROTOCOL_ROOT = ANALYSIS_DIR / "clean_but_protocols"
-FULL_SIGNALS_PATH = ROOT / "outputs" / "external_benchmarks" / "e311_but_protocol_adaptation_2026_06_03" / "protocols" / "p1_current_10s_center" / "signals.npz"
-FULL_ATLAS_PATH = OUT_ROOT / "original_region_boundary" / "original_region_atlas.csv"
+FULL_SIGNALS_PATH = OUT_ROOT / "source" / "p1_current_10s_center" / "signals.npz"
+FULL_ATLAS_PATH = ANALYSIS_DIR / "original_region_boundary" / "original_region_atlas.csv"
 TX_SCRIPT = SCRIPT_DIR / "run_waveform_transformer_search.py"
 
 CLASS_TO_INT = {"good": 0, "medium": 1, "bad": 2}
@@ -123,7 +123,7 @@ def load_tx_module() -> Any:
 
 
 TX = load_tx_module()
-GEOM = TX.GEOM
+FEATURES = TX.FEATURES
 ALL_FEATURE_COLUMNS = list(TX.FEATURE_COLUMNS)
 FORMAL_FEATURE_COLUMNS = [
     c
@@ -697,7 +697,7 @@ def eval_loader(model: nn.Module, loader: DataLoader, device: torch.device) -> t
     p = np.concatenate(probs)
     ap = np.concatenate(aux_pred)
     at = np.concatenate(aux_true)
-    rep = GEOM.metric_report(y, p.argmax(axis=1), p)
+    rep = FEATURES.metric_report(y, p.argmax(axis=1), p)
     rep["aux_mae"] = float(np.mean(np.abs(ap - at)))
     rep["core_aux_mae"] = float(np.mean(np.abs(ap[:, CORE_AUX_IDX] - at[:, CORE_AUX_IDX]))) if CORE_AUX_IDX else rep["aux_mae"]
     return rep, p, ap, at
@@ -748,7 +748,7 @@ def bucket_mask(ds: FullButDataset, bucket: str) -> np.ndarray:
 
 def bucket_report(ds: FullButDataset, probs: np.ndarray, bucket: str) -> dict[str, Any]:
     mask = bucket_mask(ds, bucket)
-    return GEOM.metric_report(ds.y[mask], probs.argmax(axis=1)[mask], probs[mask])
+    return FEATURES.metric_report(ds.y[mask], probs.argmax(axis=1)[mask], probs[mask])
 
 
 def train_candidate(policy: str, candidate: str, cfg: dict[str, Any], args: argparse.Namespace) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:

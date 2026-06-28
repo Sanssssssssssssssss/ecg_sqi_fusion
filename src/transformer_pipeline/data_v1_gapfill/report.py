@@ -5,7 +5,7 @@ from typing import Any
 
 import pandas as pd
 
-from .common import POLICY, ROOT, protocol_dir, report_dir, split_dir
+from .common import ARTIFACTS, POLICY, protocol_dir, report_dir, split_dir
 
 
 ORDER = ["good", "medium", "bad"]
@@ -143,8 +143,8 @@ def write_report() -> Path:
     val_test_generated = 0
     if not split.empty:
         val_test_generated = int((split["split"].isin(["val", "test"]) & ~split["v116_candidate_type"].eq("original_but")).sum())
-    out = ROOT / "docs" / "data_v1_fit_report.md"
-    fig_dir = ROOT / "docs" / "data_v1_figures"
+    out = ARTIFACTS / "reports" / "data_v1_fit_report.md"
+    fig_dir = ARTIFACTS / "figures"
     lines = [
         "# Data v1 Fit Report",
         "",

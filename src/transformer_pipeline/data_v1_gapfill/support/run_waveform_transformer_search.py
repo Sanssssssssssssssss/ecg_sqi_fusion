@@ -108,7 +108,7 @@ def load_arch_module() -> Any:
 
 
 ARCH = load_arch_module()
-GEOM = ARCH.GEOM
+FEATURES = ARCH.FEATURES
 FEATURE_COLUMNS = list(ARCH.FEATURE_COLUMNS)
 CORE_AUX_IDX = list(ARCH.CORE_AUX_IDX)
 
@@ -392,7 +392,7 @@ def train_candidate(name: str, cfg: dict[str, Any], args: argparse.Namespace) ->
     metric_rows = [
         ARCH.metric_row(name, "synthetic_val", val_rep),
         ARCH.metric_row(name, "synthetic_test", test_rep),
-        ARCH.metric_row(f"{name}_badcal", "synthetic_test", GEOM.metric_report(test_ds.y, ARCH.apply_bad_threshold(test_probs, threshold), test_probs)),
+            ARCH.metric_row(f"{name}_badcal", "synthetic_test", FEATURES.metric_report(test_ds.y, ARCH.apply_bad_threshold(test_probs, threshold), test_probs)),
         ARCH.metric_row(name, "original_test_all_10s+", ARCH.bucket_report(original_ds, orig_probs, "original_test_all_10s+")),
         ARCH.metric_row(f"{name}_badcal", "original_test_all_10s+", ARCH.bucket_report(original_ds, orig_probs, "original_test_all_10s+", threshold)),
         ARCH.metric_row(name, "original_all_10s+", ARCH.bucket_report(original_ds, orig_probs, "original_all_10s+")),
@@ -449,7 +449,7 @@ def eval_loader(model: nn.Module, loader: DataLoader, device: torch.device) -> t
         ys.append(batch["y"].numpy())
     y = np.concatenate(ys)
     p = np.concatenate(probs)
-    rep = GEOM.metric_report(y, p.argmax(axis=1), p)
+    rep = FEATURES.metric_report(y, p.argmax(axis=1), p)
     rep["aux_mae"] = float(np.mean(np.stack(aux_abs)))
     rep["core_aux_mae"] = float(np.mean(np.stack(aux_abs)[:, CORE_AUX_IDX])) if CORE_AUX_IDX else rep["aux_mae"]
     return rep, p

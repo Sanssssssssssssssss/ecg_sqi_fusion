@@ -32,7 +32,7 @@ def import_local(name: str, path: Path) -> Any:
 
 
 DUAL = import_local("dualview_for_auc", HERE / "run_clean_but_dualview_hier_transformer.py")
-REPORT_ROOT = HERE.parents[4] / "reports" / "external_benchmarks" / "e311_but_node_ladder_tuning_10s_2026_06_08" / "analysis" / "good_medium_geometry_repair" / "dual_generated_auc"
+REPORT_ROOT = DUAL.REPORT_DIR / "dual_generated_auc"
 
 
 def lp(path: Path) -> str:

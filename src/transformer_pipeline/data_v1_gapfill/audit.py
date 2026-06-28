@@ -9,6 +9,7 @@ from .common import POLICY, protocol_dir, split_dir
 
 EXPECTED_TYPES = ["but_native_morph", "clean_style", "original_but", "ptb_morph"]
 EXPECTED_PROTOCOL = {"bad": 10530, "good": 10530, "medium": 10530}
+EXPECTED_ORIGINAL = {"bad": 1656, "good": 10530, "medium": 6449}
 EXPECTED_TRAIN = {"bad": 8310, "good": 8310, "medium": 8310}
 
 
@@ -80,6 +81,8 @@ def validate(out: dict[str, Any]) -> None:
     checks = {
         "protocol_class_counts": out["protocol_class_counts"] == EXPECTED_PROTOCOL,
         "protocol_rows": out["protocol_rows"] == 31590,
+        "original_but_class_counts": out["original_but_class_counts"] == EXPECTED_ORIGINAL,
+        "original_but_rows": out["original_but_rows"] == 18635,
         "train_class_counts": out["train_class_counts"] == EXPECTED_TRAIN,
         "val_test_generated_rows": out["val_test_generated_rows"] == 0,
         "train_generated_donor_split_problems": out["train_generated_donor_split_problems"] == 0,

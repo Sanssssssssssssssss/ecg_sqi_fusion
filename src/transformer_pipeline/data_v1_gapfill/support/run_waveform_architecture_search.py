@@ -36,12 +36,12 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset
 
 
-GEOM_SCRIPT = ANALYSIS_DIR / "uformer_geometry_branch_experiment.py"
+FEATURE_SCRIPT = SCRIPT_DIR / "waveform_feature_extractor.py"
 NODE_ID = "N17043_gm_probe"
 VARIANT_ID = "nl_n17043_gm_trim_bad_boundaryblocks_teacherwall_goodsafe_5e30e8c689a6"
 DATA_DIR = OUT_ROOT / "synthetic_variants" / VARIANT_ID / "datasets"
-SIGNALS_PATH = ROOT / "outputs" / "external_benchmarks" / "e311_but_protocol_adaptation_2026_06_03" / "protocols" / "p1_current_10s_center" / "signals.npz"
-ORIGINAL_ATLAS = OUT_ROOT / "original_region_boundary" / "original_region_atlas.csv"
+SIGNALS_PATH = OUT_ROOT / "source" / "p1_current_10s_center" / "signals.npz"
+ORIGINAL_ATLAS = ANALYSIS_DIR / "original_region_boundary" / "original_region_atlas.csv"
 
 CLASS_TO_INT = {"good": 0, "medium": 1, "bad": 2}
 LABELS = [0, 1, 2]
@@ -144,18 +144,18 @@ CANDIDATES = {
 }
 
 
-def load_geom_module() -> Any:
-    spec = importlib.util.spec_from_file_location("uformer_geometry_branch_experiment", GEOM_SCRIPT)
+def load_feature_module() -> Any:
+    spec = importlib.util.spec_from_file_location("waveform_feature_extractor", FEATURE_SCRIPT)
     if spec is None or spec.loader is None:
-        raise RuntimeError(f"cannot load {GEOM_SCRIPT}")
+        raise RuntimeError(f"cannot load {FEATURE_SCRIPT}")
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
 
 
-GEOM = load_geom_module()
-FEATURE_COLUMNS = list(GEOM.FEATURE_COLUMNS)
+FEATURES = load_feature_module()
+FEATURE_COLUMNS = list(FEATURES.FEATURE_COLUMNS)
 CORE_AUX_IDX = [FEATURE_COLUMNS.index(c) for c in CORE_AUX_COLUMNS if c in FEATURE_COLUMNS]
 
 
@@ -496,7 +496,7 @@ def train_candidate(name: str, cfg: dict[str, Any], args: argparse.Namespace) ->
     metric_rows = [
         metric_row(name, "synthetic_val", val_rep),
         metric_row(name, "synthetic_test", test_rep),
-        metric_row(f"{name}_badcal", "synthetic_test", GEOM.metric_report(test_ds.y, apply_bad_threshold(test_probs, threshold), test_probs)),
+        metric_row(f"{name}_badcal", "synthetic_test", FEATURES.metric_report(test_ds.y, apply_bad_threshold(test_probs, threshold), test_probs)),
         metric_row(name, "original_test_all_10s+", bucket_report(original_ds, orig_probs, "original_test_all_10s+")),
         metric_row(f"{name}_badcal", "original_test_all_10s+", bucket_report(original_ds, orig_probs, "original_test_all_10s+", threshold)),
         metric_row(name, "original_all_10s+", bucket_report(original_ds, orig_probs, "original_all_10s+")),
@@ -562,7 +562,7 @@ def eval_loader(model: nn.Module, loader: DataLoader, device: torch.device) -> t
         ys.append(batch["y"].numpy())
     y = np.concatenate(ys)
     p = np.concatenate(probs)
-    rep = GEOM.metric_report(y, p.argmax(axis=1), p)
+    rep = FEATURES.metric_report(y, p.argmax(axis=1), p)
     rep["aux_mae"] = float(np.mean(np.stack(aux_abs)))
     rep["core_aux_mae"] = float(np.mean(np.stack(aux_abs)[:, CORE_AUX_IDX])) if CORE_AUX_IDX else rep["aux_mae"]
     return rep, p
@@ -572,7 +572,7 @@ def calibrate_bad_threshold(y_val: np.ndarray, probs_val: np.ndarray) -> float:
     best: tuple[tuple[float, float, float], float] | None = None
     for threshold in np.round(np.linspace(0.01, 0.95, 95), 2):
         pred = apply_bad_threshold(probs_val, float(threshold))
-        rep = GEOM.metric_report(y_val, pred, probs_val)
+        rep = FEATURES.metric_report(y_val, pred, probs_val)
         score = (rep["acc"], rep["macro_f1"], min(rep["good_recall"], rep["medium_recall"], rep["bad_recall"]))
         if best is None or score > best[0]:
             best = (score, float(threshold))
@@ -603,7 +603,7 @@ def bucket_mask(ds: OriginalWaveDataset, bucket: str) -> np.ndarray:
 def bucket_report(ds: OriginalWaveDataset, probs: np.ndarray, bucket: str, threshold: float | None = None) -> dict[str, Any]:
     mask = bucket_mask(ds, bucket)
     pred = probs.argmax(axis=1).astype(np.int64) if threshold is None else apply_bad_threshold(probs, threshold)
-    return GEOM.metric_report(ds.y[mask], pred[mask], probs[mask])
+    return FEATURES.metric_report(ds.y[mask], pred[mask], probs[mask])
 
 
 def metric_row(candidate: str, bucket: str, rep: dict[str, Any]) -> dict[str, Any]:

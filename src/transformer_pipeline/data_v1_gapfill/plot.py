@@ -5,7 +5,7 @@ from typing import Any
 import pandas as pd
 
 from .audit import load_atlas
-from .common import POLICY, ROOT, protocol_dir, report_dir, split_dir
+from .common import ARTIFACTS, POLICY, protocol_dir, report_dir, split_dir
 
 
 def bar(ax: Any, labels: list[str], values: list[float], title: str, ylabel: str = "rows") -> None:
@@ -31,7 +31,7 @@ def main() -> None:
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    out = ROOT / "docs" / "data_v1_figures"
+    out = ARTIFACTS / "figures"
     out.mkdir(parents=True, exist_ok=True)
     atlas = load_atlas(protocol_dir() / "original_region_atlas.csv")
     split = load_atlas(split_dir() / "original_region_atlas.csv")

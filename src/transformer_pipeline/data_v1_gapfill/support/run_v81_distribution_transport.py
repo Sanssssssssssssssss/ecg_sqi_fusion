@@ -45,7 +45,7 @@ from support_paths import ANALYSIS_DIR, OUT_ROOT, REPORT_ROOT, ROOT, RUN_TAG  # 
 
 DEFAULT_REPORT_DIR = REPORT_ROOT / "analysis" / "good_medium_geometry_repair" / "v81_distribution_transport"
 
-V37_BUILDER = ANALYSIS_DIR / "build_ptb_v37_subtype_balanced_distribution.py"
+V37_BUILDER = SCRIPT_DIR / "build_ptb_v37_subtype_balanced_distribution.py"
 DEFAULT_BUT_PROTOCOL = (
     ANALYSIS_DIR
     / "clean_but_protocols"

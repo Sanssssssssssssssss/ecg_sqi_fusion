@@ -159,7 +159,7 @@ def load_dual_module() -> Any:
 
 DUAL = load_dual_module()
 TX = DUAL.TX
-GEOM = DUAL.GEOM
+FEATURES = DUAL.FEATURES
 FORMAL_FEATURE_COLUMNS = list(DUAL.FORMAL_FEATURE_COLUMNS)
 FACTOR_COLUMNS = [c for c in FACTOR_COLUMNS_REQUESTED if c in FORMAL_FEATURE_COLUMNS]
 if "detector_agreement" not in FACTOR_COLUMNS:
@@ -1184,7 +1184,7 @@ def basic_metric(y_true: np.ndarray, probs: np.ndarray, supported_only: bool = F
     y_pred = np.argmax(probs, axis=1)
     labels = [0, 1, 2] if not supported_only else [c for c in [0, 1, 2] if np.any(y_true == c)]
     labels = labels or [0, 1, 2]
-    rep = GEOM.metric_report(y_true, y_pred, probs)
+    rep = FEATURES.metric_report(y_true, y_pred, probs)
     rep["macro_f1_sklearn"] = float(f1_score(y_true, y_pred, average="macro", labels=labels, zero_division=0))
     rep["supported_labels"] = ",".join(INT_TO_CLASS[c] for c in labels)
     nonbad = y_true != CLASS_TO_INT["bad"]

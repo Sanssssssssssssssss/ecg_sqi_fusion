@@ -11,7 +11,8 @@ The repository has two deliberately separated lines:
 
 ## Official Mainline
 
-The Transformer mainline is data v1/v116 plus `E31_wave_mechanism_conformer`:
+The Transformer mainline is data v1/v116 plus `E31_wave_mechanism_conformer`.
+All Transformer artifacts are isolated under `outputs/transformer/`:
 
 ```text
 BUT gap5 originals
@@ -30,15 +31,17 @@ auxiliary targets, not scalar input features.
 Mainline command:
 
 ```bash
-python -m src.transformer_pipeline.data_v1_gapfill pipeline --run --train E31
+python -m src.transformer_pipeline.run_all --run --train E31
 ```
 
 Useful checks:
 
 ```bash
-python -m compileall -q src/sqi_pipeline src/transformer_pipeline/data_v1_gapfill src/utils
-python -m src.transformer_pipeline.data_v1_gapfill audit
-python -m src.transformer_pipeline.data_v1_gapfill train-check --model E31
+python -m compileall -q src/sqi_pipeline src/transformer_pipeline src/utils
+python -m src.transformer_pipeline.cli extract-but --run
+python -m src.transformer_pipeline.cli build-v116 --run
+python -m src.transformer_pipeline.cli audit
+python -m src.transformer_pipeline.cli train --model E31
 ```
 
 Current data contract:
@@ -69,6 +72,12 @@ Classical SQI/ML pipeline and baseline command line entrypoint.
 
 `src/transformer_pipeline/data_v1_gapfill/`
 Current v116 data build, audit, plot, report, and E31 training-check entrypoint.
+
+`src/transformer_pipeline/data/`
+BUT QDB extraction and clean gap5 source materialization.
+
+`supplemental_transformer_experiments/`
+Lightweight wrappers for extra diagnostics. Outputs go to `outputs/transformer/supplemental/`.
 
 ## Environment
 
