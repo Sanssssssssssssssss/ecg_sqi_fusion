@@ -14,6 +14,11 @@
 /artifact1/
 /models/
 /data/
+/tmp/
+
+# Generated experiment reports. Keep curated writeups/figures in docs/.
+/reports/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysis/good_medium_geometry_repair/
+/reports/v116_native_budget_repair_clipped/
 
 # ======================
 # IDE
