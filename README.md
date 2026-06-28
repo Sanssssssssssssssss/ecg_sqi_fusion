@@ -28,6 +28,11 @@ Validation and test stay pure `original_but`; only the training split is balance
 The model input is waveform-derived channels only. SQI-like factors remain
 auxiliary targets, not scalar input features.
 
+`extract-but` rebuilds raw BUT fixed-10s windows and clean candidate pools.
+The historical CleanBUT PCA/kNN support pool is restored as an explicit support
+asset so v116 candidate ordering stays identical to the validated line; the
+final v116 audit is where `original_but = 18635` is enforced.
+
 Mainline command:
 
 ```bash

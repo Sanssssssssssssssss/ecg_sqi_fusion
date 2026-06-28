@@ -20,6 +20,8 @@ from src.transformer_pipeline.config import TransformerPipelineConfig
 
 OLD_TAG = "e311_but_node_ladder_tuning_10s_2026_06_08"
 OLD_P1_TAG = "e311_but_protocol_adaptation_2026_06_03"
+SUPPORT_POLICY = "margin_ge_5s_keep_outlier_drop_mediumlike_bad_seed20260623_v37subtype_fixed"
+PTB_CARRIER_POLICY = "raw_ptbxl_lead1_clean_noise_notes_max9000_seed20260680"
 FS_TARGET = 125
 WIN_SEC = 10
 N_TARGET = FS_TARGET * WIN_SEC
@@ -43,6 +45,9 @@ def now() -> str:
 
 
 def archive_root(root: Path) -> Path:
+    # CleanBUT PCA/kNN support artifacts predate the current cleaned source tree.
+    # Keep them explicit: raw BUT is rebuilt here, support assets are restored
+    # only to preserve the historical v116 data distribution exactly.
     return root.parent / "ecg_keep_20260528_172844" / "outputs_archive" / "external_benchmarks"
 
 
@@ -447,24 +452,32 @@ def copy_tree(src: Path, dst: Path, *, force: bool) -> bool:
     return True
 
 
-def ensure_legacy_assets(cfg: TransformerPipelineConfig) -> dict[str, Any]:
-    # Some pre-v116 helpers were never tracked. Restore the exact old assets
-    # from the local archive so v116 remains bitwise comparable.
+def ensure_cleanbut_support_assets(cfg: TransformerPipelineConfig) -> dict[str, Any]:
+    """Restore historical support pools required by the v116 generator.
+
+    The v116 line was tuned against a CleanBUT PCA/kNN support pool and a raw
+    PTB carrier pool. Recomputing those old support pools with simplified code
+    changes candidate ordering, so the final reproducible line restores the
+    exact support assets and then audits the final protocol independently.
+    """
     archive = archive_root(cfg.root) / OLD_TAG / "analysis" / "good_medium_geometry_repair"
     pairs = [
         (
-            archive / "clean_but_protocols" / "margin_ge_5s_keep_outlier_drop_mediumlike_bad_seed20260623_v37subtype_fixed",
-            cfg.analysis_dir / "clean_but_protocols" / "margin_ge_5s_keep_outlier_drop_mediumlike_bad_seed20260623_v37subtype_fixed",
+            archive / "clean_but_protocols" / SUPPORT_POLICY,
+            cfg.analysis_dir / "clean_but_protocols" / SUPPORT_POLICY,
         ),
         (
-            archive / "raw_ptbxl_carrier_protocols" / "raw_ptbxl_lead1_clean_noise_notes_max9000_seed20260680",
-            cfg.analysis_dir / "raw_ptbxl_carrier_protocols" / "raw_ptbxl_lead1_clean_noise_notes_max9000_seed20260680",
+            archive / "raw_ptbxl_carrier_protocols" / PTB_CARRIER_POLICY,
+            cfg.analysis_dir / "raw_ptbxl_carrier_protocols" / PTB_CARRIER_POLICY,
         ),
     ]
     copied = []
     for src, dst in pairs:
-        copied.append({"src": str(src), "dst": str(dst), "copied": copy_tree(src, dst, force=cfg.force)})
-    write_json(cfg.artifacts_dir / "source" / "legacy_recovery.json", {"assets": copied})
+        ok = copy_tree(src, dst, force=cfg.force)
+        if not ok:
+            raise FileNotFoundError(f"Missing required CleanBUT support asset: {src}")
+        copied.append({"src": str(src), "dst": str(dst), "copied": ok})
+    write_json(cfg.artifacts_dir / "source" / "cleanbut_support_assets.json", {"assets": copied})
     return {"assets": copied}
 
 
@@ -473,7 +486,7 @@ def audit_source(cfg: TransformerPipelineConfig) -> dict[str, Any]:
     support = (
         cfg.analysis_dir
         / "clean_but_protocols"
-        / "margin_ge_5s_keep_outlier_drop_mediumlike_bad_seed20260623_v37subtype_fixed"
+        / SUPPORT_POLICY
         / "original_region_atlas.csv"
     )
     atlas = pd.read_csv(protocol)
@@ -486,6 +499,9 @@ def audit_source(cfg: TransformerPipelineConfig) -> dict[str, Any]:
         "path": str(protocol),
         "support_path": str(support),
     }
+    expected_support = {"bad": 2391, "good": 15042, "medium": 9212}
+    if out["support_pool_class_counts"] != expected_support or out["support_pool_rows"] != 26645:
+        raise SystemExit(f"CleanBUT support audit failed: {out}")
     print(json.dumps(out, indent=2, sort_keys=True))
     return out
 
@@ -499,10 +515,10 @@ def run(cfg: TransformerPipelineConfig) -> dict[str, Any]:
     margins = build_margin_table(cfg)
     print(f"{now()} build clean protocols")
     clean = build_clean_protocols(cfg)
-    print(f"{now()} ensure legacy v116 assets")
-    legacy = ensure_legacy_assets(cfg)
+    print(f"{now()} ensure CleanBUT support assets")
+    support = ensure_cleanbut_support_assets(cfg)
     source = audit_source(cfg)
-    return {"processed": processed, "p1": p1, "margins": margins, "clean": clean, "legacy": legacy, "source": source}
+    return {"processed": processed, "p1": p1, "margins": margins, "clean": clean, "support": support, "source": source}
 
 
 def main() -> None:
