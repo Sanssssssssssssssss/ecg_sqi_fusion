@@ -1,4 +1,4 @@
-"""Evaluation, denoise metrics, and galleries for the E3.11f Uformer mainline."""
+"""Legacy E3.11f denoise evaluation helpers kept for archived experiments."""
 
 from __future__ import annotations
 
@@ -14,9 +14,8 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
-from src.transformer_pipeline.e311_uformer_data import INT_TO_CLASS
-
 FS = 125
+INT_TO_CLASS = {0: "good", 1: "medium", 2: "bad"}
 
 
 def write_json(path: Path, payload: Any) -> None:

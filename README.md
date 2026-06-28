@@ -2,91 +2,71 @@
 
 Research code for ECG signal-quality assessment, noise-aware ECG denoising, and Transformer-based SQI classification.
 
-The repository now has two deliberately separated lines:
+The repository has two deliberately separated lines:
 
 1. `src/sqi_pipeline/`: classical SQI baselines. This line is preserved as-is.
-2. `src/transformer_pipeline/`: PTB-XL Lead I Transformer/Uformer research and the current E3.11f mainline.
+2. `src/transformer_pipeline/`: waveform Transformer SQI research and the current v116/E31 mainline.
 
 ## Current Mainline
 
-The thesis/mainline method is E3.11f `a_repr_detach_full_tokens`:
+The current Transformer mainline is data v1/v116 plus `E31_wave_mechanism_conformer`:
 
 ```text
-noisy ECG
-  -> Conv1D local stem
-  -> hierarchical Uformer/Transformer encoder
-  -> U-shaped decoder
-  -> noise_hat
-  -> denoise = noisy - 0.9 * noise_hat
-
-multi-scale Uformer tokens + bottleneck + noisy/denoised/residual summaries
-  -> detached feature vector
-  -> small MLP SQI/classifier head
+BUT gap5 originals
+  -> record-heldout split
+  -> train-only medium/bad gap fill
+  -> dual-view waveform channels
+  -> named-query SQI Conformer
+  -> mechanism auxiliary heads
   -> good / medium / bad
 ```
 
-Why detach: previous loss-conflict audits showed CE can keep classification high while damaging denoise. The classifier therefore reads the mature denoising representation, while denoiser updates are governed by denoise loss or very small continuation loss.
+Validation and test stay pure `original_but`; only the training split is balanced.
+The model input is waveform-derived channels only. SQI-like factors remain
+auxiliary targets, not scalar input features.
 
 Mainline command:
 
 ```bash
-python -m src.transformer_pipeline.train_uformer_mainline --stage all
+python -m src.transformer_pipeline.data_v1_gapfill pipeline --run --train E31
 ```
 
 Useful checks:
 
 ```bash
-python -m compileall src/transformer_pipeline
-python -m src.transformer_pipeline.train_uformer_mainline --stage dry_run
-python -m src.transformer_pipeline.train_uformer_mainline --stage split_audit
+python -m compileall -q src/transformer_pipeline/data_v1_gapfill src/transformer_pipeline/models
+python -m src.transformer_pipeline.data_v1_gapfill audit
+python -m src.transformer_pipeline.data_v1_gapfill train-check --model E31
 ```
 
-Default output:
+Current data contract:
 
 ```text
-outputs/mainline/e311_uformer_full_tokens_detach_seed0/
-  ckpt_best.pt
-  test_report.json
-  train_log.json
-  split_audit.json
-  denoise_eval/
-    denoise_metrics.json
-    test_denoise_outputs.npz
-  visuals/
-    balanced_gallery.png
-    hard_bad_gallery.png
-    good_safety_gallery.png
-    worst_residual_gallery.png
-    qrs_tst_focus_gallery.png
-    same_sample_stage1_stage2_gallery.png
-    train_curves.png
+policy: v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876
+protocol rows: 31590 = 10530/10530/10530
+train: 8310/8310/8310
+val/test: original_but only
+sampler: raw rows, no record-balanced sampler
 ```
 
 ## Mainline Rerun Snapshot
 
-Clean source rerun, seed `0`, full split `10935 / 2184 / 2202`:
+Clean v116 source rerun, seed `20260876`:
 
-- Test acc: `0.98819`
-- Good/medium/bad recall: `0.98910 / 0.97956 / 0.99591`
-- Denoise score: `4.293`
-- SNR gain: `12.386 dB`
-- MSE ratio: `0.0445`
-
-The earlier Uformer ablation winner that selected this architecture reached acc `0.99001`, bad recall `0.99591`, denoise score `4.282`.
+- E31 test acc: `0.9470`
+- E31 macro F1: `0.9574`
+- Good/medium/bad recall: `0.9354 / 0.9541 / 0.9939`
 
 ## Repository Layout
 
 `src/sqi_pipeline/`
-Classical SQI/ML pipeline and baseline command line entrypoint. Do not modify this when working on the Uformer mainline.
+Classical SQI/ML pipeline and baseline command line entrypoint.
+
+`src/transformer_pipeline/data_v1_gapfill/`
+Current v116 data build, audit, plot, report, and E31 training-check entrypoint.
 
 `src/transformer_pipeline/models/mtl_transformer.py`
-Legacy E3.11 multi-task Transformer baseline, retained for comparison.
-
-`src/transformer_pipeline/models/uformer1d.py`
-Current Uformer1D residual denoiser and detached SQI classifier head.
-
-`src/transformer_pipeline/train_uformer_mainline.py`
-Two-stage E3.11f mainline trainer.
+Legacy multi-task Transformer baseline, retained for reproduction.
 
 `reports/experiment_archive/e311_lineage_2026_06_02/`
 GitHub-readable experiment lineage archive: registry, metadata snapshots, selected figures, and reference experiment scripts.
@@ -132,4 +112,4 @@ python -m src.transformer_pipeline.run_preprocess_all --verbose
 python -m src.transformer_pipeline.run_transformer_all --verbose
 ```
 
-The old train step writes under `outputs/transformer/`; the current Uformer mainline writes under `outputs/mainline/`.
+The old train step writes under `outputs/transformer/`; the current mainline is `data_v1_gapfill`.

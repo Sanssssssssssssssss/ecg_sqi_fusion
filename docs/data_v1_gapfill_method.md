@@ -144,7 +144,7 @@ E24:
   test acc 0.9243, macro F1 0.9342
   test recalls: good 0.9326, medium 0.8924, bad 0.9939
 
-E31_wave_mechanism_lite_conformer:
+E31_wave_mechanism_conformer:
   val  acc 0.9432, macro F1 0.9488
   test acc 0.9470, macro F1 0.9574
   test recalls: good 0.9354, medium 0.9541, bad 0.9939
@@ -188,22 +188,22 @@ Run the exact split command:
 python -m src.transformer_pipeline.data_v1_gapfill split --run
 ```
 
-Print the exact E4/E24/E31 training check commands:
+Print the exact E31 training check command:
 
 ```powershell
-python -m src.transformer_pipeline.data_v1_gapfill train-check --model all
+python -m src.transformer_pipeline.data_v1_gapfill train-check --model E31
 ```
 
-Run the exact E4/E24/E31 training checks:
+Run the exact E31 training check:
 
 ```powershell
-python -m src.transformer_pipeline.data_v1_gapfill train-check --model all --run
+python -m src.transformer_pipeline.data_v1_gapfill train-check --model E31 --run
 ```
 
 Run the full line:
 
 ```powershell
-python -m src.transformer_pipeline.data_v1_gapfill pipeline --run --train all
+python -m src.transformer_pipeline.data_v1_gapfill pipeline --run --train E31
 ```
 
 ## Figures

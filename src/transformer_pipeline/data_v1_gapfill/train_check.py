@@ -65,7 +65,7 @@ def command(model: str) -> list[str]:
             "--batch-size",
             "96",
             "--candidates",
-            "E31_wave_mechanism_lite_conformer",
+            "E31_wave_mechanism_conformer",
             "--no-record-balanced-sampler",
         ]
     raise ValueError(f"unknown model: {model}")
@@ -79,6 +79,6 @@ def models(value: str) -> list[str]:
     return [value]
 
 
-def main(*, model: str = "both", run: bool = False) -> None:
+def main(*, model: str = "E31", run: bool = False) -> None:
     for name in models(model):
         run_or_print(command(name), run=run)

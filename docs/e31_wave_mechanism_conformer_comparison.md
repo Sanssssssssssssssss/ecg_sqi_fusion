@@ -1,11 +1,10 @@
-# E31 Wave-Mechanism Lite Comparison
+# E31 Wave-Mechanism Conformer Comparison
 
 ## Summary
 
-`E31_wave_mechanism_lite_conformer` is the clean model-line candidate for the
-v116 gap-fill data line. It keeps the E4 waveform backbone and the E24
-mechanism auxiliary contract, but removes the E24 good/medium-specific decision
-shortcuts.
+`E31_wave_mechanism_conformer` is the main model for the v116 gap-fill data
+line. It keeps the E4 waveform backbone and the E24 mechanism auxiliary
+contract, but removes the E24 good/medium-specific decision shortcuts.
 
 Current data policy:
 
@@ -62,7 +61,7 @@ the same argmax/probability contract.
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | E4 query high-res local-art | 0.946998 | 0.956902 | 0.955366 | 0.920886 | 0.993902 | 0.000593 |
 | E24 subtype-fusion pairrank | 0.924283 | 0.934220 | 0.932574 | 0.892405 | 0.993902 | 0.004154 |
-| E31 wave-mechanism lite | 0.946998 | 0.957427 | 0.935423 | 0.954114 | 0.993902 | 0.000593 |
+| E31 wave-mechanism conformer | 0.946998 | 0.957427 | 0.935423 | 0.954114 | 0.993902 | 0.000593 |
 
 Confusion matrices use rows=true labels and columns=predicted labels in
 `good, medium, bad` order.

@@ -22,7 +22,7 @@ def main() -> None:
     sub.add_parser("report").set_defaults(func=lambda _args: report.main())
 
     train_p = sub.add_parser("train-check")
-    train_p.add_argument("--model", choices=["E4", "E24", "E31", "both", "all"], default="both")
+    train_p.add_argument("--model", choices=["E4", "E24", "E31", "both", "all"], default="E31")
     train_p.add_argument("--run", action="store_true")
     train_p.set_defaults(func=lambda args: train_check.main(model=args.model, run=args.run))
 

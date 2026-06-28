@@ -1372,7 +1372,7 @@ def suite_candidates() -> list[tuple[str, dict[str, Any]]]:
             },
         ),
         (
-            "E31_wave_mechanism_lite_conformer",
+            "E31_wave_mechanism_conformer",
             {
                 **common,
                 "factor_contract": "mechanism",
