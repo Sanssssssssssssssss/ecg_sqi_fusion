@@ -39,6 +39,22 @@ def donor_split_problems(split: pd.DataFrame) -> int:
     return problems
 
 
+def raw_alias_drift(frame: pd.DataFrame) -> dict[str, float]:
+    pairs = {
+        "raw_rms_vs_rms": ("raw_rms", "rms"),
+        "raw_ptp_vs_ptp": ("raw_ptp_p99_p01", "ptp_p99_p01"),
+        "raw_diff_vs_non_qrs_diff": ("raw_diff_abs_p95", "non_qrs_diff_p95"),
+    }
+    out: dict[str, float] = {}
+    for name, (left, right) in pairs.items():
+        if left not in frame.columns or right not in frame.columns:
+            out[name] = float("inf")
+            continue
+        delta = (pd.to_numeric(frame[left], errors="coerce") - pd.to_numeric(frame[right], errors="coerce")).abs()
+        out[name] = float(delta.max(skipna=True))
+    return out
+
+
 def payload() -> dict[str, Any]:
     atlas = load_atlas(protocol_dir() / "original_region_atlas.csv")
     split = load_atlas(split_dir() / "original_region_atlas.csv")
@@ -54,6 +70,7 @@ def payload() -> dict[str, Any]:
         "allowed_candidate_types": sorted(split.loc[split["split"].ne("unused"), "v116_candidate_type"].astype(str).unique().tolist()),
         "missing_class_rows": int(split.loc[split["split"].ne("unused"), "class_name"].isna().sum()),
         "missing_idx_rows": int(pd.to_numeric(split.loc[split["split"].ne("unused"), "idx"], errors="coerce").isna().sum()),
+        "raw_alias_max_abs_delta": raw_alias_drift(atlas),
     }
     out["train_generated_donor_split_problems"] = donor_split_problems(split)
     return out
@@ -69,6 +86,7 @@ def validate(out: dict[str, Any]) -> None:
         "allowed_candidate_types": out["allowed_candidate_types"] == EXPECTED_TYPES,
         "missing_class_rows": out["missing_class_rows"] == 0,
         "missing_idx_rows": out["missing_idx_rows"] == 0,
+        "raw_alias_max_abs_delta": all(float(v) < 1e-4 for v in out["raw_alias_max_abs_delta"].values()),
     }
     failed = [name for name, ok in checks.items() if not ok]
     if failed:

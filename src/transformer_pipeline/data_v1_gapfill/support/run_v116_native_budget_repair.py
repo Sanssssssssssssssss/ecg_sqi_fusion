@@ -196,11 +196,7 @@ def morph_native_signal(
     y = (med + gain * (y - med)).astype(np.float32)
     t = np.linspace(-0.5, 0.5, len(y), dtype=np.float32)
     y = y + baseline * scale * t
-    if str(cls) == "bad":
-        bad_y = v114.apply_bad_mechanism(y, str(subtype), rng)
-        mix = float(rng.uniform(0.03 * strength, 0.12 * strength))
-        y = (1.0 - mix) * y + mix * bad_y
-    elif str(cls) == "medium" and rng.random() < 0.35 * strength:
+    if str(cls) == "medium" and rng.random() < 0.35 * strength:
         y = y + float(rng.uniform(0.004, 0.020)) * strength * scale * v114.fft_band_noise(len(y), rng, 0.35, 8.0)
     y = y + rng.normal(0.0, noise * scale, size=len(y)).astype(np.float32)
     y = v114.soft_clip_like_reference(y, ref, widen=1.28)

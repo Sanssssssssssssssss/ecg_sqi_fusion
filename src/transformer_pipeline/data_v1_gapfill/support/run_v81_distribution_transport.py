@@ -191,10 +191,10 @@ def recompute_protocol_features(frame: pd.DataFrame, signals: np.ndarray, label:
         elif col not in out.columns:
             out[col] = feat[col].to_numpy()
     out = add_consistent_transport_primitives(out, x)
-    return harmonize_feature_aliases(out)
+    return harmonize_feature_aliases(out, prefer_sources=True)
 
 
-def harmonize_feature_aliases(frame: pd.DataFrame) -> pd.DataFrame:
+def harmonize_feature_aliases(frame: pd.DataFrame, *, prefer_sources: bool = False) -> pd.DataFrame:
     """Fill raw feature aliases so BUT/PTB audits use the same semantics.
 
     Some older BUT protocols expose only rms/ptp/non_qrs_diff columns while
@@ -210,7 +210,7 @@ def harmonize_feature_aliases(frame: pd.DataFrame) -> pd.DataFrame:
         "raw_diff_abs_p95": ["non_qrs_diff_p95", "diff_abs_p95"],
     }
     for dst, sources in aliases.items():
-        if dst in out.columns:
+        if dst in out.columns and not prefer_sources:
             vals = pd.to_numeric(out[dst], errors="coerce")
         else:
             vals = pd.Series(np.nan, index=out.index, dtype=float)

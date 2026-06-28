@@ -5,7 +5,7 @@ from typing import Any
 import pandas as pd
 
 from .audit import load_atlas
-from .common import ROOT, protocol_dir, split_dir
+from .common import POLICY, ROOT, protocol_dir, report_dir, split_dir
 
 
 def bar(ax: Any, labels: list[str], values: list[float], title: str, ylabel: str = "rows") -> None:
@@ -13,6 +13,16 @@ def bar(ax: Any, labels: list[str], values: list[float], title: str, ylabel: str
     ax.set_title(title)
     ax.set_ylabel(ylabel)
     ax.tick_params(axis="x", rotation=20)
+
+
+def save_bar(labels: list[str], values: list[float], title: str, ylabel: str, path: Any) -> None:
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(figsize=(6.2, 3.6))
+    bar(ax, labels, values, title, ylabel)
+    fig.tight_layout()
+    fig.savefig(path, dpi=180)
+    plt.close(fig)
 
 
 def main() -> None:
@@ -54,28 +64,29 @@ def main() -> None:
     fig.savefig(out / "train_candidate_type_composition.png", dpi=180)
     plt.close(fig)
 
-    fig, ax = plt.subplots(figsize=(5.6, 3.4))
-    dual = pd.DataFrame({"scope": ["medium", "bad", "pooled"], "sym_auc": [0.527, 0.548, 0.512]})
-    bar(ax, dual["scope"].tolist(), dual["sym_auc"].tolist(), "Dual-view generated-vs-original AUC", "sym AUC")
-    ax.axhline(0.55, color="#666666", linestyle="--", linewidth=1)
-    fig.tight_layout()
-    fig.savefig(out / "dual_auc_summary.png", dpi=180)
-    plt.close(fig)
+    gap = atlas.loc[atlas["class_name"].isin(["medium", "bad"]) & ~atlas["v116_candidate_type"].astype(str).eq("original_but")]
+    if not gap.empty:
+        fig, ax = plt.subplots(figsize=(7.0, 3.8))
+        gap_comp = pd.crosstab(gap["class_name"], gap["v116_candidate_type"], normalize="index").reindex(["medium", "bad"]) * 100
+        gap_comp[[c for c in ["but_native_morph", "ptb_morph", "clean_style"] if c in gap_comp.columns]].plot(kind="bar", stacked=True, ax=ax)
+        ax.set_title("Generated gap component share")
+        ax.set_ylabel("percent of generated gap")
+        ax.tick_params(axis="x", rotation=0)
+        fig.tight_layout()
+        fig.savefig(out / "generated_gap_component_share.png", dpi=180)
+        plt.close(fig)
 
-    fig, ax = plt.subplots(figsize=(6.2, 3.6))
-    metrics = pd.DataFrame(
-        [
-            {"model": "E4", "split": "val", "acc": 0.9378, "macro_f1": 0.9410},
-            {"model": "E4", "split": "test", "acc": 0.9346, "macro_f1": 0.9450},
-            {"model": "E24", "split": "val", "acc": 0.9302, "macro_f1": 0.9293},
-            {"model": "E24", "split": "test", "acc": 0.9405, "macro_f1": 0.9415},
-        ]
-    )
-    metrics.pivot(index="model", columns="split", values="acc")[["val", "test"]].plot(kind="bar", ax=ax, color=["#9c755f", "#4e79a7"])
-    ax.set_title("Exact-balanced model check accuracy")
-    ax.set_ylim(0.88, 0.96)
-    ax.tick_params(axis="x", rotation=0)
-    fig.tight_layout()
-    fig.savefig(out / "model_check_accuracy.png", dpi=180)
-    plt.close(fig)
+    metric_path = report_dir() / f"{POLICY}_global_distribution_metrics.csv"
+    if metric_path.exists():
+        m = pd.read_csv(metric_path)
+        m = m[m["scope"].isin(["class_good", "class_medium", "class_bad"])].copy()
+        m["scope"] = m["scope"].str.replace("class_", "", regex=False)
+        for col, ylabel, filename in [
+            ("rbf_mmd", "RBF MMD", "distribution_rbf_mmd.png"),
+            ("sliced_wasserstein", "sliced Wasserstein", "distribution_sliced_wasserstein.png"),
+            ("sym_domain_auc", "domain AUC", "distribution_domain_auc.png"),
+            ("pca_density_overlap", "PCA overlap", "distribution_pca_overlap.png"),
+        ]:
+            if col in m.columns:
+                save_bar(m["scope"].tolist(), m[col].astype(float).tolist(), f"{POLICY} {ylabel}", ylabel, out / filename)
     print(out)

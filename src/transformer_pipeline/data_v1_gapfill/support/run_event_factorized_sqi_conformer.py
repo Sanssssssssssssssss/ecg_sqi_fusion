@@ -179,7 +179,7 @@ def policy_alias(policy: str) -> str:
 
 
 def v116_gapfill_policy(policy: str) -> bool:
-    return str(policy).startswith("v116_gapfill_dual_goodorig_nm99")
+    return str(policy).startswith("v116_gapfill_dual_goodorig_nm")
 
 
 def v116_original_split(original: pd.DataFrame, seed: int) -> pd.Series:

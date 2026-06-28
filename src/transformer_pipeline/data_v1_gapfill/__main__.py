@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 
-from . import audit, build, pipeline, plot, split, train_check
+from . import audit, build, pipeline, plot, report, split, train_check
 
 
 def main() -> None:
@@ -19,6 +19,7 @@ def main() -> None:
 
     sub.add_parser("audit").set_defaults(func=lambda _args: audit.main())
     sub.add_parser("plot").set_defaults(func=lambda _args: plot.main())
+    sub.add_parser("report").set_defaults(func=lambda _args: report.main())
 
     train_p = sub.add_parser("train-check")
     train_p.add_argument("--model", choices=["E4", "E24", "both"], default="both")
