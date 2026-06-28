@@ -144,37 +144,55 @@ E24:
 Audit the current materialized protocol:
 
 ```powershell
-python -m src.experiment.e311_data_v1 audit
+python -m src.transformer_pipeline.data_v1_gapfill audit
 ```
 
 Create the small method figures:
 
 ```powershell
-python -m src.experiment.e311_data_v1 plot
+python -m src.transformer_pipeline.data_v1_gapfill plot
 ```
 
-Print the exact build commands:
+Print the exact protocol build command:
 
 ```powershell
-python -m src.experiment.e311_data_v1 build
+python -m src.transformer_pipeline.data_v1_gapfill build
 ```
 
-Run the exact build commands:
+Run the exact protocol build command:
 
 ```powershell
-python -m src.experiment.e311_data_v1 build --run
+python -m src.transformer_pipeline.data_v1_gapfill build --run
+```
+
+Print the exact split command:
+
+```powershell
+python -m src.transformer_pipeline.data_v1_gapfill split
+```
+
+Run the exact split command:
+
+```powershell
+python -m src.transformer_pipeline.data_v1_gapfill split --run
 ```
 
 Print the exact E4/E24 training check commands:
 
 ```powershell
-python -m src.experiment.e311_data_v1 train-check --model both
+python -m src.transformer_pipeline.data_v1_gapfill train-check --model both
 ```
 
 Run the exact E4/E24 training checks:
 
 ```powershell
-python -m src.experiment.e311_data_v1 train-check --model both --run
+python -m src.transformer_pipeline.data_v1_gapfill train-check --model both --run
+```
+
+Run the full line:
+
+```powershell
+python -m src.transformer_pipeline.data_v1_gapfill pipeline --run --train both
 ```
 
 ## Figures

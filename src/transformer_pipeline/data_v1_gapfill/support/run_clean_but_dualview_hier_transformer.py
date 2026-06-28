@@ -28,19 +28,18 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset
 
 
-ROOT = Path(r"E:\GPTProject2\ecg")
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+from support_paths import ANALYSIS_DIR, OUT_ROOT, REPORT_DIR, REPORT_ROOT, ROOT, RUN_TAG  # noqa: E402
+
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-RUN_TAG = "e311_but_node_ladder_tuning_10s_2026_06_08"
-OUT_ROOT = ROOT / "outputs" / "external_benchmarks" / RUN_TAG
-REPORT_ROOT = ROOT / "reports" / "external_benchmarks" / RUN_TAG
-ANALYSIS_DIR = OUT_ROOT / "analysis" / "good_medium_geometry_repair"
-REPORT_DIR = REPORT_ROOT / "analysis" / "good_medium_geometry_repair"
 PROTOCOL_ROOT = ANALYSIS_DIR / "clean_but_protocols"
 FULL_SIGNALS_PATH = ROOT / "outputs" / "external_benchmarks" / "e311_but_protocol_adaptation_2026_06_03" / "protocols" / "p1_current_10s_center" / "signals.npz"
 FULL_ATLAS_PATH = OUT_ROOT / "original_region_boundary" / "original_region_atlas.csv"
-TX_SCRIPT = ANALYSIS_DIR / "run_waveform_transformer_search.py"
+TX_SCRIPT = SCRIPT_DIR / "run_waveform_transformer_search.py"
 
 CLASS_TO_INT = {"good": 0, "medium": 1, "bad": 2}
 INT_TO_CLASS = {v: k for k, v in CLASS_TO_INT.items()}

@@ -42,13 +42,14 @@ except Exception:  # pragma: no cover - torch is optional for CPU-only fallback.
     torch = None
 
 
-ANALYSIS_DIR = Path(__file__).parent
-ROOT = ANALYSIS_DIR.parents[4]
-RUN_TAG = "e311_but_node_ladder_tuning_10s_2026_06_08"
-REPORT_ROOT = ROOT / "reports" / "external_benchmarks" / RUN_TAG / "analysis" / "good_medium_geometry_repair"
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+from support_paths import ANALYSIS_DIR, REPORT_DIR, ROOT, RUN_TAG  # noqa: E402
+
+REPORT_ROOT = REPORT_DIR
 PROTOCOL_ROOT = ANALYSIS_DIR / "clean_but_protocols"
 
-sys.path.insert(0, str(ANALYSIS_DIR))
 import run_v81_distribution_transport as V81  # noqa: E402
 
 

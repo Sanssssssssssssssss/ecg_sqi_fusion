@@ -22,7 +22,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(r"E:\GPTProject2\ecg")
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+from support_paths import ANALYSIS_DIR, OUT_ROOT, REPORT_DIR, REPORT_ROOT, ROOT, RUN_TAG  # noqa: E402
+
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -36,12 +40,7 @@ from sklearn.model_selection import StratifiedGroupKFold
 from torch.utils.data import DataLoader, Dataset, WeightedRandomSampler
 
 
-RUN_TAG = "e311_but_node_ladder_tuning_10s_2026_06_08"
-OUT_ROOT = ROOT / "outputs" / "external_benchmarks" / RUN_TAG
-REPORT_ROOT = ROOT / "reports" / "external_benchmarks" / RUN_TAG
-ANALYSIS_DIR = OUT_ROOT / "analysis" / "good_medium_geometry_repair"
-REPORT_DIR = REPORT_ROOT / "analysis" / "good_medium_geometry_repair"
-DUAL_SCRIPT = ANALYSIS_DIR / "run_clean_but_dualview_hier_transformer.py"
+DUAL_SCRIPT = SCRIPT_DIR / "run_clean_but_dualview_hier_transformer.py"
 RUN_DIR = OUT_ROOT / "runs" / "event_factorized_sqi_conformer"
 OUT_DIR = ANALYSIS_DIR / "event_factorized_sqi_conformer"
 REPORT_OUT_DIR = REPORT_DIR / "event_factorized_sqi_conformer"
