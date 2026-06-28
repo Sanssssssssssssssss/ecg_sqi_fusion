@@ -22,13 +22,13 @@ def main() -> None:
     sub.add_parser("report").set_defaults(func=lambda _args: report.main())
 
     train_p = sub.add_parser("train-check")
-    train_p.add_argument("--model", choices=["E4", "E24", "both"], default="both")
+    train_p.add_argument("--model", choices=["E4", "E24", "E31", "both", "all"], default="both")
     train_p.add_argument("--run", action="store_true")
     train_p.set_defaults(func=lambda args: train_check.main(model=args.model, run=args.run))
 
     pipe_p = sub.add_parser("pipeline")
     pipe_p.add_argument("--run", action="store_true")
-    pipe_p.add_argument("--train", choices=["none", "E4", "E24", "both"], default="none")
+    pipe_p.add_argument("--train", choices=["none", "E4", "E24", "E31", "both", "all"], default="none")
     pipe_p.set_defaults(func=lambda args: pipeline.main(run=args.run, train=args.train))
 
     args = parser.parse_args()

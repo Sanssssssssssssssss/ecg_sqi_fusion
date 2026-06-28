@@ -48,11 +48,35 @@ def command(model: str) -> list[str]:
             "E24_e6_subtype_fusion_pairrank",
             "--no-record-balanced-sampler",
         ]
+    if model == "E31":
+        return [
+            py(),
+            str(SUPPORT / "run_gm_mechanism_repair_suite.py"),
+            "--policy",
+            POLICY,
+            "--folds",
+            "1",
+            "--seed",
+            "20260876",
+            "--split-seed",
+            "20260876",
+            "--epochs",
+            "10",
+            "--batch-size",
+            "96",
+            "--candidates",
+            "E31_wave_mechanism_lite_conformer",
+            "--no-record-balanced-sampler",
+        ]
     raise ValueError(f"unknown model: {model}")
 
 
 def models(value: str) -> list[str]:
-    return ["E4", "E24"] if value == "both" else [value]
+    if value == "both":
+        return ["E4", "E24"]
+    if value == "all":
+        return ["E4", "E24", "E31"]
+    return [value]
 
 
 def main(*, model: str = "both", run: bool = False) -> None:

@@ -11,7 +11,7 @@ training split. Validation and test remain native BUT originals.
 Fixed protocol:
 
 ```text
-policy: v116_gapfill_dual_goodorig_nm99_ms10_smc_s20260876
+policy: v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876
 seed: 20260876
 final protocol rows: 31590
 final class rows: good 10530, medium 10530, bad 10530
@@ -82,15 +82,15 @@ good:
 
 medium:
   original_but      5199
-  but_native_morph  3039
-  clean_style         33
-  ptb_morph           39
+  but_native_morph  1061
+  clean_style         31
+  ptb_morph         2019
 
 bad:
   original_but      1314
-  but_native_morph  6837
-  clean_style         71
-  ptb_morph           88
+  but_native_morph  2393
+  clean_style         68
+  ptb_morph         4535
 ```
 
 ## Audits
@@ -135,14 +135,19 @@ Exact-balanced checks:
 
 ```text
 E4:
-  val  acc 0.9378, macro F1 0.9410
-  test acc 0.9346, macro F1 0.9450
-  test recalls: good 0.9354, medium 0.9209, bad 0.9817
+  val  acc 0.9513, macro F1 0.9547
+  test acc 0.9470, macro F1 0.9569
+  test recalls: good 0.9554, medium 0.9209, bad 0.9939
 
 E24:
-  val  acc 0.9302, macro F1 0.9293
-  test acc 0.9405, macro F1 0.9415
-  test recalls: good 0.9421, medium 0.9256, bad 0.9878
+  val  acc 0.9410, macro F1 0.9444
+  test acc 0.9243, macro F1 0.9342
+  test recalls: good 0.9326, medium 0.8924, bad 0.9939
+
+E31_wave_mechanism_lite_conformer:
+  val  acc 0.9432, macro F1 0.9488
+  test acc 0.9470, macro F1 0.9574
+  test recalls: good 0.9354, medium 0.9541, bad 0.9939
 ```
 
 ## Reproduction Commands
@@ -183,22 +188,22 @@ Run the exact split command:
 python -m src.transformer_pipeline.data_v1_gapfill split --run
 ```
 
-Print the exact E4/E24 training check commands:
+Print the exact E4/E24/E31 training check commands:
 
 ```powershell
-python -m src.transformer_pipeline.data_v1_gapfill train-check --model both
+python -m src.transformer_pipeline.data_v1_gapfill train-check --model all
 ```
 
-Run the exact E4/E24 training checks:
+Run the exact E4/E24/E31 training checks:
 
 ```powershell
-python -m src.transformer_pipeline.data_v1_gapfill train-check --model both --run
+python -m src.transformer_pipeline.data_v1_gapfill train-check --model all --run
 ```
 
 Run the full line:
 
 ```powershell
-python -m src.transformer_pipeline.data_v1_gapfill pipeline --run --train both
+python -m src.transformer_pipeline.data_v1_gapfill pipeline --run --train all
 ```
 
 ## Figures
@@ -209,6 +214,10 @@ python -m src.transformer_pipeline.data_v1_gapfill pipeline --run --train both
 
 ![Train candidate-type composition](data_v1_figures/train_candidate_type_composition.png)
 
-![Dual AUC summary](data_v1_figures/dual_auc_summary.png)
+![Generated gap component share](data_v1_figures/generated_gap_component_share.png)
 
-![Model check accuracy](data_v1_figures/model_check_accuracy.png)
+![Distribution RBF MMD](data_v1_figures/distribution_rbf_mmd.png)
+
+![Distribution PCA overlap](data_v1_figures/distribution_pca_overlap.png)
+
+![E31 model comparison](data_v1_figures/e31_model_comparison.png)
