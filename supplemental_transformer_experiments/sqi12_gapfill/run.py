@@ -101,6 +101,7 @@ class TrainConfig:
     heads: int = 4
     factor_weight: float = 0.12
     local_weight: float = 0.08
+    bad_class_weight: float = 1.25
     seed: int = 0
     device: str = "auto"
     num_workers: int = 0
@@ -363,17 +364,17 @@ def native_morph(x: np.ndarray, rng: np.random.Generator) -> np.ndarray:
     y = x.astype(np.float32).copy()
     n = y.shape[0]
     t = np.linspace(0.0, 1.0, n, dtype=np.float32)
-    gain = rng.normal(1.0, 0.055, size=(1, 12)).astype(np.float32)
+    gain = rng.normal(1.0, 0.035, size=(1, 12)).astype(np.float32)
     y *= gain
     for j in range(12):
-        amp = float(np.std(y[:, j]) * rng.uniform(0.015, 0.055))
+        amp = float(np.std(y[:, j]) * rng.uniform(0.010, 0.035))
         phase = float(rng.uniform(0, 2 * math.pi))
         freq = float(rng.uniform(0.25, 0.85))
         y[:, j] += amp * np.sin(2 * math.pi * freq * t + phase)
-    shift = int(rng.integers(-6, 7))
+    shift = int(rng.integers(-4, 5))
     if shift:
         y = np.roll(y, shift, axis=0)
-    y += rng.normal(0.0, max(float(np.std(y)) * 0.006, 1e-5), size=y.shape).astype(np.float32)
+    y += rng.normal(0.0, max(float(np.std(y)) * 0.004, 1e-5), size=y.shape).astype(np.float32)
     return y.astype(np.float32)
 
 
@@ -383,8 +384,8 @@ def align_like_target(src: np.ndarray, target: np.ndarray, rng: np.random.Genera
     t_med = np.median(target, axis=0, keepdims=True)
     t_std = np.std(target, axis=0, keepdims=True)
     y = (src - s_med) / np.maximum(s_std, 1e-6)
-    y = y * np.maximum(t_std, 1e-6) * rng.uniform(0.88, 1.12, size=(1, 12)) + t_med
-    y = 0.70 * y + 0.30 * target
+    y = y * np.maximum(t_std, 1e-6) * rng.uniform(0.94, 1.06, size=(1, 12)) + t_med
+    y = 0.52 * y + 0.48 * target
     y = native_morph(y.astype(np.float32), rng)
     return y.astype(np.float32)
 
@@ -544,17 +545,18 @@ def cmd_build(paths: Paths, *, run: bool, force: bool, seed: int, max_ptb: int) 
     pool_x: list[np.ndarray] = []
     for local_i, global_i in enumerate(train_bad_global):
         row = split.iloc[int(global_i)]
-        pool_x.append(native_morph(original_x[int(global_i)], rng))
-        pool_rows.append(
-            {
-                "record_id": f"{row.record_id}__seta_native_morph__0",
-                "source_record_id": str(row.record_id),
-                "candidate_type": "seta_native_morph",
-                "ptb_ecg_id": "",
-                "ptb_patient_id": "",
-                "style_anchor_record_id": str(row.record_id),
-            }
-        )
+        for copy_i in range(4):
+            pool_x.append(native_morph(original_x[int(global_i)], rng))
+            pool_rows.append(
+                {
+                    "record_id": f"{row.record_id}__seta_native_morph__{copy_i}",
+                    "source_record_id": str(row.record_id),
+                    "candidate_type": "seta_native_morph",
+                    "ptb_ecg_id": "",
+                    "ptb_patient_id": "",
+                    "style_anchor_record_id": str(row.record_id),
+                }
+            )
 
     ptb = ptb_rows(seed + 17, max_ptb)
     attempts = 0
@@ -606,7 +608,7 @@ def cmd_build(paths: Paths, *, run: bool, force: bool, seed: int, max_ptb: int) 
     cols = feature_cols(pool)
     pool["pool_index"] = np.arange(len(pool), dtype=int)
     quotas = {
-        "seta_native_morph": min(int(round(gap * 0.35)), int(pool["candidate_type"].eq("seta_native_morph").sum())),
+        "seta_native_morph": min(int(round(gap * 0.85)), int(pool["candidate_type"].eq("seta_native_morph").sum())),
         "noise_style": min(19, int(round(gap * 0.05)), int(pool["candidate_type"].eq("noise_style").sum())),
     }
     quotas["ptb12_morph"] = gap - int(quotas["seta_native_morph"]) - int(quotas["noise_style"])
@@ -1118,7 +1120,7 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
     model = BinaryMechanismConformer(cfg.width, cfg.layers, cfg.heads, factors.shape[1]).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     best_state: dict[str, torch.Tensor] | None = None
-    best = {"epoch": 0, "val_auc": -1.0, "val_acc": -1.0}
+    best = {"epoch": 0, "val_macro_f1": -1.0, "val_acc": -1.0, "val_auc": -1.0}
     stale = 0
     history: list[dict[str, Any]] = []
     t0 = time.time()
@@ -1131,7 +1133,8 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
             fb = batch["factor"].to(device)
             opt.zero_grad(set_to_none=True)
             out = model(xb)
-            ce = F.cross_entropy(out["logits"], yb)
+            class_weight = torch.as_tensor([cfg.bad_class_weight, 1.0], device=device, dtype=out["logits"].dtype)
+            ce = F.cross_entropy(out["logits"], yb, weight=class_weight)
             fl = F.smooth_l1_loss(out["factor"], fb, beta=0.35)
             local_target = pseudo_local_targets(xb, out["local_logits"].shape[-1])
             ll = F.smooth_l1_loss(torch.tanh(out["local_logits"]), local_target)
@@ -1142,16 +1145,31 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
             losses.append(float(loss.detach().cpu()))
         yv, pv = predict(model, loaders["val"], device)
         vm = metrics_binary(yv, pv)
-        row = {"epoch": epoch, "train_loss": float(np.mean(losses)), **{f"val_{k}": v for k, v in vm.items() if k != "confusion_matrix"}}
+        vm_selected = best_threshold(yv, pv)
+        row = {
+            "epoch": epoch,
+            "train_loss": float(np.mean(losses)),
+            **{f"val_{k}": v for k, v in vm.items() if k != "confusion_matrix"},
+            **{f"val_selected_{k}": v for k, v in vm_selected.items() if k != "confusion_matrix"},
+        }
         history.append(row)
-        improved = (vm["auc"], vm["acc"]) > (best["val_auc"], best["val_acc"])
+        # Avoid picking an uncalibrated all-one-class checkpoint just because a
+        # post-hoc threshold can partially rescue it on the small validation set.
+        fixed_ok = vm["acc"] >= 0.75
+        score = (vm_selected["macro_f1"], vm_selected["acc"], vm["auc"]) if fixed_ok else (-1.0, -1.0, -1.0)
+        improved = score > (best["val_macro_f1"], best["val_acc"], best["val_auc"])
         if improved:
-            best = {"epoch": epoch, "val_auc": vm["auc"], "val_acc": vm["acc"]}
+            best = {"epoch": epoch, "val_macro_f1": vm_selected["macro_f1"], "val_acc": vm_selected["acc"], "val_auc": vm["auc"]}
             best_state = {k: v.detach().cpu() for k, v in model.state_dict().items()}
             stale = 0
         else:
             stale += 1
-        print(f"epoch {epoch:03d} loss={row['train_loss']:.4f} val_acc={vm['acc']:.4f} val_auc={vm['auc']:.4f}", flush=True)
+        print(
+            f"epoch {epoch:03d} loss={row['train_loss']:.4f} "
+            f"val_acc={vm['acc']:.4f} val_auc={vm['auc']:.4f} "
+            f"val_sel_f1={vm_selected['macro_f1']:.4f}",
+            flush=True,
+        )
         if stale >= cfg.patience:
             break
     if best_state is None:
