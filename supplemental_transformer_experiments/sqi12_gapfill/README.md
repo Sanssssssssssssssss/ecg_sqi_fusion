@@ -25,4 +25,20 @@ python -m supplemental_transformer_experiments.sqi12_gapfill.run build --run
 python -m supplemental_transformer_experiments.sqi12_gapfill.run audit
 python -m supplemental_transformer_experiments.sqi12_gapfill.run plot
 python -m supplemental_transformer_experiments.sqi12_gapfill.run train --run
+python -m supplemental_transformer_experiments.sqi12_gapfill.run sqi-baselines --run
 ```
+
+Current waveform-only E31-style default is a soft-tuned version of the same
+binary 12-lead model: lower auxiliary weights, higher unacceptable class
+weight, and no SQI scalar input.
+
+Current generated unacceptable gap fill is PTB-heavy by design:
+
+```text
+ptb12_morph 211 / 383 = 55.1%
+seta_native_morph 153 / 383 = 39.9%
+noise_style 19 / 383 = 5.0%
+```
+
+The model head is still the original E31-style query head. No guard, SQI scalar
+input, or extra classifier head is added for this supplemental line.

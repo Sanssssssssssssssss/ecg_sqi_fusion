@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import random
 import subprocess
 import sys
@@ -10,6 +11,8 @@ import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
+
+os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 
 import matplotlib
 
@@ -91,16 +94,16 @@ class Paths:
 
 @dataclass(frozen=True)
 class TrainConfig:
-    epochs: int = 40
-    patience: int = 8
+    epochs: int = 45
+    patience: int = 9
     batch_size: int = 64
-    lr: float = 2.0e-4
+    lr: float = 1.5e-4
     weight_decay: float = 1.0e-4
     width: int = 96
     layers: int = 3
     heads: int = 4
-    factor_weight: float = 0.12
-    local_weight: float = 0.08
+    factor_weight: float = 0.06
+    local_weight: float = 0.03
     bad_class_weight: float = 1.25
     seed: int = 0
     device: str = "auto"
@@ -608,7 +611,7 @@ def cmd_build(paths: Paths, *, run: bool, force: bool, seed: int, max_ptb: int) 
     cols = feature_cols(pool)
     pool["pool_index"] = np.arange(len(pool), dtype=int)
     quotas = {
-        "seta_native_morph": min(int(round(gap * 0.85)), int(pool["candidate_type"].eq("seta_native_morph").sum())),
+        "seta_native_morph": min(int(round(gap * 0.40)), int(pool["candidate_type"].eq("seta_native_morph").sum())),
         "noise_style": min(19, int(round(gap * 0.05)), int(pool["candidate_type"].eq("noise_style").sum())),
     }
     quotas["ptb12_morph"] = gap - int(quotas["seta_native_morph"]) - int(quotas["noise_style"])
@@ -1032,6 +1035,14 @@ def seed_everything(seed: int) -> None:
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cuda.matmul.allow_tf32 = False
+    torch.backends.cudnn.allow_tf32 = False
+    if torch.cuda.is_available():
+        torch.backends.cuda.enable_flash_sdp(False)
+        torch.backends.cuda.enable_mem_efficient_sdp(False)
+        torch.backends.cuda.enable_math_sdp(True)
+    torch.use_deterministic_algorithms(True, warn_only=True)
 
 
 def metrics_binary(y: np.ndarray, prob: np.ndarray, threshold: float = 0.5) -> dict[str, Any]:
@@ -1228,6 +1239,125 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
     print(json.dumps({"out_dir": str(paths.models), "test": split_metrics["test"]}, indent=2))
 
 
+def macro_f1_from_cm(tn: int, fp: int, fn: int, tp: int) -> float:
+    f1_bad = 2 * tn / max(2 * tn + fp + fn, 1)
+    f1_good = 2 * tp / max(2 * tp + fp + fn, 1)
+    return float((f1_bad + f1_good) / 2)
+
+
+def cmd_sqi_baselines(paths: Paths, *, run: bool, force: bool, device: str) -> None:
+    features = ROOT / "outputs" / "sqi_paper_aligned" / "features" / "record84_norm.parquet"
+    out_dir = paths.out / "baselines"
+    if not run:
+        print(
+            json.dumps(
+                {
+                    "step": "sqi-baselines",
+                    "features": str(features),
+                    "split": str(paths.split_csv),
+                    "out_dir": str(out_dir),
+                },
+                indent=2,
+            )
+        )
+        return
+    if not features.exists():
+        raise SystemExit(f"Missing SQI feature table: {features}")
+    if not paths.split_csv.exists():
+        raise SystemExit(f"Missing strict split: {paths.split_csv}")
+    ensure_dirs(paths)
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    from src.sqi_pipeline.models import lm_mlp_search, svm_tables
+
+    svm_out = out_dir / "svm_mainline_strict"
+    mlp_out = out_dir / "lm_mlp_mainline_strict"
+    svm_tables.run(
+        {
+            "verbose": False,
+            "force": force,
+            "seed": 0,
+            "features_parquet": str(features),
+            "split_csv": str(paths.split_csv),
+            "out_dir": str(svm_out),
+            "paper_mode": True,
+            "threshold_mode": "val_maxacc",
+            "final_trainval": False,
+            "select_metric": "val_auc",
+            "use_standard_scaler": False,
+            "log_each": False,
+        }
+    )
+    lm_mlp_search.run(
+        {
+            "verbose": False,
+            "force": force,
+            "seed": 0,
+            "device": device,
+            "dtype": "float64",
+            "features_parquet": str(features),
+            "split_csv": str(paths.split_csv),
+            "out_dir": str(mlp_out),
+            "tables": False,
+            "threshold_mode": "val_maxacc",
+            "final_trainval": False,
+            "model_select_metric": "val_acc",
+            "final_patience": 15,
+        }
+    )
+
+    split = pd.read_csv(paths.split_csv)
+    split_counts = split.groupby(["split", "quality_record"]).size().unstack(fill_value=0).to_dict()
+    table6 = pd.read_csv(svm_out / "table6_12lead_combo_sqi_seed0.csv")
+    table7 = pd.read_csv(svm_out / "table7_svm_selected5_seed0.csv")
+    svm_all = table6.loc[table6["Group"].eq("All SQI")].iloc[0].to_dict()
+    svm_selected5 = table7.iloc[0].to_dict()
+    mlp = json.loads((mlp_out / "lm_mlp_test_metrics_seed0.json").read_text(encoding="utf-8"))
+    cm = mlp["test_metrics_fixed"]["confusion_matrix"]
+    mlp["test_metrics_fixed"]["macro_f1"] = macro_f1_from_cm(cm["tn"], cm["fp"], cm["fn"], cm["tp"])
+
+    summary = {
+        "task": "SQI scalar baselines on the SQI12 strict original split",
+        "note": "These are SQI-feature comparators. The E31-style model still uses waveform only.",
+        "features": str(features),
+        "split": str(paths.split_csv),
+        "split_counts": split_counts,
+        "svm_all_sqi": {
+            "acc": float(svm_all["Ac_test"]),
+            "auc": float(svm_all["AUC_test"]),
+            "threshold": float(svm_all["threshold"]),
+            "test_oracle_max_acc": float(svm_all["maxAcc_test"]),
+        },
+        "svm_selected5": {
+            "acc": float(svm_selected5["Ac_test"]),
+            "auc": float(svm_selected5["AUC_test"]),
+            "threshold": float(svm_selected5["threshold"]),
+            "test_oracle_max_acc": float(svm_selected5["maxAcc_test"]),
+        },
+        "lm_mlp_84_j_1": {
+            "J": int(mlp["J"]),
+            "acc": float(mlp["test_metrics_fixed"]["acc"]),
+            "macro_f1": float(mlp["test_metrics_fixed"]["macro_f1"]),
+            "auc": float(mlp["test_metrics_fixed"]["auc"]),
+            "threshold": float(mlp["threshold"]),
+            "confusion_matrix": mlp["test_metrics_fixed"]["confusion_matrix"],
+        },
+    }
+    paths.reports.mkdir(parents=True, exist_ok=True)
+    (paths.reports / "sqi_baseline_strict_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    lines = [
+        "# SQI12 Strict SQI Baselines",
+        "",
+        "Comparators use the SQI 84-feature table and this experiment's original-only split.",
+        "",
+        f"- SVM All SQI: acc {summary['svm_all_sqi']['acc']:.4f}, AUC {summary['svm_all_sqi']['auc']:.4f}",
+        f"- SVM selected 5: acc {summary['svm_selected5']['acc']:.4f}, AUC {summary['svm_selected5']['auc']:.4f}",
+        f"- LM-MLP 84-{summary['lm_mlp_84_j_1']['J']}-1: acc {summary['lm_mlp_84_j_1']['acc']:.4f}, macro F1 {summary['lm_mlp_84_j_1']['macro_f1']:.4f}, AUC {summary['lm_mlp_84_j_1']['auc']:.4f}",
+    ]
+    (paths.reports / "sqi_baseline_strict_summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(json.dumps(summary, indent=2))
+
+
 def cmd_pipeline(paths: Paths, args: argparse.Namespace) -> None:
     if not args.run:
         dry("pipeline", paths)
@@ -1253,6 +1383,9 @@ def parse_args() -> argparse.Namespace:
         sp.add_argument("--run", action="store_true")
     sub.add_parser("audit")
     sub.add_parser("plot")
+    baselines = sub.add_parser("sqi-baselines")
+    baselines.add_argument("--run", action="store_true")
+    baselines.add_argument("--device", default="cuda")
     pipe = sub.add_parser("pipeline")
     pipe.add_argument("--run", action="store_true")
     pipe.add_argument("--train", action="store_true")
@@ -1261,8 +1394,8 @@ def parse_args() -> argparse.Namespace:
         sp.add_argument("--max-ptb", type=int, default=2400)
     for sp_name in ["train", "pipeline"]:
         sp = sub.choices[sp_name]
-        sp.add_argument("--epochs", type=int, default=40)
-        sp.add_argument("--patience", type=int, default=8)
+        sp.add_argument("--epochs", type=int, default=45)
+        sp.add_argument("--patience", type=int, default=9)
         sp.add_argument("--batch-size", type=int, default=64)
         sp.add_argument("--device", default="auto")
     return p.parse_args()
@@ -1283,6 +1416,8 @@ def main() -> None:
         cmd_plot(paths)
     elif args.cmd == "train":
         cmd_train(paths, run=args.run, cfg=TrainConfig(epochs=args.epochs, patience=args.patience, batch_size=args.batch_size, seed=args.seed, device=args.device))
+    elif args.cmd == "sqi-baselines":
+        cmd_sqi_baselines(paths, run=args.run, force=args.force, device=args.device)
     elif args.cmd == "pipeline":
         cmd_pipeline(paths, args)
     else:
