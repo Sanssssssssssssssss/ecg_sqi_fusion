@@ -61,7 +61,7 @@ class Paths:
 
     @property
     def models(self) -> Path:
-        return self.out / "models" / "e31_binary"
+        return self.out / "models" / "e31_leadwise_shared"
 
     @property
     def manifest_csv(self) -> Path:
@@ -95,8 +95,8 @@ class Paths:
 @dataclass(frozen=True)
 class TrainConfig:
     epochs: int = 45
-    patience: int = 9
-    batch_size: int = 64
+    patience: int = 45
+    batch_size: int = 24
     lr: float = 1.5e-4
     weight_decay: float = 1.0e-4
     width: int = 96
@@ -381,6 +381,28 @@ def native_morph(x: np.ndarray, rng: np.random.Generator) -> np.ndarray:
     return y.astype(np.float32)
 
 
+def _smooth_time(x: np.ndarray, width: int = 7) -> np.ndarray:
+    pad = width // 2
+    xp = np.pad(x, ((pad, pad), (0, 0)), mode="edge")
+    kernel = np.ones(width, dtype=np.float32) / float(width)
+    return np.stack([np.convolve(xp[:, j], kernel, mode="valid") for j in range(x.shape[1])], axis=1).astype(np.float32)
+
+
+def match_detail_to_target(y: np.ndarray, target: np.ndarray) -> np.ndarray:
+    """ponytail: cheap guard; replace with SQI-in-pool selection if this becomes mainline."""
+    out = y.astype(np.float32).copy()
+    t_diff = np.percentile(np.abs(np.diff(target, axis=0)), 95, axis=0, keepdims=True)
+    cap = np.maximum(1.35 * t_diff, 0.015 * np.std(target, axis=0, keepdims=True))
+    for _ in range(3):
+        y_diff = np.percentile(np.abs(np.diff(out, axis=0)), 95, axis=0, keepdims=True)
+        scale = np.minimum(1.0, cap / np.maximum(y_diff, 1e-6)).astype(np.float32)
+        if float(np.min(scale)) > 0.98:
+            break
+        smooth = _smooth_time(out, width=7)
+        out = smooth + (out - smooth) * scale
+    return out.astype(np.float32)
+
+
 def align_like_target(src: np.ndarray, target: np.ndarray, rng: np.random.Generator) -> np.ndarray:
     s_med = np.median(src, axis=0, keepdims=True)
     s_std = np.std(src, axis=0, keepdims=True)
@@ -388,9 +410,9 @@ def align_like_target(src: np.ndarray, target: np.ndarray, rng: np.random.Genera
     t_std = np.std(target, axis=0, keepdims=True)
     y = (src - s_med) / np.maximum(s_std, 1e-6)
     y = y * np.maximum(t_std, 1e-6) * rng.uniform(0.94, 1.06, size=(1, 12)) + t_med
-    y = 0.52 * y + 0.48 * target
+    y = 0.30 * y + 0.70 * target
     y = native_morph(y.astype(np.float32), rng)
-    return y.astype(np.float32)
+    return match_detail_to_target(y, target)
 
 
 def noise_style(x: np.ndarray, rng: np.random.Generator) -> np.ndarray:
@@ -406,6 +428,20 @@ def noise_style(x: np.ndarray, rng: np.random.Generator) -> np.ndarray:
         width = int(rng.integers(80, 220))
         y[start : start + width] += rng.normal(0.0, 0.09 * scale, size=(min(width, n - start), 12)).astype(np.float32)
     return y.astype(np.float32)
+
+
+def saturation_feature_mask(df: pd.DataFrame) -> pd.Series:
+    return df["median_rms"].gt(40.0) & df["median_ptp"].lt(1.0) & df["median_diff95"].lt(0.05)
+
+
+def saturation_morph(x: np.ndarray, rng: np.random.Generator) -> np.ndarray:
+    y = x.astype(np.float32).copy()
+    n = y.shape[0]
+    t = np.linspace(-0.5, 0.5, n, dtype=np.float32)[:, None]
+    gain = rng.normal(1.0, 0.0012, size=(1, 12)).astype(np.float32)
+    offset = rng.normal(0.0, 0.025, size=(1, 12)).astype(np.float32)
+    drift = rng.normal(0.0, 0.006, size=(1, 12)).astype(np.float32) * t
+    return (y * gain + offset + drift).astype(np.float32)
 
 
 def robust_z_against(target: pd.DataFrame, pool: pd.DataFrame, cols: list[str]) -> tuple[np.ndarray, np.ndarray]:
@@ -549,7 +585,9 @@ def cmd_build(paths: Paths, *, run: bool, force: bool, seed: int, max_ptb: int) 
     for local_i, global_i in enumerate(train_bad_global):
         row = split.iloc[int(global_i)]
         for copy_i in range(4):
-            pool_x.append(native_morph(original_x[int(global_i)], rng))
+            src = original_x[int(global_i)]
+            src_feat = feature_row(src)
+            pool_x.append(saturation_morph(src, rng) if src_feat["median_rms"] > 40.0 and src_feat["median_ptp"] < 1.0 and src_feat["median_diff95"] < 0.05 else native_morph(src, rng))
             pool_rows.append(
                 {
                     "record_id": f"{row.record_id}__seta_native_morph__{copy_i}",
@@ -617,14 +655,43 @@ def cmd_build(paths: Paths, *, run: bool, force: bool, seed: int, max_ptb: int) 
     quotas["ptb12_morph"] = gap - int(quotas["seta_native_morph"]) - int(quotas["noise_style"])
     selected_parts: list[np.ndarray] = []
     trace_parts: list[pd.DataFrame] = []
+    target_sat = saturation_feature_mask(target_features)
+    pool_sat = saturation_feature_mask(pool)
+    target_regular = target_features.loc[~target_sat].reset_index(drop=True)
+    sat_quota = min(
+        int(quotas["seta_native_morph"]),
+        int(round(gap * float(target_sat.mean()))),
+        int((pool["candidate_type"].eq("seta_native_morph") & pool_sat).sum()),
+    )
+    if sat_quota > 0:
+        sub = pool.loc[pool["candidate_type"].eq("seta_native_morph") & pool_sat].reset_index(drop=True)
+        rel_idx, tr = strict_smc_select(
+            target_features.loc[target_sat].reset_index(drop=True),
+            sub,
+            cols,
+            int(sat_quota),
+            seed + 19,
+            noise_cap=0,
+        )
+        selected_parts.append(sub.iloc[rel_idx]["pool_index"].to_numpy(dtype=np.int64))
+        tr["component"] = "seta_native_saturation"
+        tr["component_n"] = int(sat_quota)
+        trace_parts.append(tr)
+        quotas["seta_native_morph"] = int(quotas["seta_native_morph"]) - int(sat_quota)
     for offset, (label, n_select) in enumerate(quotas.items()):
-        sub = pool.loc[pool["candidate_type"].eq(label)].reset_index(drop=True)
+        mask = pool["candidate_type"].eq(label)
+        target_for_label = target_regular if len(target_regular) else target_features
+        if label == "seta_native_morph":
+            mask &= ~pool_sat
+        if label == "ptb12_morph":
+            mask &= pool["median_diff95"].le(float(target_features["median_diff95"].quantile(0.99)))
+        sub = pool.loc[mask].reset_index(drop=True)
         if int(n_select) <= 0:
             continue
         if len(sub) < int(n_select):
             raise SystemExit(f"candidate pool too small for {label}: {len(sub)} < {n_select}")
         rel_idx, tr = strict_smc_select(
-            target_features,
+            target_for_label,
             sub,
             cols,
             int(n_select),
@@ -979,13 +1046,13 @@ class ConformerBlock(nn.Module):
         return x + 0.5 * self.ff2(x)
 
 
-class BinaryMechanismConformer(nn.Module):
+class LeadWiseSharedConformer(nn.Module):
     query_names = ["QRS", "RR_TEMPLATE", "BASELINE", "CONTACT_RESET", "DETAIL_NOISE", "GLOBAL_MORPH", "BORDERLINE", "ARTIFACT"]
 
     def __init__(self, width: int, layers: int, heads: int, factor_dim: int) -> None:
         super().__init__()
         self.hi_stem = nn.Sequential(
-            nn.Conv1d(12, width, kernel_size=11, stride=2, padding=5),
+            nn.Conv1d(8, width, kernel_size=11, stride=2, padding=5),
             nn.GroupNorm(max(1, min(8, width // 8)), width),
             nn.GELU(),
             nn.Conv1d(width, width, kernel_size=7, padding=3),
@@ -999,25 +1066,45 @@ class BinaryMechanismConformer(nn.Module):
         self.hi_cross_attn = nn.MultiheadAttention(width, heads, dropout=0.05, batch_first=True)
         self.local_heads = nn.Conv1d(width, 4, kernel_size=1)
         self.factor_head = nn.Sequential(nn.LayerNorm(width * 6), nn.Linear(width * 6, 160), nn.GELU(), nn.Dropout(0.08), nn.Linear(160, factor_dim))
-        self.head = nn.Sequential(nn.LayerNorm(width * 2), nn.Linear(width * 2, 96), nn.GELU(), nn.Dropout(0.08), nn.Linear(96, 2))
+        self.head = nn.Sequential(nn.LayerNorm(width * 4), nn.Linear(width * 4, 96), nn.GELU(), nn.Dropout(0.08), nn.Linear(96, 2))
+
+    @staticmethod
+    def lead_views(x: torch.Tensor) -> torch.Tensor:
+        b, leads, t = x.shape
+        flat = x.reshape(b * leads, 1, t)
+        diff = F.pad(flat[:, :, 1:] - flat[:, :, :-1], (1, 0))
+        base = F.avg_pool1d(flat, kernel_size=125, stride=1, padding=62)
+        smooth = F.avg_pool1d(flat, kernel_size=31, stride=1, padding=15)
+        detail = flat - smooth
+        views = torch.cat(
+            [flat, diff, diff.abs(), base, detail, flat - base, flat.abs(), torch.tanh(flat * flat)],
+            dim=1,
+        )
+        return views.reshape(b, leads, 8, t)
 
     def forward(self, x: torch.Tensor) -> dict[str, torch.Tensor]:
-        hi = self.hi_stem(x)
+        b, leads, _ = x.shape
+        v = self.lead_views(x).reshape(b * leads, 8, x.shape[-1])
+        hi = self.hi_stem(v)
         hi_tokens = hi.transpose(1, 2)
         ctx = self.ctx_down(hi).transpose(1, 2)
-        q = self.query[None, :, :].expand(x.shape[0], -1, -1)
+        q = self.query[None, :, :].expand(b * leads, -1, -1)
         seq = self.blocks(self.pos(torch.cat([q, ctx], dim=1)))
         query = seq[:, : len(self.query_names), :]
-        ctx = seq[:, len(self.query_names) :, :]
         q_delta, _ = self.hi_cross_attn(query, hi_tokens, hi_tokens, need_weights=False)
         query = query + q_delta
-        factor = self.factor_head(query[:, :6, :].reshape(x.shape[0], -1))
-        pooled = torch.cat([query[:, 6, :], query[:, 7, :]], dim=1)
-        return {"logits": self.head(pooled), "local_logits": self.local_heads(hi), "factor": factor}
+        query = query.reshape(b, leads, len(self.query_names), -1)
+        factor_query = query[:, :, :6, :].mean(dim=1)
+        factor = self.factor_head(factor_query.reshape(b, -1))
+        lead_repr = torch.cat([query[:, :, 6, :], query[:, :, 7, :]], dim=2)
+        pooled = torch.cat([lead_repr.mean(dim=1), lead_repr.max(dim=1).values], dim=1)
+        local_logits = self.local_heads(hi).reshape(b, leads, 4, -1)
+        return {"logits": self.head(pooled), "local_logits": local_logits, "factor": factor}
 
 
 def pseudo_local_targets(x: torch.Tensor, out_len: int) -> torch.Tensor:
-    lead = x[:, 1, :]
+    b, leads, t = x.shape
+    lead = x.reshape(b * leads, t)
     diff = torch.abs(lead[:, 1:] - lead[:, :-1])
     diff = F.pad(diff, (1, 0))
     qrs = (diff - diff.mean(dim=1, keepdim=True)) / diff.std(dim=1, keepdim=True).clamp_min(1e-5)
@@ -1026,7 +1113,7 @@ def pseudo_local_targets(x: torch.Tensor, out_len: int) -> torch.Tensor:
     detail = torch.abs(lead - F.avg_pool1d(lead[:, None, :], kernel_size=31, stride=1, padding=15).squeeze(1))
     flat = (torch.abs(lead) < 0.03).float()
     maps = torch.stack([qrs, baseline, detail, flat], dim=1)
-    return F.interpolate(maps, size=out_len, mode="linear", align_corners=False)
+    return F.interpolate(maps, size=out_len, mode="linear", align_corners=False).reshape(b, leads, 4, out_len)
 
 
 def seed_everything(seed: int) -> None:
@@ -1128,7 +1215,7 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
     protocol, X, y, factors, norm = load_train_arrays(paths)
     loaders, datasets = make_loaders(protocol, X, y, factors, cfg)
     device = torch.device("cuda" if cfg.device == "auto" and torch.cuda.is_available() else cfg.device if cfg.device != "auto" else "cpu")
-    model = BinaryMechanismConformer(cfg.width, cfg.layers, cfg.heads, factors.shape[1]).to(device)
+    model = LeadWiseSharedConformer(cfg.width, cfg.layers, cfg.heads, factors.shape[1]).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     best_state: dict[str, torch.Tensor] | None = None
     best = {"epoch": 0, "val_macro_f1": -1.0, "val_acc": -1.0, "val_auc": -1.0}
@@ -1164,13 +1251,11 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
             **{f"val_selected_{k}": v for k, v in vm_selected.items() if k != "confusion_matrix"},
         }
         history.append(row)
-        # Avoid picking an uncalibrated all-one-class checkpoint just because a
-        # post-hoc threshold can partially rescue it on the small validation set.
         fixed_ok = vm["acc"] >= 0.75
-        score = (vm_selected["macro_f1"], vm_selected["acc"], vm["auc"]) if fixed_ok else (-1.0, -1.0, -1.0)
+        score = (vm["macro_f1"], vm["acc"], vm["auc"]) if fixed_ok else (-1.0, -1.0, -1.0)
         improved = score > (best["val_macro_f1"], best["val_acc"], best["val_auc"])
         if improved:
-            best = {"epoch": epoch, "val_macro_f1": vm_selected["macro_f1"], "val_acc": vm_selected["acc"], "val_auc": vm["auc"]}
+            best = {"epoch": epoch, "val_macro_f1": vm["macro_f1"], "val_acc": vm["acc"], "val_auc": vm["auc"]}
             best_state = {k: v.detach().cpu() for k, v in model.state_dict().items()}
             stale = 0
         else:
@@ -1222,7 +1307,7 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
     torch.save({"model_state_dict": best_state, "config": asdict(cfg), "normalization": norm}, paths.models / "best_model.pt")
     (paths.models / "metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
     lines = [
-        "# SQI12 Gap-Fill E31 Binary",
+        "# SQI12 Gap-Fill E31 Lead-Wise Shared",
         "",
         f"- train/val/test: {metrics['n']['train']} / {metrics['n']['val']} / {metrics['n']['test']}",
         f"- best epoch: {metrics['best_epoch']}",
@@ -1246,7 +1331,8 @@ def macro_f1_from_cm(tn: int, fp: int, fn: int, tp: int) -> float:
 
 
 def cmd_sqi_baselines(paths: Paths, *, run: bool, force: bool, device: str) -> None:
-    features = ROOT / "outputs" / "sqi_paper_aligned" / "features" / "record84_norm.parquet"
+    features = paths.out / "ours_sqi_features" / "features" / "record84_norm.parquet"
+    split_csv = paths.out / "ours_sqi_features" / "splits" / "split_ours_gapfill_for_sqi.csv"
     out_dir = paths.out / "baselines"
     if not run:
         print(
@@ -1254,7 +1340,7 @@ def cmd_sqi_baselines(paths: Paths, *, run: bool, force: bool, device: str) -> N
                 {
                     "step": "sqi-baselines",
                     "features": str(features),
-                    "split": str(paths.split_csv),
+                    "split": str(split_csv),
                     "out_dir": str(out_dir),
                 },
                 indent=2,
@@ -1262,9 +1348,9 @@ def cmd_sqi_baselines(paths: Paths, *, run: bool, force: bool, device: str) -> N
         )
         return
     if not features.exists():
-        raise SystemExit(f"Missing SQI feature table: {features}")
-    if not paths.split_csv.exists():
-        raise SystemExit(f"Missing strict split: {paths.split_csv}")
+        raise SystemExit(f"Missing gap-fill SQI feature table: {features}")
+    if not split_csv.exists():
+        raise SystemExit(f"Missing gap-fill SQI split: {split_csv}")
     ensure_dirs(paths)
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -1278,7 +1364,7 @@ def cmd_sqi_baselines(paths: Paths, *, run: bool, force: bool, device: str) -> N
             "force": force,
             "seed": 0,
             "features_parquet": str(features),
-            "split_csv": str(paths.split_csv),
+            "split_csv": str(split_csv),
             "out_dir": str(svm_out),
             "paper_mode": True,
             "threshold_mode": "val_maxacc",
@@ -1296,7 +1382,7 @@ def cmd_sqi_baselines(paths: Paths, *, run: bool, force: bool, device: str) -> N
             "device": device,
             "dtype": "float64",
             "features_parquet": str(features),
-            "split_csv": str(paths.split_csv),
+            "split_csv": str(split_csv),
             "out_dir": str(mlp_out),
             "tables": False,
             "threshold_mode": "val_maxacc",
@@ -1306,7 +1392,7 @@ def cmd_sqi_baselines(paths: Paths, *, run: bool, force: bool, device: str) -> N
         }
     )
 
-    split = pd.read_csv(paths.split_csv)
+    split = pd.read_csv(split_csv)
     split_counts = split.groupby(["split", "quality_record"]).size().unstack(fill_value=0).to_dict()
     table6 = pd.read_csv(svm_out / "table6_12lead_combo_sqi_seed0.csv")
     table7 = pd.read_csv(svm_out / "table7_svm_selected5_seed0.csv")
@@ -1317,10 +1403,10 @@ def cmd_sqi_baselines(paths: Paths, *, run: bool, force: bool, device: str) -> N
     mlp["test_metrics_fixed"]["macro_f1"] = macro_f1_from_cm(cm["tn"], cm["fp"], cm["fn"], cm["tp"])
 
     summary = {
-        "task": "SQI scalar baselines on the SQI12 strict original split",
+        "task": "SQI scalar baselines on the SQI12 gap-fill train split",
         "note": "These are SQI-feature comparators. The E31-style model still uses waveform only.",
         "features": str(features),
-        "split": str(paths.split_csv),
+        "split": str(split_csv),
         "split_counts": split_counts,
         "svm_all_sqi": {
             "acc": float(svm_all["Ac_test"]),
@@ -1395,7 +1481,7 @@ def parse_args() -> argparse.Namespace:
     for sp_name in ["train", "pipeline"]:
         sp = sub.choices[sp_name]
         sp.add_argument("--epochs", type=int, default=45)
-        sp.add_argument("--patience", type=int, default=9)
+        sp.add_argument("--patience", type=int, default=45)
         sp.add_argument("--batch-size", type=int, default=64)
         sp.add_argument("--device", default="auto")
     return p.parse_args()
