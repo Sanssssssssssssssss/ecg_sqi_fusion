@@ -32,15 +32,20 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import DataLoader, Dataset
 
+from src.sqi_pipeline.noise.dower import dower_3_to_12
+from src.sqi_pipeline.noise.pca import make_3_orthogonal_from_2_paper
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT_DEFAULT = ROOT / "outputs" / "transformer" / "supplemental" / "sqi12_gapfill"
 SETA_DIR = ROOT / "data" / "physionet" / "challenge-2011" / "set-a"
 PTBXL_DIR = ROOT / "data" / "ptb-xl"
+NSTDB_DIR = ROOT / "data" / "physionet" / "nstdb"
 LEADS_12 = ["I", "II", "III", "aVR", "aVL", "aVF", "V1", "V2", "V3", "V4", "V5", "V6"]
 LABEL_TO_Y = {"unacceptable": 0, "acceptable": 1}
 Y_TO_LABEL = {0: "unacceptable", 1: "acceptable"}
 NOISE_NOTE_COLS = ["baseline_drift", "static_noise", "burst_noise", "electrodes_problems"]
+NSTDB_NOISE_TYPES = ("em", "ma")
+_NSTDB_CACHE: dict[str, np.ndarray] | None = None
 
 
 @dataclass(frozen=True)
@@ -105,6 +110,7 @@ class TrainConfig:
     factor_weight: float = 0.06
     local_weight: float = 0.03
     bad_class_weight: float = 1.25
+    grad_accum_steps: int = 1
     seed: int = 0
     device: str = "auto"
     num_workers: int = 0
@@ -403,6 +409,46 @@ def match_detail_to_target(y: np.ndarray, target: np.ndarray) -> np.ndarray:
     return out.astype(np.float32)
 
 
+def nstdb_cache() -> dict[str, np.ndarray] | None:
+    global _NSTDB_CACHE
+    if _NSTDB_CACHE is not None:
+        return _NSTDB_CACHE
+    if not all((NSTDB_DIR / f"{name}.hea").exists() for name in NSTDB_NOISE_TYPES):
+        return None
+    out: dict[str, np.ndarray] = {}
+    for name in NSTDB_NOISE_TYPES:
+        rec = wfdb.rdrecord(str(NSTDB_DIR / name), physical=True)
+        sig = np.asarray(rec.p_signal, dtype=np.float64)
+        if int(round(float(rec.fs))) != 360 or sig.ndim != 2 or sig.shape[1] != 2:
+            return None
+        out[name] = sig
+    _NSTDB_CACHE = out
+    return out
+
+
+def draw_nstdb_noise12_125(n: int, rng: np.random.Generator) -> np.ndarray | None:
+    cache = nstdb_cache()
+    if cache is None:
+        return None
+    name = str(rng.choice(NSTDB_NOISE_TYPES))
+    sig360 = cache[name]
+    seg_len = int(math.ceil(n * 360 / 125)) + 4
+    if sig360.shape[0] <= seg_len:
+        return None
+    start = int(rng.integers(0, sig360.shape[0] - seg_len))
+    seg125 = resample_poly(sig360[start : start + seg_len], up=25, down=72, axis=0)[:n]
+    if seg125.shape[0] < n:
+        seg125 = np.pad(seg125, ((0, n - seg125.shape[0]), (0, 0)), mode="edge")
+    return dower_3_to_12(make_3_orthogonal_from_2_paper(seg125, rng=rng)).astype(np.float32)
+
+
+def scale_noise_fraction(clean: np.ndarray, noise: np.ndarray, fraction: float) -> np.ndarray:
+    clean_sd = np.maximum(np.std(clean, axis=0, keepdims=True), 1e-5)
+    noise0 = noise - np.mean(noise, axis=0, keepdims=True)
+    noise_sd = np.maximum(np.std(noise0, axis=0, keepdims=True), 1e-6)
+    return (noise0 / noise_sd * clean_sd * float(fraction)).astype(np.float32)
+
+
 def align_like_target(src: np.ndarray, target: np.ndarray, rng: np.random.Generator) -> np.ndarray:
     s_med = np.median(src, axis=0, keepdims=True)
     s_std = np.std(src, axis=0, keepdims=True)
@@ -422,11 +468,20 @@ def noise_style(x: np.ndarray, rng: np.random.Generator) -> np.ndarray:
     scale = max(float(np.std(y)), 1e-5)
     wander = np.sin(2 * math.pi * rng.uniform(0.12, 0.45) * t[:, None] + rng.uniform(0, 2 * math.pi, size=(1, 12)))
     y += (0.08 * scale * wander).astype(np.float32)
-    y += rng.normal(0.0, 0.035 * scale, size=y.shape).astype(np.float32)
+    noise12 = draw_nstdb_noise12_125(n, rng)
+    if noise12 is None:
+        y += rng.normal(0.0, 0.035 * scale, size=y.shape).astype(np.float32)
+    else:
+        y += scale_noise_fraction(y, noise12, float(rng.uniform(0.018, 0.045)))
     if rng.random() < 0.45:
         start = int(rng.integers(0, max(1, n - 180)))
         width = int(rng.integers(80, 220))
-        y[start : start + width] += rng.normal(0.0, 0.09 * scale, size=(min(width, n - start), 12)).astype(np.float32)
+        end = min(n, start + width)
+        if noise12 is None:
+            y[start:end] += rng.normal(0.0, 0.09 * scale, size=(end - start, 12)).astype(np.float32)
+        else:
+            burst = scale_noise_fraction(y[start:end], noise12[start:end], float(rng.uniform(0.05, 0.11)))
+            y[start:end] += (burst * np.hanning(end - start)[:, None]).astype(np.float32)
     return y.astype(np.float32)
 
 
@@ -1225,11 +1280,12 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
     for epoch in range(1, cfg.epochs + 1):
         model.train()
         losses: list[float] = []
-        for batch in loaders["train"]:
+        accum = max(1, int(cfg.grad_accum_steps))
+        opt.zero_grad(set_to_none=True)
+        for bi, batch in enumerate(loaders["train"], start=1):
             xb = batch["x"].to(device)
             yb = batch["y"].to(device)
             fb = batch["factor"].to(device)
-            opt.zero_grad(set_to_none=True)
             out = model(xb)
             class_weight = torch.as_tensor([cfg.bad_class_weight, 1.0], device=device, dtype=out["logits"].dtype)
             ce = F.cross_entropy(out["logits"], yb, weight=class_weight)
@@ -1237,9 +1293,11 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
             local_target = pseudo_local_targets(xb, out["local_logits"].shape[-1])
             ll = F.smooth_l1_loss(torch.tanh(out["local_logits"]), local_target)
             loss = ce + cfg.factor_weight * fl + cfg.local_weight * ll
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-            opt.step()
+            (loss / accum).backward()
+            if bi % accum == 0 or bi == len(loaders["train"]):
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+                opt.step()
+                opt.zero_grad(set_to_none=True)
             losses.append(float(loss.detach().cpu()))
         yv, pv = predict(model, loaders["val"], device)
         vm = metrics_binary(yv, pv)
@@ -1455,7 +1513,7 @@ def cmd_pipeline(paths: Paths, args: argparse.Namespace) -> None:
     cmd_audit(paths)
     cmd_plot(paths)
     if args.train:
-        cmd_train(paths, run=True, cfg=TrainConfig(epochs=args.epochs, patience=args.patience, batch_size=args.batch_size, seed=args.seed, device=args.device))
+        cmd_train(paths, run=True, cfg=TrainConfig(epochs=args.epochs, patience=args.patience, batch_size=args.batch_size, grad_accum_steps=args.grad_accum_steps, seed=args.seed, device=args.device))
 
 
 def parse_args() -> argparse.Namespace:
@@ -1482,7 +1540,8 @@ def parse_args() -> argparse.Namespace:
         sp = sub.choices[sp_name]
         sp.add_argument("--epochs", type=int, default=45)
         sp.add_argument("--patience", type=int, default=45)
-        sp.add_argument("--batch-size", type=int, default=64)
+        sp.add_argument("--batch-size", type=int, default=24)
+        sp.add_argument("--grad-accum-steps", type=int, default=1)
         sp.add_argument("--device", default="auto")
     return p.parse_args()
 
@@ -1501,7 +1560,7 @@ def main() -> None:
     elif args.cmd == "plot":
         cmd_plot(paths)
     elif args.cmd == "train":
-        cmd_train(paths, run=args.run, cfg=TrainConfig(epochs=args.epochs, patience=args.patience, batch_size=args.batch_size, seed=args.seed, device=args.device))
+        cmd_train(paths, run=args.run, cfg=TrainConfig(epochs=args.epochs, patience=args.patience, batch_size=args.batch_size, grad_accum_steps=args.grad_accum_steps, seed=args.seed, device=args.device))
     elif args.cmd == "sqi-baselines":
         cmd_sqi_baselines(paths, run=args.run, force=args.force, device=args.device)
     elif args.cmd == "pipeline":
