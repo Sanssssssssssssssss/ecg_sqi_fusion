@@ -140,14 +140,34 @@ def _fig_m1(paths: Paths) -> Path:
     a.set_ylabel("Original-unacceptable recall")
     a.tick_params(axis="x", rotation=25)
     _panel(a, "a")
+    model_colors = {
+        "SQI SVM-RBF selected5": "#7f7f7f",
+        "SQI SVM-RBF all84": "#bdbdbd",
+        "SQI LM-MLP 84-6-1": "#66a61e",
+        "12-lead E31-style waveform comparator": "#4c78a8",
+    }
+    markers = {
+        "SQI SVM-RBF selected5": "o",
+        "SQI SVM-RBF all84": "s",
+        "SQI LM-MLP 84-6-1": "^",
+        "12-lead E31-style waveform comparator": "D",
+    }
     for _, row in models.iterrows():
-        family = "Waveform" if "waveform" in str(row["input"]).lower() else "SQI"
-        b.scatter(row["acceptable_recall"], row["original_unacceptable_recall"], s=38, color=PALETTE[family])
-        b.text(row["acceptable_recall"] + 0.006, row["original_unacceptable_recall"], str(row["model"]).replace("SQI ", ""), fontsize=6)
+        name = str(row["model"])
+        b.scatter(
+            row["acceptable_recall"],
+            row["original_unacceptable_recall"],
+            s=42,
+            color=model_colors.get(name, "#555555"),
+            marker=markers.get(name, "o"),
+            label=name.replace("SQI ", "").replace("12-lead ", ""),
+            linewidth=0,
+        )
     b.set_xlim(0, 1.02)
     b.set_ylim(0, 1.02)
     b.set_xlabel("Acceptable recall")
     b.set_ylabel("Original-unacceptable recall")
+    b.legend(fontsize=6, loc="lower left", bbox_to_anchor=(0.02, 0.02))
     _panel(b, "b")
     fig.tight_layout()
     out = paths.figures / "fig_M1_seta_model_performance"
@@ -178,6 +198,23 @@ def _fig_m2(paths: Paths) -> Path:
     cm_e31 = np.asarray(but["e31"]["three_class"]["confusion"], dtype=int)
     table = pd.read_csv(paths.tables / "but_model_comparison.csv")
     table.to_csv(paths.source_data / "fig_M2_but_models.csv", index=False)
+    recall_rows = []
+    model_labels = {
+        "Linear SVM 84-SQI": "Linear SVM",
+        "LM-MLP 84-J-1": "LM-MLP",
+        "E31 wave-mechanism Conformer": "E31",
+    }
+    for _, row in table.iterrows():
+        for cls, col in [("good", "good_recall"), ("medium", "intermediate_recall"), ("poor", "poor_recall")]:
+            recall_rows.append(
+                {
+                    "model": model_labels.get(str(row["model"]), str(row["model"])),
+                    "class": cls,
+                    "recall": pd.to_numeric(row[col], errors="coerce"),
+                }
+            )
+    rec = pd.DataFrame(recall_rows)
+    rec.to_csv(paths.source_data / "fig_M2_class_recalls.csv", index=False)
     fig, ax = plt.subplots(1, 3, figsize=(7.4, 2.8), gridspec_kw={"width_ratios": [1, 1.25, 1.2]})
     _confusion(ax[0], cm_svm, ["medium/bad", "good"])
     ax[0].set_xlabel("Predicted")
@@ -187,19 +224,22 @@ def _fig_m2(paths: Paths) -> Path:
     ax[1].set_xlabel("Predicted")
     ax[1].set_ylabel("True")
     _panel(ax[1], "b")
-    rec = pd.DataFrame(
-        {
-            "class": ["good", "medium", "bad"],
-            "E31": [
-                but["e31"]["three_class"]["good_recall"],
-                but["e31"]["three_class"]["intermediate_recall"],
-                but["e31"]["three_class"]["poor_recall"],
-            ],
-        }
-    )
-    ax[2].bar(rec["class"], rec["E31"], color="#4c78a8")
+    classes = ["good", "medium", "poor"]
+    models = ["Linear SVM", "LM-MLP", "E31"]
+    colors = {"Linear SVM": "#8c8c8c", "LM-MLP": "#66a61e", "E31": "#4c78a8"}
+    xs = np.arange(len(classes))
+    width = 0.24
+    for offset, model in zip([-width, 0, width], models):
+        vals = [
+            float(rec.loc[rec["model"].eq(model) & rec["class"].eq(cls), "recall"].iloc[0])
+            for cls in classes
+        ]
+        ax[2].bar(xs + offset, vals, width, label=model, color=colors[model])
+    ax[2].set_xticks(xs)
+    ax[2].set_xticklabels(classes)
     ax[2].set_ylim(0, 1)
     ax[2].set_ylabel("Recall")
+    ax[2].legend(fontsize=6, loc="lower right")
     _panel(ax[2], "c")
     fig.tight_layout()
     out = paths.figures / "fig_M2_but_model_comparison"
@@ -221,4 +261,3 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
     (paths.reports / "figure_index.json").write_text(json.dumps(figures, indent=2), encoding="utf-8")
     print(json.dumps(figures, indent=2))
     return {"step": "figures", "skipped": False, "outputs": figures}
-

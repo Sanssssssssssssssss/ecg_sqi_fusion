@@ -10,7 +10,7 @@ from sklearn.metrics import roc_auc_score
 
 from supplemental_transformer_experiments.but_sqi_baseline import run as but_sqi
 
-from .common import Paths, binary_metrics, dry, ensure_dirs, multiclass_summary, write_json
+from .common import Paths, binary_metrics, dry, ensure_dirs, multiclass_summary, read_json, write_json
 
 
 def _ensure_but_sqi(paths: Paths, *, force: bool, device: str) -> dict[str, Any]:
@@ -47,12 +47,78 @@ def _e31_summary() -> dict[str, Any]:
     return {"prediction_path": str(pred_path), "three_class": multi, "good_vs_rest": collapsed}
 
 
+def _but_test_rows(bp: but_sqi.Paths) -> pd.DataFrame:
+    feat = pd.read_parquet(bp.record84_norm_parquet)
+    split = pd.read_csv(bp.split_csv)
+    feat["record_id"] = feat["record_id"].astype(str)
+    split["record_id"] = split["record_id"].astype(str)
+    merged = feat[["record_id", "y"]].merge(
+        split[["record_id", "split", "y", "class_name"]],
+        on="record_id",
+        how="inner",
+        suffixes=("_feature", ""),
+    )
+    test = merged.loc[merged["split"].eq("test")].reset_index(drop=True)
+    if test.empty:
+        raise RuntimeError("BUT SQI baseline test split is empty")
+    return test
+
+
+def _class_recalls_from_binary(test: pd.DataFrame, pred_good: np.ndarray) -> dict[str, float]:
+    pred_good = np.asarray(pred_good, dtype=int).ravel()
+    if len(test) != len(pred_good):
+        raise ValueError(f"prediction length mismatch: {len(pred_good)} vs {len(test)}")
+    out: dict[str, float] = {}
+    for cls, key in [("good", "good_recall"), ("medium", "intermediate_recall"), ("bad", "poor_recall")]:
+        mask = test["class_name"].eq(cls).to_numpy()
+        if not mask.any():
+            out[key] = float("nan")
+        elif cls == "good":
+            out[key] = float((pred_good[mask] == 1).mean())
+        else:
+            out[key] = float((pred_good[mask] == 0).mean())
+    return out
+
+
+def _svm_binary_details(bp: but_sqi.Paths, test: pd.DataFrame) -> dict[str, Any]:
+    metrics = read_json(bp.models / "svm_84sqi_linear" / "svm_84sqi_linear_metrics_seed0.json")
+    pred = pd.read_csv(bp.models / "svm_84sqi_linear" / "svm_84sqi_linear_predictions_seed0.csv")
+    pred["record_id"] = pred["record_id"].astype(str)
+    aligned = pred.set_index("record_id").loc[test["record_id"], "pred"].to_numpy(dtype=int)
+    if not np.array_equal((test["y"].to_numpy() == 1).astype(int), pred.set_index("record_id").loc[test["record_id"], "y"].to_numpy(dtype=int)):
+        raise RuntimeError("SVM prediction labels do not align with BUT test rows")
+    return {
+        **_class_recalls_from_binary(test, aligned),
+        "confusion": metrics["test"]["confusion_matrix"],
+    }
+
+
+def _mlp_binary_details(bp: but_sqi.Paths, test: pd.DataFrame) -> dict[str, Any]:
+    metrics = read_json(bp.models / "lm_mlp_mainline_strict" / "lm_mlp_test_metrics_seed0.json")
+    probs = np.load(bp.models / "lm_mlp_mainline_strict" / "probs" / "lm_mlp_test_probs_seed0.npz", allow_pickle=True)
+    y = probs["y01_test"].astype(int)
+    score = probs["p_test"].astype(np.float64)
+    threshold = float(probs["threshold_fixed"])
+    expected_y = (test["y"].to_numpy() == 1).astype(int)
+    if len(y) != len(test) or not np.array_equal(expected_y, y):
+        raise RuntimeError("MLP probability file does not align with BUT test rows")
+    pred = (score > threshold).astype(int)
+    return {
+        **_class_recalls_from_binary(test, pred),
+        "confusion": metrics["test_metrics_fixed"]["confusion_matrix"],
+    }
+
+
 def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> dict[str, Any]:
     if not execute:
         dry("but-models", paths)
         return {"step": "but-models", "skipped": True}
     ensure_dirs(paths)
     sqi = _ensure_but_sqi(paths, force=force, device=device)
+    bp = but_sqi.Paths(paths.but / "sqi_baseline")
+    but_test = _but_test_rows(bp)
+    svm_details = _svm_binary_details(bp, but_test)
+    mlp_details = _mlp_binary_details(bp, but_test)
     e31 = _e31_summary()
     rows = [
         {
@@ -63,14 +129,14 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
             "test_acc": sqi["svm_84sqi_linear"]["acc"],
             "test_macro_f1": sqi["svm_84sqi_linear"]["macro_f1"],
             "test_auc": sqi["svm_84sqi_linear"]["auc"],
-            "good_recall": "",
-            "intermediate_recall": "",
-            "poor_recall": "",
+            "good_recall": svm_details["good_recall"],
+            "intermediate_recall": svm_details["intermediate_recall"],
+            "poor_recall": svm_details["poor_recall"],
             "poor_fpr_nonpoor": "",
-            "collapsed_good_vs_rest_acc": "",
-            "collapsed_good_vs_rest_auc": "",
-            "collapsed_good_vs_rest_confusion": "",
-            "confusion": "",
+            "collapsed_good_vs_rest_acc": sqi["svm_84sqi_linear"]["acc"],
+            "collapsed_good_vs_rest_auc": sqi["svm_84sqi_linear"]["auc"],
+            "collapsed_good_vs_rest_confusion": json.dumps(svm_details["confusion"]),
+            "confusion": json.dumps(svm_details["confusion"]),
         },
         {
             "run_id": "but_lm_mlp_84sqi_good_vs_rest",
@@ -80,14 +146,14 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
             "test_acc": sqi["lm_mlp_84_j_1"]["acc"],
             "test_macro_f1": sqi["lm_mlp_84_j_1"]["macro_f1"],
             "test_auc": sqi["lm_mlp_84_j_1"]["auc"],
-            "good_recall": "",
-            "intermediate_recall": "",
-            "poor_recall": "",
+            "good_recall": mlp_details["good_recall"],
+            "intermediate_recall": mlp_details["intermediate_recall"],
+            "poor_recall": mlp_details["poor_recall"],
             "poor_fpr_nonpoor": "",
-            "collapsed_good_vs_rest_acc": "",
-            "collapsed_good_vs_rest_auc": "",
-            "collapsed_good_vs_rest_confusion": "",
-            "confusion": "",
+            "collapsed_good_vs_rest_acc": sqi["lm_mlp_84_j_1"]["acc"],
+            "collapsed_good_vs_rest_auc": sqi["lm_mlp_84_j_1"]["auc"],
+            "collapsed_good_vs_rest_confusion": json.dumps(mlp_details["confusion"]),
+            "confusion": json.dumps(mlp_details["confusion"]),
         },
         {
             "run_id": "but_e31_wave_mechanism_conformer",
