@@ -41,6 +41,53 @@ PALETTE = {
     "Waveform": "#4c78a8",
 }
 
+BUT_SHARED_PCA_FEATURES = [
+    "raw_rms",
+    "raw_ptp_p99_p01",
+    "raw_diff_abs_p95",
+    "rms",
+    "std",
+    "mean_abs",
+    "ptp_p99_p01",
+    "low_amp_ratio",
+    "flatline_ratio",
+    "contact_loss_win_ratio",
+    "baseline_step",
+    "diff_abs_p95",
+    "detail_instability",
+    "qrs_band_ratio",
+    "qrs_visibility",
+    "qrs_prom_median",
+    "qrs_prom_p90",
+    "periodicity",
+    "template_corr",
+    "detector_agreement",
+    "non_qrs_rms_ratio",
+    "non_qrs_diff_p95",
+    "band_0p3_1",
+    "band_1_5",
+    "band_5_15",
+    "band_15_30",
+    "band_30_45",
+    "sqi_iSQI",
+    "sqi_bSQI",
+    "sqi_pSQI",
+    "sqi_sSQI",
+    "sqi_kSQI",
+    "sqi_fSQI",
+    "sqi_basSQI",
+    "hjorth_activity",
+    "hjorth_mobility",
+    "hjorth_complexity",
+    "sample_entropy_proxy",
+    "amplitude_entropy",
+    "wavelet_e0",
+    "wavelet_e1",
+    "wavelet_e2",
+    "wavelet_e3",
+    "wavelet_e4",
+]
+
 
 def _save(fig: plt.Figure, base: Path) -> None:
     base.parent.mkdir(parents=True, exist_ok=True)
@@ -97,6 +144,34 @@ def _sample_for_plot(df: pd.DataFrame, group_col: str, n: int = 350) -> pd.DataF
 
 def _sqi_feature_cols(df: pd.DataFrame) -> list[str]:
     return [c for c in df.columns if "__" in c and pd.api.types.is_numeric_dtype(df[c])]
+
+
+def _feature_matrix(frame: pd.DataFrame, features: list[str]) -> np.ndarray:
+    vals = []
+    for col in features:
+        if col in frame.columns:
+            vals.append(pd.to_numeric(frame[col], errors="coerce").to_numpy(dtype=np.float64))
+        else:
+            vals.append(np.zeros(len(frame), dtype=np.float64))
+    x = np.vstack(vals).T if vals else np.zeros((len(frame), 0), dtype=np.float64)
+    if x.size:
+        med = np.nanmedian(x, axis=0)
+        bad = ~np.isfinite(x)
+        if bad.any():
+            x[bad] = np.take(med, np.where(bad)[1])
+    return x
+
+
+def _robust_fit(x: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    center = np.nanmedian(x, axis=0)
+    q25 = np.nanpercentile(x, 25, axis=0)
+    q75 = np.nanpercentile(x, 75, axis=0)
+    scale = np.maximum(q75 - q25, np.nanstd(x, axis=0))
+    return center, np.maximum(scale, 1e-5)
+
+
+def _robust_z(x: np.ndarray, center: np.ndarray, scale: np.ndarray) -> np.ndarray:
+    return np.nan_to_num((x - center[None, :]) / scale[None, :], nan=0.0, posinf=0.0, neginf=0.0)
 
 
 def _fig_d3_seta_ours_vs_paper(paths: Paths) -> Path:
@@ -189,39 +264,6 @@ def _fig_d3_seta_ours_vs_paper(paths: Paths) -> Path:
     return out.with_suffix(".png")
 
 
-def _but_feature_cols(df: pd.DataFrame) -> list[str]:
-    skip = {
-        "idx",
-        "source_idx",
-        "split",
-        "y",
-        "class_name",
-        "record_id",
-        "subject_id",
-        "old_idx",
-        "v116_seed",
-        "v116_generated",
-        "v116_native_morph",
-        "v116_native_replay",
-        "v116_residual_transfer",
-        "v116_ptb_generated",
-        "v116_native_donor_id",
-        "v116_residual_donor_id",
-        "v116_style_donor_id",
-        "v116_ptb_carrier_id",
-    }
-    cols = []
-    for c in df.columns:
-        if c in skip or not pd.api.types.is_numeric_dtype(df[c]):
-            continue
-        if c.startswith(("v114_", "v115_", "v116_", "ptbxl_", "pc")) or c.startswith("pca_"):
-            continue
-        if any(token in c for token in ["rank", "percentile", "confidence", "clean", "knn", "nearest"]):
-            continue
-        cols.append(c)
-    return cols
-
-
 def _fig_d4_but_balanced_classes(paths: Paths) -> Path:
     but_meta = (
         paths.out.parent.parent
@@ -235,17 +277,22 @@ def _fig_d4_but_balanced_classes(paths: Paths) -> Path:
     if not but_meta.exists():
         raise FileNotFoundError(f"missing BUT v116 metadata: {but_meta}")
     df = pd.read_csv(but_meta, low_memory=False)
-    df = df.loc[df["split"].eq("train") & df["class_name"].isin(["medium", "bad"])].copy()
+    df = df.loc[df["split"].eq("train")].copy()
     df["domain"] = np.where(df["v116_candidate_type"].eq("original_but"), "original BUT", "synthesis")
-    cols = _but_feature_cols(df)
-    if len(cols) < 2:
-        raise RuntimeError("not enough BUT feature columns for Fig D4")
-    original = df.loc[df["domain"].eq("original BUT"), cols].to_numpy(dtype=float)
-    scaler = StandardScaler().fit(np.nan_to_num(original, nan=0.0, posinf=0.0, neginf=0.0))
-    pca = PCA(n_components=2, random_state=0).fit(scaler.transform(np.nan_to_num(original, nan=0.0, posinf=0.0, neginf=0.0)))
-    pc = pca.transform(scaler.transform(np.nan_to_num(df[cols].to_numpy(dtype=float), nan=0.0, posinf=0.0, neginf=0.0)))
-    plot_df = df[["idx", "split", "class_name", "v116_candidate_type", "domain"]].copy()
-    plot_df["PC1"], plot_df["PC2"] = pc[:, 0], pc[:, 1]
+    features = [f for f in BUT_SHARED_PCA_FEATURES if f in df.columns]
+    if len(features) < 2:
+        raise RuntimeError("not enough BUT shared-PCA feature columns for Fig D4")
+    ref = df.loc[df["domain"].eq("original BUT")].copy()
+    center, scale = _robust_fit(_feature_matrix(ref, features))
+    z = _robust_z(_feature_matrix(df, features), center, scale)
+    pca = PCA(n_components=2, random_state=19)
+    pca.fit(_robust_z(_feature_matrix(ref, features), center, scale))
+    pc = pca.transform(z)
+    plot_df = df.loc[df["class_name"].isin(["medium", "bad"]), ["idx", "split", "class_name", "v116_candidate_type", "domain"]].copy()
+    plot_df["PC1"] = pc[df["class_name"].isin(["medium", "bad"]), 0]
+    plot_df["PC2"] = pc[df["class_name"].isin(["medium", "bad"]), 1]
+    plot_df = plot_df[np.isfinite(plot_df[["PC1", "PC2"]]).all(axis=1)].copy()
+    plot_df["coordinate_basis"] = "v116_shared_pca_44_features_fit_original_train"
     plot_df.to_csv(paths.source_data / "fig_D4_but_medium_bad_pca.csv", index=False)
     counts = plot_df.groupby(["class_name", "domain", "v116_candidate_type"]).size().reset_index(name="n")
     counts.to_csv(paths.source_data / "fig_D4_but_medium_bad_counts.csv", index=False)
@@ -259,12 +306,13 @@ def _fig_d4_but_balanced_classes(paths: Paths) -> Path:
             ax.scatter(g["PC1"], g["PC2"], s=8, alpha=0.58, color=colors[domain], label=domain, linewidth=0)
         for domain, g in cls_df.groupby("domain"):
             _ellipse(ax, g[["PC1", "PC2"]].to_numpy(), color=colors[domain])
-        ax.set_xlabel(f"PC1 ({pca.explained_variance_ratio_[0] * 100:.1f}%)")
-        ax.set_ylabel(f"PC2 ({pca.explained_variance_ratio_[1] * 100:.1f}%)")
+        ax.set_xlabel("PC1")
+        ax.set_ylabel("PC2")
         for axis_col, setter in [("PC1", ax.set_xlim), ("PC2", ax.set_ylim)]:
             lo, hi = cls_df[axis_col].quantile([0.01, 0.99]).to_numpy(dtype=float)
             pad = max((hi - lo) * 0.12, 1e-3)
             setter(lo - pad, hi + pad)
+        ax.text(0.02, 0.96, cls, transform=ax.transAxes, ha="left", va="top", fontsize=7)
         ax.legend(fontsize=6, loc="best")
         _panel(ax, label)
     fig.tight_layout()
