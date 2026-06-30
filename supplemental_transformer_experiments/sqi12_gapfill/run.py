@@ -1333,7 +1333,14 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
     split_probs: dict[str, tuple[np.ndarray, np.ndarray]] = {}
     pred_by_split: dict[str, pd.DataFrame] = {}
     for split in ["train", "val", "test"]:
-        yy, pp = predict(model, loaders[split], device)
+        eval_loader = DataLoader(
+            datasets[split],
+            batch_size=cfg.batch_size,
+            shuffle=False,
+            num_workers=cfg.num_workers,
+            pin_memory=torch.cuda.is_available(),
+        )
+        yy, pp = predict(model, eval_loader, device)
         split_probs[split] = (yy, pp)
         split_metrics[split] = metrics_binary(yy, pp)
         sub = datasets[split].rows.copy()
