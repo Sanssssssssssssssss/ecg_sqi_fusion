@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, roc_auc_score
+from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
@@ -116,47 +116,6 @@ def _metric_row(name: str, original: pd.DataFrame, generated: pd.DataFrame, cols
     return row, top.head(20)
 
 
-def _best_threshold(y: np.ndarray, score: np.ndarray) -> float:
-    grid = np.quantile(score, np.linspace(0.01, 0.99, 199))
-    best_t, best_acc = 0.5, -1.0
-    for t in grid:
-        acc = float(accuracy_score(y, (score >= t).astype(int)))
-        if acc > best_acc:
-            best_t, best_acc = float(t), acc
-    return best_t
-
-
-def _transfer_row(name: str, df: pd.DataFrame, cols: list[str]) -> dict[str, Any]:
-    acc_train = df[df["split"].eq("train") & df["y"].eq(1) & df["generated"].eq(0)]
-    poor_train = df[df["split"].eq("train") & df["y"].eq(0)]
-    if name not in {"native_imbalanced"}:
-        poor_train = poor_train[poor_train["generated"].eq(1)]
-    val = df[df["split"].eq("val") & df["generated"].eq(0)]
-    test = df[df["split"].eq("test") & df["generated"].eq(0)]
-    if len(acc_train) == 0 or len(poor_train) == 0:
-        return {"construction": name, "status": "missing_train_source"}
-    train_x = np.vstack([acc_train[cols].to_numpy(float), poor_train[cols].to_numpy(float)])
-    train_y = np.r_[np.zeros(len(acc_train), dtype=int), np.ones(len(poor_train), dtype=int)]
-    clf = make_pipeline(StandardScaler(), LogisticRegression(max_iter=2000, class_weight="balanced"))
-    clf.fit(np.nan_to_num(train_x), train_y)
-    val_y = (val["y"].astype(int).to_numpy() == 0).astype(int)
-    val_score = clf.predict_proba(np.nan_to_num(val[cols].to_numpy(float)))[:, 1]
-    threshold = _best_threshold(val_y, val_score)
-    test_y = (test["y"].astype(int).to_numpy() == 0).astype(int)
-    test_score = clf.predict_proba(np.nan_to_num(test[cols].to_numpy(float)))[:, 1]
-    pred = (test_score >= threshold).astype(int)
-    poor_mask = test_y == 1
-    return {
-        "construction": name,
-        "train_poor_source_n": int(len(poor_train)),
-        "threshold_source": "validation_max_accuracy",
-        "threshold": threshold,
-        "test_original_poor_auc": float(roc_auc_score(test_y, test_score)),
-        "original_poor_recall": float(pred[poor_mask].mean()) if np.any(poor_mask) else float("nan"),
-        "acceptable_recall": float((pred[~poor_mask] == 0).mean()) if np.any(~poor_mask) else float("nan"),
-    }
-
-
 def _paired_mmd(name: str, original: pd.DataFrame, generated: pd.DataFrame, cols: list[str], *, seed: int = 0) -> dict[str, Any]:
     rng = np.random.default_rng(seed)
     a, b = _standardize_against(original, generated, cols)
@@ -191,7 +150,7 @@ def run(paths: Paths, *, execute: bool, force: bool) -> dict[str, Any]:
     if metrics_out.exists() and not force:
         print(f"[seta-repair] exists: {metrics_out}")
         return {"step": "seta-repair", "skipped": True}
-    metric_rows, drift_rows, transfer_rows, paired_rows = [], [], [], []
+    metric_rows, drift_rows, paired_rows = [], [], []
     for arm in ARMS:
         df = pd.read_csv(arm_dir(paths, arm) / "construction_features.csv")
         cols = feature_cols(df)
@@ -206,22 +165,17 @@ def run(paths: Paths, *, execute: bool, force: bool) -> dict[str, Any]:
         metric_rows.append(row)
         drift_rows.append(top)
         paired_rows.append(_paired_mmd(arm_name, original.reset_index(drop=True), generated.reset_index(drop=True), cols))
-        transfer_rows.append(_transfer_row(arm, df, cols))
 
     metrics = pd.DataFrame(metric_rows)
     drift = pd.concat(drift_rows, ignore_index=True)
-    transfer = pd.DataFrame(transfer_rows)
     paired = pd.DataFrame(paired_rows)
     metrics.to_csv(metrics_out, index=False)
     drift.to_csv(paths.tables / "seta_top_drift_features.csv", index=False)
-    transfer.to_csv(paths.tables / "seta_source_transfer.csv", index=False)
     paired.to_csv(paths.tables / "seta_paired_mmd_calibration.csv", index=False)
     out = {
         "distribution_metrics": metrics.to_dict(orient="records"),
-        "transfer": transfer.to_dict(orient="records"),
         "paired_mmd": paired.to_dict(orient="records"),
     }
     write_json(paths.repair_json, out)
     print(metrics.to_string(index=False))
     return {"step": "seta-repair", "skipped": False, "outputs": out}
-

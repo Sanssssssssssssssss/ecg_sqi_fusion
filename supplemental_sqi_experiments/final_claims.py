@@ -239,22 +239,24 @@ def compute_domain_shift(
     rep.mkdir(parents=True, exist_ok=True)
     df = load_split_frame(artifacts_dir, normalized=True)
     cols84 = feature_cols_for_sqis(SQIS)
-    train = df["split"].astype(str).eq("train").to_numpy()
-    test = df["split"].astype(str).eq("test").to_numpy()
 
     scaler = StandardScaler()
     pca = PCA(n_components=2, random_state=seed)
-    X_train = scaler.fit_transform(df.loc[train, cols84].to_numpy(dtype=np.float64))
-    pca.fit(X_train)
-    X_test = scaler.transform(df.loc[test, cols84].to_numpy(dtype=np.float64))
-    scores = pca.transform(X_test)
-    pca_df = df.loc[test, ["record_id", "source_record_id", "y", "y01", "split", "sample_group"]].copy()
+    pca_fit = df["sample_group"].isin(["original acceptable", "original unacceptable"]).to_numpy()
+    X_fit = scaler.fit_transform(df.loc[pca_fit, cols84].to_numpy(dtype=np.float64))
+    pca.fit(X_fit)
+    X_all = scaler.transform(df.loc[:, cols84].to_numpy(dtype=np.float64))
+    scores = pca.transform(X_all)
+    pca_df = df.loc[:, ["record_id", "source_record_id", "y", "y01", "split", "sample_group"]].copy()
+    pca_df["projection_set"] = "all_records_original_reference_fit"
     pca_df["PC1"] = scores[:, 0]
     pca_df["PC2"] = scores[:, 1]
     pca_df["explained_variance_PC1"] = float(pca.explained_variance_ratio_[0])
     pca_df["explained_variance_PC2"] = float(pca.explained_variance_ratio_[1])
-    pca_csv = out / "domain_shift_pca_test_projection.csv"
+    pca_csv = out / "domain_shift_pca_all_projection.csv"
     write_table(pca_df, pca_csv)
+    legacy_pca_csv = out / "domain_shift_pca_test_projection.csv"
+    write_table(pca_df, legacy_pca_csv)
 
     poor, domain_cols = _domain_frame(df, SQIS)
     overall_auc, oof_score = _grouped_domain_auc(poor, domain_cols, seed=seed)
@@ -312,7 +314,7 @@ def compute_domain_shift(
     write_table(cross, cross_csv, md_path=rep / "cross_domain_auc_matrix.md")
 
     paths = plot_domain_shift(pca_df, per_sqi, cross, metrics, rep / "fig_13_sqi_domain_shift")
-    outputs = [str(pca_csv), str(metrics_csv), str(per_sqi_csv), str(cross_csv), *[str(p) for p in paths]]
+    outputs = [str(pca_csv), str(legacy_pca_csv), str(metrics_csv), str(per_sqi_csv), str(cross_csv), *[str(p) for p in paths]]
     if float(per_sqi.loc[per_sqi["SQI"].eq("basSQI"), "domain_auc_original_vs_synthetic_poor"].iloc[0]) >= 0.80:
         bassqi_outputs = _bassqi_outputs(df, out, rep, C=C, gamma=gamma, seed=seed)
         outputs.extend(bassqi_outputs)

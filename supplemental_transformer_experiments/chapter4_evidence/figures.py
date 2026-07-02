@@ -323,7 +323,7 @@ def _fig_d4_but_balanced_classes(paths: Paths) -> Path:
 
 def _fig_d1(paths: Paths) -> Path:
     metrics = pd.read_csv(paths.tables / "seta_distribution_repair_metrics.csv")
-    transfer = pd.read_csv(paths.tables / "seta_source_transfer.csv")
+    transfer = pd.read_csv(paths.tables / "seta_construction_source_only_models.csv")
     smc = pd.read_csv(arm_dir(paths, "smc_gapfill") / "construction_features.csv")
     cols = feature_cols(smc)
     plot_df = smc[(smc["split"].eq("train")) & ((smc["generated"].eq(1)) | ((smc["generated"].eq(0)) & (smc["y"].eq(0))))].copy()
@@ -336,7 +336,7 @@ def _fig_d1(paths: Paths) -> Path:
     plot_df["PC2"] = pc[:, 1]
     plot_df.to_csv(paths.source_data / "fig_D1_pca.csv", index=False)
     metrics.to_csv(paths.source_data / "fig_D1_metrics.csv", index=False)
-    transfer.to_csv(paths.source_data / "fig_D1_transfer.csv", index=False)
+    transfer.to_csv(paths.source_data / "fig_D1_selected5_svm_transfer.csv", index=False)
 
     fig, ax = plt.subplots(2, 2, figsize=(7.2, 5.4))
     a, b, c, d = ax.ravel()
@@ -351,25 +351,33 @@ def _fig_d1(paths: Paths) -> Path:
     m = metrics.set_index("construction").reindex([x for x in order if x in set(metrics["construction"])])
     xs = np.arange(len(m))
     width = 0.25
-    b.bar(xs - width, m["c2st_auc"], width, label="C2ST AUC", color="#8da0cb")
-    b.bar(xs, m["rbf_mmd"], width, label="RBF-MMD", color="#66c2a5")
-    b.bar(xs + width, m["swd"], width, label="SWD", color="#fc8d62")
+    for bars in [
+        b.bar(xs - width, m["c2st_auc"], width, label="C2ST AUC", color="#8da0cb"),
+        b.bar(xs, m["rbf_mmd"], width, label="RBF-MMD", color="#66c2a5"),
+        b.bar(xs + width, m["swd"], width, label="SWD", color="#fc8d62"),
+    ]:
+        b.bar_label(bars, fmt="%.2f", padding=1, fontsize=7)
     b.set_xticks(xs)
     b.set_xticklabels(m.index, rotation=25, ha="right")
     b.set_ylabel("Metric value")
     b.legend(fontsize=6)
     _panel(b, "b")
 
-    heat = transfer.set_index("construction")[["test_original_poor_auc", "original_poor_recall", "acceptable_recall"]]
+    heat = transfer.set_index("construction")[["auc", "original_unacceptable_recall", "acceptable_recall"]]
     im = c.imshow(heat.to_numpy(float), aspect="auto", cmap="viridis", vmin=0, vmax=1)
     c.set_xticks(np.arange(heat.shape[1]))
-    c.set_xticklabels(["orig poor AUC", "orig poor R", "accept R"], rotation=25, ha="right")
+    c.set_xticklabels(["model AUC", "poor R", "accept R"], rotation=25, ha="right")
     c.set_yticks(np.arange(heat.shape[0]))
     c.set_yticklabels(heat.index)
+    for i in range(heat.shape[0]):
+        for j in range(heat.shape[1]):
+            value = float(heat.iloc[i, j])
+            c.text(j, i, f"{value:.2f}", ha="center", va="center", fontsize=7, color="white" if value < 0.45 else "black")
     fig.colorbar(im, ax=c, fraction=0.046, pad=0.02)
     _panel(c, "c")
 
-    d.bar(transfer["construction"], transfer["original_poor_recall"], color=[PALETTE.get(x, "#777777") for x in transfer["construction"]])
+    bars = d.bar(transfer["construction"], transfer["original_unacceptable_recall"], color=[PALETTE.get(x, "#777777") for x in transfer["construction"]])
+    d.bar_label(bars, fmt="%.2f", padding=2, fontsize=7)
     d.set_ylim(0, 1)
     d.set_ylabel("Original-unacceptable recall")
     d.tick_params(axis="x", rotation=25)
@@ -396,46 +404,56 @@ def _fig_d2(paths: Paths) -> Path:
 
 
 def _fig_m1(paths: Paths) -> Path:
-    construction = pd.read_csv(paths.tables / "seta_construction_effect_models.csv")
-    models = pd.read_csv(paths.tables / "seta_repaired_model_comparison.csv")
-    construction.to_csv(paths.source_data / "fig_M1_construction.csv", index=False)
-    models.to_csv(paths.source_data / "fig_M1_models.csv", index=False)
-    fig, ax = plt.subplots(1, 2, figsize=(7.2, 3.2))
-    a, b = ax
-    a.bar(construction["construction"], construction["original_unacceptable_recall"], color="#66a61e")
-    a.set_ylim(0, 1)
-    a.set_ylabel("Original-unacceptable recall")
-    a.tick_params(axis="x", rotation=25)
-    _panel(a, "a")
-    model_colors = {
-        "SQI SVM-RBF selected5": "#7f7f7f",
-        "SQI SVM-RBF all84": "#bdbdbd",
-        "SQI LM-MLP 84-6-1": "#66a61e",
-        "12-lead E31-style waveform comparator": "#4c78a8",
-    }
-    markers = {
-        "SQI SVM-RBF selected5": "o",
-        "SQI SVM-RBF all84": "s",
-        "SQI LM-MLP 84-6-1": "^",
-        "12-lead E31-style waveform comparator": "D",
-    }
-    for _, row in models.iterrows():
-        name = str(row["model"])
-        b.scatter(
-            row["acceptable_recall"],
-            row["original_unacceptable_recall"],
-            s=42,
-            color=model_colors.get(name, "#555555"),
-            marker=markers.get(name, "o"),
-            label=name.replace("SQI ", "").replace("12-lead ", ""),
-            linewidth=0,
+    table = pd.read_csv(paths.tables / "seta_repaired_model_comparison.csv")
+    rows = []
+    for label, part in [
+        ("SVM", table.loc[table["model"].eq("SQI SVM-RBF selected5")]),
+        ("MLP", table.loc[table["model"].astype(str).str.contains("MLP", na=False)].sort_values("auc", ascending=False)),
+        ("Conformer", table.loc[table["model"].astype(str).str.contains("E31|waveform", case=False, na=False)]),
+    ]:
+        if part.empty:
+            continue
+        row = part.iloc[0].copy()
+        row["figure_label"] = label
+        rows.append(row)
+    plot = pd.DataFrame(rows)
+    plot.to_csv(paths.source_data / "fig_M1_seta_model_confusions.csv", index=False)
+    recall_rows = []
+    for _, row in plot.iterrows():
+        recall_rows.extend(
+            [
+                {"model": row["figure_label"], "class": "unacceptable", "recall": float(row["original_unacceptable_recall"])},
+                {"model": row["figure_label"], "class": "acceptable", "recall": float(row["acceptable_recall"])},
+            ]
         )
-    b.set_xlim(0, 1.02)
-    b.set_ylim(0, 1.02)
-    b.set_xlabel("Acceptable recall")
-    b.set_ylabel("Original-unacceptable recall")
-    b.legend(fontsize=6, loc="lower left", bbox_to_anchor=(0.02, 0.02))
-    _panel(b, "b")
+    rec = pd.DataFrame(recall_rows)
+    rec.to_csv(paths.source_data / "fig_M1_seta_model_recalls.csv", index=False)
+    fig, ax = plt.subplots(1, 4, figsize=(9.2, 2.8), gridspec_kw={"width_ratios": [1, 1, 1, 1.2]})
+    labels = ["unacceptable", "acceptable"]
+    for axis, (_, row), panel in zip(ax[:3], plot.iterrows(), ["a", "b", "c"]):
+        cm = json.loads(str(row["confusion"]))
+        mat = np.asarray([[cm["tn"], cm["fp"]], [cm["fn"], cm["tp"]]], dtype=int)
+        _confusion(axis, mat, labels)
+        axis.set_title(f"{row['figure_label']}  Acc {float(row['acc']):.2f}  AUC {float(row['auc']):.2f}", fontsize=7, pad=3)
+        axis.set_xlabel("Predicted")
+        axis.set_ylabel("True")
+        _panel(axis, panel)
+    classes = ["unacceptable", "acceptable"]
+    xs = np.arange(len(classes))
+    models = plot["figure_label"].tolist()
+    width = 0.22
+    colors = {"SVM": "#8c8c8c", "MLP": "#66a61e", "Conformer": "#4c78a8"}
+    offsets = np.linspace(-width, width, len(models))
+    for offset, model in zip(offsets, models):
+        vals = [float(rec.loc[rec["model"].eq(model) & rec["class"].eq(cls), "recall"].iloc[0]) for cls in classes]
+        bars = ax[3].bar(xs + offset, vals, width, label=model, color=colors[model])
+        ax[3].bar_label(bars, fmt="%.2f", padding=2, fontsize=7)
+    ax[3].set_xticks(xs)
+    ax[3].set_xticklabels(classes, rotation=20, ha="right")
+    ax[3].set_ylim(0, 1.08)
+    ax[3].set_ylabel("Recall")
+    ax[3].legend(fontsize=6, loc="lower right")
+    _panel(ax[3], "d")
     fig.tight_layout()
     out = paths.figures / "fig_M1_seta_model_performance"
     _save(fig, out)
@@ -453,63 +471,260 @@ def _confusion(ax: plt.Axes, cm: np.ndarray, labels: list[str]) -> None:
     ax.set_yticklabels(labels)
     for i in range(cm.shape[0]):
         for j in range(cm.shape[1]):
-            ax.text(j, i, f"{shown[i, j]:.2f}\n{int(cm[i, j])}", ha="center", va="center", fontsize=6)
+            color = "white" if shown[i, j] > 0.55 else "black"
+            ax.text(j, i, f"{shown[i, j]:.2f}", ha="center", va="center", fontsize=10, color=color)
     return im
 
 
 def _fig_m2(paths: Paths) -> Path:
-    but = read_json(paths.but_models_json)
-    svm_metrics = read_json(paths.but / "sqi_baseline" / "models" / "svm_84sqi_linear" / "svm_84sqi_linear_metrics_seed0.json")
-    svm_cm = svm_metrics["test"]["confusion_matrix"]
-    cm_svm = np.asarray([[svm_cm["tn"], svm_cm["fp"]], [svm_cm["fn"], svm_cm["tp"]]], dtype=int)
-    cm_e31 = np.asarray(but["e31"]["three_class"]["confusion"], dtype=int)
     table = pd.read_csv(paths.tables / "but_model_comparison.csv")
     table.to_csv(paths.source_data / "fig_M2_but_models.csv", index=False)
+    mlp = table.loc[table["model"].astype(str).str.contains("LM-MLP", regex=False)].iloc[0]
+    e31 = table.loc[table["model"].eq("E31 wave-mechanism Conformer")].iloc[0]
+    cm_mlp = np.asarray(json.loads(str(mlp["confusion"])), dtype=int)
+    cm_e31 = np.asarray(json.loads(str(e31["confusion"])), dtype=int)
     recall_rows = []
     model_labels = {
-        "Linear SVM 84-SQI": "Linear SVM",
-        "LM-MLP 84-J-1": "LM-MLP",
-        "E31 wave-mechanism Conformer": "E31",
+        "SQI SVM-RBF selected5": "SVM-RBF selected5",
+        "SQI SVM-RBF all84": "SVM-RBF all84",
+        str(mlp["model"]): "LM-MLP",
+        "E31 wave-mechanism Conformer": "Conformer",
     }
     for _, row in table.iterrows():
         for cls, col in [("good", "good_recall"), ("medium", "intermediate_recall"), ("poor", "poor_recall")]:
-            recall_rows.append(
-                {
-                    "model": model_labels.get(str(row["model"]), str(row["model"])),
-                    "class": cls,
-                    "recall": pd.to_numeric(row[col], errors="coerce"),
-                }
-            )
+            recall_rows.append({"model": model_labels.get(str(row["model"]), str(row["model"])), "class": cls, "recall": float(row[col])})
     rec = pd.DataFrame(recall_rows)
     rec.to_csv(paths.source_data / "fig_M2_class_recalls.csv", index=False)
-    fig, ax = plt.subplots(1, 3, figsize=(7.4, 2.8), gridspec_kw={"width_ratios": [1, 1.25, 1.2]})
-    _confusion(ax[0], cm_svm, ["medium/bad", "good"])
+    fig, ax = plt.subplots(1, 3, figsize=(7.4, 2.8), gridspec_kw={"width_ratios": [1.2, 1.2, 1.2]})
+    _confusion(ax[0], cm_mlp, ["good", "medium", "bad"])
     ax[0].set_xlabel("Predicted")
     ax[0].set_ylabel("True")
+    ax[0].set_title("LM-MLP", fontsize=7, pad=3)
     _panel(ax[0], "a")
     _confusion(ax[1], cm_e31, ["good", "medium", "bad"])
     ax[1].set_xlabel("Predicted")
     ax[1].set_ylabel("True")
+    ax[1].set_title("Conformer", fontsize=7, pad=3)
     _panel(ax[1], "b")
     classes = ["good", "medium", "poor"]
-    models = ["Linear SVM", "LM-MLP", "E31"]
-    colors = {"Linear SVM": "#8c8c8c", "LM-MLP": "#66a61e", "E31": "#4c78a8"}
+    models = ["SVM-RBF selected5", "SVM-RBF all84", "LM-MLP", "Conformer"]
+    colors = {"SVM-RBF selected5": "#bdbdbd", "SVM-RBF all84": "#8c8c8c", "LM-MLP": "#66a61e", "Conformer": "#4c78a8"}
     xs = np.arange(len(classes))
-    width = 0.24
-    for offset, model in zip([-width, 0, width], models):
-        vals = [
-            float(rec.loc[rec["model"].eq(model) & rec["class"].eq(cls), "recall"].iloc[0])
-            for cls in classes
-        ]
-        ax[2].bar(xs + offset, vals, width, label=model, color=colors[model])
+    width = 0.18
+    for offset, model in zip([-1.5 * width, -0.5 * width, 0.5 * width, 1.5 * width], models):
+        vals = [float(rec.loc[rec["model"].eq(model) & rec["class"].eq(cls), "recall"].iloc[0]) for cls in classes]
+        bars = ax[2].bar(xs + offset, vals, width, label=model, color=colors[model])
+        ax[2].bar_label(bars, fmt="%.2f", padding=1, fontsize=6)
     ax[2].set_xticks(xs)
     ax[2].set_xticklabels(classes)
-    ax[2].set_ylim(0, 1)
+    ax[2].set_ylim(0, 1.14)
     ax[2].set_ylabel("Recall")
     ax[2].legend(fontsize=6, loc="lower right")
     _panel(ax[2], "c")
     fig.tight_layout()
     out = paths.figures / "fig_M2_but_model_comparison"
+    _save(fig, out)
+    return out.with_suffix(".png")
+
+
+def _fig_m3(paths: Paths) -> Path:
+    boundary = pd.read_csv(paths.tables / "but_good_medium_boundary_audit.csv")
+    records = pd.read_csv(paths.tables / "but_good_medium_boundary_records.csv")
+    boundary.to_csv(paths.source_data / "fig_M3_boundary_counts.csv", index=False)
+    score = records.loc[records["true_class"].isin(["good", "medium"])].copy()
+    score["mlp_gm_margin"] = score["mlp_good_prob"] - score["mlp_medium_prob"]
+    score["conformer_gm_margin"] = score["conformer_good_prob"] - score["conformer_medium_prob"]
+    score.to_csv(paths.source_data / "fig_M3_score_overlap.csv", index=False)
+    margins = score[["record_id", "true_class", "mlp_gm_margin", "conformer_gm_margin", "mlp_pred", "conformer_pred"]].copy()
+    margins.to_csv(paths.source_data / "fig_M3_margin_distributions.csv", index=False)
+
+    fig, ax = plt.subplots(1, 3, figsize=(7.4, 2.8), gridspec_kw={"width_ratios": [1.45, 1, 1]})
+    ax_a, ax_b, ax_c = ax
+
+    metrics = ["good_to_medium", "medium_to_good", "good_to_bad", "bad_to_good"]
+    labels = ["good to medium", "medium to good", "good to bad", "bad to good"]
+    models = boundary["model"].tolist()
+    colors = {"SQI SVM-RBF all84": "#8c8c8c", "SQI LM-MLP 84-8-1 OvR": "#66a61e", "Conformer": "#4c78a8"}
+    xs = np.arange(len(metrics))
+    width = 0.22
+    offsets = np.linspace(-width, width, len(models))
+    for offset, model in zip(offsets, models):
+        row = boundary.loc[boundary["model"].eq(model)].iloc[0]
+        vals = [int(row[m]) for m in metrics]
+        bars = ax_a.bar(xs + offset, vals, width, color=colors.get(model, "#999999"), label=model)
+        ax_a.bar_label(bars, labels=[str(v) for v in vals], padding=1, fontsize=7)
+    ax_a.set_xticks(xs)
+    ax_a.set_xticklabels(labels, rotation=18, ha="right")
+    ax_a.set_ylabel("Count")
+    ax_a.legend(fontsize=6)
+    _panel(ax_a, "a")
+
+    def overlap(axis: plt.Axes, column: str, title: str) -> None:
+        bins = np.linspace(-1.0, 1.0, 42)
+        for cls, color in [("good", "#4c78a8"), ("medium", "#c44e52")]:
+            vals = pd.to_numeric(score.loc[score["true_class"].eq(cls), column], errors="coerce").dropna().to_numpy()
+            hist, edges = np.histogram(vals, bins=bins, density=True)
+            centers = (edges[:-1] + edges[1:]) / 2.0
+            kernel = np.ones(3) / 3.0
+            smooth = np.convolve(hist, kernel, mode="same")
+            axis.fill_between(centers, smooth, alpha=0.28, color=color, linewidth=0)
+            axis.plot(centers, smooth, color=color, lw=1.2, label=cls)
+        axis.axvline(0, color="#333333", lw=0.8, ls=":")
+        axis.set_xlim(-1.0, 1.0)
+        axis.set_xlabel("Good-minus-medium margin")
+        axis.set_title(title, fontsize=7, pad=3)
+        axis.set_ylabel("Density")
+        axis.legend(fontsize=6)
+
+    overlap(ax_b, "mlp_gm_margin", "LM-MLP")
+    _panel(ax_b, "b")
+    overlap(ax_c, "conformer_gm_margin", "Conformer")
+    _panel(ax_c, "c")
+    out = paths.figures / "fig_M3_but_good_medium_boundary_audit"
+    _save(fig, out)
+    return out.with_suffix(".png")
+
+
+def _norm_wave(x: np.ndarray) -> np.ndarray:
+    x = np.asarray(x, dtype=np.float64).reshape(-1)
+    scale = max(float(np.nanpercentile(x, 95) - np.nanpercentile(x, 5)), 1e-6)
+    return np.clip((x - np.nanmedian(x)) / scale * 2.0, -2.5, 2.5)
+
+
+def _but_test_sqi_features(paths: Paths) -> tuple[pd.DataFrame, list[str]]:
+    feat_path = paths.but / "sqi_baseline" / "features" / "record84_norm.parquet"
+    split_path = paths.but / "sqi_baseline" / "data" / "split_but_v116_good_vs_rest.csv"
+    feat = pd.read_parquet(feat_path)
+    split = pd.read_csv(split_path)
+    feat["record_id"] = feat["record_id"].astype(str)
+    split["record_id"] = split["record_id"].astype(str)
+    cols = [c for c in feat.columns if "__" in c]
+    if len(cols) != 84:
+        raise RuntimeError(f"expected 84 SQI columns, got {len(cols)}")
+    test = split.loc[split["split"].eq("test"), ["record_id"]].merge(feat[["record_id", *cols]], on="record_id", how="inner")
+    return test, cols
+
+
+def _fig_m4(paths: Paths) -> Path:
+    records = pd.read_csv(paths.tables / "but_good_medium_boundary_records.csv")
+    feat, cols = _but_test_sqi_features(paths)
+    records["record_id"] = records["record_id"].astype(str)
+    df = records.merge(feat, on="record_id", how="inner")
+    good = df.loc[df["true_class"].eq("good")].copy()
+    medium = df.loc[df["true_class"].eq("medium") & df["mlp_pred"].eq("good") & df["conformer_pred"].eq("medium")].copy()
+    if good.empty or medium.empty:
+        raise FileNotFoundError("not enough MLP-wrong/Conformer-correct good-medium examples")
+
+    scaler = StandardScaler().fit(df.loc[df["true_class"].isin(["good", "medium"]), cols].to_numpy(np.float64))
+    xg = scaler.transform(good[cols].to_numpy(np.float64))
+    xm = scaler.transform(medium[cols].to_numpy(np.float64))
+    pairs = []
+    for mi, row in enumerate(medium.itertuples(index=False)):
+        d = np.linalg.norm(xg - xm[mi], axis=1)
+        gi = int(np.argmin(d))
+        grow = good.iloc[gi]
+        pairs.append(
+            {
+                "good_record_id": grow["record_id"],
+                "medium_record_id": getattr(row, "record_id"),
+                "good_source_idx": int(grow["source_idx"]),
+                "medium_source_idx": int(getattr(row, "source_idx")),
+                "sqi_distance": float(d[gi]),
+                "good_l_detail": float(grow["l_detail"]),
+                "medium_l_detail": float(getattr(row, "l_detail")),
+                "local_detail_delta": abs(float(grow["l_detail"]) - float(getattr(row, "l_detail"))),
+                "good_mlp_margin": float(grow["mlp_good_prob"] - grow["mlp_medium_prob"]),
+                "medium_mlp_margin": float(getattr(row, "mlp_good_prob") - getattr(row, "mlp_medium_prob")),
+                "good_conformer_margin": float(grow["conformer_good_prob"] - grow["conformer_medium_prob"]),
+                "medium_conformer_margin": float(getattr(row, "conformer_good_prob") - getattr(row, "conformer_medium_prob")),
+                "good_conformer_medium_prob": float(grow["conformer_medium_prob"]),
+                "medium_conformer_medium_prob": float(getattr(row, "conformer_medium_prob")),
+            }
+        )
+    pair_df = pd.DataFrame(pairs)
+    near = pair_df.loc[pair_df["sqi_distance"].le(pair_df["sqi_distance"].quantile(0.5))].copy()
+    if len(near) < 3:
+        near = pair_df.copy()
+    near["rank_score"] = (
+        near["medium_conformer_medium_prob"]
+        - near["good_conformer_medium_prob"]
+        - 0.15 * near["sqi_distance"]
+        + 0.5 * near["local_detail_delta"]
+    )
+    chosen = near.sort_values(["rank_score", "sqi_distance"], ascending=[False, True]).head(3).reset_index(drop=True)
+    sqi_names = ["iSQI", "bSQI", "pSQI", "sSQI", "kSQI", "fSQI", "basSQI"]
+    sqi_labels = [("i", "iSQI"), ("b", "bSQI"), ("p", "pSQI"), ("s", "sSQI"), ("k", "kSQI"), ("f", "fSQI"), ("bas", "basSQI")]
+    sqi_cols = [f"I__{name}" for name in sqi_names]
+    by_record = df.set_index("record_id")
+    for kind in ["good", "medium"]:
+        for name, col in zip(sqi_names, sqi_cols):
+            chosen[f"{kind}_{name}"] = [float(by_record.loc[str(rid), col]) for rid in chosen[f"{kind}_record_id"]]
+    chosen.to_csv(paths.source_data / "fig_M4_selection.csv", index=False)
+
+    signals = np.load(Path("outputs") / "transformer" / "v116_e31" / "source" / "processed_butqdb" / "signals.npz", allow_pickle=True)["X"]
+    time = np.arange(signals.shape[-1]) / 125.0
+    wave_rows: list[dict[str, Any]] = []
+    fig, ax = plt.subplots(len(chosen), 2, figsize=(7.4, 6.5), sharex=True, sharey=True)
+    ax = np.asarray(ax).reshape(len(chosen), 2)
+    for i, row in chosen.iterrows():
+        for j, kind in enumerate(["good", "medium"]):
+            source_idx = int(row[f"{kind}_source_idx"])
+            wave = _norm_wave(signals[source_idx, 0])
+            axis = ax[i, j]
+            color = "#4c78a8" if kind == "good" else "#c44e52"
+            axis.plot(time, wave, color=color, lw=0.8)
+            axis.set_xlim(0, 10)
+            axis.set_ylim(-2.8, 2.8)
+            axis.set_xticks([0, 2, 4, 6, 8, 10])
+            axis.set_yticks([-2, 0, 2])
+            if i == 0:
+                axis.text(
+                    0.5,
+                    1.34,
+                    "true good\nSQI-nearest neighbour" if kind == "good" else "true medium\nMLP good, Conformer medium",
+                    transform=axis.transAxes,
+                    fontsize=7,
+                    ha="center",
+                    va="bottom",
+                    clip_on=False,
+                )
+            if j == 0:
+                axis.set_ylabel(f"Pair {i + 1}\nAmplitude (a.u.)")
+            if i == len(chosen) - 1:
+                axis.set_xlabel("Time (s)")
+            metric_1 = f"SQI distance={row['sqi_distance']:.2f}  Local detail={row[f'{kind}_l_detail']:.2f}"
+            metric_2 = f"Conformer P(medium)={row[f'{kind}_conformer_medium_prob']:.2f}"
+            sqi_line1 = " ".join(f"{label}={row[f'{kind}_{name}']:.2f}" for label, name in sqi_labels[:4])
+            sqi_line2 = " ".join(f"{label}={row[f'{kind}_{name}']:.2f}" for label, name in sqi_labels[4:])
+            axis.text(
+                0.0,
+                1.04,
+                "\n".join([metric_1, metric_2, f"SQI {sqi_line1}", sqi_line2]),
+                transform=axis.transAxes,
+                fontsize=6.1,
+                va="bottom",
+                ha="left",
+                linespacing=1.08,
+                clip_on=False,
+            )
+            wave_rows.extend(
+                {
+                    "pair": int(i + 1),
+                    "class": kind,
+                    "record_id": row[f"{kind}_record_id"],
+                    "source_idx": source_idx,
+                    "time_s": float(t),
+                    "z": float(v),
+                    "sqi_distance": float(row["sqi_distance"]),
+                    "l_detail": float(row[f"{kind}_l_detail"]),
+                    "conformer_medium_prob": float(row[f"{kind}_conformer_medium_prob"]),
+                    **{name: float(row[f"{kind}_{name}"]) for name in sqi_names},
+                }
+                for t, v in zip(time, wave)
+            )
+    pd.DataFrame(wave_rows).to_csv(paths.source_data / "fig_M4_mlp_error_conformer_correct_examples.csv", index=False)
+    fig.tight_layout(h_pad=3.0)
+    out = paths.figures / "fig_M4_but_mlp_error_conformer_correct_examples"
     _save(fig, out)
     return out.with_suffix(".png")
 
@@ -523,10 +738,24 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
         "fig_D1_distribution_repair_summary": str(_fig_d1(paths)),
         "fig_D2_top_drift_features": str(_fig_d2(paths)),
         "fig_D3_seta_ours_vs_paper_em_ma_distribution": str(_fig_d3_seta_ours_vs_paper(paths)),
-        "fig_D4_but_medium_bad_gapfill_distribution": str(_fig_d4_but_balanced_classes(paths)),
         "fig_M1_seta_model_performance": str(_fig_m1(paths)),
-        "fig_M2_but_model_comparison": str(_fig_m2(paths)),
     }
+    try:
+        figures["fig_D4_but_medium_bad_gapfill_distribution"] = str(_fig_d4_but_balanced_classes(paths))
+    except FileNotFoundError:
+        pass
+    try:
+        figures["fig_M2_but_model_comparison"] = str(_fig_m2(paths))
+    except FileNotFoundError:
+        pass
+    try:
+        figures["fig_M3_but_good_medium_boundary_audit"] = str(_fig_m3(paths))
+    except FileNotFoundError:
+        pass
+    try:
+        figures["fig_M4_but_mlp_error_conformer_correct_examples"] = str(_fig_m4(paths))
+    except FileNotFoundError:
+        pass
     (paths.reports / "figure_index.json").write_text(json.dumps(figures, indent=2), encoding="utf-8")
     print(json.dumps(figures, indent=2))
     return {"step": "figures", "skipped": False, "outputs": figures}

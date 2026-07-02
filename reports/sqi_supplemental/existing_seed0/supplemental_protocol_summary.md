@@ -58,7 +58,7 @@
 ### Diagnostic analyses
 
 - Provenance groups were derived after merging `record84_norm.parquet` with the paper-balanced split table. Records were assigned to `original acceptable`, `original unacceptable`, `synthetic em`, or `synthetic ma` from `y`, `is_augmented`, and `noise_type`; `source_record_id` was retained to link each noisy derivative to its clean source.
-- PCA used the 84 normalized SQI features (`12 leads x 7 SQIs`). Standardization was fitted on the training split only; the two-component PCA was also fitted on training data only, then applied unchanged to held-out test records.
+- PCA used the 84 normalized SQI features (`12 leads x 7 SQIs`). Standardization and the two-component PCA were fitted on original Set-a records only (`original acceptable` plus `original unacceptable`), then applied unchanged to all paper-aligned records including `paper EM` and `paper MA`.
 - The domain classifier used poor records only, with original unacceptable coded as 0 and synthetic em/ma as 1. A standardized logistic regression was evaluated by `StratifiedGroupKFold`, grouped by `source_record_id`, and summarized by AUC.
 - Distribution shift was also tested by RBF-MMD on standardized poor-record SQI features. The RBF bandwidth used the median-distance heuristic, and significance used a permutation null with the reported number of permutations.
 - Cross-domain transfer used the selected-five SQI RBF-SVM (`C=1`, `gamma=0.14`). Each run trained and validated on original acceptable plus one poor-domain source, selected the operating threshold on validation accuracy, refit on train+validation, and evaluated once on original acceptable plus the target poor domain.
@@ -194,16 +194,6 @@
 | original unacceptable | 15           | 5                               | 0.333333    | 0.454545        | 0.30303               |
 | synthetic em          | 3            | 3                               | 1           | 0.0731707       | 0                     |
 | synthetic ma          | 1            | 1                               | 1           | 0.0243902       | 0                     |
-
-## Multi-seed stability smoke
-
-| model | metric    | mean     | std        | min      | max      | n |
-| ----- | --------- | -------- | ---------- | -------- | -------- | - |
-| SVM   | test_Ac   | 0.943723 | 0.00612214 | 0.939394 | 0.948052 | 2 |
-| SVM   | test_Se   | 0.952586 | 0.0182872  | 0.939655 | 0.965517 | 2 |
-| SVM   | test_Sp   | 0.934783 | 0.0307438  | 0.913043 | 0.956522 | 2 |
-| SVM   | test_AUC  | 0.969415 | 0.0111314  | 0.961544 | 0.977286 | 2 |
-| SVM   | threshold | 0.4715   | 0.0707107  | 0.4215   | 0.5215   | 2 |
 
 ## Figure index
 

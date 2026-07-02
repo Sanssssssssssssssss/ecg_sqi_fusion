@@ -7,10 +7,18 @@ from typing import Any
 import numpy as np
 import pandas as pd
 from sklearn.metrics import roc_auc_score
+from sklearn.svm import SVC
+import torch
 
 from supplemental_transformer_experiments.but_sqi_baseline import run as but_sqi
 
+from src.sqi_pipeline.models.lm_mlp import LMConfig, LMMLP
 from .common import Paths, binary_metrics, dry, ensure_dirs, multiclass_summary, read_json, write_json
+
+SELECTED5_SQI = {"bSQI", "basSQI", "kSQI", "sSQI", "fSQI"}
+SVM_RBF_C = 1.0
+SVM_RBF_GAMMA = 0.14
+LM_MLP_J = 8
 
 
 def _ensure_but_sqi(paths: Paths, *, force: bool, device: str) -> dict[str, Any]:
@@ -40,6 +48,7 @@ def _e31_summary() -> dict[str, Any]:
     poor_fp = int(((y != 2) & (pred == 2)).sum())
     nonpoor = int((y != 2).sum())
     multi["poor_fpr_nonpoor"] = float(poor_fp / max(1, nonpoor))
+    multi["poor_vs_rest_auc"] = float(roc_auc_score((y == 2).astype(int), probs[:, 2]))
     ybin = (y == 0).astype(int)
     predbin = (pred == 0).astype(int)
     collapsed = binary_metrics(ybin, score=probs[:, 0], pred=predbin)
@@ -64,49 +73,90 @@ def _but_test_rows(bp: but_sqi.Paths) -> pd.DataFrame:
     return test
 
 
-def _class_recalls_from_binary(test: pd.DataFrame, pred_good: np.ndarray) -> dict[str, float]:
-    pred_good = np.asarray(pred_good, dtype=int).ravel()
-    if len(test) != len(pred_good):
-        raise ValueError(f"prediction length mismatch: {len(pred_good)} vs {len(test)}")
-    out: dict[str, float] = {}
-    for cls, key in [("good", "good_recall"), ("medium", "intermediate_recall"), ("bad", "poor_recall")]:
-        mask = test["class_name"].eq(cls).to_numpy()
-        if not mask.any():
-            out[key] = float("nan")
-        elif cls == "good":
-            out[key] = float((pred_good[mask] == 1).mean())
-        else:
-            out[key] = float((pred_good[mask] == 0).mean())
-    return out
+def _but_multiclass_data(bp: but_sqi.Paths, *, selected5: bool = False) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    feat = pd.read_parquet(bp.record84_norm_parquet)
+    split = pd.read_csv(bp.split_csv)
+    feat["record_id"] = feat["record_id"].astype(str)
+    split["record_id"] = split["record_id"].astype(str)
+    df = split[["record_id", "split", "class_name"]].merge(feat, on="record_id", how="inner")
+    label_map = {"good": 0, "medium": 1, "bad": 2}
+    df["y3"] = df["class_name"].map(label_map).astype(int)
+    cols = [c for c in feat.columns if "__" in c]
+    if len(cols) != 84:
+        raise RuntimeError(f"expected 84 SQI feature columns, got {len(cols)}")
+    if selected5:
+        cols = [c for c in cols if c.split("__", 1)[1] in SELECTED5_SQI]
+        if len(cols) != 60:
+            raise RuntimeError(f"expected 60 selected-five SQI feature columns, got {len(cols)}")
+
+    def part(name: str) -> tuple[np.ndarray, np.ndarray]:
+        rows = df.loc[df["split"].eq(name)]
+        return rows[cols].to_numpy(np.float64), rows["y3"].to_numpy(int)
+
+    xtr, ytr = part("train")
+    xva, yva = part("val")
+    xte, yte = part("test")
+    return xtr, ytr, xva, yva, xte, yte
 
 
-def _svm_binary_details(bp: but_sqi.Paths, test: pd.DataFrame) -> dict[str, Any]:
-    metrics = read_json(bp.models / "svm_84sqi_linear" / "svm_84sqi_linear_metrics_seed0.json")
-    pred = pd.read_csv(bp.models / "svm_84sqi_linear" / "svm_84sqi_linear_predictions_seed0.csv")
-    pred["record_id"] = pred["record_id"].astype(str)
-    aligned = pred.set_index("record_id").loc[test["record_id"], "pred"].to_numpy(dtype=int)
-    if not np.array_equal((test["y"].to_numpy() == 1).astype(int), pred.set_index("record_id").loc[test["record_id"], "y"].to_numpy(dtype=int)):
-        raise RuntimeError("SVM prediction labels do not align with BUT test rows")
-    return {
-        **_class_recalls_from_binary(test, aligned),
-        "confusion": metrics["test"]["confusion_matrix"],
-    }
+def _collapse_good_vs_rest(y: np.ndarray, pred: np.ndarray, score_good: np.ndarray) -> dict[str, Any]:
+    return binary_metrics((np.asarray(y) == 0).astype(int), score=score_good, pred=(np.asarray(pred) == 0).astype(int))
 
 
-def _mlp_binary_details(bp: but_sqi.Paths, test: pd.DataFrame) -> dict[str, Any]:
-    metrics = read_json(bp.models / "lm_mlp_mainline_strict" / "lm_mlp_test_metrics_seed0.json")
-    probs = np.load(bp.models / "lm_mlp_mainline_strict" / "probs" / "lm_mlp_test_probs_seed0.npz", allow_pickle=True)
-    y = probs["y01_test"].astype(int)
-    score = probs["p_test"].astype(np.float64)
-    threshold = float(probs["threshold_fixed"])
-    expected_y = (test["y"].to_numpy() == 1).astype(int)
-    if len(y) != len(test) or not np.array_equal(expected_y, y):
-        raise RuntimeError("MLP probability file does not align with BUT test rows")
-    pred = (score > threshold).astype(int)
-    return {
-        **_class_recalls_from_binary(test, pred),
-        "confusion": metrics["test_metrics_fixed"]["confusion_matrix"],
-    }
+def _finish_multiclass(y: np.ndarray, score: np.ndarray) -> tuple[dict[str, Any], dict[str, Any]]:
+    pred = np.asarray(score).argmax(axis=1)
+    multi = multiclass_summary(y, score, ["good", "intermediate", "poor"])
+    poor_fp = int(((y != 2) & (pred == 2)).sum())
+    multi["poor_fpr_nonpoor"] = float(poor_fp / max(1, int((y != 2).sum())))
+    multi["poor_vs_rest_auc"] = float(roc_auc_score((y == 2).astype(int), score[:, 2]))
+    collapsed = _collapse_good_vs_rest(y, pred, score[:, 0])
+    collapsed["auc"] = float(roc_auc_score((y == 0).astype(int), score[:, 0]))
+    return multi, collapsed
+
+
+def _svm_rbf_multiclass_details(xtr: np.ndarray, ytr: np.ndarray, xva: np.ndarray, yva: np.ndarray, xte: np.ndarray, yte: np.ndarray) -> dict[str, Any]:
+    model = SVC(kernel="rbf", C=SVM_RBF_C, gamma=SVM_RBF_GAMMA, probability=True, random_state=0)
+    model.fit(xtr, ytr)
+    score = model.predict_proba(xte).astype(np.float64)
+    multi, collapsed = _finish_multiclass(yte, score)
+    multi["val_acc"] = float((model.predict(xva) == yva).mean())
+    multi["svm_C"] = SVM_RBF_C
+    multi["svm_gamma"] = SVM_RBF_GAMMA
+    return {"three_class": multi, "good_vs_rest": collapsed}
+
+
+def _lm_mlp_ovr_scores(xtr: np.ndarray, ytr: np.ndarray, xva: np.ndarray, yva: np.ndarray, xte: np.ndarray, *, device: str) -> tuple[np.ndarray, np.ndarray]:
+    dev = torch.device("cuda" if device == "cuda" and torch.cuda.is_available() else "cpu")
+    dtype = torch.float64
+    cfg = LMConfig()
+    val_scores: list[np.ndarray] = []
+    test_scores: list[np.ndarray] = []
+    xtr_t = torch.tensor(xtr, device=dev, dtype=dtype)
+    xva_t = torch.tensor(xva, device=dev, dtype=dtype)
+    xte_t = torch.tensor(xte, device=dev, dtype=dtype)
+    for cls in range(3):
+        model = LMMLP(J=LM_MLP_J, D=xtr.shape[1], device=dev, dtype=dtype, seed=cls)
+        model.fit_lm(
+            X_train=xtr_t,
+            y_train=torch.tensor((ytr == cls).astype(np.float64), device=dev, dtype=dtype),
+            cfg=cfg,
+            X_val=xva_t,
+            y_val=torch.tensor((yva == cls).astype(np.float64), device=dev, dtype=dtype),
+            model_select_metric="val_acc",
+            patience=15,
+            threshold=0.5,
+        )
+        val_scores.append(model.predict_proba(xva_t).astype(np.float64))
+        test_scores.append(model.predict_proba(xte_t).astype(np.float64))
+    return np.stack(val_scores, axis=1), np.stack(test_scores, axis=1)
+
+
+def _lm_mlp_multiclass_details(xtr: np.ndarray, ytr: np.ndarray, xva: np.ndarray, yva: np.ndarray, xte: np.ndarray, yte: np.ndarray, *, device: str) -> dict[str, Any]:
+    val_score, score = _lm_mlp_ovr_scores(xtr, ytr, xva, yva, xte, device=device)
+    multi, collapsed = _finish_multiclass(yte, score)
+    multi["val_acc"] = float((val_score.argmax(axis=1) == yva).mean())
+    multi["J"] = LM_MLP_J
+    return {"three_class": multi, "good_vs_rest": collapsed}
 
 
 def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> dict[str, Any]:
@@ -116,44 +166,66 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
     ensure_dirs(paths)
     sqi = _ensure_but_sqi(paths, force=force, device=device)
     bp = but_sqi.Paths(paths.but / "sqi_baseline")
-    but_test = _but_test_rows(bp)
-    svm_details = _svm_binary_details(bp, but_test)
-    mlp_details = _mlp_binary_details(bp, but_test)
+    xtr, ytr, xva, yva, xte, yte = _but_multiclass_data(bp)
+    xtr5, ytr5, xva5, yva5, xte5, yte5 = _but_multiclass_data(bp, selected5=True)
+    svm_details = _svm_rbf_multiclass_details(xtr, ytr, xva, yva, xte, yte)
+    svm5_details = _svm_rbf_multiclass_details(xtr5, ytr5, xva5, yva5, xte5, yte5)
+    mlp_details = _lm_mlp_multiclass_details(xtr, ytr, xva, yva, xte, yte, device=device)
     e31 = _e31_summary()
     rows = [
         {
-            "run_id": "but_linear_svm_84sqi_good_vs_rest",
-            "model": "Linear SVM 84-SQI",
+            "run_id": "but_svm_rbf_84sqi_multiclass",
+            "model": "SQI SVM-RBF all84",
             "input": "single-lead SQI copied to pseudo-12-lead 84-SQI",
-            "task": "good vs medium/bad",
-            "test_acc": sqi["svm_84sqi_linear"]["acc"],
-            "test_macro_f1": sqi["svm_84sqi_linear"]["macro_f1"],
-            "test_auc": sqi["svm_84sqi_linear"]["auc"],
-            "good_recall": svm_details["good_recall"],
-            "intermediate_recall": svm_details["intermediate_recall"],
-            "poor_recall": svm_details["poor_recall"],
-            "poor_fpr_nonpoor": "",
-            "collapsed_good_vs_rest_acc": sqi["svm_84sqi_linear"]["acc"],
-            "collapsed_good_vs_rest_auc": sqi["svm_84sqi_linear"]["auc"],
-            "collapsed_good_vs_rest_confusion": json.dumps(svm_details["confusion"]),
-            "confusion": json.dumps(svm_details["confusion"]),
+            "task": "good/medium/bad",
+            "test_acc": svm_details["three_class"]["acc"],
+            "test_macro_f1": svm_details["three_class"]["macro_f1"],
+            "test_auc": "",
+            "good_recall": svm_details["three_class"]["good_recall"],
+            "intermediate_recall": svm_details["three_class"]["intermediate_recall"],
+            "poor_recall": svm_details["three_class"]["poor_recall"],
+            "poor_fpr_nonpoor": svm_details["three_class"]["poor_fpr_nonpoor"],
+            "poor_vs_rest_auc": svm_details["three_class"]["poor_vs_rest_auc"],
+            "collapsed_good_vs_rest_acc": svm_details["good_vs_rest"]["acc"],
+            "collapsed_good_vs_rest_auc": svm_details["good_vs_rest"]["auc"],
+            "collapsed_good_vs_rest_confusion": json.dumps(svm_details["good_vs_rest"]["confusion"]),
+            "confusion": json.dumps(svm_details["three_class"]["confusion"]),
         },
         {
-            "run_id": "but_lm_mlp_84sqi_good_vs_rest",
-            "model": "LM-MLP 84-J-1",
+            "run_id": "but_svm_rbf_selected5_sqi_multiclass",
+            "model": "SQI SVM-RBF selected5",
+            "input": "selected-five SQI copied to pseudo-12-lead",
+            "task": "good/medium/bad",
+            "test_acc": svm5_details["three_class"]["acc"],
+            "test_macro_f1": svm5_details["three_class"]["macro_f1"],
+            "test_auc": "",
+            "good_recall": svm5_details["three_class"]["good_recall"],
+            "intermediate_recall": svm5_details["three_class"]["intermediate_recall"],
+            "poor_recall": svm5_details["three_class"]["poor_recall"],
+            "poor_fpr_nonpoor": svm5_details["three_class"]["poor_fpr_nonpoor"],
+            "poor_vs_rest_auc": svm5_details["three_class"]["poor_vs_rest_auc"],
+            "collapsed_good_vs_rest_acc": svm5_details["good_vs_rest"]["acc"],
+            "collapsed_good_vs_rest_auc": svm5_details["good_vs_rest"]["auc"],
+            "collapsed_good_vs_rest_confusion": json.dumps(svm5_details["good_vs_rest"]["confusion"]),
+            "confusion": json.dumps(svm5_details["three_class"]["confusion"]),
+        },
+        {
+            "run_id": "but_lm_mlp_84sqi_ovr_multiclass",
+            "model": f"SQI LM-MLP 84-{LM_MLP_J}-1 OvR",
             "input": "single-lead SQI copied to pseudo-12-lead 84-SQI",
-            "task": "good vs medium/bad",
-            "test_acc": sqi["lm_mlp_84_j_1"]["acc"],
-            "test_macro_f1": sqi["lm_mlp_84_j_1"]["macro_f1"],
-            "test_auc": sqi["lm_mlp_84_j_1"]["auc"],
-            "good_recall": mlp_details["good_recall"],
-            "intermediate_recall": mlp_details["intermediate_recall"],
-            "poor_recall": mlp_details["poor_recall"],
-            "poor_fpr_nonpoor": "",
-            "collapsed_good_vs_rest_acc": sqi["lm_mlp_84_j_1"]["acc"],
-            "collapsed_good_vs_rest_auc": sqi["lm_mlp_84_j_1"]["auc"],
-            "collapsed_good_vs_rest_confusion": json.dumps(mlp_details["confusion"]),
-            "confusion": json.dumps(mlp_details["confusion"]),
+            "task": "good/medium/bad",
+            "test_acc": mlp_details["three_class"]["acc"],
+            "test_macro_f1": mlp_details["three_class"]["macro_f1"],
+            "test_auc": "",
+            "good_recall": mlp_details["three_class"]["good_recall"],
+            "intermediate_recall": mlp_details["three_class"]["intermediate_recall"],
+            "poor_recall": mlp_details["three_class"]["poor_recall"],
+            "poor_fpr_nonpoor": mlp_details["three_class"]["poor_fpr_nonpoor"],
+            "poor_vs_rest_auc": mlp_details["three_class"]["poor_vs_rest_auc"],
+            "collapsed_good_vs_rest_acc": mlp_details["good_vs_rest"]["acc"],
+            "collapsed_good_vs_rest_auc": mlp_details["good_vs_rest"]["auc"],
+            "collapsed_good_vs_rest_confusion": json.dumps(mlp_details["good_vs_rest"]["confusion"]),
+            "confusion": json.dumps(mlp_details["three_class"]["confusion"]),
         },
         {
             "run_id": "but_e31_wave_mechanism_conformer",
@@ -167,6 +239,7 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
             "intermediate_recall": e31["three_class"]["intermediate_recall"],
             "poor_recall": e31["three_class"]["poor_recall"],
             "poor_fpr_nonpoor": e31["three_class"]["poor_fpr_nonpoor"],
+            "poor_vs_rest_auc": e31["three_class"]["poor_vs_rest_auc"],
             "collapsed_good_vs_rest_acc": e31["good_vs_rest"]["acc"],
             "collapsed_good_vs_rest_auc": e31["good_vs_rest"]["auc"],
             "collapsed_good_vs_rest_confusion": json.dumps(e31["good_vs_rest"]["confusion"]),

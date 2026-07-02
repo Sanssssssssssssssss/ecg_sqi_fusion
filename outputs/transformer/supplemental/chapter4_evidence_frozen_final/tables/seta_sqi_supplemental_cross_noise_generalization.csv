@@ -1,0 +1,5 @@
+scenario,train_n,val_n,test_n,threshold,test_Ac,Se,Sp,acceptable_positive_model_auc,test_tn,test_fp,test_fn,test_tp,source,sqis,val_Ac
+train_em_test_ma,733,157,157,0.5535,0.9808917197452228,1.0,0.926829268292683,0.9993692178301092,38,3,0,116,outputs/sqi_supplemental/existing_seed0/generalization/cross_noise_generalization_svm.csv,"bSQI,basSQI,kSQI,sSQI,fSQI",1.0
+train_ma_test_em,733,157,157,0.0845,0.8535031847133758,1.0,0.4390243902439024,0.9997897392767032,18,23,0,116,outputs/sqi_supplemental/existing_seed0/generalization/cross_noise_generalization_svm.csv,"bSQI,basSQI,kSQI,sSQI,fSQI",1.0
+synthetic_poor_to_original_poor,925,198,149,0.224,0.7919463087248322,1.0,0.0606060606060606,0.4286833855799373,2,31,0,116,outputs/sqi_supplemental/existing_seed0/generalization/cross_noise_generalization_svm.csv,"bSQI,basSQI,kSQI,sSQI,fSQI",0.9949494949494948
+original_poor_to_synthetic_poor,699,150,198,0.6395000000000001,0.7575757575757576,0.9741379310344828,0.4512195121951219,0.9592094196804036,37,45,3,113,outputs/sqi_supplemental/existing_seed0/generalization/cross_noise_generalization_svm.csv,"bSQI,basSQI,kSQI,sSQI,fSQI",0.9466666666666668

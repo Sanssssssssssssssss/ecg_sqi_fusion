@@ -32,7 +32,7 @@ from src.sqi_pipeline.diagnostics.paper_extra_experiments import (
     _max_acc_threshold,
 )
 from src.sqi_pipeline.models.lm_mlp import LMConfig, LMMLP
-from src.sqi_pipeline.qrs.paper_detectors import resolve_paper_qrs_executables, run_eplimited_multilead
+from src.sqi_pipeline.qrs.paper_detectors import resolve_paper_qrs_executables, run_paper_qrs_12lead
 from src.utils.paths import project_root
 
 
@@ -869,6 +869,7 @@ def unmatched_count(a: np.ndarray, b: np.ndarray, tol: int) -> int:
 
 
 def find_warmup_example(artifacts_dir: Path, seed: int = 0) -> dict[str, Any]:
+    artifacts_dir = artifacts_dir.resolve()
     split = pd.read_csv(artifacts_dir / "splits" / "split_seta_seed0_paper_balanced.csv")
     clean_ids = split[~split["record_id"].astype(str).str.contains("__paper_", regex=False)]["record_id"].astype(str).to_list()
     clean_ids = clean_ids[:80]
@@ -880,9 +881,10 @@ def find_warmup_example(artifacts_dir: Path, seed: int = 0) -> dict[str, Any]:
         sig, leads = load_resampled(resampled_dir, rid)
         lead = "II" if "II" in leads else leads[0]
         li = leads.index(lead)
-        one = sig[:, [li]]
-        det0 = run_eplimited_multilead(record_id=f"figA1_{rid}_w0", sig=one, fs=FS_RESAMPLED, leads=[lead], executable=executables.eplimited, work_dir=work_dir, eplimited_warmup_sec=0.0)[0]
-        det8 = run_eplimited_multilead(record_id=f"figA1_{rid}_w8", sig=one, fs=FS_RESAMPLED, leads=[lead], executable=executables.eplimited, work_dir=work_dir, eplimited_warmup_sec=8.0)[0]
+        _, epl0 = run_paper_qrs_12lead(record_id=f"{rid}w0", sig12=sig, fs=FS_RESAMPLED, leads=leads, executables=executables, work_dir=work_dir, eplimited_warmup_sec=0.0)
+        _, epl8 = run_paper_qrs_12lead(record_id=f"{rid}w8", sig12=sig, fs=FS_RESAMPLED, leads=leads, executables=executables, work_dir=work_dir, eplimited_warmup_sec=8.0)
+        det0 = epl0[li]
+        det8 = epl8[li]
         score = unmatched_count(det0, det8, tol=int(round(0.15 * FS_RESAMPLED))) + abs(len(det0) - len(det8)) * 2
         early_score = unmatched_count(det0[det0 < 5 * FS_RESAMPLED], det8[det8 < 5 * FS_RESAMPLED], tol=int(round(0.15 * FS_RESAMPLED)))
         score += early_score * 2

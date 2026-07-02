@@ -46,6 +46,7 @@ Y_TO_LABEL = {0: "unacceptable", 1: "acceptable"}
 NOISE_NOTE_COLS = ["baseline_drift", "static_noise", "burst_noise", "electrodes_problems"]
 NSTDB_NOISE_TYPES = ("em", "ma")
 _NSTDB_CACHE: dict[str, np.ndarray] | None = None
+SUPPORT_BINS = ("subtle", "mid", "severe")
 
 
 @dataclass(frozen=True)
@@ -87,6 +88,10 @@ class Paths:
     @property
     def candidate_pool_csv(self) -> Path:
         return self.data / "candidate_pool.csv"
+
+    @property
+    def candidate_pool_signals_npz(self) -> Path:
+        return self.data / "candidate_pool_signals.npz"
 
     @property
     def feature_csv(self) -> Path:
@@ -356,6 +361,9 @@ def feature_cols(df: pd.DataFrame) -> list[str]:
         "record_id",
         "source_record_id",
         "candidate_type",
+        "target_support_bin",
+        "lead_support_bin",
+        "lead_localized",
         "split",
         "quality_record",
         "label",
@@ -367,6 +375,62 @@ def feature_cols(df: pd.DataFrame) -> list[str]:
         "style_anchor_record_id",
     }
     return [c for c in df.columns if c not in meta]
+
+
+def lead_quality_matrix(signals: np.ndarray) -> np.ndarray:
+    x = np.asarray(signals, dtype=np.float32)
+    amp = np.ptp(x, axis=1)
+    centered = x - np.mean(x, axis=1, keepdims=True)
+    rms = np.sqrt(np.mean(centered * centered, axis=1))
+    diff95 = np.percentile(np.abs(np.diff(x, axis=1)), 95, axis=1)
+    return np.stack([amp, rms, diff95], axis=2).astype(np.float32)
+
+
+def support_bin(count: int) -> str:
+    if int(count) <= 1:
+        return "subtle"
+    if int(count) <= 3:
+        return "mid"
+    return "severe"
+
+
+def lead_support(signals: np.ndarray, reference_signals: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    ref = lead_quality_matrix(reference_signals)
+    x = lead_quality_matrix(signals)
+    center = ref.mean(axis=0, keepdims=True)
+    scale = np.maximum(ref.std(axis=0, keepdims=True), 1e-6)
+    z = np.max(np.abs((x - center) / scale), axis=2)
+    counts = (z > 3.0).sum(axis=1).astype(np.int16)
+    bins = np.asarray([support_bin(int(v)) for v in counts], dtype=object)
+    return counts, bins, z.astype(np.float32)
+
+
+def support_leads(z_row: np.ndarray, bin_name: str, rng: np.random.Generator) -> np.ndarray:
+    order = np.argsort(-np.asarray(z_row, dtype=np.float32))
+    if bin_name == "subtle":
+        n = 1
+    elif bin_name == "mid":
+        n = int(rng.choice([2, 3]))
+    else:
+        n = int(rng.integers(6, 13))
+    return np.asarray(order[:n], dtype=np.int64)
+
+
+def localized_lead_artifact(carrier: np.ndarray, artifact: np.ndarray, leads: np.ndarray, rng: np.random.Generator) -> np.ndarray:
+    y = carrier.astype(np.float32).copy()
+    a = artifact.astype(np.float32)
+    leads = np.asarray(leads, dtype=np.int64)
+    blend = float(rng.uniform(0.82, 1.0))
+    if rng.random() < 0.70:
+        y[:, leads] = (1.0 - blend) * y[:, leads] + blend * a[:, leads]
+    else:
+        n = y.shape[0]
+        width = int(rng.integers(max(180, n // 3), n + 1))
+        start = int(rng.integers(0, max(1, n - width + 1)))
+        end = min(n, start + width)
+        y[start:end, leads] = (1.0 - blend) * y[start:end, leads] + blend * a[start:end, leads]
+    y += rng.normal(0.0, max(float(np.std(y)) * 0.0025, 1e-6), size=y.shape).astype(np.float32)
+    return y.astype(np.float32)
 
 
 def native_morph(x: np.ndarray, rng: np.random.Generator) -> np.ndarray:
@@ -461,27 +525,28 @@ def align_like_target(src: np.ndarray, target: np.ndarray, rng: np.random.Genera
     return match_detail_to_target(y, target)
 
 
-def noise_style(x: np.ndarray, rng: np.random.Generator) -> np.ndarray:
+def noise_style(x: np.ndarray, rng: np.random.Generator, leads: np.ndarray | None = None) -> np.ndarray:
     y = x.astype(np.float32).copy()
     n = y.shape[0]
+    lead_idx = np.arange(12, dtype=np.int64) if leads is None else np.asarray(leads, dtype=np.int64)
     t = np.linspace(0.0, 1.0, n, dtype=np.float32)
-    scale = max(float(np.std(y)), 1e-5)
-    wander = np.sin(2 * math.pi * rng.uniform(0.12, 0.45) * t[:, None] + rng.uniform(0, 2 * math.pi, size=(1, 12)))
-    y += (0.08 * scale * wander).astype(np.float32)
+    scale = max(float(np.std(y[:, lead_idx])), 1e-5)
+    wander = np.sin(2 * math.pi * rng.uniform(0.12, 0.45) * t[:, None] + rng.uniform(0, 2 * math.pi, size=(1, len(lead_idx))))
+    y[:, lead_idx] += (0.08 * scale * wander).astype(np.float32)
     noise12 = draw_nstdb_noise12_125(n, rng)
     if noise12 is None:
-        y += rng.normal(0.0, 0.035 * scale, size=y.shape).astype(np.float32)
+        y[:, lead_idx] += rng.normal(0.0, 0.035 * scale, size=(n, len(lead_idx))).astype(np.float32)
     else:
-        y += scale_noise_fraction(y, noise12, float(rng.uniform(0.018, 0.045)))
+        y[:, lead_idx] += scale_noise_fraction(y[:, lead_idx], noise12[:, lead_idx], float(rng.uniform(0.018, 0.045)))
     if rng.random() < 0.45:
         start = int(rng.integers(0, max(1, n - 180)))
         width = int(rng.integers(80, 220))
         end = min(n, start + width)
         if noise12 is None:
-            y[start:end] += rng.normal(0.0, 0.09 * scale, size=(end - start, 12)).astype(np.float32)
+            y[start:end, lead_idx] += rng.normal(0.0, 0.09 * scale, size=(end - start, len(lead_idx))).astype(np.float32)
         else:
-            burst = scale_noise_fraction(y[start:end], noise12[start:end], float(rng.uniform(0.05, 0.11)))
-            y[start:end] += (burst * np.hanning(end - start)[:, None]).astype(np.float32)
+            burst = scale_noise_fraction(y[start:end, lead_idx], noise12[start:end, lead_idx], float(rng.uniform(0.05, 0.11)))
+            y[start:end, lead_idx] += (burst * np.hanning(end - start)[:, None]).astype(np.float32)
     return y.astype(np.float32)
 
 
@@ -585,11 +650,92 @@ def strict_smc_select(
             swaps = max(4, int(0.08 * n))
             remove = rng.choice(len(base), size=min(swaps, len(base)), replace=False)
             available = np.asarray([i for i in range(len(pool)) if i not in used], dtype=np.int64)
+            if len(available) < len(remove):
+                particles_idx.append(base)
+                continue
             add = rng.choice(available, size=len(remove), replace=False, p=None)
             base[remove] = add
             particles_idx.append(base)
     out = enforce_noise_cap(best_idx, pool, pool_z, target_mean, noise_cap)
     return out, pd.DataFrame(trace_rows)
+
+
+def allocate_by_support(target: pd.DataFrame, n: int) -> dict[str, int]:
+    counts = target["lead_support_bin"].value_counts().reindex(SUPPORT_BINS, fill_value=0).astype(float)
+    if counts.sum() <= 0:
+        counts[:] = 1.0
+    raw = counts / counts.sum() * int(n)
+    out = {k: int(math.floor(float(v))) for k, v in raw.items()}
+    rem = int(n) - sum(out.values())
+    frac_order = sorted(SUPPORT_BINS, key=lambda k: float(raw[k] - out[k]), reverse=True)
+    for k in frac_order[:rem]:
+        out[k] += 1
+    return out
+
+
+def support_stratified_smc_select(
+    target: pd.DataFrame,
+    pool: pd.DataFrame,
+    base_mask: pd.Series,
+    cols: list[str],
+    n: int,
+    seed: int,
+    component: str,
+    noise_cap: int,
+) -> tuple[np.ndarray, pd.DataFrame]:
+    selected: list[np.ndarray] = []
+    trace_parts: list[pd.DataFrame] = []
+    quotas = allocate_by_support(target, int(n))
+    selected_pool_index: set[int] = set()
+    deficit = 0
+    for offset, bin_name in enumerate(SUPPORT_BINS):
+        want = int(quotas.get(bin_name, 0))
+        if want <= 0:
+            continue
+        mask = base_mask & pool["lead_support_bin"].astype(str).eq(bin_name) & ~pool["pool_index"].isin(selected_pool_index)
+        sub = pool.loc[mask].reset_index(drop=True)
+        take = min(want, len(sub))
+        deficit += want - take
+        if take <= 0:
+            continue
+        target_bin = target.loc[target["lead_support_bin"].astype(str).eq(bin_name)].reset_index(drop=True)
+        if target_bin.empty:
+            target_bin = target
+        rel_idx, tr = strict_smc_select(
+            target_bin,
+            sub,
+            cols,
+            take,
+            seed + offset * 97,
+            noise_cap=take if noise_cap else 0,
+        )
+        pool_idx = sub.iloc[rel_idx]["pool_index"].to_numpy(dtype=np.int64)
+        selected.append(pool_idx)
+        selected_pool_index.update(map(int, pool_idx))
+        tr["component"] = f"{component}_{bin_name}"
+        tr["component_n"] = int(take)
+        trace_parts.append(tr)
+    if deficit > 0:
+        mask = base_mask & ~pool["pool_index"].isin(selected_pool_index)
+        sub = pool.loc[mask].reset_index(drop=True)
+        if len(sub) < deficit:
+            raise SystemExit(f"candidate pool too small for {component}: need deficit {deficit}, have {len(sub)}")
+        rel_idx, tr = strict_smc_select(
+            target,
+            sub,
+            cols,
+            int(deficit),
+            seed + 4049,
+            noise_cap=int(deficit) if noise_cap else 0,
+        )
+        pool_idx = sub.iloc[rel_idx]["pool_index"].to_numpy(dtype=np.int64)
+        selected.append(pool_idx)
+        tr["component"] = f"{component}_spill"
+        tr["component_n"] = int(deficit)
+        trace_parts.append(tr)
+    if not selected:
+        return np.asarray([], dtype=np.int64), pd.DataFrame()
+    return np.concatenate(selected).astype(np.int64), pd.concat(trace_parts, ignore_index=True)
 
 
 def load_original_signals(split: pd.DataFrame) -> np.ndarray:
@@ -632,6 +778,9 @@ def cmd_build(paths: Paths, *, run: bool, force: bool, seed: int, max_ptb: int) 
 
     train_bad_global = split.index[(split["split"].eq("train")) & (split["y"].eq(0))].to_numpy()
     train_acc_global = split.index[(split["split"].eq("train")) & (split["y"].eq(1))].to_numpy()
+    original_support_count, original_support_bin, original_support_z = lead_support(original_x, original_x[train_acc_global])
+    feat_all["lead_support_count"] = original_support_count
+    feat_all["lead_support_bin"] = original_support_bin
     target_features = feat_all.iloc[train_bad_global].reset_index(drop=True)
     target_signals = original_x[train_bad_global]
 
@@ -642,12 +791,22 @@ def cmd_build(paths: Paths, *, run: bool, force: bool, seed: int, max_ptb: int) 
         for copy_i in range(4):
             src = original_x[int(global_i)]
             src_feat = feature_row(src)
-            pool_x.append(saturation_morph(src, rng) if src_feat["median_rms"] > 40.0 and src_feat["median_ptp"] < 1.0 and src_feat["median_diff95"] < 0.05 else native_morph(src, rng))
+            target_bin = str(original_support_bin[int(global_i)])
+            artifact = saturation_morph(src, rng) if src_feat["median_rms"] > 40.0 and src_feat["median_ptp"] < 1.0 and src_feat["median_diff95"] < 0.05 else native_morph(src, rng)
+            lead_localized = 0
+            if target_bin in {"subtle", "mid"}:
+                carrier_i = int(rng.choice(train_acc_global))
+                leads = support_leads(original_support_z[int(global_i)], target_bin, rng)
+                artifact = localized_lead_artifact(original_x[carrier_i], artifact, leads, rng)
+                lead_localized = 1
+            pool_x.append(artifact)
             pool_rows.append(
                 {
                     "record_id": f"{row.record_id}__seta_native_morph__{copy_i}",
                     "source_record_id": str(row.record_id),
                     "candidate_type": "seta_native_morph",
+                    "target_support_bin": target_bin,
+                    "lead_localized": lead_localized,
                     "ptb_ecg_id": "",
                     "ptb_patient_id": "",
                     "style_anchor_record_id": str(row.record_id),
@@ -667,13 +826,24 @@ def cmd_build(paths: Paths, *, run: bool, force: bool, seed: int, max_ptb: int) 
             continue
         anchor_i = int(rng.integers(0, len(target_signals)))
         anchor = target_signals[anchor_i]
-        anchor_record = str(split.iloc[int(train_bad_global[anchor_i])]["record_id"])
-        pool_x.append(align_like_target(src, anchor, rng))
+        anchor_global = int(train_bad_global[anchor_i])
+        anchor_record = str(split.iloc[anchor_global]["record_id"])
+        target_bin = str(original_support_bin[anchor_global])
+        artifact = align_like_target(src, anchor, rng)
+        lead_localized = 0
+        if target_bin in {"subtle", "mid"}:
+            carrier_i = int(rng.choice(train_acc_global))
+            leads = support_leads(original_support_z[anchor_global], target_bin, rng)
+            artifact = localized_lead_artifact(original_x[carrier_i], artifact, leads, rng)
+            lead_localized = 1
+        pool_x.append(artifact)
         pool_rows.append(
             {
                 "record_id": f"ptbxl_{int(row.ecg_id)}__ptb12_morph",
                 "source_record_id": f"ptbxl_{int(row.ecg_id)}",
                 "candidate_type": "ptb12_morph",
+                "target_support_bin": target_bin,
+                "lead_localized": lead_localized,
                 "ptb_ecg_id": int(row.ecg_id),
                 "ptb_patient_id": int(row.patient_id) if pd.notna(row.patient_id) else -1,
                 "style_anchor_record_id": anchor_record,
@@ -685,12 +855,17 @@ def cmd_build(paths: Paths, *, run: bool, force: bool, seed: int, max_ptb: int) 
     noise_candidates = min(120, len(train_acc_global))
     for global_i in rng.choice(train_acc_global, size=noise_candidates, replace=False):
         row = split.iloc[int(global_i)]
-        pool_x.append(noise_style(original_x[int(global_i)], rng))
+        anchor_global = int(rng.choice(train_bad_global))
+        target_bin = str(original_support_bin[anchor_global])
+        leads = support_leads(original_support_z[anchor_global], target_bin, rng)
+        pool_x.append(noise_style(original_x[int(global_i)], rng, leads=None if target_bin == "severe" else leads))
         pool_rows.append(
             {
                 "record_id": f"{row.record_id}__noise_style__0",
                 "source_record_id": str(row.record_id),
                 "candidate_type": "noise_style",
+                "target_support_bin": target_bin,
+                "lead_localized": int(target_bin != "severe"),
                 "ptb_ecg_id": "",
                 "ptb_patient_id": "",
                 "style_anchor_record_id": str(row.record_id),
@@ -701,6 +876,9 @@ def cmd_build(paths: Paths, *, run: bool, force: bool, seed: int, max_ptb: int) 
     pool = pd.DataFrame(pool_rows)
     pool_feat = feature_frame(pool_signals)
     pool = pd.concat([pool.reset_index(drop=True), pool_feat], axis=1)
+    pool_support_count, pool_support_bin, _ = lead_support(pool_signals, original_x[train_acc_global])
+    pool["lead_support_count"] = pool_support_count
+    pool["lead_support_bin"] = pool_support_bin
     cols = feature_cols(pool)
     pool["pool_index"] = np.arange(len(pool), dtype=int)
     quotas = {
@@ -740,22 +918,21 @@ def cmd_build(paths: Paths, *, run: bool, force: bool, seed: int, max_ptb: int) 
             mask &= ~pool_sat
         if label == "ptb12_morph":
             mask &= pool["median_diff95"].le(float(target_features["median_diff95"].quantile(0.99)))
-        sub = pool.loc[mask].reset_index(drop=True)
         if int(n_select) <= 0:
             continue
-        if len(sub) < int(n_select):
-            raise SystemExit(f"candidate pool too small for {label}: {len(sub)} < {n_select}")
-        rel_idx, tr = strict_smc_select(
+        if int(mask.sum()) < int(n_select):
+            raise SystemExit(f"candidate pool too small for {label}: {int(mask.sum())} < {n_select}")
+        pool_idx, tr = support_stratified_smc_select(
             target_for_label,
-            sub,
+            pool,
+            mask,
             cols,
             int(n_select),
             seed + 31 + offset * 101,
+            component=label,
             noise_cap=int(n_select) if label == "noise_style" else 0,
         )
-        selected_parts.append(sub.iloc[rel_idx]["pool_index"].to_numpy(dtype=np.int64))
-        tr["component"] = label
-        tr["component_n"] = int(n_select)
+        selected_parts.append(pool_idx)
         trace_parts.append(tr)
     selected_idx = np.concatenate(selected_parts)
     trace = pd.concat(trace_parts, ignore_index=True)
@@ -778,6 +955,8 @@ def cmd_build(paths: Paths, *, run: bool, force: bool, seed: int, max_ptb: int) 
                 "y": int(row["y"]),
                 "generated": 0,
                 "candidate_type": "original_seta",
+                "target_support_bin": "",
+                "lead_localized": 0,
                 "donor_split": str(row["split"]),
                 "ptb_ecg_id": "",
                 "ptb_patient_id": "",
@@ -800,6 +979,8 @@ def cmd_build(paths: Paths, *, run: bool, force: bool, seed: int, max_ptb: int) 
                 "y": 0,
                 "generated": 1,
                 "candidate_type": str(row.candidate_type),
+                "target_support_bin": str(row.target_support_bin),
+                "lead_localized": int(row.lead_localized),
                 "donor_split": donor_split,
                 "ptb_ecg_id": row.ptb_ecg_id,
                 "ptb_patient_id": row.ptb_patient_id,
@@ -809,16 +990,41 @@ def cmd_build(paths: Paths, *, run: bool, force: bool, seed: int, max_ptb: int) 
 
     protocol = pd.DataFrame(rows)
     X = np.stack(signals, axis=0).astype(np.float32)
+    final_support_count, final_support_bin, _ = lead_support(X, original_x[train_acc_global])
+    protocol["lead_support_count"] = final_support_count
+    protocol["lead_support_bin"] = final_support_bin
     all_feat = feature_frame(X)
-    features_out = pd.concat([protocol[["row_idx", "record_id", "split", "label", "y", "generated", "candidate_type"]], all_feat], axis=1)
+    features_out = pd.concat(
+        [
+            protocol[
+                [
+                    "row_idx",
+                    "record_id",
+                    "split",
+                    "label",
+                    "y",
+                    "generated",
+                    "candidate_type",
+                    "target_support_bin",
+                    "lead_localized",
+                    "lead_support_count",
+                    "lead_support_bin",
+                ]
+            ],
+            all_feat,
+        ],
+        axis=1,
+    )
     protocol.to_csv(paths.protocol_csv, index=False)
     pool.to_csv(paths.candidate_pool_csv, index=False)
     features_out.to_csv(paths.feature_csv, index=False)
     trace.to_csv(paths.selection_trace_csv, index=False)
     np.savez_compressed(paths.signals_npz, X=X, leads=np.asarray(LEADS_12, dtype=object), fs=np.int32(125))
+    np.savez_compressed(paths.candidate_pool_signals_npz, X=pool_signals, leads=np.asarray(LEADS_12, dtype=object), fs=np.int32(125))
     print(f"[build] wrote protocol rows={len(protocol)} signals={X.shape}")
     print(protocol.groupby(["split", "y"]).size().unstack(fill_value=0).to_string())
     print(protocol["candidate_type"].value_counts().to_string())
+    print(pd.crosstab(protocol.loc[protocol["generated"].astype(int).eq(1), "candidate_type"], protocol.loc[protocol["generated"].astype(int).eq(1), "lead_support_bin"]).to_string())
 
 
 def audit_dict(paths: Paths) -> dict[str, Any]:
@@ -847,6 +1053,19 @@ def audit_dict(paths: Paths) -> dict[str, Any]:
         "candidate_type_counts": {str(k): int(v) for k, v in protocol["candidate_type"].value_counts().items()},
         "ptb_generated_rows": int(protocol["candidate_type"].eq("ptb12_morph").sum()),
     }
+    if "lead_support_bin" in protocol.columns:
+        gen = train.loc[train["generated"].astype(int).eq(1)]
+        out["train_generated_support_counts"] = {
+            str(k): int(v) for k, v in gen["lead_support_bin"].astype(str).value_counts().reindex(SUPPORT_BINS, fill_value=0).items()
+        }
+        out["train_original_unacceptable_support_counts"] = {
+            str(k): int(v)
+            for k, v in train.loc[(train["generated"].astype(int).eq(0)) & (train["y"].astype(int).eq(0)), "lead_support_bin"]
+            .astype(str)
+            .value_counts()
+            .reindex(SUPPORT_BINS, fill_value=0)
+            .items()
+        }
     if out["manifest_rows"] != 998 or out["manifest_counts"].get("acceptable") != 773 or out["manifest_counts"].get("unacceptable") != 225:
         raise SystemExit(f"manifest audit failed: {out}")
     expected_split = {

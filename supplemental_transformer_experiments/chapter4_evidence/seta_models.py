@@ -8,10 +8,14 @@ import pandas as pd
 import numpy as np
 
 from src.sqi_pipeline.models import lm_mlp_search, svm_tables
+from src.sqi_pipeline.models.svm_rbf import SVMConfig, SVMRBF
 from supplemental_transformer_experiments.sqi12_gapfill import run as sqi12
 
 from .common import Paths, binary_metrics, dry, ensure_dirs, write_json
 from .seta_sqi import ARMS, arm_dir
+
+
+SELECTED5 = ["bSQI", "basSQI", "kSQI", "sSQI", "fSQI"]
 
 
 def _run_svm(root: Path, out: Path, *, force: bool) -> None:
@@ -55,14 +59,17 @@ def _run_mlp(root: Path, out: Path, *, force: bool, device: str) -> None:
 
 def _row_from_svm(arm: str, model: str, out: Path) -> dict[str, Any]:
     if model == "SQI SVM-RBF selected5":
-        row = pd.read_csv(out / "table7_svm_selected5_seed0.csv").iloc[0].to_dict()
+        table6 = pd.read_csv(out / "table6_12lead_combo_sqi_seed0.csv")
+        row = table6.loc[table6["Group"].eq("Quintuplets")].iloc[0].to_dict()
         selected = str(row["Selected_SQI"])
-        probs = out / "probs" / "Selected5_seed0.npz"
+        probs = out / "probs" / "Quintuplets_seed0.npz"
+        parameter_source = "paper_table6_fixed_C1_gamma0.14"
     else:
         table6 = pd.read_csv(out / "table6_12lead_combo_sqi_seed0.csv")
         row = table6.loc[table6["Group"].eq("All SQI")].iloc[0].to_dict()
         selected = "all84"
         probs = out / "probs" / "AllSQI_seed0.npz"
+        parameter_source = "paper_table6_fixed_C1_gamma0.14"
     threshold = float(row["threshold"])
     if probs.exists():
         z = np.load(probs, allow_pickle=True)
@@ -89,6 +96,7 @@ def _row_from_svm(arm: str, model: str, out: Path) -> dict[str, Any]:
         "construction": arm,
         "model": model,
         "input": selected,
+        "parameter_source": parameter_source,
         "threshold_source": "validation_max_accuracy",
         "threshold": threshold,
         "acc": acc,
@@ -97,6 +105,64 @@ def _row_from_svm(arm: str, model: str, out: Path) -> dict[str, Any]:
         "acceptable_recall": se,
         "original_unacceptable_recall": sp,
         "confusion": cm,
+    }
+
+
+def _selected5_cols() -> list[str]:
+    return [f"{lead}__{sqi}" for lead in svm_tables.LEADS_12 for sqi in SELECTED5]
+
+
+def _best_acc_threshold(y01: np.ndarray, p: np.ndarray) -> float:
+    best_t, best_acc = 0.5, -1.0
+    for threshold in np.linspace(0.0, 1.0, 2001):
+        acc = float(((p > threshold).astype(int) == y01).mean())
+        if acc > best_acc:
+            best_t, best_acc = float(threshold), acc
+    return best_t
+
+
+def _row_from_source_only_svm(arm: str, root: Path) -> dict[str, Any]:
+    split = pd.read_csv(root / "splits" / "split.csv")
+    feat = pd.read_parquet(root / "features" / "record84_norm.parquet").drop(columns=["y"], errors="ignore")
+    split["record_id"] = split["record_id"].astype(str)
+    feat["record_id"] = feat["record_id"].astype(str)
+    df = feat.merge(split[["record_id", "split", "y", "is_augmented", "candidate_type"]], on="record_id", how="inner")
+    is_aug = pd.to_numeric(df["is_augmented"], errors="coerce").fillna(0).astype(int)
+    y_pm = pd.to_numeric(df["y"], errors="coerce").astype(int)
+    y01 = y_pm.eq(1).astype(int).to_numpy()
+    train_acc = df["split"].eq("train") & y_pm.eq(1) & is_aug.eq(0)
+    train_poor = df["split"].eq("train") & y_pm.eq(-1)
+    source_contract = "original train unacceptable only"
+    if arm != "native_imbalanced":
+        train_poor &= is_aug.eq(1)
+        source_contract = "generated train unacceptable only; original train unacceptable excluded"
+    val = df["split"].eq("val") & is_aug.eq(0)
+    test = df["split"].eq("test") & is_aug.eq(0)
+    cols = _selected5_cols()
+    model = SVMRBF(SVMConfig(seed=0, use_standard_scaler=False))
+    model.fit_fixed(df.loc[train_acc | train_poor, cols].to_numpy(float), y01[(train_acc | train_poor).to_numpy()], C=1.0, gamma=0.14)
+    p_val = model.predict_proba(df.loc[val, cols].to_numpy(float))
+    threshold = _best_acc_threshold(y01[val.to_numpy()], p_val)
+    p_test = model.predict_proba(df.loc[test, cols].to_numpy(float))
+    pred = (p_test > threshold).astype(int)
+    met = binary_metrics(y01[test.to_numpy()], score=p_test, pred=pred)
+    return {
+        "run_id": f"seta_{arm}_source_only_sqi_svmrbf_selected5",
+        "construction": arm,
+        "model": "SQI SVM-RBF selected5",
+        "input": ",".join(SELECTED5),
+        "parameter_source": "paper_table6_fixed_C1_gamma0.14",
+        "threshold_source": "validation_max_accuracy",
+        "threshold": threshold,
+        "train_acceptable_original_n": int(train_acc.sum()),
+        "train_poor_source_n": int(train_poor.sum()),
+        "source_only_train_poor_contract": source_contract,
+        "acc": float(met["acc"]),
+        "auc": float(met["auc"]),
+        "balanced_acc": float(met["balanced_acc"]),
+        "acceptable_recall": float(met["acceptable_recall"]),
+        "original_unacceptable_recall": float(met["original_unacceptable_recall"]),
+        "confusion": json.dumps(met["confusion"]),
     }
 
 
@@ -140,17 +206,33 @@ def _acceptability_preserving_threshold(predictions_csv: Path) -> tuple[float, d
     near_best = [
         row
         for row in candidates
-        if row["acc"] >= best_acc - 0.01 and row["macro_f1"] >= best_f1 - 0.017
+        if row["acc"] >= best_acc - 0.02 and row["macro_f1"] >= best_f1 - 0.03
     ]
     if not near_best:
         raise RuntimeError("no validation threshold met near-optimal accuracy/F1 criteria")
-    low_threshold = [row for row in near_best if row["threshold"] <= 0.25]
-    operating = low_threshold or near_best
-    # The waveform comparator is under-calibrated on Set-A. Use a fixed
-    # low-threshold validation operating range instead of the conservative
-    # max-F1 threshold that over-rejects acceptable records.
-    chosen = sorted(operating, key=lambda row: abs(row["threshold"] - 0.25))[0]
-    threshold = float(chosen["threshold"])
+    floor = [
+        row
+        for row in near_best
+        if row["acceptable_recall"] >= 0.90 and row["original_unacceptable_recall"] >= 0.80
+    ]
+    operating = floor or near_best
+    chosen = sorted(
+        operating,
+        key=lambda row: (
+            abs(row["acceptable_recall"] - row["original_unacceptable_recall"]),
+            -row["balanced_acc"],
+            -row["macro_f1"],
+        ),
+    )[0]
+    chosen_cm = chosen["confusion"]
+    plateau = [
+        row
+        for row in candidates
+        if row["confusion"] == chosen_cm
+        and row["acc"] == chosen["acc"]
+        and row["macro_f1"] == chosen["macro_f1"]
+    ]
+    threshold = float(np.median([row["threshold"] for row in plateau])) if plateau else float(chosen["threshold"])
     yt = test["y"].to_numpy(dtype=int)
     st = test["prob_acceptable"].to_numpy(dtype=np.float64)
     test_met = binary_metrics(yt, score=st, pred=(st >= threshold).astype(int))
@@ -159,9 +241,25 @@ def _acceptability_preserving_threshold(predictions_csv: Path) -> tuple[float, d
     return threshold, chosen, test_met
 
 
+def _fixed_original_bad_recall(predictions_csv: Path) -> dict[str, float]:
+    pred = pd.read_csv(predictions_csv)
+    out: dict[str, float] = {}
+    for split in ["train", "val", "test"]:
+        rows = pred.loc[
+            pred["split"].eq(split)
+            & pred["y"].astype(int).eq(0)
+            & pred["generated"].astype(int).eq(0)
+        ]
+        value = float(rows["pred_fixed"].astype(int).eq(0).mean()) if len(rows) else float("nan")
+        key = "val_bad_recall_fixed05" if split == "val" else f"{split}_original_bad_recall_fixed05"
+        out[key] = value
+    return out
+
+
 def _row_from_conformer(paths: Paths, *, force: bool, device: str) -> dict[str, Any]:
     sp = sqi12.Paths(paths.seta)
     metrics_path = paths.seta / "models" / "e31_leadwise_shared" / "metrics.json"
+    predictions_path = paths.seta / "models" / "e31_leadwise_shared" / "predictions.csv"
     if force or not metrics_path.exists():
         # Same lead-wise E31-style architecture; these are the stable Set-A
         # training parameters from the local seed sweep.
@@ -182,7 +280,7 @@ def _row_from_conformer(paths: Paths, *, force: bool, device: str) -> dict[str, 
             ),
         )
     obj = json.loads(metrics_path.read_text(encoding="utf-8"))
-    _, val_met, met = _acceptability_preserving_threshold(paths.seta / "models" / "e31_leadwise_shared" / "predictions.csv")
+    _, val_met, met = _acceptability_preserving_threshold(predictions_path)
     cm = met["confusion"]
     tn, fp, fn, tp = cm["tn"], cm["fp"], cm["fn"], cm["tp"]
     return {
@@ -190,7 +288,7 @@ def _row_from_conformer(paths: Paths, *, force: bool, device: str) -> dict[str, 
         "construction": "smc_gapfill",
         "model": "12-lead E31-style waveform comparator",
         "input": "12-lead waveform-derived channels",
-        "threshold_source": "validation_near_optimal_low_threshold",
+        "threshold_source": "validation_recall_balanced",
         "threshold": float(met["threshold"]),
         "acc": float(met["acc"]),
         "auc": float(met["auc"]),
@@ -202,6 +300,7 @@ def _row_from_conformer(paths: Paths, *, force: bool, device: str) -> dict[str, 
         "val_threshold_macro_f1": float(val_met["macro_f1"]),
         "val_threshold_acceptable_recall": float(val_met["acceptable_recall"]),
         "val_threshold_unacceptable_recall": float(val_met["original_unacceptable_recall"]),
+        **_fixed_original_bad_recall(predictions_path),
     }
 
 
@@ -210,12 +309,10 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
         dry("seta-models", paths)
         return {"step": "seta-models", "skipped": True}
     ensure_dirs(paths)
-    construction_rows = []
+    source_only_rows = []
     for arm in ARMS:
         root = arm_dir(paths, arm)
-        out = paths.seta_models / arm / "svm"
-        _run_svm(root, out, force=force)
-        construction_rows.append(_row_from_svm(arm, "SQI SVM-RBF selected5", out))
+        source_only_rows.append(_row_from_source_only_svm(arm, root))
 
     smc_root = arm_dir(paths, "smc_gapfill")
     mlp_out = paths.seta_models / "smc_gapfill" / "lm_mlp"
@@ -228,11 +325,14 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
         _row_from_mlp(mlp_out),
         _row_from_conformer(paths, force=force, device=device),
     ]
-    construction = pd.DataFrame(construction_rows)
+    source_only = pd.DataFrame(source_only_rows)
     models = pd.DataFrame(model_rows)
-    construction.to_csv(paths.tables / "seta_construction_effect_models.csv", index=False)
+    source_only.to_csv(paths.tables / "seta_construction_source_only_models.csv", index=False)
     models.to_csv(paths.tables / "seta_repaired_model_comparison.csv", index=False)
-    out = {"construction_effect": construction.to_dict(orient="records"), "model_comparison": models.to_dict(orient="records")}
+    out = {
+        "construction_source_only": source_only.to_dict(orient="records"),
+        "model_comparison": models.to_dict(orient="records"),
+    }
     write_json(paths.seta_models_json, out)
     print(models.to_string(index=False))
     return {"step": "seta-models", "skipped": False, "outputs": out}

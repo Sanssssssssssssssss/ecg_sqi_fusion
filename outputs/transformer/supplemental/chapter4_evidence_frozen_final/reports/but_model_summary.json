@@ -1,0 +1,173 @@
+{
+  "sqi_baseline": {
+    "task": "BUT v116 good-vs-medium/bad classical SQI baselines",
+    "note": "BUT is single-lead; one lead is copied into pseudo-12-lead SQI columns. SVM uses all 84 normalized SQIs with a linear SVM; LM-MLP reuses the SQI baseline implementation.",
+    "source_protocol": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\analysis\\good_medium_geometry_repair\\clean_but_protocols\\v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876",
+    "source_split": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\analysis\\good_medium_geometry_repair\\event_factorized_sqi_conformer\\rh_splits\\v116_gapfill_dual_goodorig_nm40__k1_s20260876\\fold0",
+    "features": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\but_v116\\sqi_baseline\\features\\record84_norm.parquet",
+    "split_counts_class": {
+      "bad": {
+        "test": 164,
+        "train": 8310,
+        "val": 178
+      },
+      "good": {
+        "test": 1053,
+        "train": 8310,
+        "val": 1053
+      },
+      "medium": {
+        "test": 632,
+        "train": 8310,
+        "val": 618
+      }
+    },
+    "split_counts_binary": {
+      "acceptable": {
+        "test": 1053,
+        "train": 8310,
+        "val": 1053
+      },
+      "unacceptable": {
+        "test": 796,
+        "train": 16620,
+        "val": 796
+      }
+    },
+    "qrs_status_counts": {
+      "ok": 28628
+    },
+    "svm_84sqi_linear": {
+      "acc": 0.8155759870200108,
+      "macro_f1": 0.81208548751422,
+      "auc": 0.8884701284198772,
+      "threshold": -0.018360469227956422,
+      "best_C": 10.0
+    },
+    "lm_mlp_84_j_1": {
+      "J": 8,
+      "acc": 0.8729042725797729,
+      "macro_f1": 0.869833395493605,
+      "auc": 0.9411027120407354,
+      "threshold": 0.383
+    }
+  },
+  "e31": {
+    "prediction_path": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\runs\\gm_mechanism_repair_suite\\E31_wave_mechanism_conformer_fold0_seed0\\test_predictions.npz",
+    "three_class": {
+      "acc": 0.944835045970795,
+      "macro_f1": 0.9549518900802104,
+      "balanced_acc": 0.9581641337798931,
+      "confusion": [
+        [
+          982,
+          71,
+          0
+        ],
+        [
+          28,
+          603,
+          1
+        ],
+        [
+          0,
+          2,
+          162
+        ]
+      ],
+      "good_recall": 0.932573599240266,
+      "intermediate_recall": 0.9541139240506329,
+      "poor_recall": 0.9878048780487805,
+      "poor_fpr_nonpoor": 0.0005934718100890207,
+      "poor_vs_rest_auc": 0.9999312441195629
+    },
+    "good_vs_rest": {
+      "acc": 0.9464575446187128,
+      "macro_f1": 0.9457305874138936,
+      "balanced_acc": 0.9486988599216405,
+      "acceptable_recall": 0.932573599240266,
+      "original_unacceptable_recall": 0.964824120603015,
+      "confusion": {
+        "tn": 768,
+        "fp": 28,
+        "fn": 71,
+        "tp": 982
+      },
+      "auc": 0.98876385727307
+    }
+  },
+  "table": [
+    {
+      "run_id": "but_svm_rbf_84sqi_multiclass",
+      "model": "SQI SVM-RBF all84",
+      "input": "single-lead SQI copied to pseudo-12-lead 84-SQI",
+      "task": "good/medium/bad",
+      "test_acc": 0.7998918334234721,
+      "test_macro_f1": 0.8325929015151182,
+      "test_auc": "",
+      "good_recall": 0.7891737891737892,
+      "intermediate_recall": 0.7753164556962026,
+      "poor_recall": 0.9634146341463414,
+      "poor_fpr_nonpoor": 0.007121661721068249,
+      "poor_vs_rest_auc": 0.9976116378374467,
+      "collapsed_good_vs_rest_acc": 0.8074634937804218,
+      "collapsed_good_vs_rest_auc": 0.9017344557545561,
+      "collapsed_good_vs_rest_confusion": "{\"tn\": 662, \"fp\": 134, \"fn\": 222, \"tp\": 831}",
+      "confusion": "[[831, 219, 3], [133, 490, 9], [1, 5, 158]]"
+    },
+    {
+      "run_id": "but_svm_rbf_selected5_sqi_multiclass",
+      "model": "SQI SVM-RBF selected5",
+      "input": "selected-five SQI copied to pseudo-12-lead",
+      "task": "good/medium/bad",
+      "test_acc": 0.7755543537047053,
+      "test_macro_f1": 0.8092960065709512,
+      "test_auc": "",
+      "good_recall": 0.7597340930674265,
+      "intermediate_recall": 0.7531645569620253,
+      "poor_recall": 0.9634146341463414,
+      "poor_fpr_nonpoor": 0.011275964391691394,
+      "poor_vs_rest_auc": 0.9987225881160889,
+      "collapsed_good_vs_rest_acc": 0.785289345592212,
+      "collapsed_good_vs_rest_auc": 0.8810744129002085,
+      "collapsed_good_vs_rest_confusion": "{\"tn\": 652, \"fp\": 144, \"fn\": 253, \"tp\": 800}",
+      "confusion": "[[800, 246, 7], [144, 476, 12], [0, 6, 158]]"
+    },
+    {
+      "run_id": "but_lm_mlp_84sqi_ovr_multiclass",
+      "model": "SQI LM-MLP 84-8-1 OvR",
+      "input": "single-lead SQI copied to pseudo-12-lead 84-SQI",
+      "task": "good/medium/bad",
+      "test_acc": 0.8101676581936181,
+      "test_macro_f1": 0.84341778855736,
+      "test_auc": "",
+      "good_recall": 0.8110161443494777,
+      "intermediate_recall": 0.7658227848101266,
+      "poor_recall": 0.975609756097561,
+      "poor_fpr_nonpoor": 0.005341246290801187,
+      "poor_vs_rest_auc": 0.9990446551349786,
+      "collapsed_good_vs_rest_acc": 0.8150351541373716,
+      "collapsed_good_vs_rest_auc": 0.9003624485199024,
+      "collapsed_good_vs_rest_confusion": "{\"tn\": 653, \"fp\": 143, \"fn\": 199, \"tp\": 854}",
+      "confusion": "[[854, 195, 4], [143, 484, 5], [0, 4, 160]]"
+    },
+    {
+      "run_id": "but_e31_wave_mechanism_conformer",
+      "model": "E31 wave-mechanism Conformer",
+      "input": "8-channel waveform-derived time series",
+      "task": "good/medium/bad",
+      "test_acc": 0.944835045970795,
+      "test_macro_f1": 0.9549518900802104,
+      "test_auc": "",
+      "good_recall": 0.932573599240266,
+      "intermediate_recall": 0.9541139240506329,
+      "poor_recall": 0.9878048780487805,
+      "poor_fpr_nonpoor": 0.0005934718100890207,
+      "poor_vs_rest_auc": 0.9999312441195629,
+      "collapsed_good_vs_rest_acc": 0.9464575446187128,
+      "collapsed_good_vs_rest_auc": 0.98876385727307,
+      "collapsed_good_vs_rest_confusion": "{\"tn\": 768, \"fp\": 28, \"fn\": 71, \"tp\": 982}",
+      "confusion": "[[982, 71, 0], [28, 603, 1], [0, 2, 162]]"
+    }
+  ]
+}

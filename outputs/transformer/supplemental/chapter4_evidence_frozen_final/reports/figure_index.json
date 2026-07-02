@@ -1,0 +1,10 @@
+{
+  "fig_D1_distribution_repair_summary": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_D1_distribution_repair_summary.png",
+  "fig_D2_top_drift_features": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_D2_top_drift_features.png",
+  "fig_D3_seta_ours_vs_paper_em_ma_distribution": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_D3_seta_ours_vs_paper_em_ma_distribution.png",
+  "fig_M1_seta_model_performance": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M1_seta_model_performance.png",
+  "fig_D4_but_medium_bad_gapfill_distribution": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_D4_but_medium_bad_gapfill_distribution.png",
+  "fig_M2_but_model_comparison": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M2_but_model_comparison.png",
+  "fig_M3_but_good_medium_boundary_audit": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M3_but_good_medium_boundary_audit.png",
+  "fig_M4_but_mlp_error_conformer_correct_examples": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M4_but_mlp_error_conformer_correct_examples.png"
+}

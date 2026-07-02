@@ -1,0 +1,6 @@
+feature_set,comparison,domain_auc,ci_low,ci_high,n_original_poor,n_synthetic_poor,source
+84-SQI,original poor vs synthetic poor,0.9735360908353607,,,225,548,SQI baseline final_claims/domain_shift_metrics.csv
+84-SQI,RBF-MMD2 original poor vs synthetic poor,,,,225,548,MMD2=0.330871; permutation p=0.000999001
+paper_waveform_all_103,original bad vs synthetic poor,0.98,0.9645840385653872,0.9919519671234956,225,548,SQI supplemental waveform_domain_auc/paper_waveform_all_domain_auc.csv
+paper_waveform_all_103,original bad vs synthetic em,0.9822546634225466,0.9696187985625137,0.9911601749163929,225,274,SQI supplemental waveform_domain_auc/paper_waveform_all_domain_auc.csv
+paper_waveform_all_103,original bad vs synthetic ma,0.986147607461476,0.97194139634345,0.9963124613771688,225,274,SQI supplemental waveform_domain_auc/paper_waveform_all_domain_auc.csv

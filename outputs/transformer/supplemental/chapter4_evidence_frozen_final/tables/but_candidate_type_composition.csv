@@ -1,0 +1,10 @@
+class_name,v116_candidate_type,size,pct_within_class
+bad,but_native_morph,3514,33.37
+bad,clean_style,89,0.85
+bad,original_but,1656,15.73
+bad,ptb_morph,5271,50.06
+good,original_but,10530,100.0
+medium,but_native_morph,1616,15.35
+medium,clean_style,41,0.39
+medium,original_but,6449,61.24
+medium,ptb_morph,2424,23.02

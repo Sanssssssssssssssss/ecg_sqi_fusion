@@ -286,6 +286,12 @@ def _add_cov_ellipse(ax: plt.Axes, x: np.ndarray, y: np.ndarray, color: str) -> 
     ax.scatter([center[0]], [center[1]], marker="D", s=20, color=color, edgecolor="#FFFFFF", linewidth=0.55, zorder=3)
 
 
+def _heat_text_color(cmap, norm, value: float) -> str:
+    r, g, b, _ = cmap(norm(value))
+    luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
+    return PALETTE["ink"] if luminance > 0.62 else "#FFFFFF"
+
+
 def plot_domain_shift(
     pca_df: pd.DataFrame,
     per_sqi_auc: pd.DataFrame,
@@ -304,8 +310,8 @@ def plot_domain_shift(
     labels = {
         "original acceptable": "original acceptable",
         "original unacceptable": "original unacceptable",
-        "synthetic em": "synthetic em",
-        "synthetic ma": "synthetic ma",
+        "synthetic em": "paper EM",
+        "synthetic ma": "paper MA",
     }
     pc = pca_df[["PC1", "PC2"]].to_numpy(dtype=float)
     pc = pc[np.isfinite(pc).all(axis=1)]
@@ -332,8 +338,12 @@ def plot_domain_shift(
         _add_cov_ellipse(ax_pca, g["PC1"].to_numpy(dtype=float), g["PC2"].to_numpy(dtype=float), colors[group])
     ev1 = float(pca_df["explained_variance_PC1"].iloc[0]) * 100.0
     ev2 = float(pca_df["explained_variance_PC2"].iloc[0]) * 100.0
-    ax_pca.set_xlim(xlo - pad_x, xhi + pad_x)
-    ax_pca.set_ylim(ylo - pad_y, yhi + pad_y)
+    if "projection_set" in pca_df.columns and pca_df["projection_set"].astype(str).str.contains("original_reference").any():
+        ax_pca.margins(x=0.035, y=0.045)
+        ax_pca.autoscale_view()
+    else:
+        ax_pca.set_xlim(xlo - pad_x, xhi + pad_x)
+        ax_pca.set_ylim(ylo - pad_y, yhi + pad_y)
     ax_pca.set_xlabel(f"PC1 ({ev1:.1f}%)")
     ax_pca.set_ylabel(f"PC2 ({ev2:.1f}%)")
     ax_pca.grid(color=PALETTE["grid"], lw=0.3, alpha=0.65)
@@ -407,8 +417,8 @@ def plot_domain_shift(
                 f"{v:.2f}",
                 ha="center",
                 va="center",
-                fontsize=6.4,
-                color="#FFFFFF",
+                fontsize=7.2,
+                color=_heat_text_color(im.cmap, im.norm, float(v)),
                 path_effects=heatmap_text_effect,
             )
     cb = fig.colorbar(im, ax=ax_heat, fraction=0.050, pad=0.025)
@@ -611,8 +621,8 @@ def plot_sqi_subgroup_separability(
                 f"{v:.2f}",
                 ha="center",
                 va="center",
-                fontsize=6.2,
-                color="#FFFFFF",
+                fontsize=7.2,
+                color=_heat_text_color(im0.cmap, im0.norm, float(v)),
                 path_effects=heatmap_text_effect,
             )
     cb0 = fig.colorbar(im0, ax=ax_sep, fraction=0.050, pad=0.025)
@@ -638,8 +648,8 @@ def plot_sqi_subgroup_separability(
                 f"{v:.2f}",
                 ha="center",
                 va="center",
-                fontsize=6.2,
-                color="#FFFFFF",
+                fontsize=7.2,
+                color=_heat_text_color(im1.cmap, im1.norm, float(v)),
                 path_effects=heatmap_text_effect,
             )
     add_panel_label(ax_rec, "b", x=-0.21)

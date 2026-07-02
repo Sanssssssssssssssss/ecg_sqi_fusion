@@ -1,0 +1,91 @@
+{
+  "figure": "fig_D5_but_v116_generation_examples",
+  "claim": "Generated BUT v116 examples preserve class-level waveform support while avoiding exact replay of original traces.",
+  "archetype": "image plate + quant source data",
+  "sampling_rate_hz": 125.0,
+  "protocol_root": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\analysis\\good_medium_geometry_repair\\clean_but_protocols\\v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876",
+  "source_data_csv": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\source_data\\fig_D5_but_v116_generation_examples_source_data.csv",
+  "examples": [
+    {
+      "column": 1,
+      "row": "original",
+      "idx": 11634,
+      "class_name": "medium",
+      "candidate_type": "original_but",
+      "display_subtype": "medium_clean_core",
+      "source_idx": "6271",
+      "native_donor_id": "6271.0"
+    },
+    {
+      "column": 1,
+      "row": "generated",
+      "idx": 17249,
+      "class_name": "medium",
+      "candidate_type": "but_native_morph",
+      "display_subtype": "medium_visible_qrs_detail",
+      "source_idx": "v116_native_morph_17444_4",
+      "native_donor_id": "17444.0"
+    },
+    {
+      "column": 2,
+      "row": "original",
+      "idx": 14806,
+      "class_name": "medium",
+      "candidate_type": "original_but",
+      "display_subtype": "medium_visible_qrs_detail",
+      "source_idx": "23703",
+      "native_donor_id": "23703.0"
+    },
+    {
+      "column": 2,
+      "row": "generated",
+      "idx": 19612,
+      "class_name": "medium",
+      "candidate_type": "ptb_morph",
+      "display_subtype": "medium_visible_qrs_detail",
+      "source_idx": "6680",
+      "native_donor_id": "nan"
+    },
+    {
+      "column": 3,
+      "row": "original",
+      "idx": 21559,
+      "class_name": "bad",
+      "candidate_type": "original_but",
+      "display_subtype": "bad_dense_right_island",
+      "source_idx": "10981",
+      "native_donor_id": "10981.0"
+    },
+    {
+      "column": 3,
+      "row": "generated",
+      "idx": 24281,
+      "class_name": "bad",
+      "candidate_type": "but_native_morph",
+      "display_subtype": "bad_detector_template_disagree",
+      "source_idx": "v116_native_morph_10854_5",
+      "native_donor_id": "10854.0"
+    },
+    {
+      "column": 4,
+      "row": "original",
+      "idx": 22430,
+      "class_name": "bad",
+      "candidate_type": "original_but",
+      "display_subtype": "bad_contact_reset_flatline",
+      "source_idx": "25057",
+      "native_donor_id": "25057.0"
+    },
+    {
+      "column": 4,
+      "row": "generated",
+      "idx": 30784,
+      "class_name": "bad",
+      "candidate_type": "ptb_morph",
+      "display_subtype": "bad_contact_reset_flatline",
+      "source_idx": "3011",
+      "native_donor_id": "nan"
+    }
+  ],
+  "replacement_note": "Generated examples in columns 1 and 3 are different-donor native morph samples selected to avoid donor-like replay in the visual plate."
+}

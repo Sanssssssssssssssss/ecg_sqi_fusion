@@ -1,0 +1,94 @@
+{
+  "arms": {
+    "native_imbalanced": {
+      "rows": 998,
+      "split_counts": {
+        "test_acceptable": 116,
+        "test_unacceptable": 33,
+        "train_acceptable": 541,
+        "train_unacceptable": 158,
+        "val_acceptable": 116,
+        "val_unacceptable": 34
+      },
+      "candidate_type_counts": {
+        "original_seta": 998
+      },
+      "qrs_rows": 11976,
+      "qrs_seeded_from_native": 0,
+      "qrs_detector_profile": [
+        "paper"
+      ],
+      "feature_rows": 998
+    },
+    "fixed_synthetic": {
+      "rows": 1381,
+      "split_counts": {
+        "test_acceptable": 116,
+        "test_unacceptable": 33,
+        "train_acceptable": 541,
+        "train_generated_unacceptable": 383,
+        "train_unacceptable": 158,
+        "val_acceptable": 116,
+        "val_unacceptable": 34
+      },
+      "candidate_type_counts": {
+        "original_seta": 998,
+        "fixed_synthetic": 383
+      },
+      "qrs_rows": 16572,
+      "qrs_seeded_from_native": 0,
+      "qrs_detector_profile": [
+        "paper"
+      ],
+      "feature_rows": 1381
+    },
+    "quota_draw": {
+      "rows": 1381,
+      "split_counts": {
+        "test_acceptable": 116,
+        "test_unacceptable": 33,
+        "train_acceptable": 541,
+        "train_generated_unacceptable": 383,
+        "train_unacceptable": 158,
+        "val_acceptable": 116,
+        "val_unacceptable": 34
+      },
+      "candidate_type_counts": {
+        "original_seta": 998,
+        "ptb12_morph": 211,
+        "seta_native_morph": 153,
+        "noise_style": 19
+      },
+      "qrs_rows": 16572,
+      "qrs_seeded_from_native": 998,
+      "qrs_detector_profile": [
+        "paper"
+      ],
+      "feature_rows": 1381
+    },
+    "smc_gapfill": {
+      "rows": 1381,
+      "split_counts": {
+        "test_acceptable": 116,
+        "test_unacceptable": 33,
+        "train_acceptable": 541,
+        "train_generated_unacceptable": 383,
+        "train_unacceptable": 158,
+        "val_acceptable": 116,
+        "val_unacceptable": 34
+      },
+      "candidate_type_counts": {
+        "original_seta": 998,
+        "ptb12_morph": 211,
+        "seta_native_morph": 153,
+        "noise_style": 19
+      },
+      "qrs_rows": 16572,
+      "qrs_seeded_from_native": 998,
+      "qrs_detector_profile": [
+        "paper"
+      ],
+      "feature_rows": 1381
+    }
+  }
+}

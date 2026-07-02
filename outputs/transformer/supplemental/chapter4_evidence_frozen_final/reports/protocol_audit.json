@@ -1,0 +1,98 @@
+{
+  "seta": {
+    "manifest_rows": 998,
+    "manifest_counts": {
+      "acceptable": 773,
+      "unacceptable": 225
+    },
+    "split_counts": {
+      "test_acceptable": 116,
+      "test_unacceptable": 33,
+      "train_acceptable": 541,
+      "train_unacceptable": 158,
+      "val_acceptable": 116,
+      "val_unacceptable": 34
+    },
+    "protocol_rows": 1381,
+    "signals_shape": [
+      1381,
+      1250,
+      12
+    ],
+    "train_counts": {
+      "0": 541,
+      "1": 541
+    },
+    "val_test_generated_rows": 0,
+    "train_generated_donor_split_problems": 0,
+    "candidate_types": [
+      "noise_style",
+      "original_seta",
+      "ptb12_morph",
+      "seta_native_morph"
+    ],
+    "candidate_type_counts": {
+      "original_seta": 998,
+      "ptb12_morph": 211,
+      "seta_native_morph": 153,
+      "noise_style": 19
+    },
+    "ptb_generated_rows": 211,
+    "train_generated_support_counts": {
+      "subtle": 154,
+      "mid": 51,
+      "severe": 178
+    },
+    "train_original_unacceptable_support_counts": {
+      "subtle": 64,
+      "mid": 20,
+      "severe": 74
+    }
+  },
+  "but": {
+    "protocol_rows": 31590,
+    "signals_shape": [
+      31590,
+      1250
+    ],
+    "protocol_class_counts": {
+      "bad": 10530,
+      "good": 10530,
+      "medium": 10530
+    },
+    "original_but_rows": 18635,
+    "original_but_class_counts": {
+      "bad": 1656,
+      "good": 10530,
+      "medium": 6449
+    },
+    "split_counts": {
+      "test_bad": 164,
+      "test_good": 1053,
+      "test_medium": 632,
+      "train_bad": 8310,
+      "train_good": 8310,
+      "train_medium": 8310,
+      "unused_bad": 1878,
+      "unused_good": 114,
+      "unused_medium": 970,
+      "val_bad": 178,
+      "val_good": 1053,
+      "val_medium": 618
+    },
+    "train_class_counts": {
+      "bad": 8310,
+      "good": 8310,
+      "medium": 8310
+    },
+    "val_test_generated_rows": 0,
+    "allowed_candidate_types": [
+      "but_native_morph",
+      "clean_style",
+      "original_but",
+      "ptb_morph"
+    ],
+    "protocol_path": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\analysis\\good_medium_geometry_repair\\clean_but_protocols\\v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876",
+    "split_path": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\analysis\\good_medium_geometry_repair\\event_factorized_sqi_conformer\\rh_splits\\v116_gapfill_dual_goodorig_nm40__k1_s20260876\\fold0"
+  }
+}

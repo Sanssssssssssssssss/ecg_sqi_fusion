@@ -1,0 +1,5 @@
+construction,model_test_scope,train_original_unacceptable_n,train_generated_unacceptable_n,val_generated_rows,test_generated_rows,test_acceptable_n,test_unacceptable_n
+native_imbalanced,held-out original Set-A test only,158,0,0,0,116,33
+fixed_synthetic,held-out original Set-A test only,158,383,0,0,116,33
+quota_draw,held-out original Set-A test only,158,383,0,0,116,33
+smc_gapfill,held-out original Set-A test only,158,383,0,0,116,33

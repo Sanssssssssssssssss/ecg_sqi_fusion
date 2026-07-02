@@ -1,0 +1,9 @@
+class_name,domain,v116_candidate_type,n
+bad,original BUT,original_but,1312
+bad,synthesis,but_native_morph,2809
+bad,synthesis,clean_style,64
+bad,synthesis,ptb_morph,4239
+medium,original BUT,original_but,5169
+medium,synthesis,but_native_morph,1290
+medium,synthesis,clean_style,33
+medium,synthesis,ptb_morph,1932

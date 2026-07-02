@@ -46,26 +46,26 @@ This run, per-lead components:
 
 | scope | component | n | mean_ms | median_ms | p95_ms | std_ms | min_ms | max_ms |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| per_lead | MLP_predict | 100 | 0.259 | 0.233 | 0.361 | 0.051 | 0.214 | 0.441 |
-| per_lead | SVM_predict | 100 | 0.664 | 0.564 | 1.106 | 0.206 | 0.503 | 1.265 |
-| per_lead | eplimited_PandT | 100 | 38.658 | 37.050 | 45.209 | 7.707 | 28.235 | 92.983 |
-| per_lead | fSQI | 100 | 0.035 | 0.023 | 0.056 | 0.037 | 0.018 | 0.372 |
-| per_lead | kSQI | 100 | 0.845 | 0.702 | 1.318 | 0.309 | 0.381 | 2.077 |
-| per_lead | sSQI | 100 | 0.523 | 0.380 | 0.898 | 0.223 | 0.288 | 1.136 |
-| per_lead | shared_pSQI_basSQI_PSD | 100 | 0.434 | 0.373 | 0.681 | 0.171 | 0.225 | 1.408 |
-| per_lead | wqrs | 100 | 42.617 | 39.685 | 57.590 | 13.304 | 29.843 | 129.746 |
+| per_lead | MLP_predict | 100 | 0.293 | 0.277 | 0.430 | 0.063 | 0.222 | 0.510 |
+| per_lead | SVM_predict | 100 | 0.813 | 0.724 | 1.164 | 0.220 | 0.551 | 1.204 |
+| per_lead | eplimited_PandT | 100 | 41.083 | 40.934 | 49.105 | 4.352 | 30.008 | 52.859 |
+| per_lead | fSQI | 100 | 0.033 | 0.033 | 0.054 | 0.012 | 0.018 | 0.084 |
+| per_lead | kSQI | 100 | 0.749 | 0.765 | 1.105 | 0.219 | 0.400 | 1.418 |
+| per_lead | sSQI | 100 | 0.563 | 0.627 | 0.782 | 0.176 | 0.305 | 0.984 |
+| per_lead | shared_pSQI_basSQI_PSD | 100 | 0.428 | 0.421 | 0.634 | 0.177 | 0.213 | 1.496 |
+| per_lead | wqrs | 100 | 42.790 | 41.535 | 52.402 | 6.380 | 32.518 | 76.805 |
 
 This run, full 12-lead end-to-end:
 
 | scope | component | n | mean_ms | median_ms | p95_ms | std_ms | min_ms | max_ms |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| full_12lead | feature84_ms | 100 | 16.007 | 14.755 | 23.320 | 4.270 | 10.403 | 32.455 |
-| full_12lead | mlp_predict_ms | 100 | 0.287 | 0.252 | 0.408 | 0.063 | 0.230 | 0.464 |
-| full_12lead | qrs_ms | 100 | 570.524 | 566.782 | 674.609 | 62.547 | 402.119 | 794.101 |
-| full_12lead | svm_predict_ms | 100 | 0.485 | 0.398 | 0.795 | 0.152 | 0.358 | 0.867 |
-| full_12lead | total_ms | 100 | 587.306 | 585.075 | 694.277 | 64.741 | 413.461 | 813.096 |
+| full_12lead | feature84_ms | 100 | 18.678 | 18.045 | 26.506 | 4.437 | 10.419 | 27.910 |
+| full_12lead | mlp_predict_ms | 100 | 0.298 | 0.272 | 0.401 | 0.065 | 0.241 | 0.699 |
+| full_12lead | qrs_ms | 100 | 565.939 | 572.149 | 631.008 | 50.334 | 405.988 | 764.384 |
+| full_12lead | svm_predict_ms | 100 | 0.525 | 0.479 | 0.739 | 0.126 | 0.371 | 0.853 |
+| full_12lead | total_ms | 100 | 585.443 | 591.197 | 649.627 | 52.498 | 418.275 | 786.646 |
 
-Timing trend: wqrs is still the slowest per-lead detector component (42.6 ms mean), and the full 12-lead path is dominated by QRS (570.5 ms of 587.3 ms mean total). The qualitative ordering matches Table 8, while absolute times include Python, temporary WFDB record writing, and external executable launch overhead.
+Timing trend: wqrs is still the slowest per-lead detector component (42.8 ms mean), and the full 12-lead path is dominated by QRS (565.9 ms of 585.4 ms mean total). The qualitative ordering matches Table 8, while absolute times include Python, temporary WFDB record writing, and external executable launch overhead.
 
 ## Limitations
 
