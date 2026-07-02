@@ -658,6 +658,19 @@ class EventFactorizedSQIConformer(nn.Module):
         self.ce_head = nn.Sequential(nn.LayerNorm(width * 2), nn.Linear(width * 2, 128), nn.GELU(), nn.Dropout(0.08), nn.Linear(128, 3))
         self.recon_head = nn.Conv1d(width, in_ch, kernel_size=1)
 
+    def _maybe_patch_query(self, query_tokens: torch.Tensor, location: str) -> torch.Tensor:
+        patch = getattr(self, "_query_patch", None)
+        if not patch or str(patch.get("location")) != str(location):
+            return query_tokens
+        repl = patch["values"].to(device=query_tokens.device, dtype=query_tokens.dtype)
+        if repl.ndim == 1:
+            repl = repl.unsqueeze(0)
+        if repl.shape[0] == 1 and query_tokens.shape[0] != 1:
+            repl = repl.expand(query_tokens.shape[0], -1)
+        out = query_tokens.clone()
+        out[:, int(patch["query_index"]), :] = repl
+        return out
+
     def forward_tokens(self, x: torch.Tensor) -> dict[str, torch.Tensor]:
         hi_ch = self.hi_stem(x)
         hi_tokens = hi_ch.transpose(1, 2)
@@ -673,14 +686,23 @@ class EventFactorizedSQIConformer(nn.Module):
             context_tokens = self.blocks(self.pos(ctx))
             pooled = self.pool(context_tokens)
             query_tokens = pooled[:, None, :].expand(-1, len(self.query_names), -1)
+        query_tokens = self._maybe_patch_query(query_tokens, "Z_Q")
+        query_tokens_pre_hires = query_tokens
         if self.use_highres_fusion:
             query_delta, _ = self.hi_cross_attn(query_tokens, hi_tokens, hi_tokens, need_weights=False)
             query_tokens = query_tokens + query_delta
+        query_tokens = self._maybe_patch_query(query_tokens, "Q_e")
         if self.branch_upper_block:
             phys = self.physiology_blocks(torch.cat([query_tokens[:, :6, :], context_tokens], dim=1))[:, :6, :]
             art = self.artifact_blocks(torch.cat([query_tokens[:, 6:, :], context_tokens], dim=1))[:, :2, :]
             query_tokens = torch.cat([phys, art], dim=1)
-        return {"hi_ch": hi_ch, "hi_tokens": hi_tokens, "context_tokens": context_tokens, "query_tokens": query_tokens}
+        return {
+            "hi_ch": hi_ch,
+            "hi_tokens": hi_tokens,
+            "context_tokens": context_tokens,
+            "query_tokens_pre_hires": query_tokens_pre_hires,
+            "query_tokens": query_tokens,
+        }
 
     def forward(self, x: torch.Tensor) -> dict[str, torch.Tensor]:
         tok = self.forward_tokens(x)
@@ -745,6 +767,7 @@ class EventFactorizedSQIConformer(nn.Module):
             "recon": recon,
             "hi_tokens": tok["hi_tokens"],
             "context_tokens": ctx,
+            "query_tokens_pre_hires": tok["query_tokens_pre_hires"],
             "query_tokens": query,
         }
 

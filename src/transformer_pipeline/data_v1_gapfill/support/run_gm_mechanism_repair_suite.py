@@ -594,6 +594,10 @@ class GMMechanismConformer(BaseModel):
             "boundary_family_logits": self.boundary_family_head(gm_repr),
             "boundary_label_logit": self.boundary_label_head(gm_repr).squeeze(1),
             "boundary_label_logits_by_family": boundary_label_logits,
+            "hi_tokens": hi_tokens,
+            "context_tokens": ctx,
+            "query_tokens_pre_hires": tok["query_tokens_pre_hires"],
+            "query_tokens": query,
         }
         if gm_expert_logits is not None:
             out["gm_expert_logits"] = gm_expert_logits

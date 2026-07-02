@@ -1,0 +1,8 @@
+{
+  "rescue_pairs": 124,
+  "self_patch_max_logit_error": 0.0,
+  "gm_boundary_qe_rank": 1,
+  "gm_boundary_qe_mean_delta_h_int": 5.702459375449126,
+  "bad_stress_qe_mean_delta_h_int": 0.0,
+  "verdict": "supports a GM_BOUNDARY-mediated medium decision path"
+}

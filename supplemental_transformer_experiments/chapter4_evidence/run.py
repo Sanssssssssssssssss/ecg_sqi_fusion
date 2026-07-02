@@ -29,6 +29,7 @@ def parse_args() -> argparse.Namespace:
         "seta-models",
         "but-models",
         "but-boundary-audit",
+        "but-query-patching",
         "figures",
         "report",
         "audit-report",
@@ -70,6 +71,10 @@ def main() -> None:
         from . import but_boundary_audit
 
         but_boundary_audit.run(paths, execute=args.run, force=args.force, device=args.device)
+    elif args.cmd == "but-query-patching":
+        from . import but_query_patching
+
+        but_query_patching.run(paths, execute=args.run, force=args.force, device=args.device)
     elif args.cmd == "figures":
         from . import figures
 
@@ -88,7 +93,7 @@ def main() -> None:
 
             dry("pipeline", paths)
             return
-        from . import audit, audit_report, but_boundary_audit, but_models, figures, repair, report, seta_build, seta_models, seta_sqi
+        from . import audit, audit_report, but_boundary_audit, but_models, but_query_patching, figures, repair, report, seta_build, seta_models, seta_sqi
 
         seta_build.run(paths, execute=True, force=args.force, seed=args.seed, max_ptb=args.max_ptb)
         seta_sqi.run(paths, execute=True, force=args.force, seed=args.seed, max_ptb=args.max_ptb)
@@ -97,6 +102,7 @@ def main() -> None:
         seta_models.run(paths, execute=True, force=args.force, device=args.device)
         but_models.run(paths, execute=True, force=args.force, device=args.device)
         but_boundary_audit.run(paths, execute=True, force=args.force, device=args.device)
+        but_query_patching.run(paths, execute=True, force=args.force, device=args.device)
         figures.run(paths, execute=True)
         report.run(paths, execute=True)
         audit_report.run(paths, execute=True)
