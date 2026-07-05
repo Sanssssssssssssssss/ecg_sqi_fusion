@@ -75,6 +75,7 @@ def _seta_distribution_display(df: pd.DataFrame, paths: Paths) -> pd.DataFrame:
 
 
 def _seta_construction_source_audit(paths: Paths) -> pd.DataFrame:
+    output = paths.tables / "seta_construction_source_audit.csv"
     rows: list[dict[str, Any]] = []
     for arm in ["native_imbalanced", "fixed_synthetic", "quota_draw", "smc_gapfill"]:
         split_path = paths.seta_arms / arm / "splits" / "split.csv"
@@ -95,12 +96,15 @@ def _seta_construction_source_audit(paths: Paths) -> pd.DataFrame:
                 "split_contract": "train-only generated; val/test original only",
             }
         )
+    if not rows and output.exists():
+        return _read_csv(output)
     out = pd.DataFrame(rows)
-    out.to_csv(paths.tables / "seta_construction_source_audit.csv", index=False)
+    out.to_csv(output, index=False)
     return out
 
 
 def _seta_construction_eval_scope(paths: Paths) -> pd.DataFrame:
+    output = paths.tables / "seta_construction_eval_scope.csv"
     rows: list[dict[str, Any]] = []
     for arm in ["native_imbalanced", "fixed_synthetic", "quota_draw", "smc_gapfill"]:
         split_path = paths.seta_arms / arm / "splits" / "split.csv"
@@ -125,8 +129,10 @@ def _seta_construction_eval_scope(paths: Paths) -> pd.DataFrame:
                 "test_unacceptable_n": int((test & y.eq(-1)).sum()),
             }
         )
+    if not rows and output.exists():
+        return _read_csv(output)
     out = pd.DataFrame(rows)
-    out.to_csv(paths.tables / "seta_construction_eval_scope.csv", index=False)
+    out.to_csv(output, index=False)
     return out
 
 

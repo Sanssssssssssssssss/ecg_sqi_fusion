@@ -20,6 +20,16 @@ OPTIONAL_ARCHIVE_PREFIXES = (
     "outputs/sqi_supplemental/ch4_rerun",
 )
 SKIPPED_OPTIONAL_REFERENCES: set[str] = set()
+EXTRA_REQUIRED_ARTIFACTS = (
+    ROOT
+    / "outputs"
+    / "transformer"
+    / "v116_e31"
+    / "runs"
+    / "gm_mechanism_repair_suite"
+    / "E31_query_mean_fused_conformer_fold0_seed0"
+    / "test_predictions.npz",
+)
 
 
 def _rel(path: Path) -> str:
@@ -122,6 +132,7 @@ def _known_artifacts() -> set[Path]:
             if path is not None:
                 paths.add(path)
     paths.update(_markdown_paths())
+    paths.update(EXTRA_REQUIRED_ARTIFACTS)
     return paths
 
 
