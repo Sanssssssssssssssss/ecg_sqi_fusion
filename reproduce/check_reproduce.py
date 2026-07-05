@@ -179,14 +179,25 @@ def artifact_check(work: Path) -> dict[str, Any]:
     return out
 
 
-def _run_command(cmd: list[str], work: Path, name: str, env: dict[str, str] | None = None) -> dict[str, Any]:
+def _run_command(
+    cmd: list[str],
+    work: Path,
+    name: str,
+    env: dict[str, str] | None = None,
+    timeout_sec: int | None = None,
+) -> dict[str, Any]:
     stdout = work / f"{name}_stdout.log"
     stderr = work / f"{name}_stderr.log"
     with stdout.open("w", encoding="utf-8") as out, stderr.open("w", encoding="utf-8") as err:
-        proc = subprocess.run(cmd, cwd=ROOT, env=env, stdout=out, stderr=err, text=True)
+        try:
+            proc = subprocess.run(cmd, cwd=ROOT, env=env, stdout=out, stderr=err, text=True, timeout=timeout_sec)
+            returncode = proc.returncode
+        except subprocess.TimeoutExpired as exc:
+            err.write(f"\nTIMEOUT after {timeout_sec}s: {exc}\n")
+            returncode = -9
     return {
         "cmd": subprocess.list2cmdline(cmd),
-        "returncode": proc.returncode,
+        "returncode": returncode,
         "stdout": _rel(stdout),
         "stderr": _rel(stderr),
     }
@@ -256,6 +267,7 @@ def public_smoke(work: Path) -> dict[str, Any]:
     out_dir = work / "transformer_clean_smoke"
     env = os.environ.copy()
     env["ECG_DISABLE_LOCAL_ARCHIVE"] = "1"
+    env["ECG_PUBLIC_SMOKE_MODE"] = "range"
     cmd = [
         sys.executable,
         "-m",
@@ -265,7 +277,7 @@ def public_smoke(work: Path) -> dict[str, Any]:
         "clean-smoke",
         "--run",
     ]
-    command = _run_command(cmd, work, "public_smoke", env=env)
+    command = _run_command(cmd, work, "public_smoke", env=env, timeout_sec=300)
     summary_path = out_dir / "source" / "clean_smoke_summary.json"
     summary: dict[str, Any] = {}
     warnings: list[str] = []

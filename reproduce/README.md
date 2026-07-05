@@ -17,6 +17,7 @@ python reproduce/check_reproduce.py all
 
 All generated logs and summaries are written under `reproduce/work/`.
 
-`public-smoke` checks whether the public BUT/PTB rebuild path can run. A
+`public-smoke` uses a bounded public BUTQDB remote-range read so a fresh clone
+can verify the clean-data entrypoint without downloading the full database. A
 `historical_support_exact=false` result is an expected warning, not a
-replacement for the frozen Chapter 4 numbers.
+replacement for the frozen Chapter 4 numbers or a full public-data rebuild.

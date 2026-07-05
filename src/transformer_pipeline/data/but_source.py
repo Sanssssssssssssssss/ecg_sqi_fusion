@@ -607,6 +607,84 @@ def clean_smoke(cfg: TransformerPipelineConfig) -> dict[str, Any]:
     return out
 
 
+def public_range_smoke(cfg: TransformerPipelineConfig) -> dict[str, Any]:
+    record_id = os.environ.get("ECG_PUBLIC_SMOKE_RECORD", "100001")
+    pn_dir = f"butqdb/1.0.0/{record_id}"
+    ann_url = f"https://physionet.org/files/butqdb/1.0.0/{record_id}/{record_id}_ANN.csv"
+    out_dir = cfg.artifacts_dir / "source" / "public_range_smoke"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    ann = pd.read_csv(ann_url, header=None)
+    numeric = ann.apply(pd.to_numeric, errors="coerce").dropna(how="all")
+    cons = numeric.iloc[:, -3:].copy()
+    cons.columns = ["start_sample", "end_sample", "quality_class"]
+    cons = cons.dropna()
+    cons = cons[(cons["quality_class"] >= 1) & (cons["quality_class"] <= 3)]
+    if cons.empty:
+        raise RuntimeError(f"No usable BUT annotations in {ann_url}")
+    header = wfdb.rdheader(f"{record_id}_ECG", pn_dir=pn_dir)
+    fs_raw = int(round(float(header.fs)))
+    win_raw = fs_raw * WIN_SEC
+    cons = cons[(cons["end_sample"] - cons["start_sample"]) >= win_raw]
+    if cons.empty:
+        raise RuntimeError(f"No {WIN_SEC}s annotation window in {ann_url}")
+    row = cons.iloc[0]
+    start = int(row["start_sample"])
+    q = int(row["quality_class"])
+    rec = wfdb.rdrecord(
+        f"{record_id}_ECG",
+        pn_dir=pn_dir,
+        sampfrom=start,
+        sampto=start + win_raw,
+        physical=True,
+        channels=[0],
+    )
+    norm, stats = robust_normalize_window(resample_to_target(np.asarray(rec.p_signal[:, 0], dtype=np.float32), fs_raw))
+    if len(norm) != N_TARGET:
+        norm = pad_or_trim_10s(norm, FS_TARGET)[0]
+    signal = norm.reshape(1, 1, -1).astype(np.float32)
+    signal_path = out_dir / "signals.npz"
+    metadata_path = out_dir / "metadata.csv"
+    np.savez_compressed(signal_path, X=signal)
+    pd.DataFrame(
+        [
+            {
+                "window_id": f"butqdb_{record_id}_{start}_{start + win_raw}",
+                "dataset": "butqdb",
+                "record_id": record_id,
+                "source": "physionet_remote_range",
+                "start_sample": start,
+                "end_sample": start + win_raw,
+                "fs_original": fs_raw,
+                "label_raw": q,
+                "y_class": CLASS_MAP[q],
+                "y": CLASS_TO_INT[CLASS_MAP[q]],
+                **stats,
+            }
+        ]
+    ).to_csv(metadata_path, index=False)
+    out = {
+        "reproduction_scope": "bounded public-data smoke; remote range read only; exact frozen replay only when historical_support_exact=true",
+        "processed": {
+            "mode": "physionet_remote_range",
+            "signals_shape": list(signal.shape),
+            "record_id": record_id,
+            "pn_dir": pn_dir,
+            "annotation_url": ann_url,
+        },
+        "source": {
+            "historical_support_exact": False,
+            "support_warning": "bounded smoke does not rebuild the historical v116 support pool",
+        },
+        "artifacts": {
+            "metadata": file_digest(metadata_path),
+            "signals": file_digest(signal_path),
+        },
+    }
+    write_json(cfg.artifacts_dir / "source" / "clean_smoke_summary.json", out)
+    return out
+
+
 def run(cfg: TransformerPipelineConfig) -> dict[str, Any]:
     print(f"{now()} preprocess BUT QDB")
     processed = preprocess_butqdb(cfg)

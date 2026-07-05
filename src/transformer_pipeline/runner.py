@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import json
+import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -42,6 +43,19 @@ def run_clean_smoke(cfg: TransformerPipelineConfig, *, run: bool) -> StepResult:
     if not run:
         print("python -m src.transformer_pipeline.cli clean-smoke --run")
         return StepResult("clean_smoke", True, {"dry_run": True})
+    if os.environ.get("ECG_PUBLIC_SMOKE_MODE") == "range":
+        out = but_source.public_range_smoke(cfg)
+        print(json.dumps(out, indent=2, sort_keys=True))
+        return StepResult(
+            "clean_smoke",
+            False,
+            {
+                "mode": "range",
+                "processed_shape": out["processed"].get("signals_shape"),
+                "support_exact": out["source"].get("historical_support_exact"),
+                "support_warning": out["source"].get("support_warning", ""),
+            },
+        )
     ensure_transformer_raw_data(cfg.root)
     out = but_source.clean_smoke(cfg)
     print(json.dumps(out, indent=2, sort_keys=True))
