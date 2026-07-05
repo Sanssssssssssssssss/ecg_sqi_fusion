@@ -75,6 +75,20 @@ def _readable_artifact(path: Path) -> tuple[bool, str]:
     return True, "ok"
 
 
+def _tracked_artifact(path: Path) -> tuple[bool, str]:
+    rel = _rel(path)
+    if path.is_dir():
+        proc = subprocess.run(["git", "ls-files", "--", rel], cwd=ROOT, capture_output=True, text=True)
+        return (bool(proc.stdout.strip()), "tracked child ok" if proc.stdout.strip() else "no tracked child")
+    proc = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", "--", rel],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    return (proc.returncode == 0, "tracked" if proc.returncode == 0 else "not tracked")
+
+
 def _markdown_paths() -> set[Path]:
     found: set[Path] = set()
     for md in sorted((FROZEN / "reports").glob("*.md")):
@@ -116,20 +130,34 @@ def artifact_check(work: Path) -> dict[str, Any]:
     results = []
     missing = []
     unreadable = []
+    untracked = []
     for path in sorted(_known_artifacts(), key=lambda p: _rel(p)):
         ok, note = _readable_artifact(path)
-        row = {"path": _rel(path), "status": "ok" if ok else "fail", "note": note}
+        tracked = False
+        tracked_note = "not checked"
+        if ok:
+            tracked, tracked_note = _tracked_artifact(path)
+        row = {
+            "path": _rel(path),
+            "status": "ok" if ok and tracked else "fail",
+            "note": note,
+            "tracked": tracked,
+            "tracked_note": tracked_note,
+        }
         results.append(row)
         if not ok and note == "missing":
             missing.append(row)
         elif not ok:
             unreadable.append(row)
+        elif not tracked:
+            untracked.append(row)
     out = {
         "name": "artifact",
-        "status": "pass" if not missing and not unreadable else "fail",
+        "status": "pass" if not missing and not unreadable and not untracked else "fail",
         "checked": len(results),
         "missing": missing,
         "unreadable": unreadable,
+        "untracked": untracked,
         "warnings": [
             f"skipped optional historical reference: {path}"
             for path in sorted(SKIPPED_OPTIONAL_REFERENCES)

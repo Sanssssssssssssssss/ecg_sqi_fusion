@@ -52,7 +52,21 @@ def main() -> None:
     paths = _paths(args)
     if args.run and paths.out.resolve() == FROZEN_OUT.resolve() and not args.allow_frozen:
         raise SystemExit(f"refusing to write frozen evidence without --allow-frozen: {FROZEN_OUT}")
-    if args.run:
+    raw_data_commands = {
+        "audit",
+        "seta-build",
+        "seta-sqi",
+        "seta-repair",
+        "seta-models",
+        "but-models",
+        "but-boundary-audit",
+        "but-query-patching",
+        "but-time-local-transplant",
+        "but-architecture-ablation",
+        "but-local-counterfactuals",
+        "pipeline",
+    }
+    if args.run and args.cmd in raw_data_commands:
         root = project_root()
         ensure_sqi_raw_data(root)
         ensure_transformer_raw_data(root)

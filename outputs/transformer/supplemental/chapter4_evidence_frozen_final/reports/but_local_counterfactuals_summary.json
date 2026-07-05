@@ -1,0 +1,9 @@
+{
+  "verdict": "strong for SQI-locked high-frequency/EMG local noise sensitivity; raw segment transplant is supportive but not definitive",
+  "degradation_accepted": 1189,
+  "degradation_total": 1200,
+  "transplant_accepted": 186,
+  "transplant_total": 360,
+  "fig_M8": "outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M8_but_sqi_locked_local_degradation.png",
+  "fig_M9": "outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M9_but_real_pair_segment_transplant.png"
+}
