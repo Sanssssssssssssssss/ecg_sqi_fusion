@@ -341,7 +341,7 @@ def run(artifacts_dir: Path, out_dir: Path, seed: int) -> Path:
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Compare generated SQI paper-style tables with Clifford 2012 trends.")
     p.add_argument("--artifacts_dir", default="outputs/sqi_paper_aligned")
-    p.add_argument("--out_dir", default="reports/sqi_paper_aligned/table_trend_comparison")
+    p.add_argument("--out_dir", default="outputs/reports/sqi_paper_aligned/table_trend_comparison")
     p.add_argument("--seed", type=int, default=0)
     return p.parse_args()
 

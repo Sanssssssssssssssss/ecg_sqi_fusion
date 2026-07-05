@@ -1,6 +1,0 @@
-| scenario                        | skipped | train_n | val_n | test_n | sqis                       | threshold | val_Ac   | test_Ac  | test_Se  | test_Sp   | test_tn | test_fp | test_fn | test_tp | test_AUC |
-| ------------------------------- | ------- | ------- | ----- | ------ | -------------------------- | --------- | -------- | -------- | -------- | --------- | ------- | ------- | ------- | ------- | -------- |
-| train_em_test_ma                | False   | 733     | 157   | 157    | bSQI,basSQI,kSQI,sSQI,fSQI | 0.5535    | 1        | 0.980892 | 1        | 0.926829  | 38      | 3       | 0       | 116     | 0.999369 |
-| train_ma_test_em                | False   | 733     | 157   | 157    | bSQI,basSQI,kSQI,sSQI,fSQI | 0.0845    | 1        | 0.853503 | 1        | 0.439024  | 18      | 23      | 0       | 116     | 0.99979  |
-| synthetic_poor_to_original_poor | False   | 925     | 198   | 149    | bSQI,basSQI,kSQI,sSQI,fSQI | 0.224     | 0.994949 | 0.791946 | 1        | 0.0606061 | 2       | 31      | 0       | 116     | 0.428683 |
-| original_poor_to_synthetic_poor | False   | 699     | 150   | 198    | bSQI,basSQI,kSQI,sSQI,fSQI | 0.6395    | 0.946667 | 0.757576 | 0.974138 | 0.45122   | 37      | 45      | 3       | 113     | 0.959209 |

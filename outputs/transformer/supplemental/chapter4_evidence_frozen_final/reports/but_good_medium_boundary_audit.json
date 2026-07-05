@@ -1,7 +1,7 @@
 {
   "boundary_table": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\tables\\but_good_medium_boundary_audit.csv",
   "records_table": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\tables\\but_good_medium_boundary_records.csv",
-  "e31_prediction_path": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\runs\\gm_mechanism_repair_suite\\E31_wave_mechanism_conformer_fold0_seed0\\test_predictions.npz",
+  "e31_prediction_path": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\runs\\gm_mechanism_repair_suite\\E31_query_mean_fused_conformer_fold0_seed0\\test_predictions.npz",
   "feature_columns": 84,
   "train_rows": 24930,
   "test_rows": 1849

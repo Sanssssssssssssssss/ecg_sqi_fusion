@@ -1,5 +1,11 @@
 # Data v1 Fit Report
 
+> Archive note: this is a frozen fit-report snapshot kept for audit context.
+> Current runnable outputs are under `outputs/transformer/` and Chapter 4
+> evidence outputs are under `outputs/transformer/supplemental/`.
+> Use `python -m src.transformer_pipeline.run_all --run --train E31` for the
+> current mainline.
+
 - policy: `v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876`
 - protocol path: `E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\analysis\good_medium_geometry_repair\clean_but_protocols\v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876`
 - split path: `E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\analysis\good_medium_geometry_repair\event_factorized_sqi_conformer\rh_splits\v116_gapfill_dual_goodorig_nm40__k1_s20260876\fold0`

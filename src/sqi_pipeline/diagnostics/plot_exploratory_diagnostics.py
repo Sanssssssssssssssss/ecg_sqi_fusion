@@ -1115,7 +1115,7 @@ def write_index(out_dir: Path, manifest: list[dict]) -> None:
 def run() -> None:
     use_chart_theme()
     root = project_root()
-    out_dir = root / "reports" / "sqi_paper_aligned" / "exploratory_diagnostics"
+    out_dir = root / "outputs" / "reports" / "sqi_paper_aligned" / "exploratory_diagnostics"
     out_dir.mkdir(parents=True, exist_ok=True)
     manifest: list[dict] = []
 

@@ -12,6 +12,7 @@ if str(ROOT) not in sys.path:
 
 from src.sqi_pipeline.config import SQIPipelineConfig
 from src.sqi_pipeline.runner import ensure_dirs, format_summary_table, fresh_artifacts, run_pipeline, write_run_summary
+from src.utils.data_downloads import ensure_sqi_raw_data
 
 
 def parse_args() -> argparse.Namespace:
@@ -61,6 +62,7 @@ def main() -> None:
 
     if args.fresh:
         fresh_artifacts(cfg.artifacts_dir)
+    ensure_sqi_raw_data(cfg.root)
     ensure_dirs(cfg.artifacts_dir)
 
     only = [s.strip() for s in args.only.split(",") if s.strip()] or None

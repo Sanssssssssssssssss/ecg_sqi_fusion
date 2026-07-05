@@ -6,8 +6,8 @@ This is a raw experiment report, not manuscript prose. Main sections use only cu
 
 | Field | Value |
 | --- | --- |
-| git commit | c894e39 |
-| run date | 2026-07-02T07:46:14 |
+| git commit | fbeecd3 |
+| run date | 2026-07-02T14:45:30 |
 | random seed | 0 |
 | data policy | split first; train-only repair; validation/test original only |
 | Set-A protocol path | outputs\transformer\supplemental\chapter4_evidence_frozen_final\seta_gapfill\data\protocol_gapfill.csv |
@@ -118,7 +118,7 @@ Source: protocol audit JSON plus official v116 fold split. The remembered low du
 | official split source | outputs\transformer\v116_e31\analysis\good_medium_geometry_repair\event_factorized_sqi_conformer\rh_splits\v116_gapfill_dual_goodorig_nm40__k1_s20260876\fold0\original_region_atlas.csv | raw protocol metadata split column is not the leakage-audit split |
 | allowed candidate types | but_native_morph, clean_style, original_but, ptb_morph | original_but, but_native_morph, ptb_morph, clean_style |
 | nearest-neighbor leakage audit | 0 | sum of feature/raw near-duplicate counts across all scopes |
-| E31 frozen test | acc=0.9448; macro-F1=0.9550 | good R=0.9326; medium R=0.9541; bad R=0.9878 |
+| E31 frozen test | acc=0.9486; macro-F1=0.9577 | good R=0.9430; medium R=0.9446; bad R=1.0000 |
 
 ### Candidate Composition
 
@@ -166,7 +166,7 @@ Source: `outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/
 | but_svm_rbf_84sqi_multiclass | SQI SVM-RBF all84 | single-lead SQI copied to pseudo-12-lead 84-SQI | good/medium/bad | 0.7999 | 0.8326 | 0.7892 | 0.7753 | 0.9634 | 0.0071 | 0.9976 | 0.8075 | 0.9017 | {"tn": 662, "fp": 134, "fn": 222, "tp": 831} | [[831, 219, 3], [133, 490, 9], [1, 5, 158]] |
 | but_svm_rbf_selected5_sqi_multiclass | SQI SVM-RBF selected5 | selected-five SQI copied to pseudo-12-lead | good/medium/bad | 0.7756 | 0.8093 | 0.7597 | 0.7532 | 0.9634 | 0.0113 | 0.9987 | 0.7853 | 0.8811 | {"tn": 652, "fp": 144, "fn": 253, "tp": 800} | [[800, 246, 7], [144, 476, 12], [0, 6, 158]] |
 | but_lm_mlp_84sqi_ovr_multiclass | SQI LM-MLP 84-8-1 OvR | single-lead SQI copied to pseudo-12-lead 84-SQI | good/medium/bad | 0.8102 | 0.8434 | 0.8110 | 0.7658 | 0.9756 | 0.0053 | 0.9990 | 0.8150 | 0.9004 | {"tn": 653, "fp": 143, "fn": 199, "tp": 854} | [[854, 195, 4], [143, 484, 5], [0, 4, 160]] |
-| but_e31_wave_mechanism_conformer | E31 wave-mechanism Conformer | 8-channel waveform-derived time series | good/medium/bad | 0.9448 | 0.9550 | 0.9326 | 0.9541 | 0.9878 | 0.0006 | 0.9999 | 0.9465 | 0.9888 | {"tn": 768, "fp": 28, "fn": 71, "tp": 982} | [[982, 71, 0], [28, 603, 1], [0, 2, 162]] |
+| but_e31_wave_mechanism_conformer | E31 wave-mechanism Conformer | 8-channel waveform-derived time series | good/medium/bad | 0.9486 | 0.9577 | 0.9430 | 0.9446 | 1.0000 | 0.0018 | 1.0000 | 0.9502 | 0.9889 | {"tn": 764, "fp": 32, "fn": 60, "tp": 993} | [[993, 60, 0], [32, 597, 3], [0, 0, 164]] |
 
 ### Good--Medium Boundary Audit
 
@@ -176,11 +176,11 @@ Source: `outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | SQI SVM-RBF all84 | 219 | 3 | 133 | 1 | 352 | 1685 | 0.2089 | [[831, 219, 3], [133, 490, 9], [1, 5, 158]] |
 | SQI LM-MLP 84-8-1 OvR | 195 | 4 | 143 | 0 | 338 | 1685 | 0.2006 | [[854, 195, 4], [143, 484, 5], [0, 4, 160]] |
-| Conformer | 71 | 0 | 28 | 0 | 99 | 1685 | 0.0588 | [[982, 71, 0], [28, 603, 1], [0, 2, 162]] |
+| Conformer | 60 | 0 | 32 | 0 | 92 | 1685 | 0.0546 | [[993, 60, 0], [32, 597, 3], [0, 0, 164]] |
 
 ## 6. Figure Index
 
-Every figure has source-data CSV under `outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/source_data/`; `audit-report` checks D3/D4/D5/M3 figure-source existence.
+Every figure has source-data CSV under `outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/source_data/`; the audit checks the current Chapter 4 figure/source-data paths.
 
 | Figure | File path | Source data | Conclusion role |
 | --- | --- | --- | --- |
@@ -192,6 +192,7 @@ Every figure has source-data CSV under `outputs/transformer/supplemental/chapter
 | fig_M2_but_model_comparison | outputs\transformer\supplemental\chapter4_evidence_frozen_final\figures\fig_M2_but_model_comparison.png | outputs\transformer\supplemental\chapter4_evidence_frozen_final\figures\source_data | raw evidence |
 | fig_M3_but_good_medium_boundary_audit | outputs\transformer\supplemental\chapter4_evidence_frozen_final\figures\fig_M3_but_good_medium_boundary_audit.png | outputs\transformer\supplemental\chapter4_evidence_frozen_final\figures\source_data | raw evidence |
 | fig_M4_but_mlp_error_conformer_correct_examples | outputs\transformer\supplemental\chapter4_evidence_frozen_final\figures\fig_M4_but_mlp_error_conformer_correct_examples.png | outputs\transformer\supplemental\chapter4_evidence_frozen_final\figures\source_data | raw evidence |
+| fig_M5_but_query_patching | outputs\transformer\supplemental\chapter4_evidence_frozen_final\figures\fig_M5_but_query_patching.png | outputs\transformer\supplemental\chapter4_evidence_frozen_final\figures\source_data | raw evidence |
 
 ## 7. Historical SQI Paper-Balanced Comparator Appendix
 

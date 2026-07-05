@@ -362,7 +362,7 @@ def parse_args() -> argparse.Namespace:
     root = project_root()
     parser = argparse.ArgumentParser(description="Plot optimised-fusion diagnostics for paper-aligned SQI Table 7.")
     parser.add_argument("--artifacts_dir", default=str(root / "outputs" / "sqi_paper_aligned"))
-    parser.add_argument("--out_dir", default=str(root / "reports" / "sqi_paper_aligned" / "images"))
+    parser.add_argument("--out_dir", default=str(root / "outputs" / "reports" / "sqi_paper_aligned" / "images"))
     parser.add_argument("--n_boot", type=int, default=5000)
     parser.add_argument("--seed", type=int, default=0)
     return parser.parse_args()

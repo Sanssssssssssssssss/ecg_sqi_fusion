@@ -1,3 +1,0 @@
-model,threshold,n_windows_leads,n_records,n_leads,acceptance_rate,false_rejection_rate_proxy,mean_p_accept,median_p_accept
-singlelead_weak_svm,0.3845,17280,48,96,0.8703125,0.12968749999999996,0.7373481141960224,0.8426155008989247
-singlelead_weak_lm_mlp_J5,0.442,17280,48,96,0.8655671296296297,0.13443287037037033,0.7815691190852705,0.8997476887747702

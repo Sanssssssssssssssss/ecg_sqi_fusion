@@ -6,5 +6,10 @@
   "fig_D4_but_medium_bad_gapfill_distribution": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_D4_but_medium_bad_gapfill_distribution.png",
   "fig_M2_but_model_comparison": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M2_but_model_comparison.png",
   "fig_M3_but_good_medium_boundary_audit": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M3_but_good_medium_boundary_audit.png",
-  "fig_M4_but_mlp_error_conformer_correct_examples": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M4_but_mlp_error_conformer_correct_examples.png"
+  "fig_M4_but_mlp_error_conformer_correct_examples": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M4_but_mlp_error_conformer_correct_examples.png",
+  "fig_M5_but_query_patching": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M5_but_query_patching.png",
+  "fig_M6_but_time_local_latent_transplant": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M6_but_time_local_latent_transplant.png",
+  "fig_M7_but_architecture_ablation": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M7_but_architecture_ablation.png",
+  "fig_M8_but_sqi_locked_local_degradation": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M8_but_sqi_locked_local_degradation.png",
+  "fig_M9_but_real_pair_segment_transplant": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M9_but_real_pair_segment_transplant.png"
 }

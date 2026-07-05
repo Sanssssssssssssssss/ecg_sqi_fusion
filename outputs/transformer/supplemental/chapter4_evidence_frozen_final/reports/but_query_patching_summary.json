@@ -1,8 +1,8 @@
 {
-  "rescue_pairs": 124,
+  "rescue_pairs": 123,
   "self_patch_max_logit_error": 0.0,
-  "gm_boundary_qe_rank": 1,
-  "gm_boundary_qe_mean_delta_h_int": 5.702459375449126,
-  "bad_stress_qe_mean_delta_h_int": 0.0,
-  "verdict": "supports a GM_BOUNDARY-mediated medium decision path"
+  "gm_boundary_qe_rank": 7,
+  "gm_boundary_qe_mean_delta_h_int": 0.46549435747348195,
+  "bad_stress_qe_mean_delta_h_int": 0.4367086693523376,
+  "verdict": "supports a distributed boundary decision path, not a GM_BOUNDARY-only claim"
 }

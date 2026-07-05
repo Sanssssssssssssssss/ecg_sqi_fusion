@@ -53,47 +53,47 @@
     }
   },
   "e31": {
-    "prediction_path": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\runs\\gm_mechanism_repair_suite\\E31_wave_mechanism_conformer_fold0_seed0\\test_predictions.npz",
+    "prediction_path": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\runs\\gm_mechanism_repair_suite\\E31_query_mean_fused_conformer_fold0_seed0\\test_predictions.npz",
     "three_class": {
-      "acc": 0.944835045970795,
-      "macro_f1": 0.9549518900802104,
-      "balanced_acc": 0.9581641337798931,
+      "acc": 0.9486208761492698,
+      "macro_f1": 0.9576542243616153,
+      "balanced_acc": 0.9625467320615,
       "confusion": [
         [
-          982,
-          71,
+          993,
+          60,
           0
         ],
         [
-          28,
-          603,
-          1
+          32,
+          597,
+          3
         ],
         [
           0,
-          2,
-          162
+          0,
+          164
         ]
       ],
-      "good_recall": 0.932573599240266,
-      "intermediate_recall": 0.9541139240506329,
-      "poor_recall": 0.9878048780487805,
-      "poor_fpr_nonpoor": 0.0005934718100890207,
-      "poor_vs_rest_auc": 0.9999312441195629
+      "good_recall": 0.9430199430199431,
+      "intermediate_recall": 0.944620253164557,
+      "poor_recall": 1.0,
+      "poor_fpr_nonpoor": 0.0017804154302670622,
+      "poor_vs_rest_auc": 0.9999819063472534
     },
     "good_vs_rest": {
-      "acc": 0.9464575446187128,
-      "macro_f1": 0.9457305874138936,
-      "balanced_acc": 0.9486988599216405,
-      "acceptable_recall": 0.932573599240266,
-      "original_unacceptable_recall": 0.964824120603015,
+      "acc": 0.9502433747971877,
+      "macro_f1": 0.9494682683967253,
+      "balanced_acc": 0.9514094689974087,
+      "acceptable_recall": 0.9430199430199431,
+      "original_unacceptable_recall": 0.9597989949748744,
       "confusion": {
-        "tn": 768,
-        "fp": 28,
-        "fn": 71,
-        "tp": 982
+        "tn": 764,
+        "fp": 32,
+        "fn": 60,
+        "tp": 993
       },
-      "auc": 0.98876385727307
+      "auc": 0.9888557221053034
     }
   },
   "table": [
@@ -156,18 +156,18 @@
       "model": "E31 wave-mechanism Conformer",
       "input": "8-channel waveform-derived time series",
       "task": "good/medium/bad",
-      "test_acc": 0.944835045970795,
-      "test_macro_f1": 0.9549518900802104,
+      "test_acc": 0.9486208761492698,
+      "test_macro_f1": 0.9576542243616153,
       "test_auc": "",
-      "good_recall": 0.932573599240266,
-      "intermediate_recall": 0.9541139240506329,
-      "poor_recall": 0.9878048780487805,
-      "poor_fpr_nonpoor": 0.0005934718100890207,
-      "poor_vs_rest_auc": 0.9999312441195629,
-      "collapsed_good_vs_rest_acc": 0.9464575446187128,
-      "collapsed_good_vs_rest_auc": 0.98876385727307,
-      "collapsed_good_vs_rest_confusion": "{\"tn\": 768, \"fp\": 28, \"fn\": 71, \"tp\": 982}",
-      "confusion": "[[982, 71, 0], [28, 603, 1], [0, 2, 162]]"
+      "good_recall": 0.9430199430199431,
+      "intermediate_recall": 0.944620253164557,
+      "poor_recall": 1.0,
+      "poor_fpr_nonpoor": 0.0017804154302670622,
+      "poor_vs_rest_auc": 0.9999819063472534,
+      "collapsed_good_vs_rest_acc": 0.9502433747971877,
+      "collapsed_good_vs_rest_auc": 0.9888557221053034,
+      "collapsed_good_vs_rest_confusion": "{\"tn\": 764, \"fp\": 32, \"fn\": 60, \"tp\": 993}",
+      "confusion": "[[993, 60, 0], [32, 597, 3], [0, 0, 164]]"
     }
   ]
 }

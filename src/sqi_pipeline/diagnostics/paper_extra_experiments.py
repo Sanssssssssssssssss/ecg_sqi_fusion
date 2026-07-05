@@ -744,7 +744,7 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Run paper-aligned extra SQI experiments.")
     p.add_argument("--artifacts_dir", default="outputs/sqi_paper_aligned")
     p.add_argument("--out_dir", default="outputs/sqi_paper_aligned/extra_experiments")
-    p.add_argument("--report_dir", default="reports/sqi_paper_aligned/extra_experiments")
+    p.add_argument("--report_dir", default="outputs/reports/sqi_paper_aligned/extra_experiments")
     p.add_argument("--mitbih_dir", default="data/physionet/mit-bih")
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--max_mit_records", type=int, default=None)

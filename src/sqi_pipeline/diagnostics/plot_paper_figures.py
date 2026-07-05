@@ -957,8 +957,8 @@ def parse_args() -> argparse.Namespace:
     root = project_root()
     p = argparse.ArgumentParser(description="Generate paper-aligned SQI report figures as vector PDFs.")
     p.add_argument("--artifacts_dir", default=str(root / "outputs" / "sqi_paper_aligned"))
-    p.add_argument("--reports_dir", default=str(root / "reports" / "sqi_paper_aligned"))
-    p.add_argument("--out_dir", default=str(root / "reports" / "sqi_paper_aligned" / "images"))
+    p.add_argument("--reports_dir", default=str(root / "outputs" / "reports" / "sqi_paper_aligned"))
+    p.add_argument("--out_dir", default=str(root / "outputs" / "reports" / "sqi_paper_aligned" / "images"))
     p.add_argument("--seed", type=int, default=0)
     return p.parse_args()
 

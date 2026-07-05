@@ -1,8 +1,0 @@
-| model | setting       | removed_sqi | sqis                       | threshold | val_Ac   | test_Ac  | test_Se  | test_Sp  | test_tn | test_fp | test_fn | test_tp | test_n | test_AUC | delta_test_Ac_vs_selected5 |
-| ----- | ------------- | ----------- | -------------------------- | --------- | -------- | -------- | -------- | -------- | ------- | ------- | ------- | ------- | ------ | -------- | -------------------------- |
-| SVM   | selected-five |             | bSQI,basSQI,kSQI,sSQI,fSQI | 0.3745    | 0.952586 | 0.948052 | 0.982759 | 0.913043 | 105     | 10      | 2       | 114     | 231    | 0.972414 | 0                          |
-| SVM   | leave-one-out | bSQI        | basSQI,kSQI,sSQI,fSQI      | 0.2655    | 0.943966 | 0.939394 | 0.982759 | 0.895652 | 103     | 12      | 2       | 114     | 231    | 0.965217 | -0.00865801                |
-| SVM   | leave-one-out | basSQI      | bSQI,kSQI,sSQI,fSQI        | 0.3065    | 0.948276 | 0.91342  | 0.939655 | 0.886957 | 102     | 13      | 7       | 109     | 231    | 0.962894 | -0.034632                  |
-| SVM   | leave-one-out | kSQI        | bSQI,basSQI,sSQI,fSQI      | 0.5345    | 0.952586 | 0.943723 | 0.974138 | 0.913043 | 105     | 10      | 3       | 113     | 231    | 0.97024  | -0.004329                  |
-| SVM   | leave-one-out | sSQI        | bSQI,basSQI,kSQI,fSQI      | 0.487     | 0.948276 | 0.952381 | 0.982759 | 0.921739 | 106     | 9       | 2       | 114     | 231    | 0.979385 | 0.004329                   |
-| SVM   | leave-one-out | fSQI        | bSQI,basSQI,kSQI,sSQI      | 0.5155    | 0.952586 | 0.943723 | 0.974138 | 0.913043 | 105     | 10      | 3       | 113     | 231    | 0.972339 | -0.004329                  |

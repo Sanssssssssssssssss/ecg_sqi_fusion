@@ -1,9 +1,0 @@
-| SQI    | n_features | domain_auc_original_vs_synthetic_poor | domain_auc_ci_low | domain_auc_ci_high | bootstrap_unit   | n_bootstrap_valid |
-| ------ | ---------- | ------------------------------------- | ----------------- | ------------------ | ---------------- | ----------------- |
-| bSQI   | 12         | 0.719765                              | 0.672996          | 0.765183           | source_record_id | 2000              |
-| iSQI   | 12         | 0.902603                              | 0.870614          | 0.933524           | source_record_id | 2000              |
-| kSQI   | 12         | 0.932968                              | 0.900998          | 0.962057           | source_record_id | 2000              |
-| sSQI   | 12         | 0.839805                              | 0.795947          | 0.88167            | source_record_id | 2000              |
-| pSQI   | 12         | 0.779059                              | 0.742205          | 0.81636            | source_record_id | 2000              |
-| fSQI   | 12         | 0.943187                              | 0.921591          | 0.962638           | source_record_id | 2000              |
-| basSQI | 12         | 0.83322                               | 0.792426          | 0.871305           | source_record_id | 2000              |

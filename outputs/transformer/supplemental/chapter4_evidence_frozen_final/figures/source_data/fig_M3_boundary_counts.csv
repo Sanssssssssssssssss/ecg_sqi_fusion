@@ -1,4 +1,4 @@
 model,good_to_medium,good_to_bad,medium_to_good,bad_to_good,boundary_exchange_errors,good_medium_test_n,boundary_exchange_rate,confusion
 SQI SVM-RBF all84,219,3,133,1,352,1685,0.2089020771513353,"[[831, 219, 3], [133, 490, 9], [1, 5, 158]]"
 SQI LM-MLP 84-8-1 OvR,195,4,143,0,338,1685,0.200593471810089,"[[854, 195, 4], [143, 484, 5], [0, 4, 160]]"
-Conformer,71,0,28,0,99,1685,0.058753709198813,"[[982, 71, 0], [28, 603, 1], [0, 2, 162]]"
+Conformer,60,0,32,0,92,1685,0.0545994065281899,"[[993, 60, 0], [32, 597, 3], [0, 0, 164]]"

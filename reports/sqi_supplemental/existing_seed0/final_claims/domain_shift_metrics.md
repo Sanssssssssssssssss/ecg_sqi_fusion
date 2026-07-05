@@ -1,4 +1,0 @@
-| metric                             | estimate | comparison                      | bootstrap_or_test                        | n_original_poor | n_synthetic_poor | p_value_permutation | n_permutations | kernel_gamma_median_heuristic |
-| ---------------------------------- | -------- | ------------------------------- | ---------------------------------------- | --------------- | ---------------- | ------------------- | -------------- | ----------------------------- |
-| source_grouped_logistic_domain_auc | 0.973536 | original poor vs synthetic poor | StratifiedGroupKFold by source_record_id | 225             | 548              |                     |                |                               |
-| RBF-MMD2                           | 0.330871 | original poor vs synthetic poor |                                          | 225             | 548              | 0.000999001         | 1000           | 0.00640043                    |

@@ -1,9 +1,9 @@
 direction,location,query,n,mean_delta_h_int,sem_delta_h_int,flip_rate,mean_delta_bad_logit
-rescued_medium_to_nearest_good_query,Q_e,GM_BOUNDARY,124,5.702459375449126,0.2717571204767851,0.8225806451612904,0.0
-rescued_medium_to_nearest_good_query,Q_e,BAD_STRESS,124,0.0,0.0,0.0,0.04583116500608383
-rescued_medium_to_nearest_good_query,Q_e,BASELINE,124,0.0,0.0,0.0,0.0
-rescued_medium_to_nearest_good_query,Q_e,CONTACT_RESET,124,0.0,0.0,0.0,0.0
-rescued_medium_to_nearest_good_query,Q_e,DETAIL_NOISE,124,0.0,0.0,0.0,0.0
-rescued_medium_to_nearest_good_query,Q_e,GLOBAL_MORPH,124,0.0,0.0,0.0,0.0
-rescued_medium_to_nearest_good_query,Q_e,QRS,124,0.0,0.0,0.0,0.0
-rescued_medium_to_nearest_good_query,Q_e,RR_TEMPLATE,124,0.0,0.0,0.0,0.0
+rescued_medium_to_nearest_good_query,Q_e,RR_TEMPLATE,123,0.49033295429818996,0.02739337861198946,0.024390243902439025,0.08599419322440295
+rescued_medium_to_nearest_good_query,Q_e,BASELINE,123,0.4889347844007539,0.027751719396633165,0.016260162601626018,0.08057965301885837
+rescued_medium_to_nearest_good_query,Q_e,GLOBAL_MORPH,123,0.48626770527382207,0.026894860074263595,0.016260162601626018,0.060665510534270994
+rescued_medium_to_nearest_good_query,Q_e,CONTACT_RESET,123,0.4813441406420576,0.02727682018633617,0.016260162601626018,0.06873618878000151
+rescued_medium_to_nearest_good_query,Q_e,DETAIL_NOISE,123,0.4813354383639204,0.026707981260737285,0.016260162601626018,0.068742732691571
+rescued_medium_to_nearest_good_query,Q_e,QRS,123,0.47641980841877013,0.025836700413150008,0.024390243902439025,0.08860719882375825
+rescued_medium_to_nearest_good_query,Q_e,GM_BOUNDARY,123,0.46549435747348195,0.025273391155277557,0.024390243902439025,0.05619221198849562
+rescued_medium_to_nearest_good_query,Q_e,BAD_STRESS,123,0.4367086693523376,0.022996894352897115,0.032520325203252036,0.04326199709884519

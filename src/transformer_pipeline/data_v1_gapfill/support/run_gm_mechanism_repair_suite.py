@@ -433,6 +433,13 @@ class GMMechanismConformer(BaseModel):
         self.boundary_label_heads = nn.ModuleList(
             [nn.Sequential(nn.LayerNorm(width), nn.Linear(width, 1)) for _ in EVT.BOUNDARY_FAMILY_NAMES]
         )
+        self.query_mean_class_head = nn.Sequential(
+            nn.LayerNorm(width),
+            nn.Linear(width, width),
+            nn.GELU(),
+            nn.Dropout(0.08),
+            nn.Linear(width, 3),
+        )
 
     def _factor_view(self, factor_pred: torch.Tensor) -> torch.Tensor:
         if isinstance(ACTIVE_FACTOR_TRANSFORM, MechanismFactorTransform):
@@ -526,17 +533,24 @@ class GMMechanismConformer(BaseModel):
         else:
             medium_logit = gm_direct
 
-        bad_prob = torch.sigmoid(bad_logit)
-        medium_given_nonbad = torch.sigmoid(medium_logit)
-        probs = torch.stack(
-            [
-                (1.0 - bad_prob) * (1.0 - medium_given_nonbad),
-                (1.0 - bad_prob) * medium_given_nonbad,
-                bad_prob,
-            ],
-            dim=1,
-        ).clamp(1.0e-6, 1.0 - 1.0e-6)
-        logits = torch.log(probs)
+        if str(cfg.get("decision_query_fusion", "")) == "mean_direct3":
+            raw_logits = self.query_mean_class_head(query.mean(dim=1))
+            probs = F.softmax(raw_logits, dim=1).clamp(1.0e-6, 1.0 - 1.0e-6)
+            logits = torch.log(probs)
+            medium_logit = raw_logits[:, 1] - raw_logits[:, 0]
+            bad_logit = raw_logits[:, 2] - torch.logsumexp(raw_logits[:, :2], dim=1)
+        else:
+            bad_prob = torch.sigmoid(bad_logit)
+            medium_given_nonbad = torch.sigmoid(medium_logit)
+            probs = torch.stack(
+                [
+                    (1.0 - bad_prob) * (1.0 - medium_given_nonbad),
+                    (1.0 - bad_prob) * medium_given_nonbad,
+                    bad_prob,
+                ],
+                dim=1,
+            ).clamp(1.0e-6, 1.0 - 1.0e-6)
+            logits = torch.log(probs)
 
         quality_repr = torch.cat([gm_repr, bad_repr], dim=1)
         conditional = bool(cfg.get("conditional_subtype", False))
@@ -1321,7 +1335,7 @@ def suite_candidates() -> list[tuple[str, dict[str, Any]]]:
                 "local_weight": 0.08,
                 "artifact_weight": 0.12,
                 "subtype_weight": 0.04,
-                "class_weights": [1.0, 1.12, 1.08],
+                "class_weights": [1.03, 1.05, 1.08],
             },
         ),
         (
@@ -1381,6 +1395,7 @@ def suite_candidates() -> list[tuple[str, dict[str, Any]]]:
                 **common,
                 "factor_contract": "mechanism",
                 "gm_mode": "direct",
+                "decision_query_fusion": "mean_direct3",
                 "factor_weight": 0.16,
                 "local_weight": 0.14,
                 "artifact_weight": 0.14,
@@ -1392,7 +1407,7 @@ def suite_candidates() -> list[tuple[str, dict[str, Any]]]:
                 "hard_gm_weight": 0.0,
                 "medium_bad_guard_weight": 0.0,
                 "lr": 1.5e-4,
-                "class_weights": [1.03, 1.05, 1.08],
+                "class_weights": [1.0, 1.12, 1.08],
             },
         ),
         (

@@ -1,5 +1,10 @@
 # E31 Wave-Mechanism Conformer Comparison
 
+> Archive note: this comparison is a frozen checkpoint-level snapshot. The
+> current official pipeline command and data contract live in `README.md`;
+> generated Chapter 4 evidence tables live under
+> `outputs/transformer/supplemental/`.
+
 ## Summary
 
 `E31_wave_mechanism_conformer` is the main model for the v116 gap-fill data

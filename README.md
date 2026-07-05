@@ -4,10 +4,16 @@ Research code for ECG signal-quality assessment and waveform Transformer-based S
 
 `main` is the active official line. Use the v116 data pipeline and E31 model below unless you are working on the classical SQI baseline.
 
-The repository has two deliberately separated lines:
+The repository has four deliberately separated code lines plus shared utils:
 
 1. `src/sqi_pipeline/`: classical SQI baselines. This line is preserved as-is.
 2. `src/transformer_pipeline/`: waveform Transformer SQI research and the current v116/E31 mainline.
+3. `src/supplemental_sqi_experiments/`: SQI supplemental paper checks.
+4. `src/supplemental_transformer_experiments/`: Transformer supplemental and Chapter 4 evidence checks.
+5. `src/utils/`: shared path, download, and reporting helpers.
+
+Generated artifacts, reports, figures, and checkpoints live under `outputs/`.
+The top-level `reports/` directory is intentionally unused by this repo.
 
 ## Official Mainline
 
@@ -81,8 +87,14 @@ Current v116 data build, audit, plot, report, and E31 training-check entrypoint.
 `src/transformer_pipeline/data/`
 BUT QDB extraction and clean gap5 source materialization.
 
-`supplemental_transformer_experiments/`
-Lightweight wrappers for extra diagnostics. Outputs go to `outputs/transformer/supplemental/`.
+`src/supplemental_sqi_experiments/`
+SQI paper supplement experiments. Outputs go to `outputs/reports/sqi_supplemental/`.
+
+`src/supplemental_transformer_experiments/`
+Lightweight wrappers for extra Transformer diagnostics. Outputs go to `outputs/transformer/supplemental/`.
+
+`outputs/reports/`
+Former top-level reports tree, moved under outputs so `reports/` can be used for external writing.
 
 ## Environment
 
@@ -112,3 +124,7 @@ python -m src.sqi_pipeline.cli --only manifest_raw,split_seta,record84
 python -m src.sqi_pipeline.cli --force
 python -m src.sqi_pipeline.validate_outputs --write tmp/sqi/validation/current_seed0.json
 ```
+
+The SQI and Transformer pipeline entrypoints check for their raw PhysioNet data
+before running. If the expected local folders are missing, they download via
+`wfdb.dl_database` into `data/`.

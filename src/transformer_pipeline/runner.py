@@ -10,6 +10,7 @@ from typing import Any
 from src.transformer_pipeline.config import TransformerPipelineConfig
 from src.transformer_pipeline.data import but_source
 from src.transformer_pipeline.data_v1_gapfill import audit, build, plot, report, split, train_check
+from src.utils.data_downloads import ensure_transformer_raw_data
 from src.utils.pipeline_summary import format_summary_table
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,7 @@ def run_extract_but(cfg: TransformerPipelineConfig, *, run: bool) -> StepResult:
     if not run:
         print("python -m src.transformer_pipeline.cli extract-but --run")
         return StepResult("extract_but", True, {"dry_run": True})
+    ensure_transformer_raw_data(cfg.root)
     out = but_source.run(cfg)
     return StepResult("extract_but", False, {"candidate_gap5": out["source"]["candidate_gap5_rows"]})
 
