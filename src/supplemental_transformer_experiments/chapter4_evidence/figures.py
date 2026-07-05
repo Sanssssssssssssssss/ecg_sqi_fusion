@@ -14,6 +14,10 @@ from sklearn.preprocessing import StandardScaler
 
 from .common import Paths, dry, ensure_dirs, feature_cols, read_json
 from .seta_sqi import arm_dir
+from src.transformer_pipeline.data_v1_gapfill.common import protocol_dir, split_dir
+
+BUT_ALL7_MODEL = "SQI SVM-RBF single-lead all7"
+BUT_E31_MODEL = "E31 query-mean fused Conformer"
 
 
 mpl.rcParams.update(
@@ -265,18 +269,20 @@ def _fig_d3_seta_ours_vs_paper(paths: Paths) -> Path:
 
 
 def _fig_d4_but_balanced_classes(paths: Paths) -> Path:
-    but_meta = (
-        paths.out.parent.parent
-        / "v116_e31"
-        / "analysis"
-        / "good_medium_geometry_repair"
-        / "clean_but_protocols"
-        / "v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876"
-        / "metadata.csv"
-    )
+    but_meta = protocol_dir() / "metadata.csv"
     if not but_meta.exists():
         raise FileNotFoundError(f"missing BUT v116 metadata: {but_meta}")
     df = pd.read_csv(but_meta, low_memory=False)
+    official_split = split_dir() / "original_region_atlas.csv"
+    if not official_split.exists():
+        raise FileNotFoundError(f"missing official BUT fold split: {official_split}")
+    fold = pd.read_csv(official_split, low_memory=False)
+    fold_cols = [c for c in ["idx", "split", "class_name", "v116_candidate_type", "v116_generated"] if c in fold.columns]
+    df["idx"] = pd.to_numeric(df["idx"], errors="raise").astype(int)
+    fold = fold[fold_cols].copy()
+    fold["idx"] = pd.to_numeric(fold["idx"], errors="raise").astype(int)
+    df = df.drop(columns=[c for c in fold_cols if c != "idx" and c in df.columns], errors="ignore")
+    df = df.merge(fold, on="idx", how="inner", validate="one_to_one")
     df = df.loc[df["split"].eq("train")].copy()
     df["domain"] = np.where(df["v116_candidate_type"].eq("original_but"), "original BUT", "synthesis")
     features = [f for f in BUT_SHARED_PCA_FEATURES if f in df.columns]
@@ -293,6 +299,7 @@ def _fig_d4_but_balanced_classes(paths: Paths) -> Path:
     plot_df["PC2"] = pc[df["class_name"].isin(["medium", "bad"]), 1]
     plot_df = plot_df[np.isfinite(plot_df[["PC1", "PC2"]]).all(axis=1)].copy()
     plot_df["coordinate_basis"] = "v116_shared_pca_44_features_fit_original_train"
+    plot_df["split_source"] = str(official_split)
     plot_df.to_csv(paths.source_data / "fig_D4_but_medium_bad_pca.csv", index=False)
     counts = plot_df.groupby(["class_name", "domain", "v116_candidate_type"]).size().reset_index(name="n")
     counts.to_csv(paths.source_data / "fig_D4_but_medium_bad_counts.csv", index=False)
@@ -480,15 +487,15 @@ def _fig_m2(paths: Paths) -> Path:
     table = pd.read_csv(paths.tables / "but_model_comparison.csv")
     table.to_csv(paths.source_data / "fig_M2_but_models.csv", index=False)
     mlp = table.loc[table["model"].astype(str).str.contains("LM-MLP", regex=False)].iloc[0]
-    e31 = table.loc[table["model"].eq("E31 wave-mechanism Conformer")].iloc[0]
+    e31 = table.loc[table["model"].eq(BUT_E31_MODEL)].iloc[0]
     cm_mlp = np.asarray(json.loads(str(mlp["confusion"])), dtype=int)
     cm_e31 = np.asarray(json.loads(str(e31["confusion"])), dtype=int)
     recall_rows = []
     model_labels = {
         "SQI SVM-RBF selected5": "SVM-RBF selected5",
-        "SQI SVM-RBF all84": "SVM-RBF all84",
+        BUT_ALL7_MODEL: "SVM-RBF all7",
         str(mlp["model"]): "LM-MLP",
-        "E31 wave-mechanism Conformer": "Conformer",
+        BUT_E31_MODEL: "Conformer",
     }
     for _, row in table.iterrows():
         for cls, col in [("good", "good_recall"), ("medium", "intermediate_recall"), ("poor", "poor_recall")]:
@@ -507,8 +514,8 @@ def _fig_m2(paths: Paths) -> Path:
     ax[1].set_title("Conformer", fontsize=7, pad=3)
     _panel(ax[1], "b")
     classes = ["good", "medium", "poor"]
-    models = ["SVM-RBF selected5", "SVM-RBF all84", "LM-MLP", "Conformer"]
-    colors = {"SVM-RBF selected5": "#bdbdbd", "SVM-RBF all84": "#8c8c8c", "LM-MLP": "#66a61e", "Conformer": "#4c78a8"}
+    models = ["SVM-RBF selected5", "SVM-RBF all7", "LM-MLP", "Conformer"]
+    colors = {"SVM-RBF selected5": "#bdbdbd", "SVM-RBF all7": "#8c8c8c", "LM-MLP": "#66a61e", "Conformer": "#4c78a8"}
     xs = np.arange(len(classes))
     width = 0.18
     label_lifts = [0.012, 0.032, 0.052, 0.072]
@@ -555,7 +562,7 @@ def _fig_m3(paths: Paths) -> Path:
     metrics = ["good_to_medium", "medium_to_good", "good_to_bad", "bad_to_good"]
     labels = ["good to medium", "medium to good", "good to bad", "bad to good"]
     models = boundary["model"].tolist()
-    colors = {"SQI SVM-RBF all84": "#8c8c8c", "SQI LM-MLP 84-8-1 OvR": "#66a61e", "Conformer": "#4c78a8"}
+    colors = {BUT_ALL7_MODEL: "#8c8c8c", "SQI LM-MLP 7-8-1 OvR": "#66a61e", "Conformer": "#4c78a8"}
     xs = np.arange(len(metrics))
     width = 0.22
     offsets = np.linspace(-width, width, len(models))
@@ -675,7 +682,7 @@ def _fig_m4(paths: Paths) -> Path:
     signals = np.load(Path("outputs") / "transformer" / "v116_e31" / "source" / "processed_butqdb" / "signals.npz", allow_pickle=True)["X"]
     time = np.arange(signals.shape[-1]) / 125.0
     wave_rows: list[dict[str, Any]] = []
-    fig, ax = plt.subplots(len(chosen), 2, figsize=(7.4, 6.5), sharex=True, sharey=True)
+    fig, ax = plt.subplots(len(chosen), 2, figsize=(7.4, 5.4), sharex=True, sharey=True)
     ax = np.asarray(ax).reshape(len(chosen), 2)
     for i, row in chosen.iterrows():
         for j, kind in enumerate(["good", "medium"]):
@@ -685,9 +692,9 @@ def _fig_m4(paths: Paths) -> Path:
             color = "#4c78a8" if kind == "good" else "#c44e52"
             axis.plot(time, wave, color=color, lw=0.8)
             axis.set_xlim(0, 10)
-            axis.set_ylim(-2.8, 2.8)
+            axis.set_ylim(-1.0, 2.8)
             axis.set_xticks([0, 2, 4, 6, 8, 10])
-            axis.set_yticks([-2, 0, 2])
+            axis.set_yticks([-1, 0, 1, 2])
             if i == 0:
                 axis.text(
                     0.5,
@@ -734,7 +741,7 @@ def _fig_m4(paths: Paths) -> Path:
                 for t, v in zip(time, wave)
             )
     pd.DataFrame(wave_rows).to_csv(paths.source_data / "fig_M4_mlp_error_conformer_correct_examples.csv", index=False)
-    fig.tight_layout(h_pad=3.0)
+    fig.tight_layout(h_pad=2.2)
     out = paths.figures / "fig_M4_but_mlp_error_conformer_correct_examples"
     _save(fig, out)
     return out.with_suffix(".png")

@@ -87,8 +87,8 @@ def _row_from_svm(arm: str, model: str, out: Path) -> dict[str, Any]:
         cm = json.dumps({"tn": tn, "fp": fp, "fn": fn, "tp": tp})
     else:
         acc = float(row["Ac_test"])
-        se = float(row.get("Se_test", float("nan")))
-        sp = float(row.get("Sp_test", float("nan")))
+        se = float(row.get("Sp_test", float("nan")))
+        sp = float(row.get("Se_test", float("nan")))
         bal = float("nan")
         cm = ""
     return {
@@ -182,8 +182,8 @@ def _row_from_mlp(out: Path) -> dict[str, Any]:
         "acc": float(met["acc"]),
         "auc": float(met["auc"]),
         "balanced_acc": float(bal),
-        "acceptable_recall": float(met["se"]),
-        "original_unacceptable_recall": float(met["sp"]),
+        "acceptable_recall": float(met.get("acceptable_recall", met["sp"])),
+        "original_unacceptable_recall": float(met.get("unacceptable_recall", met["se"])),
         "confusion": json.dumps(cm),
     }
 

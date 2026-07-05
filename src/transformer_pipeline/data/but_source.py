@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
+import os
 import shutil
 import sys
 import time
@@ -40,11 +42,21 @@ def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def file_digest(path: Path) -> dict[str, Any]:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return {"path": str(path), "bytes": int(path.stat().st_size), "sha256": h.hexdigest()}
+
+
 def now() -> str:
     return time.strftime("%Y-%m-%d %H:%M:%S")
 
 
 def archive_root(root: Path) -> Path:
+    if os.environ.get("ECG_DISABLE_LOCAL_ARCHIVE") == "1":
+        return root / "__local_archive_disabled__"
     # CleanBUT PCA/kNN support artifacts predate the current cleaned source tree.
     # Keep them explicit: raw BUT is rebuilt here, support assets are restored
     # only to preserve the historical v116 data distribution exactly.
@@ -326,7 +338,28 @@ def ensure_original_region_atlas(cfg: TransformerPipelineConfig) -> Path:
         shutil.copy2(archived, out)
         write_json(out.with_suffix(".recovery.json"), {"source": str(archived), "method": "restored_from_local_archive"})
         return out
-    raise FileNotFoundError(f"Missing original region atlas and archive fallback: {archived}")
+    meta_path = cfg.artifacts_dir / "source" / "p1_current_10s_center" / "metadata.csv"
+    if not meta_path.exists():
+        raise FileNotFoundError(f"Missing original region atlas and metadata fallback: {archived}")
+    meta = pd.read_csv(meta_path)
+    atlas = meta[["y", "y_class", "record_id", "subject_id"]].copy()
+    atlas.insert(0, "idx", np.arange(len(atlas), dtype=int))
+    atlas["class_name"] = atlas["y_class"].astype(str)
+    atlas["original_region"] = "public_rebuild_unknown_region"
+    atlas["ambiguous_type"] = "public_rebuild_unknown_region"
+    atlas["is_clean_strict"] = False
+    atlas["region_confidence"] = 0.0
+    out.parent.mkdir(parents=True, exist_ok=True)
+    atlas.to_csv(out, index=False)
+    write_json(
+        out.with_suffix(".recovery.json"),
+        {
+            "source": str(meta_path),
+            "method": "public_rebuild_minimal_region_atlas",
+            "warning": "historical region labels unavailable; distribution-sensitive v116 numbers require frozen support audit",
+        },
+    )
+    return out
 
 
 def build_margin_table(cfg: TransformerPipelineConfig) -> dict[str, Any]:
@@ -472,13 +505,47 @@ def ensure_cleanbut_support_assets(cfg: TransformerPipelineConfig) -> dict[str, 
         ),
     ]
     copied = []
+    missing = []
     for src, dst in pairs:
+        if dst.exists() and not cfg.force:
+            copied.append({"src": str(dst), "dst": str(dst), "copied": False, "method": "existing_local"})
+            continue
         ok = copy_tree(src, dst, force=cfg.force)
-        if not ok:
-            raise FileNotFoundError(f"Missing required CleanBUT support asset: {src}")
-        copied.append({"src": str(src), "dst": str(dst), "copied": ok})
-    write_json(cfg.artifacts_dir / "source" / "cleanbut_support_assets.json", {"assets": copied})
-    return {"assets": copied}
+        if ok:
+            copied.append({"src": str(src), "dst": str(dst), "copied": ok, "method": "restored_from_local_archive"})
+            continue
+        if dst.name == SUPPORT_POLICY:
+            fallback = cfg.analysis_dir / "clean_but_protocols" / "margin_ge_5s_keep_outlier"
+            ok = copy_tree(fallback, dst, force=cfg.force)
+            if ok:
+                copied.append({"src": str(fallback), "dst": str(dst), "copied": ok, "method": "public_but_fallback_not_historical"})
+                continue
+        if dst.name == PTB_CARRIER_POLICY:
+            default_built = cfg.root / "outputs" / "transformer" / "v116_e31" / "analysis" / "good_medium_geometry_repair" / "raw_ptbxl_carrier_protocols" / PTB_CARRIER_POLICY
+            if default_built.exists():
+                built = default_built
+            else:
+                from src.transformer_pipeline.data_v1_gapfill.support import build_raw_ptbxl_carrier_protocol as ptb_builder
+
+                built = ptb_builder.build(
+                    argparse.Namespace(
+                        name=PTB_CARRIER_POLICY,
+                        lead="I",
+                        max_records=9000,
+                        seed=20260679,
+                        clean_noise_notes=True,
+                    )
+                )
+            ok = copy_tree(built, dst, force=cfg.force) if built.resolve() != dst.resolve() else dst.exists()
+            if ok:
+                copied.append({"src": str(built), "dst": str(dst), "copied": built.resolve() != dst.resolve(), "method": "public_ptbxl_builder"})
+                continue
+        missing.append({"expected_archive": str(src), "dst": str(dst)})
+    payload = {"assets": copied, "missing": missing}
+    write_json(cfg.artifacts_dir / "source" / "cleanbut_support_assets.json", payload)
+    if missing:
+        raise FileNotFoundError(f"Missing CleanBUT support assets after public-data fallback: {missing}")
+    return payload
 
 
 def audit_source(cfg: TransformerPipelineConfig) -> dict[str, Any]:
@@ -500,9 +567,43 @@ def audit_source(cfg: TransformerPipelineConfig) -> dict[str, Any]:
         "support_path": str(support),
     }
     expected_support = {"bad": 2391, "good": 15042, "medium": 9212}
-    if out["support_pool_class_counts"] != expected_support or out["support_pool_rows"] != 26645:
+    out["historical_support_exact"] = out["support_pool_class_counts"] == expected_support and out["support_pool_rows"] == 26645
+    if not out["historical_support_exact"]:
+        out["historical_expected_support"] = expected_support
+        out["support_warning"] = "public-data fallback support differs from historical v116 support"
+    if not out["historical_support_exact"] and not (cfg.artifacts_dir / "source" / "cleanbut_support_assets.json").exists():
         raise SystemExit(f"CleanBUT support audit failed: {out}")
     print(json.dumps(out, indent=2, sort_keys=True))
+    return out
+
+
+def clean_smoke(cfg: TransformerPipelineConfig) -> dict[str, Any]:
+    processed = preprocess_butqdb(cfg)
+    p1 = materialize_p1(cfg)
+    margins = build_margin_table(cfg)
+    clean = build_clean_protocols(cfg)
+    support = ensure_cleanbut_support_assets(cfg)
+    source = audit_source(cfg)
+    source_dir = cfg.artifacts_dir / "source"
+    artifacts = {
+        "processed_metadata": file_digest(source_dir / "processed_butqdb" / "metadata.csv"),
+        "processed_signals": file_digest(source_dir / "processed_butqdb" / "signals.npz"),
+        "p1_metadata": file_digest(source_dir / "p1_current_10s_center" / "metadata.csv"),
+        "p1_signals": file_digest(source_dir / "p1_current_10s_center" / "signals.npz"),
+        "candidate_atlas": file_digest(Path(source["path"])),
+        "support_atlas": file_digest(Path(source["support_path"])),
+    }
+    out = {
+        "reproduction_scope": "public-data smoke; exact frozen replay only when historical_support_exact=true",
+        "processed": processed,
+        "p1": p1,
+        "margins": margins,
+        "clean": clean,
+        "support": support,
+        "source": source,
+        "artifacts": artifacts,
+    }
+    write_json(cfg.artifacts_dir / "source" / "clean_smoke_summary.json", out)
     return out
 
 

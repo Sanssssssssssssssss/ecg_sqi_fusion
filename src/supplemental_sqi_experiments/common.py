@@ -194,8 +194,10 @@ def binary_metrics(y01: np.ndarray, score: np.ndarray, threshold: float) -> dict
     total = max(1, tn + fp + fn + tp)
     out: dict[str, Any] = {
         "Ac": float((tn + tp) / total),
-        "Se": float(tp / max(1, tp + fn)),
-        "Sp": float(tn / max(1, tn + fp)),
+        "Se": float(tn / max(1, tn + fp)),
+        "Sp": float(tp / max(1, tp + fn)),
+        "acceptable_recall": float(tp / max(1, tp + fn)),
+        "unacceptable_recall": float(tn / max(1, tn + fp)),
         "threshold": float(threshold),
         "tn": int(tn),
         "fp": int(fp),
@@ -222,13 +224,15 @@ def max_accuracy_threshold(y01: np.ndarray, score: np.ndarray, *, n_grid: int = 
         tn, fp, fn, tp = confusion_matrix(y, pred, labels=[0, 1]).ravel()
         total = max(1, tn + fp + fn + tp)
         ac = float((tn + tp) / total)
-        se = float(tp / max(1, tp + fn))
-        sp = float(tn / max(1, tn + fp))
+        acceptable_recall = float(tp / max(1, tp + fn))
+        unacceptable_recall = float(tn / max(1, tn + fp))
         met = {
             "threshold": float(threshold),
             "Ac": ac,
-            "Se": se,
-            "Sp": sp,
+            "Se": unacceptable_recall,
+            "Sp": acceptable_recall,
+            "acceptable_recall": acceptable_recall,
+            "unacceptable_recall": unacceptable_recall,
             "tn": int(tn),
             "fp": int(fp),
             "fn": int(fn),

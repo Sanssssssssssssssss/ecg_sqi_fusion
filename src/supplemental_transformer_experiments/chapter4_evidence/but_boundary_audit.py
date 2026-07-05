@@ -22,8 +22,8 @@ LABEL_TO_ID = {name: i for i, name in enumerate(LABELS)}
 
 def _score_columns(feat: pd.DataFrame) -> list[str]:
     cols = [c for c in feat.columns if "__" in c]
-    if len(cols) != 84:
-        raise RuntimeError(f"expected exactly 84 SQI feature columns, got {len(cols)}")
+    if len(cols) != 7:
+        raise RuntimeError(f"expected exactly 7 single-lead SQI feature columns, got {len(cols)}")
     banned = {"idx", "source_idx", "split", "v116_generated", "v116_candidate_type"}
     leak = sorted(set(cols) & banned)
     if leak:
@@ -32,7 +32,7 @@ def _score_columns(feat: pd.DataFrame) -> list[str]:
 
 
 def _load_frame(bp: but_sqi.Paths) -> tuple[pd.DataFrame, list[str]]:
-    feat = pd.read_parquet(bp.record84_norm_parquet)
+    feat = pd.read_parquet(bp.record7_norm_parquet)
     split = pd.read_csv(bp.split_csv)
     feat["record_id"] = feat["record_id"].astype(str)
     split["record_id"] = split["record_id"].astype(str)
@@ -150,8 +150,8 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
 
     boundary = pd.DataFrame(
         [
-            _boundary_row("SQI SVM-RBF all84", yte, svm_pred),
-            _boundary_row(f"SQI LM-MLP 84-{LM_MLP_J}-1 OvR", yte, mlp_pred),
+            _boundary_row("SQI SVM-RBF single-lead all7", yte, svm_pred),
+            _boundary_row(f"SQI LM-MLP 7-{LM_MLP_J}-1 OvR", yte, mlp_pred),
             _boundary_row("Conformer", yte, e31_pred),
         ]
     )

@@ -29,8 +29,8 @@ def _seta_model_display(df: pd.DataFrame, paths: Paths, name: str) -> pd.DataFra
     out = df.copy()
     if name in {"seta_construction_effect_models", "seta_construction_source_only_models"}:
         out = out.merge(_seta_construction_eval_scope(paths), on="construction", how="left")
-    out["Se"] = pd.to_numeric(out.get("acceptable_recall"), errors="coerce")
-    out["Sp"] = pd.to_numeric(out.get("original_unacceptable_recall"), errors="coerce")
+    out["Se"] = pd.to_numeric(out.get("original_unacceptable_recall"), errors="coerce")
+    out["Sp"] = pd.to_numeric(out.get("acceptable_recall"), errors="coerce")
     out["acceptable_positive_model_auc"] = pd.to_numeric(out.get("auc"), errors="coerce")
     out = out.drop(columns=["auc"], errors="ignore")
     out = _ordered(
@@ -409,7 +409,7 @@ def _but_dual_auc_audit(paths: Paths) -> pd.DataFrame:
 def _but_cross_check_table(paths: Paths, audit: dict[str, Any], but_models: pd.DataFrame) -> pd.DataFrame:
     but = audit.get("but", {})
     nn = _read_csv(but_report_dir() / f"{BUT_POLICY}_nearest_neighbor_leakage_audit.csv")
-    e31 = but_models.loc[but_models["run_id"].eq("but_e31_wave_mechanism_conformer")] if not but_models.empty else pd.DataFrame()
+    e31 = but_models.loc[but_models["run_id"].eq("but_e31_query_mean_fused_conformer")] if not but_models.empty else pd.DataFrame()
     rows = [
         {
             "check": "original BUT gap5 source",
@@ -470,6 +470,7 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
         return {"step": "report", "skipped": True}
     ensure_dirs(paths)
     audit = read_json(paths.audit_json)
+    out_root = rel(paths.out)
     figure_index = read_json(paths.reports / "figure_index.json") if (paths.reports / "figure_index.json").exists() else {}
     manifest = pd.DataFrame(
         [
@@ -479,8 +480,11 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
             {"Field": "data policy", "Value": "split first; train-only repair; validation/test original only"},
             {"Field": "Set-A protocol path", "Value": rel(paths.seta / "data" / "protocol_gapfill.csv")},
             {"Field": "BUT protocol path", "Value": audit["but"]["protocol_path"]},
-            {"Field": "output root", "Value": rel(paths.out)},
-            {"Field": "code command", "Value": "python -m src.supplemental_transformer_experiments.chapter4_evidence.run --out chapter4_evidence_frozen_final pipeline --run"},
+            {"Field": "output root", "Value": out_root},
+            {
+                "Field": "code command",
+                "Value": f"python -m src.supplemental_transformer_experiments.chapter4_evidence.run --out {out_root} pipeline --run",
+            },
             {"Field": "config file", "Value": "CLI defaults; seed=0; Python/matplotlib figures"},
             {"Field": "checkpoint path", "Value": "Set-A: chapter4 output; BUT E31: frozen v116 test_predictions.npz"},
         ]
@@ -547,7 +551,7 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
     lines = [
         "# Chapter 4 Raw Results Report",
         "",
-        "This is a raw experiment report, not manuscript prose. Main sections use only current `chapter4_evidence_frozen_final` / official v116 sources; historical SQI paper-balanced artifacts are isolated in the appendix.",
+        f"This is a raw experiment report, not manuscript prose. Main sections use only current `{out_root}` / official v116 sources; historical SQI paper-balanced artifacts are isolated in the appendix.",
         "",
         "## 1. Run Manifest",
         "",
@@ -555,7 +559,7 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
         "",
         "## 2. Current Protocol And Split Audit",
         "",
-        "Source: `outputs/transformer/supplemental/chapter4_evidence_frozen_final/reports/protocol_audit.json`. BUT leakage checks use the official fold split, not the raw protocol metadata `split` column.",
+        f"Source: `{rel(paths.audit_json)}`. BUT leakage checks use the official fold split, not the raw protocol metadata `split` column.",
         "",
         table_to_md(protocol_table),
         "",
@@ -563,7 +567,7 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
         "",
         "### Train-Poor Generated-vs-Original Distribution Diagnostics",
         "",
-        "Source: `outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/seta_distribution_repair_metrics.csv`. `generated_vs_original_c2st_auc` is a domain-separability metric, not model performance.",
+        f"Source: `{rel(paths.tables / 'seta_distribution_repair_metrics.csv')}`. `generated_vs_original_c2st_auc` is a domain-separability metric, not model performance.",
         "",
         table_to_md(repair_metrics),
         "",
@@ -575,23 +579,23 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
         "",
         "### Paired MMD Calibration",
         "",
-        "Source: `outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/seta_paired_mmd_calibration.csv`.",
+        f"Source: `{rel(paths.tables / 'seta_paired_mmd_calibration.csv')}`.",
         "",
         table_to_md(paired),
         "",
         "## 4. Current Set-A Model Comparison",
         "",
-        "Set-A model convention: `Se` is acceptable recall, `Sp` is original-unacceptable recall, and `acceptable_positive_model_auc` treats acceptable as the positive class. Thresholds are selected on validation only.",
+        "Set-A model convention: paper-facing `Se` is original-unacceptable recall, `Sp` is acceptable recall, and `acceptable_positive_model_auc` treats acceptable as the positive class. Thresholds are selected on validation only.",
         "",
         "### Construction Effect: Source-Only",
         "",
-        "Source: `outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/seta_construction_source_only_models.csv`; displayed scope columns are regenerated from each arm's `splits/split.csv`. All rows use the same original-only validation (`116` acceptable, `34` unacceptable) and original-only held-out test (`116` acceptable, `33` unacceptable). For non-native construction arms, the classifier fit excludes the `158` original train-unacceptable rows and uses only the generated poor source, so paper `fixed_synthetic` is directly comparable with quota/SMC. The SQI normalization step remains the baseline train-only arm-level preprocessing; it uses no validation/test rows.",
+        f"Source: `{rel(paths.tables / 'seta_construction_source_only_models.csv')}`; displayed scope columns are regenerated from each arm's `splits/split.csv`. All rows use the same original-only validation (`116` acceptable, `34` unacceptable) and original-only held-out test (`116` acceptable, `33` unacceptable). For non-native construction arms, the classifier fit excludes the `158` original train-unacceptable rows and uses only the generated poor source, so paper `fixed_synthetic` is directly comparable with quota/SMC. The SQI normalization step remains the baseline train-only arm-level preprocessing; it uses no validation/test rows.",
         "",
         table_to_md(seta_source_only_display),
         "",
         "### Repaired Setup Model Comparison",
         "",
-        "Source: `outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/seta_repaired_model_comparison.csv`.",
+        f"Source: `{rel(paths.tables / 'seta_repaired_model_comparison.csv')}`.",
         "",
         table_to_md(seta_models_display),
         "",
@@ -611,7 +615,7 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
         "",
         "### V116 Dual Generated-vs-Original AUC Audit",
         "",
-        "Source: `outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/but_v116_dual_generated_auc_audit/dual_generated_auc.csv`. This is not an E31/SVM/MLP model score. It is a generated-vs-original domain audit for medium/bad using dual-view waveform summary features and `StandardScaler + LogisticRegression(C=0.5, class_weight='balanced')`; good is excluded because good has no generated rows.",
+        f"Source: `{rel(paths.tables / 'but_v116_dual_generated_auc_audit' / 'dual_generated_auc.csv')}`. This is not an E31/SVM/MLP model score. It is a generated-vs-original domain audit for medium/bad using dual-view waveform summary features and `StandardScaler + LogisticRegression(C=0.5, class_weight='balanced')`; good is excluded because good has no generated rows.",
         "",
         table_to_md(but_dual_auc),
         "",
@@ -623,19 +627,19 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
         "",
         "### Model Metrics",
         "",
-        "Source: `outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/but_model_comparison.csv` plus frozen E31 `test_predictions.npz`. All rows are evaluated as `good/medium/bad` three-class models on the original-only BUT test split. Classical SVM/MLP use only the SQI feature columns named in `input`; split/protocol metadata columns are explicitly excluded. `Se/Sp` is not used in this multiclass table; class recalls are reported directly.",
+        f"Source: `{rel(paths.tables / 'but_model_comparison.csv')}` plus query-mean E31 `test_predictions.npz`. All rows are evaluated as `good/medium/bad` three-class models on the original-only BUT test split. Classical SVM/MLP use only the SQI feature columns named in `input`; split/protocol metadata columns are explicitly excluded. `Se/Sp` is not used in this multiclass table; class recalls are reported directly.",
         "",
         table_to_md(but_models_display),
         "",
         "### Good--Medium Boundary Audit",
         "",
-        "Source: `outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/but_good_medium_boundary_audit.csv`. This audit uses the same original-only BUT test split as the model table. `boundary_exchange_errors` is exactly `good_to_medium + medium_to_good`; bad-related columns are shown only to verify that the main error reduction is concentrated at the good/medium boundary.",
+        f"Source: `{rel(paths.tables / 'but_good_medium_boundary_audit.csv')}`. This audit uses the same original-only BUT test split as the model table. `boundary_exchange_errors` is exactly `good_to_medium + medium_to_good`; bad-related columns are shown only to verify that the main error reduction is concentrated at the good/medium boundary.",
         "",
         table_to_md(but_boundary),
         "",
         "## 6. Figure Index",
         "",
-        "Every figure has source-data CSV under `outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/source_data/`; the audit checks the current Chapter 4 figure/source-data paths.",
+        f"Every figure has source-data CSV under `{rel(paths.source_data)}`; the audit checks the current Chapter 4 figure/source-data paths.",
         "",
         table_to_md(figs),
         "",
@@ -667,7 +671,7 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
         "",
         "### Historical existing_seed0 Cross-Noise Generalization",
         "",
-        "The often-confusing `0.4287` value is the `synthetic_poor_to_original_poor` acceptable-positive model AUC in this table; its original-poor recall/Sp is `0.0606`.",
+        "The often-confusing `0.4287` value is the `synthetic_poor_to_original_poor` acceptable-positive model AUC in this table; its original-poor recall is `0.0606` under the current paper-facing `Se` convention.",
         "",
         table_to_md(paper_cross_noise),
         "",

@@ -22,12 +22,10 @@ from src.sqi_pipeline.features.sqi import (
     sqi_bSQI_li2008_global,
     sqi_basSQI,
     sqi_fSQI,
-    sqi_iSQI_li2008_global_per_lead,
     sqi_kSQI,
     sqi_pSQI,
     sqi_sSQI,
 )
-from src.sqi_pipeline.models import lm_mlp_search
 from src.sqi_pipeline.qrs.detectors import run_gqrs, run_xqrs
 from src.transformer_pipeline.data_v1_gapfill.common import protocol_dir, split_dir
 from src.utils.paths import project_root
@@ -38,6 +36,8 @@ OUT_DEFAULT = ROOT / "outputs" / "transformer" / "supplemental" / "but_sqi_basel
 FS = 125
 BEAT_MATCH_TOL_MS = 150
 LEADS_12 = ["I", "II", "III", "aVR", "aVL", "aVF", "V1", "V2", "V3", "V4", "V5", "V6"]
+SINGLE_LEAD = "single"
+SQI_ORDER = ["iSQI", "bSQI", "pSQI", "sSQI", "kSQI", "fSQI", "basSQI"]
 WELCH_KW = dict(fmax=40.0, window="hann", nperseg=256, noverlap=128, detrend="constant")
 FLATLINE_EPS = 1e-4
 
@@ -83,6 +83,10 @@ class Paths:
         return self.features / "record84.parquet"
 
     @property
+    def record7_parquet(self) -> Path:
+        return self.features / "record7.parquet"
+
+    @property
     def lead7_parquet(self) -> Path:
         return self.features / "lead7.parquet"
 
@@ -91,8 +95,16 @@ class Paths:
         return self.features / "record84_norm.parquet"
 
     @property
+    def record7_norm_parquet(self) -> Path:
+        return self.features / "record7_norm.parquet"
+
+    @property
     def norm_stats_json(self) -> Path:
         return self.features / "norm_stats_seed0.json"
+
+    @property
+    def norm_stats_record7_json(self) -> Path:
+        return self.features / "norm_stats_record7_seed0.json"
 
     @property
     def summary_json(self) -> Path:
@@ -116,11 +128,45 @@ def dry(step: str, paths: Paths) -> None:
                 "out": str(paths.out),
                 "manifest": str(paths.manifest_csv),
                 "split": str(paths.split_csv),
-                "features": str(paths.record84_norm_parquet),
+                "features": str(paths.record7_norm_parquet),
                 "models": str(paths.models),
             },
             indent=2,
         )
+    )
+
+
+def _feature_cols(df: pd.DataFrame) -> list[str]:
+    return [c for c in df.columns if "__" in c]
+
+
+def _features_ready(paths: Paths) -> bool:
+    required = [
+        paths.split_csv,
+        paths.qrs_summary_csv,
+        paths.record84_parquet,
+        paths.record84_norm_parquet,
+        paths.record7_parquet,
+        paths.record7_norm_parquet,
+        paths.norm_stats_json,
+        paths.norm_stats_record7_json,
+    ]
+    if any(not p.exists() for p in required):
+        return False
+    try:
+        split_n = len(pd.read_csv(paths.split_csv, usecols=["record_id"]))
+        qrs = pd.read_csv(paths.qrs_summary_csv, usecols=["record_id", "detector_profile"])
+        rec84 = pd.read_parquet(paths.record84_norm_parquet)
+        rec7 = pd.read_parquet(paths.record7_norm_parquet)
+    except Exception:
+        return False
+    return (
+        len(qrs) == split_n
+        and len(rec84) == split_n
+        and len(rec7) == split_n
+        and len(_feature_cols(rec84)) == 84
+        and len(_feature_cols(rec7)) == 7
+        and set(qrs["detector_profile"].astype(str)) == {"wfdb_singlelead_li2008_proxy"}
     )
 
 
@@ -177,14 +223,14 @@ def cmd_prepare(paths: Paths, *, run: bool, force: bool) -> None:
     print(json.dumps(counts, indent=2))
 
 
-def _feature_names() -> list[str]:
+def _feature_names(leads: list[str] | None = None) -> list[str]:
     names: list[str] = []
-    for lead in LEADS_12:
-        names.extend([f"{lead}__iSQI", f"{lead}__bSQI", f"{lead}__pSQI", f"{lead}__sSQI", f"{lead}__kSQI", f"{lead}__fSQI", f"{lead}__basSQI"])
+    for lead in leads or LEADS_12:
+        names.extend([f"{lead}__{sqi}" for sqi in SQI_ORDER])
     return names
 
 
-def _compute_one(item: tuple[str, int, int, np.ndarray]) -> tuple[dict[str, Any], list[dict[str, Any]], dict[str, Any]]:
+def _compute_one(item: tuple[str, int, int, np.ndarray]) -> tuple[dict[str, Any], dict[str, Any], list[dict[str, Any]], dict[str, Any]]:
     record_id, y, idx, x = item
     x = np.asarray(x, dtype=np.float32).reshape(-1)
     tol_samp = int(round(BEAT_MATCH_TOL_MS * FS / 1000.0))
@@ -203,8 +249,8 @@ def _compute_one(item: tuple[str, int, int, np.ndarray]) -> tuple[dict[str, Any]
         status = status + "+gqrs_failed" if status != "ok" else "gqrs_failed"
         err = (err + "; " if err else "") + repr(exc)
 
-    i_list = sqi_iSQI_li2008_global_per_lead([r1] * len(LEADS_12), tol_samp)
     b = float(sqi_bSQI_li2008_global(r1, r2, tol_samp))
+    i = b
     p = float(sqi_pSQI(x, fs=FS, welch_kwargs=WELCH_KW))
     s = float(sqi_sSQI(x))
     k = float(sqi_kSQI(x))
@@ -218,7 +264,7 @@ def _compute_one(item: tuple[str, int, int, np.ndarray]) -> tuple[dict[str, Any]
             "record_id": record_id,
             "y": int(y),
             "lead": lead,
-            "iSQI": float(i_list[li]),
+            "iSQI": i,
             "bSQI": b,
             "pSQI": p,
             "sSQI": s,
@@ -231,17 +277,24 @@ def _compute_one(item: tuple[str, int, int, np.ndarray]) -> tuple[dict[str, Any]
 
     feat = {"record_id": record_id, "y": int(y)}
     feat.update({name: float(value) if math.isfinite(float(value)) else np.nan for name, value in zip(_feature_names(), vals)})
+    single = {"record_id": record_id, "y": int(y)}
+    single.update(
+        {
+            name: float(value) if math.isfinite(float(value)) else np.nan
+            for name, value in zip(_feature_names([SINGLE_LEAD]), [i, b, p, s, k, f, bas])
+        }
+    )
     qrs = {
         "record_id": record_id,
         "idx": int(idx),
         "n_xqrs": int(len(r1)),
         "n_gqrs": int(len(r2)),
-        "detector_profile": "wfdb_singlelead_pseudo12",
+        "detector_profile": "wfdb_singlelead_li2008_proxy",
         "beat_match_tol_ms": int(BEAT_MATCH_TOL_MS),
         "status": status,
         "error": err,
     }
-    return feat, lead_rows, qrs
+    return feat, single, lead_rows, qrs
 
 
 def cmd_features(paths: Paths, *, run: bool, force: bool, jobs: int) -> None:
@@ -249,8 +302,8 @@ def cmd_features(paths: Paths, *, run: bool, force: bool, jobs: int) -> None:
         dry("features", paths)
         return
     ensure_dirs(paths)
-    if paths.record84_parquet.exists() and paths.record84_norm_parquet.exists() and not force:
-        print(f"[features] exists: {paths.record84_norm_parquet}")
+    if _features_ready(paths) and not force:
+        print(f"[features] exists: {paths.record7_norm_parquet}")
         return
     if not paths.split_csv.exists():
         raise SystemExit(f"missing split: {paths.split_csv}")
@@ -265,6 +318,7 @@ def cmd_features(paths: Paths, *, run: bool, force: bool, jobs: int) -> None:
 
     t0 = time.time()
     feat_rows: list[dict[str, Any]] = []
+    single_rows: list[dict[str, Any]] = []
     lead_rows: list[dict[str, Any]] = []
     qrs_rows: list[dict[str, Any]] = []
     workers = max(1, int(jobs))
@@ -275,8 +329,9 @@ def cmd_features(paths: Paths, *, run: bool, force: bool, jobs: int) -> None:
         pool = ProcessPoolExecutor(max_workers=workers)
         iterator = pool.map(_compute_one, items, chunksize=32)
     try:
-        for i, (feat, leads, qrs) in enumerate(iterator, start=1):
+        for i, (feat, single, leads, qrs) in enumerate(iterator, start=1):
             feat_rows.append(feat)
+            single_rows.append(single)
             lead_rows.extend(leads)
             qrs_rows.append(qrs)
             if i <= 5 or i % 500 == 0:
@@ -286,6 +341,7 @@ def cmd_features(paths: Paths, *, run: bool, force: bool, jobs: int) -> None:
             pool.shutdown(wait=True, cancel_futures=False)
 
     pd.DataFrame(feat_rows).to_parquet(paths.record84_parquet, index=False)
+    pd.DataFrame(single_rows).to_parquet(paths.record7_parquet, index=False)
     pd.DataFrame(lead_rows).to_parquet(paths.lead7_parquet, index=False)
     pd.DataFrame(qrs_rows).to_csv(paths.qrs_summary_csv, index=False)
     print(f"[features] wrote {paths.record84_parquet} rows={len(feat_rows)} time_s={time.time() - t0:.1f}")
@@ -299,6 +355,17 @@ def cmd_features(paths: Paths, *, run: bool, force: bool, jobs: int) -> None:
             "out_dir": str(paths.features),
             "out_stats": str(paths.norm_stats_json),
             "out_parquet": str(paths.record84_norm_parquet),
+        }
+    )
+    run_norm_record84(
+        {
+            "force": True,
+            "seed": 0,
+            "split_csv": str(paths.split_csv),
+            "in_parquet": str(paths.record7_parquet),
+            "out_dir": str(paths.features),
+            "out_stats": str(paths.norm_stats_record7_json),
+            "out_parquet": str(paths.record7_norm_parquet),
         }
     )
 
@@ -319,11 +386,15 @@ def _metrics_from_scores(y01: np.ndarray, score: np.ndarray, threshold: float) -
         auc = float(roc_auc_score(y01, score))
     except Exception:
         auc = float("nan")
+    acceptable_recall = float(tp / max(1, tp + fn))
+    unacceptable_recall = float(tn / max(1, tn + fp))
     return {
         "acc": float(acc),
         "macro_f1": macro_f1_from_cm(int(tn), int(fp), int(fn), int(tp)),
-        "sensitivity": float(tp / max(1, tp + fn)),
-        "specificity": float(tn / max(1, tn + fp)),
+        "sensitivity": unacceptable_recall,
+        "specificity": acceptable_recall,
+        "acceptable_recall": acceptable_recall,
+        "unacceptable_recall": unacceptable_recall,
         "auc": auc,
         "confusion_matrix": {"tn": int(tn), "fp": int(fp), "fn": int(fn), "tp": int(tp)},
     }
@@ -346,20 +417,20 @@ def _best_threshold(y01: np.ndarray, score: np.ndarray) -> dict[str, Any]:
 
 
 def _run_linear_svm(paths: Paths, *, force: bool) -> None:
-    out_dir = paths.models / "svm_84sqi_linear"
+    out_dir = paths.models / "svm_single7_linear"
     out_dir.mkdir(parents=True, exist_ok=True)
-    metrics_path = out_dir / "svm_84sqi_linear_metrics_seed0.json"
-    pred_path = out_dir / "svm_84sqi_linear_predictions_seed0.csv"
+    metrics_path = out_dir / "svm_single7_linear_metrics_seed0.json"
+    pred_path = out_dir / "svm_single7_linear_predictions_seed0.csv"
     if metrics_path.exists() and pred_path.exists() and not force:
         print(f"[train] exists: {metrics_path}")
         return
 
-    df = pd.read_parquet(paths.record84_norm_parquet)
+    df = pd.read_parquet(paths.record7_norm_parquet)
     split = pd.read_csv(paths.split_csv)[["record_id", "split"]]
     df = df.merge(split, on="record_id", how="inner")
     feature_cols = [c for c in df.columns if "__" in c]
-    if len(feature_cols) != 84:
-        raise ValueError(f"expected 84 SQI features, found {len(feature_cols)}")
+    if len(feature_cols) != 7:
+        raise ValueError(f"expected 7 single-lead SQI features, found {len(feature_cols)}")
     df["y01"] = (df["y"].astype(int) == 1).astype(int)
 
     tr = df["split"].eq("train").to_numpy()
@@ -401,9 +472,9 @@ def _run_linear_svm(paths: Paths, *, force: bool) -> None:
     va_score = model.decision_function(Xva).astype(np.float64)
     te_score = model.decision_function(Xte).astype(np.float64)
     metrics = {
-        "model": "LinearSVC_84_SQI",
-        "note": "Full BUT v116 SQI baseline control. Uses all 84 normalized SQI columns; threshold selected on validation max accuracy.",
-        "feature_path": str(paths.record84_norm_parquet),
+        "model": "LinearSVC_single_lead_7_SQI",
+        "note": "BUT v116 single-lead Li2008-compatible SQI baseline. iSQI is a detector-agreement proxy; no pseudo-12 lead duplication is used.",
+        "feature_path": str(paths.record7_norm_parquet),
         "split_path": str(paths.split_csv),
         "n_features": int(len(feature_cols)),
         "best_C": float(best["C"]),
@@ -430,61 +501,33 @@ def cmd_train(paths: Paths, *, run: bool, force: bool, device: str) -> None:
         dry("train", paths)
         return
     ensure_dirs(paths)
-    if not paths.record84_norm_parquet.exists():
-        raise SystemExit(f"missing normalized features: {paths.record84_norm_parquet}")
+    if not paths.record7_norm_parquet.exists():
+        raise SystemExit(f"missing normalized features: {paths.record7_norm_parquet}")
 
-    mlp_out = paths.models / "lm_mlp_mainline_strict"
     _run_linear_svm(paths, force=force)
-    lm_mlp_search.run(
-        {
-            "force": force,
-            "seed": 0,
-            "device": device,
-            "dtype": "float64",
-            "features_parquet": str(paths.record84_norm_parquet),
-            "split_csv": str(paths.split_csv),
-            "out_dir": str(mlp_out),
-            "tables": False,
-            "threshold_mode": "val_maxacc",
-            "final_trainval": False,
-            "model_select_metric": "val_acc",
-            "final_patience": 15,
-        }
-    )
 
 
 def cmd_summary(paths: Paths) -> None:
     split = pd.read_csv(paths.split_csv)
-    svm_out = paths.models / "svm_84sqi_linear"
-    mlp_out = paths.models / "lm_mlp_mainline_strict"
-    svm = json.loads((svm_out / "svm_84sqi_linear_metrics_seed0.json").read_text(encoding="utf-8"))
-    mlp = json.loads((mlp_out / "lm_mlp_test_metrics_seed0.json").read_text(encoding="utf-8"))
-    cm = mlp["test_metrics_fixed"]["confusion_matrix"]
-    mlp["test_metrics_fixed"]["macro_f1"] = macro_f1_from_cm(cm["tn"], cm["fp"], cm["fn"], cm["tp"])
+    svm_out = paths.models / "svm_single7_linear"
+    svm = json.loads((svm_out / "svm_single7_linear_metrics_seed0.json").read_text(encoding="utf-8"))
 
     qrs = pd.read_csv(paths.qrs_summary_csv)
     summary = {
         "task": "BUT v116 good-vs-medium/bad classical SQI baselines",
-        "note": "BUT is single-lead; one lead is copied into pseudo-12-lead SQI columns. SVM uses all 84 normalized SQIs with a linear SVM; LM-MLP reuses the SQI baseline implementation.",
+        "note": "BUT is single-lead; the active baseline uses seven single-lead SQIs. The legacy pseudo-12 record84 artifact is kept only for historical comparison.",
         "source_protocol": str(protocol_dir()),
         "source_split": str(split_dir()),
-        "features": str(paths.record84_norm_parquet),
+        "features": str(paths.record7_norm_parquet),
         "split_counts_class": split.groupby(["split", "class_name"]).size().unstack(fill_value=0).to_dict(),
         "split_counts_binary": split.groupby(["split", "quality_record"]).size().unstack(fill_value=0).to_dict(),
         "qrs_status_counts": qrs["status"].value_counts(dropna=False).astype(int).to_dict(),
-        "svm_84sqi_linear": {
+        "svm_single7_linear": {
             "acc": float(svm["test"]["acc"]),
             "macro_f1": float(svm["test"]["macro_f1"]),
             "auc": float(svm["test"]["auc"]),
             "threshold": float(svm["threshold"]),
             "best_C": float(svm["best_C"]),
-        },
-        "lm_mlp_84_j_1": {
-            "J": int(mlp["J"]),
-            "acc": float(mlp["test_metrics_fixed"]["acc"]),
-            "macro_f1": float(mlp["test_metrics_fixed"]["macro_f1"]),
-            "auc": float(mlp["test_metrics_fixed"]["auc"]),
-            "threshold": float(mlp["threshold"]),
         },
     }
     paths.reports.mkdir(parents=True, exist_ok=True)
@@ -492,8 +535,7 @@ def cmd_summary(paths: Paths) -> None:
     lines = [
         "# BUT v116 SQI Baseline Comparator",
         "",
-        f"- Linear SVM 84-SQI: acc {summary['svm_84sqi_linear']['acc']:.4f}, macro F1 {summary['svm_84sqi_linear']['macro_f1']:.4f}, AUC {summary['svm_84sqi_linear']['auc']:.4f}",
-        f"- LM-MLP 84-{summary['lm_mlp_84_j_1']['J']}-1: acc {summary['lm_mlp_84_j_1']['acc']:.4f}, macro F1 {summary['lm_mlp_84_j_1']['macro_f1']:.4f}, AUC {summary['lm_mlp_84_j_1']['auc']:.4f}",
+        f"- Linear SVM single-lead 7-SQI: acc {summary['svm_single7_linear']['acc']:.4f}, macro F1 {summary['svm_single7_linear']['macro_f1']:.4f}, AUC {summary['svm_single7_linear']['auc']:.4f}",
         "",
         "Binary mapping: good=1, medium/bad=-1. Val/test are original BUT only from the official v116 split.",
     ]

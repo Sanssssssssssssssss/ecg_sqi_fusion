@@ -695,7 +695,7 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
     fig8 = _fig_m8(paths, deg_raw, deg_summary)
     fig9 = _fig_m9(paths, tr_raw, tr_summary, examples)
     _copy_to_user_figures(paths, ["fig_M8_but_sqi_locked_local_degradation", "fig_M9_but_real_pair_segment_transplant"])
-    index_path = paths.reports / "figure_index.json"
+    index_path = paths.reports / "supplemental_figure_index.json"
     figure_index = json.loads(index_path.read_text(encoding="utf-8")) if index_path.exists() else {}
     figure_index["fig_M8_but_sqi_locked_local_degradation"] = str(fig8.resolve())
     figure_index["fig_M9_but_real_pair_segment_transplant"] = str(fig9.resolve())

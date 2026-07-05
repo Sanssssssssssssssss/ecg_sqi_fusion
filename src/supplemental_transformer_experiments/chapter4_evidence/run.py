@@ -6,7 +6,7 @@ from pathlib import Path
 from src.utils.data_downloads import ensure_sqi_raw_data, ensure_transformer_raw_data
 from src.utils.paths import project_root
 
-from .common import OUT_DEFAULT, Paths
+from .common import FROZEN_OUT, OUT_DEFAULT, Paths
 
 
 def _paths(args: argparse.Namespace) -> Paths:
@@ -19,6 +19,7 @@ def _paths(args: argparse.Namespace) -> Paths:
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Chapter 4 raw evidence experiments.")
     p.add_argument("--out", default=str(OUT_DEFAULT))
+    p.add_argument("--allow-frozen", action="store_true", help="allow writing to the frozen-final evidence directory")
     p.add_argument("--force", action="store_true")
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--max-ptb", type=int, default=2400)
@@ -49,6 +50,8 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     paths = _paths(args)
+    if args.run and paths.out.resolve() == FROZEN_OUT.resolve() and not args.allow_frozen:
+        raise SystemExit(f"refusing to write frozen evidence without --allow-frozen: {FROZEN_OUT}")
     if args.run:
         root = project_root()
         ensure_sqi_raw_data(root)

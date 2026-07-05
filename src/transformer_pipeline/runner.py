@@ -38,6 +38,24 @@ def run_extract_but(cfg: TransformerPipelineConfig, *, run: bool) -> StepResult:
     return StepResult("extract_but", False, {"candidate_gap5": out["source"]["candidate_gap5_rows"]})
 
 
+def run_clean_smoke(cfg: TransformerPipelineConfig, *, run: bool) -> StepResult:
+    if not run:
+        print("python -m src.transformer_pipeline.cli clean-smoke --run")
+        return StepResult("clean_smoke", True, {"dry_run": True})
+    ensure_transformer_raw_data(cfg.root)
+    out = but_source.clean_smoke(cfg)
+    print(json.dumps(out, indent=2, sort_keys=True))
+    return StepResult(
+        "clean_smoke",
+        False,
+        {
+            "processed_shape": out["processed"].get("signals_shape"),
+            "support_exact": out["source"].get("historical_support_exact"),
+            "support_warning": out["source"].get("support_warning", ""),
+        },
+    )
+
+
 def run_build_v116(*, run: bool) -> StepResult:
     build.main(run=run)
     return StepResult("build_v116", not run, {"dry_run": not run})

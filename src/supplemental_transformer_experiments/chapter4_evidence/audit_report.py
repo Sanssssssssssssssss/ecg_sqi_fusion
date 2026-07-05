@@ -323,7 +323,7 @@ def _audit_but_binary_or_multiclass(rows: list[dict[str, Any]], path: Path, pred
         y = z["y"].astype(int)
         probs = z["probs"].astype(float)
         pred = probs.argmax(axis=1)
-        e31 = df.loc[df["run_id"].eq("but_e31_wave_mechanism_conformer")]
+        e31 = df.loc[df["run_id"].eq("but_e31_query_mean_fused_conformer")]
         if not e31.empty:
             r = e31.iloc[0]
             pairs.extend(
@@ -363,7 +363,7 @@ def _audit_but_boundary(rows: list[dict[str, Any]], path: Path, model_path: Path
         model = str(r["model"])
         pairs.append((float(int(r["good_to_medium"]) + int(r["medium_to_good"])), _safe_float(r["boundary_exchange_errors"])))
         if not models.empty:
-            source = models.loc[models["model"].eq("E31 wave-mechanism Conformer" if model == "Conformer" else model)]
+            source = models.loc[models["model"].eq("E31 query-mean fused Conformer" if model == "Conformer" else model)]
             if not source.empty:
                 cm = np.asarray(_parse_confusion(source.iloc[0]["confusion"]), dtype=int)
                 pairs.extend(

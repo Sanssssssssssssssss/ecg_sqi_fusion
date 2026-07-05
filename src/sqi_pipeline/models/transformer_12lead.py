@@ -222,16 +222,18 @@ def binary_metrics(y_true: np.ndarray, prob: np.ndarray, threshold: float) -> di
     tn, fp, fn, tp = confusion_matrix(y_true, pred, labels=[0, 1]).ravel()
     n = max(1, tp + tn + fp + fn)
     acc = (tp + tn) / n
-    se = tp / max(1, tp + fn)
-    sp = tn / max(1, tn + fp)
+    acceptable_recall = tp / max(1, tp + fn)
+    unacceptable_recall = tn / max(1, tn + fp)
     try:
         auc = float(roc_auc_score(y_true, prob))
     except ValueError:
         auc = float("nan")
     return {
         "acc": float(acc),
-        "se": float(se),
-        "sp": float(sp),
+        "se": float(unacceptable_recall),
+        "sp": float(acceptable_recall),
+        "acceptable_recall": float(acceptable_recall),
+        "unacceptable_recall": float(unacceptable_recall),
         "auc": auc,
         "threshold": float(threshold),
         "confusion_matrix": {"tn": int(tn), "fp": int(fp), "fn": int(fn), "tp": int(tp)},

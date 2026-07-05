@@ -424,7 +424,7 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
     fig = _figure(paths, raw, summary)
     _mirror_figure(paths)
     _write_report(paths, raw, summary, fig)
-    index_path = paths.reports / "figure_index.json"
+    index_path = paths.reports / "supplemental_figure_index.json"
     figure_index = json.loads(index_path.read_text(encoding="utf-8")) if index_path.exists() else {}
     figure_index["fig_M7_but_architecture_ablation"] = str(fig.resolve())
     write_json(index_path, figure_index)

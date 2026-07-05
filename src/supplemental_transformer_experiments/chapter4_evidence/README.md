@@ -6,7 +6,7 @@ the official Transformer or SQI pipelines.
 Output root:
 
 ```powershell
-outputs/transformer/supplemental/chapter4_evidence/
+outputs/transformer/supplemental/chapter4_evidence_frozen_final/
 ```
 
 Full run:
@@ -31,3 +31,5 @@ python -m src.supplemental_transformer_experiments.chapter4_evidence.run report 
 Figures use Python/matplotlib only and export PNG, SVG, PDF, and TIFF with
 source-data CSVs.
 
+The frozen-final root is the current report source. Older
+`chapter4_evidence/` outputs are stale and should not be cited.

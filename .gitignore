@@ -33,4 +33,5 @@ logs/
 # ======================
 __pycache__/
 *.pyc
+*.egg-info/
 /run.ps1

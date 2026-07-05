@@ -418,7 +418,7 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
     ablation.to_csv(paths.tables / "but_time_local_path_ablation.csv", index=False)
     fig = _figure(paths, summary, ablation)
     _mirror_figures(paths)
-    index_path = paths.reports / "figure_index.json"
+    index_path = paths.reports / "supplemental_figure_index.json"
     figure_index = json.loads(index_path.read_text(encoding="utf-8")) if index_path.exists() else {}
     figure_index["fig_M6_but_time_local_latent_transplant"] = str(fig.resolve())
     write_json(index_path, figure_index)

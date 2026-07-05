@@ -85,11 +85,15 @@ def _max_acc_threshold(y01: np.ndarray, p: np.ndarray, n_grid: int = 2001) -> di
         tn, fp, fn, tp = confusion_matrix(y, pred, labels=[0, 1]).ravel()
         acc = (tn + tp) / max(1, tn + fp + fn + tp)
         if acc > best["acc"]:
+            acceptable_recall = tp / max(1, tp + fn)
+            unacceptable_recall = tn / max(1, tn + fp)
             best = {
                 "threshold": float(threshold),
                 "acc": float(acc),
-                "se": float(tp / max(1, tp + fn)),
-                "sp": float(tn / max(1, tn + fp)),
+                "se": float(unacceptable_recall),
+                "sp": float(acceptable_recall),
+                "acceptable_recall": float(acceptable_recall),
+                "unacceptable_recall": float(unacceptable_recall),
                 "tn": int(tn),
                 "fp": int(fp),
                 "fn": int(fn),
@@ -106,10 +110,14 @@ def _metrics(y01: np.ndarray, p: np.ndarray, threshold: float) -> dict[str, Any]
         auc = float(roc_auc_score(y, p))
     except Exception:
         auc = float("nan")
+    acceptable_recall = tp / max(1, tp + fn)
+    unacceptable_recall = tn / max(1, tn + fp)
     return {
         "Ac": float((tn + tp) / max(1, tn + fp + fn + tp)),
-        "Se": float(tp / max(1, tp + fn)),
-        "Sp": float(tn / max(1, tn + fp)),
+        "Se": float(unacceptable_recall),
+        "Sp": float(acceptable_recall),
+        "acceptable_recall": float(acceptable_recall),
+        "unacceptable_recall": float(unacceptable_recall),
         "AUC": auc,
         "tn": int(tn),
         "fp": int(fp),

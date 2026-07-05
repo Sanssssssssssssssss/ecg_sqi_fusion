@@ -1,130 +1,96 @@
 # ECG SQI Fusion
 
-Research code for ECG signal-quality assessment and waveform Transformer-based SQI classification.
+Research code for ECG signal-quality assessment with classical SQI baselines
+and waveform Conformer models. Raw data is downloaded from public sources on
+demand; generated artifacts and curated evidence live under `outputs/`.
 
-`main` is the active official line. Use the v116 data pipeline and E31 model below unless you are working on the classical SQI baseline.
+## Quick Start
 
-The repository has four deliberately separated code lines plus shared utils:
+```bash
+pip install -r requirements.txt
 
-1. `src/sqi_pipeline/`: classical SQI baselines. This line is preserved as-is.
-2. `src/transformer_pipeline/`: waveform Transformer SQI research and the current v116/E31 mainline.
-3. `src/supplemental_sqi_experiments/`: SQI supplemental paper checks.
-4. `src/supplemental_transformer_experiments/`: Transformer supplemental and Chapter 4 evidence checks.
-5. `src/utils/`: shared path, download, and reporting helpers.
+python -m src.sqi_pipeline.run_all --verbose
+python -m src.transformer_pipeline.run_all --run --train E31
+python -m src.supplemental_sqi_experiments.run diagnose-existing
+python -m src.supplemental_transformer_experiments.chapter4_evidence.run pipeline --run
+```
 
-Generated artifacts, reports, figures, and checkpoints live under `outputs/`.
-The top-level `reports/` directory is intentionally unused by this repo.
+Use Python 3.11 where possible. If PyTorch is installed separately, `req.txt`
+contains the lighter dependency list without `torch`.
 
-## Official Mainline
+## Repository Layout
 
-The Transformer mainline is data v1/v116 plus `E31_wave_mechanism_conformer`.
-All Transformer artifacts are isolated under `outputs/transformer/`:
+| Path | Purpose |
+|---|---|
+| `src/sqi_pipeline/` | Classical SQI feature, SVM, and LM-MLP baseline pipeline. |
+| `src/transformer_pipeline/` | Official BUT v116 gap-fill data line and E31 Conformer. |
+| `src/supplemental_sqi_experiments/` | SQI supplemental audits and reproduction checks. |
+| `src/supplemental_transformer_experiments/` | Transformer supplemental and Chapter 4 evidence runs. |
+| `src/utils/` | Shared paths, downloads, and small reporting helpers. |
+| `outputs/` | Generated artifacts. Curated frozen Chapter 4 evidence is tracked. |
+| `docs/` | Archived v116 method notes and small reference figures. |
+| `report/` | Final submission PDF/materials only. |
+
+The old top-level `reports/` path is intentionally ignored and unused.
+
+## Official Transformer Line
+
+Current mainline:
 
 ```text
-BUT gap5 originals
-  -> record-heldout split
-  -> train-only medium/bad gap fill
-  -> dual-view waveform channels
-  -> named-query SQI Conformer
-  -> mechanism auxiliary heads
-  -> good / medium / bad
+BUT gap5 originals -> record-heldout split -> train-only medium/bad gap fill
+-> waveform-derived channels -> E31 query-mean fused Conformer
 ```
 
-Validation and test stay pure `original_but`; only the training split is balanced.
-The model input is waveform-derived channels only. SQI-like factors remain
-auxiliary targets, not scalar input features.
-
-`extract-but` rebuilds raw BUT fixed-10s windows and clean candidate pools.
-The historical CleanBUT PCA/kNN support pool is restored as an explicit support
-asset so v116 candidate ordering stays identical to the validated line; the
-final v116 audit is where `original_but = 18635` is enforced.
-
-Mainline command:
-
-```bash
-python -m src.transformer_pipeline.run_all --run --train E31
-```
-
-Useful checks:
-
-```bash
-python -m compileall -q src/sqi_pipeline src/transformer_pipeline src/utils
-python -m src.transformer_pipeline.cli extract-but --run
-python -m src.transformer_pipeline.cli build-v116 --run
-python -m src.transformer_pipeline.cli audit
-python -m src.transformer_pipeline.cli train --model E31
-```
-
-Current data contract:
+Audit contract:
 
 ```text
 policy: v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876
-protocol rows: 31590 = 10530/10530/10530
+protocol: 31590 = 10530/10530/10530
 train: 8310/8310/8310
 val/test: original_but only
 sampler: raw rows, no record-balanced sampler
 ```
 
-## Current Snapshot
+Checked snapshot, seed `20260876`:
 
-Latest full v116 + soft-tuned E31 run, seed `20260876`:
-
-- E31 test acc: `0.9432`
-- E31 macro F1: `0.9525`
-- Good/medium/bad recall: `0.9421 / 0.9320 / 0.9939`
-
-This is the current checked-in mainline. The E31 architecture is unchanged; the
-soft tuning only updates class weights to `[1.03, 1.05, 1.08]`.
-
-## Repository Layout
-
-`src/sqi_pipeline/`
-Classical SQI/ML pipeline and baseline command line entrypoint.
-
-`src/transformer_pipeline/data_v1_gapfill/`
-Current v116 data build, audit, plot, report, and E31 training-check entrypoint.
-
-`src/transformer_pipeline/data/`
-BUT QDB extraction and clean gap5 source materialization.
-
-`src/supplemental_sqi_experiments/`
-SQI paper supplement experiments. Outputs go to `outputs/reports/sqi_supplemental/`.
-
-`src/supplemental_transformer_experiments/`
-Lightweight wrappers for extra Transformer diagnostics. Outputs go to `outputs/transformer/supplemental/`.
-
-`outputs/reports/`
-Former top-level reports tree, moved under outputs so `reports/` can be used for external writing.
-
-## Environment
-
-Use Python 3.11 if possible.
-
-```bash
-python -m venv .venv
-.\.venv\Scripts\activate
-pip install -r requirements.txt
+```text
+E31 test acc: 0.9432
+E31 macro F1: 0.9525
+good/medium/bad recall: 0.9421 / 0.9320 / 0.9939
 ```
 
-If PyTorch is installed separately for CUDA or a cluster, `req.txt` is a lighter dependency list without `torch`.
-
-## Classical SQI Pipeline
-
-Run the full classical SQI line:
+Useful checks:
 
 ```bash
-python -m src.sqi_pipeline.run_all --verbose
+python -m src.transformer_pipeline.cli audit
+python -m src.transformer_pipeline.cli train --model E31
+python -m compileall -q src/sqi_pipeline src/transformer_pipeline src/supplemental_sqi_experiments src/supplemental_transformer_experiments src/utils
 ```
 
-Useful flags:
+## Data And Outputs
 
-```bash
-python -m src.sqi_pipeline.cli --fresh
-python -m src.sqi_pipeline.cli --only manifest_raw,split_seta,record84
-python -m src.sqi_pipeline.cli --force
-python -m src.sqi_pipeline.validate_outputs --write tmp/sqi/validation/current_seed0.json
+Pipeline entrypoints check for required local data and download missing public
+WFDB databases into `data/`. Raw datasets, checkpoints, and regenerated arrays
+are not committed.
+
+Public-data rebuilds are smoke checks for the pipeline. Exact replay of the
+tracked frozen v116 evidence depends on the support assets that were present
+when that evidence package was frozen; without them, the code records
+`historical_support_exact=false` and keeps the fallback run out of the paper
+numbers.
+
+Important generated locations:
+
+```text
+outputs/transformer/v116_e31/
+outputs/transformer/supplemental/chapter4_evidence_frozen_final/
+outputs/sqi_supplemental/
+outputs/reports/
 ```
 
-The SQI and Transformer pipeline entrypoints check for their raw PhysioNet data
-before running. If the expected local folders are missing, they download via
-`wfdb.dl_database` into `data/`.
+See `DATA_AVAILABILITY.md` and `REPRODUCIBILITY.md` for the compact release
+notes.
+
+For report-table and figure-source smoke checks, use
+`python reproduce/check_reproduce.py artifact`.

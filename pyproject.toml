@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ecg-sqi-fusion"
+version = "0.1.0"
+description = "Research code for ECG signal quality assessment with classical SQI baselines and waveform models."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "matplotlib",
+    "wfdb",
+    "scikit-learn",
+    "torch",
+    "pyarrow",
+    "openpyxl",
+    "PyWavelets",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+no-torch = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "matplotlib",
+    "wfdb",
+    "scikit-learn",
+    "pyarrow",
+    "openpyxl",
+    "PyWavelets",
+    "tqdm",
+]
+
+[tool.setuptools.packages.find]
+include = ["src*"]

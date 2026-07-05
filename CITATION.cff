@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the associated report or paper."
+title: "ECG SQI Fusion"
+type: software
+authors:
+  - family-names: "TODO"
+    given-names: "TODO"
+repository-code: "TODO"
+abstract: "Research code for ECG signal-quality assessment with classical SQI baselines and waveform Conformer models."
+keywords:
+  - ECG
+  - signal quality
+  - SQI
+  - Conformer
+license: MIT
+version: "0.1.0"
+date-released: "2026-07-05"
+# TODO: replace authors, repository-code, version, and release date before final archive.
+# TODO: add DOI or preferred-citation after the report/paper is finalized.

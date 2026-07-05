@@ -67,7 +67,7 @@ class SQIPipelineConfig:
             "nstdb_root": str(self.nstdb_root),
             "leads": LEADS_12,
             "fs": {"raw": 500, "noise": 360, "work": 125},
-            "half_policy": {"train": "first", "val": "first", "test": "second"},
+            "half_policy": {"train": "first", "val": "second", "test": "second"},
             "beat_match_tol_ms": 150,
             "snr_db": -6.0,
         }

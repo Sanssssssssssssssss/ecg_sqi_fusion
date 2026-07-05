@@ -181,8 +181,8 @@ def plot_model_diagnostics(
     ci = model_summary[model_summary["metric"].isin(["Ac", "Se", "Sp", "AUC"])].copy()
     metric_labels = {
         "Ac": "accuracy",
-        "Se": "acceptable recall",
-        "Sp": "poor recall",
+        "Se": "poor recall",
+        "Sp": "acceptable recall",
         "AUC": "AUC",
     }
     ci["label"] = (

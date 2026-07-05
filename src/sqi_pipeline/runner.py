@@ -112,6 +112,7 @@ def step_params(cfg: SQIPipelineConfig, step_name: str) -> dict[str, Any]:
                 "manifest_csv": str(art / "manifests" / "manifest_challenge2011_seta.csv"),
                 "out_split_csv": str(split_paper_balanced),
                 "audit_csv": str(split_paper_balanced.with_suffix(".audit.csv")),
+                "overlap_csv": str(split_paper_balanced.with_suffix(".noise_overlap_audit.csv")),
                 "qc_png": str(art / "qc" / f"paper_balanced_seta_seed{cfg.seed}_label_counts.png"),
                 "set_a_dir": str(cfg.set_a_dir),
                 "nstdb_dir": str(cfg.nstdb_root),

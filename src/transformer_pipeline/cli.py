@@ -29,6 +29,9 @@ def parse_args() -> argparse.Namespace:
     extract = sub.add_parser("extract-but")
     extract.add_argument("--run", action="store_true")
 
+    clean_smoke = sub.add_parser("clean-smoke")
+    clean_smoke.add_argument("--run", action="store_true")
+
     build_p = sub.add_parser("build-v116")
     build_p.add_argument("--run", action="store_true")
 
@@ -62,6 +65,9 @@ def main() -> None:
     if args.cmd == "extract-but":
         runner.ensure_dirs(cfg)
         runner.run_extract_but(cfg, run=args.run)
+    elif args.cmd == "clean-smoke":
+        runner.ensure_dirs(cfg)
+        runner.run_clean_smoke(cfg, run=args.run)
     elif args.cmd == "build-v116":
         build.main(run=args.run)
     elif args.cmd == "split":

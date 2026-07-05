@@ -44,11 +44,11 @@ def _resolve_path(root: Path, value: str | Path) -> Path:
     return p if p.is_absolute() else root / p
 
 
-def _outputs_exist(out_split: Path, audit_csv: Path, cases_dir: Path, qc_png: Path) -> bool:
+def _outputs_exist(out_split: Path, audit_csv: Path, overlap_csv: Path, cases_dir: Path, qc_png: Path) -> bool:
     def ok(p: Path) -> bool:
         return p.exists() and p.is_file() and p.stat().st_size > 0
 
-    if not (ok(out_split) and ok(audit_csv) and ok(qc_png) and cases_dir.exists()):
+    if not (ok(out_split) and ok(audit_csv) and ok(overlap_csv) and ok(qc_png) and cases_dir.exists()):
         return False
     try:
         df = pd.read_csv(out_split, usecols=["record_id"])
@@ -91,7 +91,7 @@ def _cache_clean_cases(record_ids: list[str], set_a_dir: Path, cases_dir: Path, 
     logger.info("[clean] cached new=%d skipped=%d total=%d", n_new, n_skip, len(record_ids))
 
 
-class UniqueNoiseSegmentSampler:
+class SplitNoiseSegmentSampler:
     def __init__(
         self,
         nstdb_signals: dict[str, np.ndarray],
@@ -103,26 +103,55 @@ class UniqueNoiseSegmentSampler:
         self.rng = rng
         self.seg_len_in = int(round(CASE_SEC * FS_NOISE_IN))
         stride = max(1, int(round(float(stride_s) * FS_NOISE_IN)))
-        self.starts: dict[str, list[int]] = {}
+        self.starts: dict[tuple[str, str], list[int]] = {}
+        self.bounds: dict[tuple[str, str], tuple[int, int]] = {}
         for noise_type, sig in nstdb_signals.items():
-            hi = int(sig.shape[0] - self.seg_len_in)
-            if hi <= 0:
-                raise ValueError(f"NSTDB {noise_type} too short for {CASE_SEC}s windows")
-            starts = np.arange(0, hi + 1, stride, dtype=int)
-            self.rng.shuffle(starts)
-            self.starts[noise_type] = starts.tolist()
+            n = int(sig.shape[0])
+            mid = n // 2
+            eval_mid = mid + (n - mid) // 2
+            for region, lo, hi in [("train", 0, mid), ("val", mid, eval_mid), ("test", eval_mid, n)]:
+                max_start = hi - self.seg_len_in
+                if max_start < lo:
+                    raise ValueError(f"NSTDB {noise_type} {region} half too short for {CASE_SEC}s windows")
+                starts = np.arange(lo, max_start + 1, stride, dtype=int)
+                self.rng.shuffle(starts)
+                self.starts[(noise_type, region)] = starts.tolist()
+                self.bounds[(noise_type, region)] = (int(lo), int(hi))
 
-    def draw_500(self, noise_type: str) -> tuple[np.ndarray, int]:
-        starts = self.starts[noise_type]
+    def draw_500(self, noise_type: str, split: str) -> tuple[np.ndarray, int, str, tuple[int, int]]:
+        region = split if split in {"train", "val", "test"} else "test"
+        starts = self.starts[(noise_type, region)]
         if not starts:
-            raise RuntimeError(f"No unique NSTDB segment starts left for noise_type={noise_type}")
+            raise RuntimeError(f"No unique NSTDB segment starts left for noise_type={noise_type}, region={region}")
         start = int(starts.pop())
         sig360 = self.nstdb_signals[noise_type]
         seg360 = sig360[start : start + self.seg_len_in, :]
         seg500 = resample_poly(seg360, up=25, down=18, axis=0).astype(np.float64)
         if seg500.shape[0] < N_SAMPLES:
             seg500 = np.pad(seg500, ((0, N_SAMPLES - seg500.shape[0]), (0, 0)), mode="edge")
-        return seg500[:N_SAMPLES, :], start
+        return seg500[:N_SAMPLES, :], start, region, self.bounds[(noise_type, region)]
+
+
+def _audit_noise_overlap(audit: pd.DataFrame, out_csv: Path) -> pd.DataFrame:
+    rows: list[dict[str, Any]] = []
+    if not audit.empty:
+        for noise_type, g in audit.groupby("noise_type"):
+            by_split = {s: gg.sort_values("noise_start_360") for s, gg in g.groupby("split")}
+            splits = sorted(by_split)
+            for i, split_a in enumerate(splits):
+                for split_b in splits[i + 1 :]:
+                    ga, gb = by_split[split_a], by_split[split_b]
+                    count = 0
+                    for r in ga.itertuples(index=False):
+                        overlap = (gb["noise_start_360"].to_numpy() < int(r.noise_end_360)) & (
+                            gb["noise_end_360"].to_numpy() > int(r.noise_start_360)
+                        )
+                        count += int(overlap.sum())
+                    rows.append({"split_a": split_a, "split_b": split_b, "noise_type": noise_type, "n_overlaps": count})
+    out = pd.DataFrame(rows)
+    out_csv.parent.mkdir(parents=True, exist_ok=True)
+    out.to_csv(out_csv, index=False)
+    return out
 
 
 def _make_noisy_case_paper(
@@ -211,14 +240,15 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     manifest_csv = _resolve_path(root, params["manifest_csv"])
     out_split = _resolve_path(root, params["out_split_csv"])
     audit_csv = _resolve_path(root, params.get("audit_csv", out_split.with_suffix(".audit.csv")))
+    overlap_csv = _resolve_path(root, params.get("overlap_csv", out_split.with_suffix(".noise_overlap_audit.csv")))
     qc_png = _resolve_path(root, params.get("qc_png", out_split.with_suffix(".label_counts.png")))
     set_a_dir = _resolve_path(root, params["set_a_dir"])
     nstdb_dir = _resolve_path(root, params["nstdb_dir"])
     cases_dir = _resolve_path(root, params["cases_500_dir"])
 
-    if (not force) and _outputs_exist(out_split, audit_csv, cases_dir, qc_png):
+    if (not force) and _outputs_exist(out_split, audit_csv, overlap_csv, cases_dir, qc_png):
         logger.info("paper_balanced_seta: outputs exist -> skip (set force=True to rerun)")
-        return {"step": "paper_balanced_seta", "skipped": True, "outputs": [str(out_split), str(audit_csv), str(qc_png)]}
+        return {"step": "paper_balanced_seta", "skipped": True, "outputs": [str(out_split), str(audit_csv), str(overlap_csv), str(qc_png)]}
 
     logger.info("manifest_csv: %s", manifest_csv)
     logger.info("set_a_dir: %s", set_a_dir)
@@ -249,9 +279,6 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
 
     _cache_clean_cases(df_labeled["record_id"].astype(str).tolist(), set_a_dir, cases_dir, force=force)
 
-    nstdb_signals = {noise_type: read_nstdb(noise_type, nstdb_dir) for noise_type in NOISE_TYPES}
-    sampler = UniqueNoiseSegmentSampler(nstdb_signals, rng=rng, stride_s=noise_stride_s)
-
     rows: list[dict[str, Any]] = []
     for _, r in df_labeled.iterrows():
         rid = str(r["record_id"])
@@ -270,26 +297,10 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     audit_rows: list[dict[str, Any]] = []
     made = 0
     for source_id in chosen_sources:
-        clean = load_clean_500_from_wfdb(source_id, set_a_dir)
         for noise_type in NOISE_TYPES:
             if made >= need:
                 break
-            noise2_500, start360 = sampler.draw_500(noise_type)
-            noisy, meta_extra = _make_noisy_case_paper(clean, noise2_500, rng, snr_db)
             new_id = f"{source_id}__paper_{noise_type}__snr{int(snr_db)}__seed{seed}__{made:05d}"
-            out_npz = cases_dir / f"{new_id}.npz"
-            meta = {
-                "new_record_id": new_id,
-                "source_record_id": source_id,
-                "kind": "paper_aligned_noisy",
-                "noise_type": noise_type,
-                "noise_start_360": int(start360),
-                "noise_start_stride_s": float(noise_stride_s),
-                "fs_ecg": FS_ECG,
-                "fs_noise_in": FS_NOISE_IN,
-                **meta_extra,
-            }
-            write_case_500_npz(out_npz, noisy, meta)
             rows.append({
                 "record_id": new_id,
                 "y": -1,
@@ -300,18 +311,6 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
                 "source_record_id": source_id,
                 "noise_type": noise_type,
                 "snr_db": float(snr_db),
-            })
-            audit_rows.append({
-                "record_id": new_id,
-                "source_record_id": source_id,
-                "noise_type": noise_type,
-                "snr_db": float(snr_db),
-                "noise_record": noise_type,
-                "noise_start_360": int(start360),
-                "noise_start_stride_s": float(noise_stride_s),
-                "pca_mode": "paper_pca_deterministic_third_axis",
-                "dower_mode": "inverse_dower_12x3",
-                "out_npz_500": str(out_npz),
             })
             made += 1
         if made >= need:
@@ -326,10 +325,55 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
 
     _validate_split(df_bal)
 
+    nstdb_signals = {noise_type: read_nstdb(noise_type, nstdb_dir) for noise_type in NOISE_TYPES}
+    sampler = SplitNoiseSegmentSampler(nstdb_signals, rng=rng, stride_s=noise_stride_s)
+    for row in df_bal[df_bal["is_augmented"].astype(int).eq(1)].itertuples(index=False):
+        clean = load_clean_500_from_wfdb(str(row.source_record_id), set_a_dir)
+        noise2_500, start360, region, bounds = sampler.draw_500(str(row.noise_type), str(row.split))
+        noisy, meta_extra = _make_noisy_case_paper(clean, noise2_500, rng, snr_db)
+        out_npz = cases_dir / f"{row.record_id}.npz"
+        end360 = int(start360 + round(CASE_SEC * FS_NOISE_IN))
+        meta = {
+            "new_record_id": str(row.record_id),
+            "source_record_id": str(row.source_record_id),
+            "kind": "paper_aligned_noisy_midpoint",
+            "noise_type": str(row.noise_type),
+            "noise_start_360": int(start360),
+            "noise_end_360": end360,
+            "noise_region": region,
+            "noise_region_bounds_360": [int(bounds[0]), int(bounds[1])],
+            "noise_start_stride_s": float(noise_stride_s),
+            "fs_ecg": FS_ECG,
+            "fs_noise_in": FS_NOISE_IN,
+            **meta_extra,
+        }
+        write_case_500_npz(out_npz, noisy, meta)
+        audit_rows.append({
+            "record_id": str(row.record_id),
+            "source_record_id": str(row.source_record_id),
+            "split": str(row.split),
+            "noise_type": str(row.noise_type),
+            "snr_db": float(snr_db),
+            "noise_record": str(row.noise_type),
+            "noise_start_360": int(start360),
+            "noise_end_360": end360,
+            "noise_region": region,
+            "noise_region_start_360": int(bounds[0]),
+            "noise_region_end_360": int(bounds[1]),
+            "noise_start_stride_s": float(noise_stride_s),
+            "pca_mode": "paper_pca_deterministic_third_axis",
+            "dower_mode": "inverse_dower_12x3",
+            "out_npz_500": str(out_npz),
+        })
+
     out_split.parent.mkdir(parents=True, exist_ok=True)
     audit_csv.parent.mkdir(parents=True, exist_ok=True)
     df_bal.to_csv(out_split, index=False)
-    pd.DataFrame(audit_rows).to_csv(audit_csv, index=False)
+    audit_df = pd.DataFrame(audit_rows)
+    audit_df.to_csv(audit_csv, index=False)
+    overlap = _audit_noise_overlap(audit_df, overlap_csv)
+    if not overlap.empty and int(overlap["n_overlaps"].sum()) != 0:
+        raise AssertionError(f"NSTDB noise intervals overlap across splits: {overlap_csv}")
     _plot_label_counts(df_bal, qc_png)
 
     logger.info("[saved] paper balanced split -> %s rows=%d", out_split, len(df_bal))
@@ -339,7 +383,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     logger.info("split counts:\n%s", df_bal.groupby(["split", "y"]).size().unstack(fill_value=0).to_string())
     logger.info("group type counts: %s", group_df["group_type"].value_counts().to_dict())
 
-    return {"step": "paper_balanced_seta", "skipped": False, "outputs": [str(out_split), str(audit_csv), str(qc_png)]}
+    return {"step": "paper_balanced_seta", "skipped": False, "outputs": [str(out_split), str(audit_csv), str(overlap_csv), str(qc_png)]}
 
 
 def main() -> None:

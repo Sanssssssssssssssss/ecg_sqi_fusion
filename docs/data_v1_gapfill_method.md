@@ -1,7 +1,12 @@
 # Data v1 Gap-Fill Method
 
-This document freezes the current reproducible data line tagged as
-`data-v1.0`.
+> Archive note: this is the frozen v116 method note. The current compact
+> reproduction commands live in `README.md` and `REPRODUCIBILITY.md`.
+> Public-data rebuilds are smoke checks unless the support-pool audit reports
+> `historical_support_exact=true`; otherwise they are not exact frozen v116
+> replay.
+
+This document freezes the reproducible data line tagged as `data-v1.0`.
 
 ## Method Summary
 

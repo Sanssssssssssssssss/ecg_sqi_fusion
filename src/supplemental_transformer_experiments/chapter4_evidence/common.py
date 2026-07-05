@@ -22,7 +22,8 @@ from src.utils.paths import project_root
 
 
 ROOT = project_root()
-OUT_DEFAULT = ROOT / "outputs" / "transformer" / "supplemental" / "chapter4_evidence_frozen_final"
+FROZEN_OUT = ROOT / "outputs" / "transformer" / "supplemental" / "chapter4_evidence_frozen_final"
+OUT_DEFAULT = ROOT / "outputs" / "transformer" / "supplemental" / "chapter4_evidence_work"
 SEED = 0
 LEADS_12 = ["I", "II", "III", "aVR", "aVL", "aVF", "V1", "V2", "V3", "V4", "V5", "V6"]
 SYNTH_QUOTA = {"ptb12_morph": 211, "seta_native_morph": 153, "noise_style": 19}

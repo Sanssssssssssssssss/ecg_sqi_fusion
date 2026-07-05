@@ -24,11 +24,20 @@ def arm_dir(paths: Paths, arm: str) -> Path:
 
 
 def _features_ready(root: Path) -> bool:
-    return (
-        (root / "features" / "record84_norm.parquet").exists()
-        and (root / "features" / "record84.parquet").exists()
-        and (root / "splits" / "split.csv").exists()
-    )
+    split_csv = root / "splits" / "split.csv"
+    qrs_csv = root / "qrs" / "qrs_summary.csv"
+    raw = root / "features" / "record84.parquet"
+    norm = root / "features" / "record84_norm.parquet"
+    if any(not p.exists() for p in [split_csv, qrs_csv, raw, norm]):
+        return False
+    try:
+        split_n = len(pd.read_csv(split_csv, usecols=["record_id"]))
+        qrs_n = len(pd.read_csv(qrs_csv, usecols=["record_id"]))
+        feat = pd.read_parquet(norm)
+    except Exception:
+        return False
+    cols = [c for c in feat.columns if "__" in c]
+    return len(feat) == split_n and qrs_n == split_n and len(cols) == 84
 
 
 def _load_smc(paths: Paths) -> tuple[pd.DataFrame, np.ndarray]:

@@ -19,11 +19,17 @@ SELECTED5_SQI = {"bSQI", "basSQI", "kSQI", "sSQI", "fSQI"}
 SVM_RBF_C = 1.0
 SVM_RBF_GAMMA = 0.14
 LM_MLP_J = 8
+E31_QUERY_MEAN_RUN_ID = "but_e31_query_mean_fused_conformer"
+E31_QUERY_MEAN_MODEL = "E31 query-mean fused Conformer"
+E31_QUERY_MEAN_ARTIFACT = "E31_query_mean_fused_conformer_fold0_seed0"
 
 
 def _ensure_but_sqi(paths: Paths, *, force: bool, device: str) -> dict[str, Any]:
     bp = but_sqi.Paths(paths.but / "sqi_baseline")
-    if force or not bp.summary_json.exists():
+    needs = force or not bp.summary_json.exists() or not bp.record7_norm_parquet.exists()
+    if not needs:
+        needs = "svm_single7_linear" not in json.loads(bp.summary_json.read_text(encoding="utf-8"))
+    if needs:
         but_sqi.cmd_prepare(bp, run=True, force=force)
         but_sqi.cmd_features(bp, run=True, force=force, jobs=4)
         but_sqi.cmd_train(bp, run=True, force=force, device=device)
@@ -33,11 +39,13 @@ def _ensure_but_sqi(paths: Paths, *, force: bool, device: str) -> dict[str, Any]
 
 def _find_e31_predictions() -> Path:
     run_root = Path("outputs") / "transformer" / "v116_e31" / "runs"
-    roots = list(run_root.glob("**/E31_query_mean_fused_conformer_fold0_seed0/test_predictions.npz"))
-    roots += list(run_root.glob("**/E31_wave_mechanism_conformer_fold0_seed0/test_predictions.npz"))
+    roots = list(run_root.glob(f"**/{E31_QUERY_MEAN_ARTIFACT}/test_predictions.npz"))
     if not roots:
-        raise FileNotFoundError("missing E31 v116 test_predictions.npz")
-    return roots[0].resolve()
+        raise FileNotFoundError(f"missing E31 query-mean predictions under {run_root}")
+    pred = roots[0].resolve()
+    if E31_QUERY_MEAN_ARTIFACT not in pred.as_posix():
+        raise RuntimeError(f"E31 artifact/label mismatch: {pred}")
+    return pred
 
 
 def _e31_summary() -> dict[str, Any]:
@@ -59,7 +67,7 @@ def _e31_summary() -> dict[str, Any]:
 
 
 def _but_test_rows(bp: but_sqi.Paths) -> pd.DataFrame:
-    feat = pd.read_parquet(bp.record84_norm_parquet)
+    feat = pd.read_parquet(bp.record7_norm_parquet)
     split = pd.read_csv(bp.split_csv)
     feat["record_id"] = feat["record_id"].astype(str)
     split["record_id"] = split["record_id"].astype(str)
@@ -76,7 +84,7 @@ def _but_test_rows(bp: but_sqi.Paths) -> pd.DataFrame:
 
 
 def _but_multiclass_data(bp: but_sqi.Paths, *, selected5: bool = False) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    feat = pd.read_parquet(bp.record84_norm_parquet)
+    feat = pd.read_parquet(bp.record7_norm_parquet)
     split = pd.read_csv(bp.split_csv)
     feat["record_id"] = feat["record_id"].astype(str)
     split["record_id"] = split["record_id"].astype(str)
@@ -84,12 +92,12 @@ def _but_multiclass_data(bp: but_sqi.Paths, *, selected5: bool = False) -> tuple
     label_map = {"good": 0, "medium": 1, "bad": 2}
     df["y3"] = df["class_name"].map(label_map).astype(int)
     cols = [c for c in feat.columns if "__" in c]
-    if len(cols) != 84:
-        raise RuntimeError(f"expected 84 SQI feature columns, got {len(cols)}")
+    if len(cols) != 7:
+        raise RuntimeError(f"expected 7 single-lead SQI feature columns, got {len(cols)}")
     if selected5:
         cols = [c for c in cols if c.split("__", 1)[1] in SELECTED5_SQI]
-        if len(cols) != 60:
-            raise RuntimeError(f"expected 60 selected-five SQI feature columns, got {len(cols)}")
+        if len(cols) != 5:
+            raise RuntimeError(f"expected 5 selected-five SQI feature columns, got {len(cols)}")
 
     def part(name: str) -> tuple[np.ndarray, np.ndarray]:
         rows = df.loc[df["split"].eq(name)]
@@ -176,9 +184,9 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
     e31 = _e31_summary()
     rows = [
         {
-            "run_id": "but_svm_rbf_84sqi_multiclass",
-            "model": "SQI SVM-RBF all84",
-            "input": "single-lead SQI copied to pseudo-12-lead 84-SQI",
+            "run_id": "but_svm_rbf_single7_sqi_multiclass",
+            "model": "SQI SVM-RBF single-lead all7",
+            "input": "single-lead Li2008-compatible 7-SQI",
             "task": "good/medium/bad",
             "test_acc": svm_details["three_class"]["acc"],
             "test_macro_f1": svm_details["three_class"]["macro_f1"],
@@ -196,7 +204,7 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
         {
             "run_id": "but_svm_rbf_selected5_sqi_multiclass",
             "model": "SQI SVM-RBF selected5",
-            "input": "selected-five SQI copied to pseudo-12-lead",
+            "input": "single-lead selected-five SQI",
             "task": "good/medium/bad",
             "test_acc": svm5_details["three_class"]["acc"],
             "test_macro_f1": svm5_details["three_class"]["macro_f1"],
@@ -212,9 +220,9 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
             "confusion": json.dumps(svm5_details["three_class"]["confusion"]),
         },
         {
-            "run_id": "but_lm_mlp_84sqi_ovr_multiclass",
-            "model": f"SQI LM-MLP 84-{LM_MLP_J}-1 OvR",
-            "input": "single-lead SQI copied to pseudo-12-lead 84-SQI",
+            "run_id": "but_lm_mlp_single7_sqi_ovr_multiclass",
+            "model": f"SQI LM-MLP 7-{LM_MLP_J}-1 OvR",
+            "input": "single-lead Li2008-compatible 7-SQI",
             "task": "good/medium/bad",
             "test_acc": mlp_details["three_class"]["acc"],
             "test_macro_f1": mlp_details["three_class"]["macro_f1"],
@@ -230,8 +238,8 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
             "confusion": json.dumps(mlp_details["three_class"]["confusion"]),
         },
         {
-            "run_id": "but_e31_wave_mechanism_conformer",
-            "model": "E31 wave-mechanism Conformer",
+            "run_id": E31_QUERY_MEAN_RUN_ID,
+            "model": E31_QUERY_MEAN_MODEL,
             "input": "8-channel waveform-derived time series",
             "task": "good/medium/bad",
             "test_acc": e31["three_class"]["acc"],

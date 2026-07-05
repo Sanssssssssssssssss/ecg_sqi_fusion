@@ -15,7 +15,7 @@ This is a raw experiment report, not manuscript prose. Main sections use only cu
 | output root | outputs\transformer\supplemental\chapter4_evidence_frozen_final |
 | code command | python -m supplemental_transformer_experiments.chapter4_evidence.run --out chapter4_evidence_frozen_final pipeline --run |
 | config file | CLI defaults; seed=0; Python/matplotlib figures |
-| checkpoint path | Set-A: chapter4 output; BUT E31: frozen v116 test_predictions.npz |
+| checkpoint path | Set-A: chapter4 output; BUT E31: query-mean fused v116 test_predictions.npz |
 
 ## 2. Current Protocol And Split Audit
 
@@ -79,7 +79,7 @@ Source: `outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/
 
 ## 4. Current Set-A Model Comparison
 
-Set-A model convention: `Se` is acceptable recall, `Sp` is original-unacceptable recall, and `acceptable_positive_model_auc` treats acceptable as the positive class. Thresholds are selected on validation only.
+Set-A model convention: paper-facing `Se` is original-unacceptable recall, `Sp` is acceptable recall, and `acceptable_positive_model_auc` treats acceptable as the positive class. Thresholds are selected on validation only. This frozen table was generated before the rename, so the explicit `acceptable_recall` and `original_unacceptable_recall` columns are the authoritative source for these old rows.
 
 ### Construction Effect: Source-Only
 
@@ -159,14 +159,14 @@ Source: v116 global distribution metrics. `global_domain_auc_not_dual` is not th
 
 ### Model Metrics
 
-Source: `outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/but_model_comparison.csv` plus frozen E31 `test_predictions.npz`. All rows are evaluated as `good/medium/bad` three-class models on the original-only BUT test split. Classical SVM/MLP use only the SQI feature columns named in `input`; split/protocol metadata columns are explicitly excluded. `Se/Sp` is not used in this multiclass table; class recalls are reported directly.
+Source: `outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/but_model_comparison.csv` plus query-mean E31 `test_predictions.npz`. All rows are evaluated as `good/medium/bad` three-class models on the original-only BUT test split. The SQI rows below are legacy pseudo-12 compatibility artifacts and are superseded by the current single-lead 7-SQI/selected-five code path; do not cite them as Clifford 12-lead 84-SQI results. `Se/Sp` is not used in this multiclass table; class recalls are reported directly.
 
 | run_id | model | input | task | test_acc | test_macro_f1 | good_recall | intermediate_recall | poor_recall | poor_fpr_nonpoor | poor_vs_rest_auc | collapsed_good_vs_rest_acc | collapsed_good_vs_rest_auc | collapsed_good_vs_rest_confusion | confusion |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| but_svm_rbf_84sqi_multiclass | SQI SVM-RBF all84 | single-lead SQI copied to pseudo-12-lead 84-SQI | good/medium/bad | 0.7999 | 0.8326 | 0.7892 | 0.7753 | 0.9634 | 0.0071 | 0.9976 | 0.8075 | 0.9017 | {"tn": 662, "fp": 134, "fn": 222, "tp": 831} | [[831, 219, 3], [133, 490, 9], [1, 5, 158]] |
-| but_svm_rbf_selected5_sqi_multiclass | SQI SVM-RBF selected5 | selected-five SQI copied to pseudo-12-lead | good/medium/bad | 0.7756 | 0.8093 | 0.7597 | 0.7532 | 0.9634 | 0.0113 | 0.9987 | 0.7853 | 0.8811 | {"tn": 652, "fp": 144, "fn": 253, "tp": 800} | [[800, 246, 7], [144, 476, 12], [0, 6, 158]] |
-| but_lm_mlp_84sqi_ovr_multiclass | SQI LM-MLP 84-8-1 OvR | single-lead SQI copied to pseudo-12-lead 84-SQI | good/medium/bad | 0.8102 | 0.8434 | 0.8110 | 0.7658 | 0.9756 | 0.0053 | 0.9990 | 0.8150 | 0.9004 | {"tn": 653, "fp": 143, "fn": 199, "tp": 854} | [[854, 195, 4], [143, 484, 5], [0, 4, 160]] |
-| but_e31_wave_mechanism_conformer | E31 wave-mechanism Conformer | 8-channel waveform-derived time series | good/medium/bad | 0.9486 | 0.9577 | 0.9430 | 0.9446 | 1.0000 | 0.0018 | 1.0000 | 0.9502 | 0.9889 | {"tn": 764, "fp": 32, "fn": 60, "tp": 993} | [[993, 60, 0], [32, 597, 3], [0, 0, 164]] |
+| but_svm_rbf_legacy_pseudo12_sqi_multiclass | Legacy SQI SVM-RBF pseudo-12 | legacy single-lead SQI duplicated to pseudo-12 84-SQI; superseded by current single-lead 7-SQI code | good/medium/bad | 0.7999 | 0.8326 | 0.7892 | 0.7753 | 0.9634 | 0.0071 | 0.9976 | 0.8075 | 0.9017 | {"tn": 662, "fp": 134, "fn": 222, "tp": 831} | [[831, 219, 3], [133, 490, 9], [1, 5, 158]] |
+| but_svm_rbf_selected5_legacy_pseudo12_multiclass | Legacy SQI SVM-RBF selected5 pseudo-12 | legacy selected-five SQI duplicated to pseudo-12; superseded by current single-lead selected5 code | good/medium/bad | 0.7756 | 0.8093 | 0.7597 | 0.7532 | 0.9634 | 0.0113 | 0.9987 | 0.7853 | 0.8811 | {"tn": 652, "fp": 144, "fn": 253, "tp": 800} | [[800, 246, 7], [144, 476, 12], [0, 6, 158]] |
+| but_lm_mlp_legacy_pseudo12_sqi_ovr_multiclass | Legacy SQI LM-MLP pseudo-12 84-8-1 OvR | legacy single-lead SQI duplicated to pseudo-12 84-SQI; superseded by current single-lead 7-SQI code | good/medium/bad | 0.8102 | 0.8434 | 0.8110 | 0.7658 | 0.9756 | 0.0053 | 0.9990 | 0.8150 | 0.9004 | {"tn": 653, "fp": 143, "fn": 199, "tp": 854} | [[854, 195, 4], [143, 484, 5], [0, 4, 160]] |
+| but_e31_query_mean_fused_conformer | E31 query-mean fused Conformer | 8-channel waveform-derived time series | good/medium/bad | 0.9486 | 0.9577 | 0.9430 | 0.9446 | 1.0000 | 0.0018 | 1.0000 | 0.9502 | 0.9889 | {"tn": 764, "fp": 32, "fn": 60, "tp": 993} | [[993, 60, 0], [32, 597, 3], [0, 0, 164]] |
 
 ### Good--Medium Boundary Audit
 
@@ -174,8 +174,8 @@ Source: `outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/
 
 | model | good_to_medium | good_to_bad | medium_to_good | bad_to_good | boundary_exchange_errors | good_medium_test_n | boundary_exchange_rate | confusion |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SQI SVM-RBF all84 | 219 | 3 | 133 | 1 | 352 | 1685 | 0.2089 | [[831, 219, 3], [133, 490, 9], [1, 5, 158]] |
-| SQI LM-MLP 84-8-1 OvR | 195 | 4 | 143 | 0 | 338 | 1685 | 0.2006 | [[854, 195, 4], [143, 484, 5], [0, 4, 160]] |
+| Legacy SQI SVM-RBF pseudo-12 | 219 | 3 | 133 | 1 | 352 | 1685 | 0.2089 | [[831, 219, 3], [133, 490, 9], [1, 5, 158]] |
+| Legacy SQI LM-MLP pseudo-12 84-8-1 OvR | 195 | 4 | 143 | 0 | 338 | 1685 | 0.2006 | [[854, 195, 4], [143, 484, 5], [0, 4, 160]] |
 | Conformer | 60 | 0 | 32 | 0 | 92 | 1685 | 0.0546 | [[993, 60, 0], [32, 597, 3], [0, 0, 164]] |
 
 ## 6. Figure Index
@@ -253,7 +253,7 @@ For unacceptable groups, `group_recall` is rejection/poor recall. This table is 
 
 ### Historical existing_seed0 Cross-Noise Generalization
 
-The often-confusing `0.4287` value is the `synthetic_poor_to_original_poor` acceptable-positive model AUC in this table; its original-poor recall/Sp is `0.0606`.
+The often-confusing `0.4287` value is the `synthetic_poor_to_original_poor` acceptable-positive model AUC in this table; its original-poor recall is `0.0606` under the current paper-facing `Se` convention.
 
 | scenario | train_n | val_n | test_n | threshold | test_Ac | Se | Sp | acceptable_positive_model_auc | test_tn | test_fp | test_fn | test_tp | source | sqis | val_Ac |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
