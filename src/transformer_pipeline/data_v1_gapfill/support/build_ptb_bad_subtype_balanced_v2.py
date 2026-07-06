@@ -321,7 +321,10 @@ def target_bad_counts(but_frame: pd.DataFrame, total_bad: int) -> dict[str, int]
 
 def recompute_features(signals: np.ndarray, frame: pd.DataFrame) -> pd.DataFrame:
     y = frame["class_name"].astype(str).map(CLASS_TO_INT).to_numpy(dtype=np.int64)
-    train_mask = frame["split"].astype(str).eq("train").to_numpy()
+    if "split" in frame.columns:
+        train_mask = frame["split"].astype(str).eq("train").to_numpy()
+    else:
+        train_mask = np.ones(len(frame), dtype=bool)
     primitives = FEATURES.compute_primitives(signals)
     state = FEATURES.fit_feature_state(primitives, y, train_mask)
     features = FEATURES.assemble_features(primitives, state)

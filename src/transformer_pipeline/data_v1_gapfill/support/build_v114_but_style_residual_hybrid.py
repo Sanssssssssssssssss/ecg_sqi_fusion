@@ -307,7 +307,14 @@ def style_ptb_to_but(ptb: np.ndarray, style_ref: np.ndarray, rng: np.random.Gene
 
 
 def normalize_frame(frame: pd.DataFrame, signals: np.ndarray, label: str) -> tuple[pd.DataFrame, np.ndarray]:
-    out = V81.recompute_protocol_features(frame.copy(), signals, label)
+    base = frame.copy()
+    if "class_name" not in base.columns:
+        base["class_name"] = base["y"].map({0: "good", 1: "medium", 2: "bad"}).fillna("good")
+    base["class_name"] = base["class_name"].astype(str)
+    if "split" not in base.columns:
+        base["split"] = "train"
+
+    out = V81.recompute_protocol_features(base, signals, label)
     out = V81.ensure_subtype(out)
     out["_row_pos"] = np.arange(len(out), dtype=int)
     if "class_name" not in out.columns:
