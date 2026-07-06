@@ -27,7 +27,7 @@ from .but_query_patching import (
     _load_model,
     _rescue_pairs,
 )
-from .common import Paths, dry, ensure_dirs, rel, table_to_md, write_json
+from .common import ROOT, Paths, dry, ensure_dirs, rel, table_to_md, write_json
 from .figures import _save
 
 
@@ -469,7 +469,7 @@ def _transplant_rows(paths: Paths, records: pd.DataFrame, model: torch.nn.Module
 
 
 def _copy_to_user_figures(paths: Paths, names: list[str]) -> None:
-    target = paths.out / "supplemental_only_figures"
+    target = ROOT / "outputs" / "transformer" / "supplemental" / "chapter4_evidence" / "figures"
     (target / "source_data").mkdir(parents=True, exist_ok=True)
     for name in names:
         for ext in [".png", ".svg", ".pdf", ".tiff"]:

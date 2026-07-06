@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from src.utils.data_downloads import data_root
 from src.utils.paths import project_root
 
 
@@ -47,7 +46,7 @@ class SQIPipelineConfig:
 
     @property
     def challenge_root(self) -> Path:
-        return data_root(self.root) / "physionet" / "challenge-2011"
+        return self.root / "data" / "physionet" / "challenge-2011"
 
     @property
     def set_a_dir(self) -> Path:
@@ -55,7 +54,7 @@ class SQIPipelineConfig:
 
     @property
     def nstdb_root(self) -> Path:
-        return data_root(self.root) / "physionet" / "nstdb"
+        return self.root / "data" / "physionet" / "nstdb"
 
     def base_params(self) -> dict[str, Any]:
         return {

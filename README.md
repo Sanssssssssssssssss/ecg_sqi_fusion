@@ -74,19 +74,11 @@ Pipeline entrypoints check for required local data and download missing public
 WFDB databases into `data/`. Raw datasets, checkpoints, and regenerated arrays
 are not committed.
 
-Public-data rebuilds are intended to run from a fresh clone. Exact replay of
-the tracked frozen v116 evidence depends on the support assets that were
-present when that evidence package was frozen, so clean rebuilds are not
-claimed as byte-identical replacements for the frozen numbers.
-Full report reproduction is split by model family and dataset under
-`reproduce/`; for example:
-
-```bash
-bash reproduce/scripts/sh/baseline_cinc2011.sh
-bash reproduce/scripts/sh/baseline_but.sh
-bash reproduce/scripts/sh/conformer_cinc2011.sh
-bash reproduce/scripts/sh/conformer_but.sh
-```
+Public-data rebuilds are smoke checks for the pipeline. Exact replay of the
+tracked frozen v116 evidence depends on the support assets that were present
+when that evidence package was frozen; without them, the code records
+`historical_support_exact=false` and keeps the fallback run out of the paper
+numbers.
 
 Important generated locations:
 
@@ -100,5 +92,5 @@ outputs/reports/
 See `DATA_AVAILABILITY.md` and `REPRODUCIBILITY.md` for the compact release
 notes.
 
-See `reproduce/README.md` for the matching PowerShell commands and
-supplemental targets.
+For report-table and figure-source smoke checks, use
+`python reproduce/check_reproduce.py artifact`.

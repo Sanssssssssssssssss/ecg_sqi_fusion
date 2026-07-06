@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 from typing import Any
 
@@ -14,10 +13,6 @@ from .common import Paths, dry, ensure_dirs, read_json, rel, write_json
 
 
 EPS = 1e-6
-
-
-def _sqi_paper_aligned_root() -> Path:
-    return Path(os.environ.get("ECG_SQI_PAPER_ALIGNED_ROOT", Path("outputs") / "sqi_paper_aligned"))
 
 
 def _read_csv(path: Path) -> pd.DataFrame:
@@ -134,7 +129,7 @@ def _audit_seta_model_table(rows: list[dict[str, Any]], path: Path, *, table_nam
 
 def _audit_fixed_synthetic_source(rows: list[dict[str, Any]], paths: Paths) -> None:
     split_path = paths.seta_arms / "fixed_synthetic" / "splits" / "split.csv"
-    paper_path = _sqi_paper_aligned_root() / "splits" / "split_seta_seed0_paper_balanced.csv"
+    paper_path = Path("outputs") / "sqi_paper_aligned" / "splits" / "split_seta_seed0_paper_balanced.csv"
     split = _read_csv(split_path)
     paper = _read_csv(paper_path)
     if split.empty or paper.empty:

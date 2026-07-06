@@ -39,39 +39,14 @@ val/test generated rows: 0
 candidate types: original_but, but_native_morph, ptb_morph, clean_style
 ```
 
-## Full Report Reproduction
+## Public-Data Smoke Scope
 
-Report reproduction is split by model family and dataset. Each command writes
-only under `reproduce/work/` and emits `summary.json`, `summary.md`,
-`audit_matrix.csv`, and `artifact_checksums.csv`.
-
-Windows:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File reproduce/scripts/ps1/baseline_cinc2011.ps1
-powershell -ExecutionPolicy Bypass -File reproduce/scripts/ps1/baseline_but.ps1
-powershell -ExecutionPolicy Bypass -File reproduce/scripts/ps1/conformer_cinc2011.ps1
-powershell -ExecutionPolicy Bypass -File reproduce/scripts/ps1/conformer_but.ps1
-```
-
-Linux, macOS, or WSL:
-
-```bash
-bash reproduce/scripts/sh/baseline_cinc2011.sh
-bash reproduce/scripts/sh/baseline_but.sh
-bash reproduce/scripts/sh/conformer_cinc2011.sh
-bash reproduce/scripts/sh/conformer_but.sh
-```
-
-Supplemental:
-
-```bash
-bash reproduce/scripts/sh/supplemental/sqi_supplemental.sh
-bash reproduce/scripts/sh/supplemental/transformer_supplemental.sh
-```
-
-The clean public rebuild path is intended to be runnable from a fresh clone.
-It is not claimed to be an exact byte replay of the frozen v116 support pool.
+`python -m src.transformer_pipeline.cli clean-smoke --run` verifies that the
+BUT/PTB public-data path can rebuild the required source assets. It is not an
+exact replay of the frozen v116 support pool unless
+`historical_support_exact=true` appears in `source/clean_smoke_summary.json`.
+Fallback runs with `historical_support_exact=false` are valid engineering
+smoke checks, not replacement Chapter 4 numbers.
 
 ## Output Roots
 
@@ -84,4 +59,8 @@ outputs/reports/
 
 Top-level `report/` is reserved for the final submitted PDF/materials.
 
-For direct Python use, run `python reproduce/run_reproduce.py --target <target>`.
+For report-table and figure-source readiness checks, run:
+
+```bash
+python reproduce/check_reproduce.py artifact
+```

@@ -3,7 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.utils.data_downloads import data_root
 from src.utils.paths import project_root
 
 
@@ -32,11 +31,11 @@ class TransformerPipelineConfig:
 
     @property
     def butqdb_root(self) -> Path:
-        return data_root(self.root) / "external" / "butqdb_1_0_0"
+        return self.root / "data" / "external" / "butqdb_1_0_0"
 
     @property
     def ptbxl_root(self) -> Path:
-        return data_root(self.root) / "ptb-xl"
+        return self.root / "data" / "ptb-xl"
 
     @property
     def analysis_dir(self) -> Path:
