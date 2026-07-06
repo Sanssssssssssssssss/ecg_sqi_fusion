@@ -79,7 +79,16 @@ def fresh_artifacts(artifacts_dir: Path) -> None:
         path = artifacts_dir / name
         if path.exists():
             logger.info("fresh: removing %s", _display_path(path))
-            shutil.rmtree(path)
+            if name == "qrs":
+                for child in path.iterdir():
+                    if child.name == "tools":
+                        continue
+                    if child.is_dir():
+                        shutil.rmtree(child)
+                    else:
+                        child.unlink()
+            else:
+                shutil.rmtree(path)
 
 
 def ensure_dirs(artifacts_dir: Path) -> None:
