@@ -39,14 +39,21 @@ val/test generated rows: 0
 candidate types: original_but, but_native_morph, ptb_morph, clean_style
 ```
 
-## Public-Data Smoke Scope
+## External Full Reproduction
 
-`python -m src.transformer_pipeline.cli clean-smoke --run` verifies that the
-BUT/PTB public-data path can rebuild the required source assets. It is not an
-exact replay of the frozen v116 support pool unless
-`historical_support_exact=true` appears in `source/clean_smoke_summary.json`.
-Fallback runs with `historical_support_exact=false` are valid engineering
-smoke checks, not replacement Chapter 4 numbers.
+Full report reproduction is intentionally orchestrated from a sibling
+workspace folder, not from a tracked `reproduce/` directory inside this repo:
+
+```bash
+python ../reproduce/run_reproduce.py --target baseline-cinc2011
+python ../reproduce/run_reproduce.py --target baseline-but
+python ../reproduce/run_reproduce.py --target conformer-cinc2011
+python ../reproduce/run_reproduce.py --target conformer-but
+```
+
+That external controller fresh-clones this repository, installs dependencies in
+an external virtual environment, and writes all generated data under
+`../reproduce/work/`.
 
 ## Output Roots
 
@@ -59,8 +66,5 @@ outputs/reports/
 
 Top-level `report/` is reserved for the final submitted PDF/materials.
 
-For report-table and figure-source readiness checks, run:
-
-```bash
-python reproduce/check_reproduce.py artifact
-```
+Supplemental targets are also split in the external controller as
+`sqi-supplemental` and `transformer-supplemental`.
