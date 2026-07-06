@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "numeric_tolerance": 0.02,
+  "targets": {
+    "baseline-cinc2011": {
+      "dataset": "CinC2011 Set-A / NSTDB",
+      "model_family": "classical SQI",
+      "required": [
+        {"id": "sqi-run-summary", "report_section": "Classical SQI", "table_or_figure": "SQI paper-aligned run summary", "generated": "sqi_paper_aligned/config/run_summary_seed0.json"},
+        {"id": "table5-single-sqi", "report_section": "Clifford Table 5", "table_or_figure": "single SQI SVM table", "generated": "sqi_paper_aligned/models/svm/table5_12lead_single_sqi_seed0.csv"},
+        {"id": "table6-combo-sqi", "report_section": "Clifford Table 6", "table_or_figure": "SQI combination SVM table", "generated": "sqi_paper_aligned/models/svm/table6_12lead_combo_sqi_seed0.csv"},
+        {"id": "table7-svm", "report_section": "Clifford Table 7", "table_or_figure": "selected-five SVM table", "generated": "sqi_paper_aligned/models/svm/table7_svm_selected5_seed0.csv"},
+        {"id": "table7-mlp", "report_section": "Clifford Table 7", "table_or_figure": "selected-five MLP table", "generated": "sqi_paper_aligned/models/lm_mlp/tables/table7_mlp_selected5_seed0.csv"},
+        {"id": "trend-table5", "report_section": "Clifford trend audit", "table_or_figure": "paper_table5_comparison.csv", "generated": "reports/sqi_paper_aligned/table_trend_comparison/paper_table5_comparison.csv"},
+        {"id": "trend-table6", "report_section": "Clifford trend audit", "table_or_figure": "paper_table6_comparison.csv", "generated": "reports/sqi_paper_aligned/table_trend_comparison/paper_table6_comparison.csv"},
+        {"id": "trend-table7", "report_section": "Clifford trend audit", "table_or_figure": "paper_table7_comparison.csv", "generated": "reports/sqi_paper_aligned/table_trend_comparison/paper_table7_comparison.csv"},
+        {"id": "paper-tables-xlsx", "report_section": "Clifford tables", "table_or_figure": "paper_tables_like_paper.xlsx", "generated": "sqi_paper_aligned/paper_tables/paper_tables_like_paper.xlsx"}
+      ]
+    },
+    "baseline-but": {
+      "dataset": "BUT v116",
+      "model_family": "classical SQI",
+      "required": [
+        {"id": "v116-protocol", "report_section": "BUT/v116", "table_or_figure": "v116 protocol metadata", "generated": "transformer_v116/analysis/good_medium_geometry_repair/clean_but_protocols/v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876/metadata.csv"},
+        {"id": "v116-signals", "report_section": "BUT/v116", "table_or_figure": "v116 protocol signals", "generated": "transformer_v116/analysis/good_medium_geometry_repair/clean_but_protocols/v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876/signals.npz"},
+        {"id": "v116-split", "report_section": "BUT/v116", "table_or_figure": "official fold split", "generated": "transformer_v116/analysis/good_medium_geometry_repair/event_factorized_sqi_conformer/rh_splits/v116_gapfill_dual_goodorig_nm40__k1_s20260876/fold0/original_region_atlas.csv"},
+        {"id": "but-sqi-summary", "report_section": "BUT SQI baseline", "table_or_figure": "summary json", "generated": "but_sqi_baseline/reports/but_sqi_baseline_summary.json"},
+        {"id": "but-record7", "report_section": "BUT SQI baseline", "table_or_figure": "single-lead 7 SQI features", "generated": "but_sqi_baseline/features/record7_norm.parquet"},
+        {"id": "but-svm", "report_section": "BUT SQI baseline", "table_or_figure": "single-lead linear SVM metrics", "generated": "but_sqi_baseline/models/svm_single7_linear/svm_single7_linear_metrics_seed0.json"}
+      ]
+    },
+    "conformer-cinc2011": {
+      "dataset": "CinC2011 Set-A",
+      "model_family": "waveform comparator",
+      "required": [
+        {"id": "seta-protocol", "report_section": "Set-A repair", "table_or_figure": "protocol_gapfill.csv", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/seta_gapfill/data/protocol_gapfill.csv", "generated": "chapter4_evidence/seta_gapfill/data/protocol_gapfill.csv"},
+        {"id": "seta-repair", "report_section": "Set-A repair", "table_or_figure": "seta_distribution_repair_metrics.csv", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/seta_distribution_repair_metrics.csv", "generated": "chapter4_evidence/tables/seta_distribution_repair_metrics.csv"},
+        {"id": "seta-models", "report_section": "Set-A model comparison", "table_or_figure": "seta_repaired_model_comparison.csv", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/seta_repaired_model_comparison.csv", "generated": "chapter4_evidence/tables/seta_repaired_model_comparison.csv"},
+        {"id": "fig-d1", "report_section": "Figure index", "table_or_figure": "fig_D1_distribution_repair_summary.png", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/fig_D1_distribution_repair_summary.png", "generated": "chapter4_evidence/figures/fig_D1_distribution_repair_summary.png"},
+        {"id": "fig-m1", "report_section": "Figure index", "table_or_figure": "fig_M1_seta_model_performance.png", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/fig_M1_seta_model_performance.png", "generated": "chapter4_evidence/figures/fig_M1_seta_model_performance.png"}
+      ],
+      "reference_globs": [
+        {"id_prefix": "seta-table", "base": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables", "pattern": "seta_*.csv", "generated_base": "chapter4_evidence/tables", "report_section": "Set-A tables"},
+        {"id_prefix": "seta-source-data", "base": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/source_data", "pattern": "fig_D[123]_*.csv", "generated_base": "chapter4_evidence/figures/source_data", "report_section": "Set-A figure source data"},
+        {"id_prefix": "seta-source-data", "base": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/source_data", "pattern": "fig_M1_*.csv", "generated_base": "chapter4_evidence/figures/source_data", "report_section": "Set-A figure source data"}
+      ]
+    },
+    "conformer-but": {
+      "dataset": "BUT v116",
+      "model_family": "E31 query-mean fused Conformer",
+      "required": [
+        {"id": "but-models", "report_section": "BUT model metrics", "table_or_figure": "but_model_comparison.csv", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/but_model_comparison.csv", "generated": "chapter4_evidence/tables/but_model_comparison.csv"},
+        {"id": "but-boundary", "report_section": "BUT boundary audit", "table_or_figure": "but_good_medium_boundary_audit.csv", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/but_good_medium_boundary_audit.csv", "generated": "chapter4_evidence/tables/but_good_medium_boundary_audit.csv"},
+        {"id": "but-query", "report_section": "BUT query patching", "table_or_figure": "but_query_patching_summary.csv", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables/but_query_patching_summary.csv", "generated": "chapter4_evidence/tables/but_query_patching_summary.csv"},
+        {"id": "fig-m2", "report_section": "Figure index", "table_or_figure": "fig_M2_but_model_comparison.png", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/fig_M2_but_model_comparison.png", "generated": "chapter4_evidence/figures/fig_M2_but_model_comparison.png"},
+        {"id": "fig-m3", "report_section": "Figure index", "table_or_figure": "fig_M3_but_good_medium_boundary_audit.png", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/fig_M3_but_good_medium_boundary_audit.png", "generated": "chapter4_evidence/figures/fig_M3_but_good_medium_boundary_audit.png"},
+        {"id": "fig-m5", "report_section": "Figure index", "table_or_figure": "fig_M5_but_query_patching.png", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/fig_M5_but_query_patching.png", "generated": "chapter4_evidence/figures/fig_M5_but_query_patching.png"}
+      ],
+      "reference_globs": [
+        {"id_prefix": "but-table", "base": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/tables", "pattern": "but_*.csv", "generated_base": "chapter4_evidence/tables", "report_section": "BUT tables"},
+        {"id_prefix": "but-source-data", "base": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/source_data", "pattern": "fig_D[45]_*.csv", "generated_base": "chapter4_evidence/figures/source_data", "report_section": "BUT figure source data"},
+        {"id_prefix": "but-source-data", "base": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/source_data", "pattern": "fig_M[2345]_*.csv", "generated_base": "chapter4_evidence/figures/source_data", "report_section": "BUT figure source data"}
+      ]
+    },
+    "sqi-supplemental": {
+      "dataset": "CinC2011 Set-A / NSTDB",
+      "model_family": "classical SQI supplemental",
+      "required": [
+        {"id": "sqi-supp-summary", "report_section": "Historical SQI appendix", "table_or_figure": "supplemental protocol summary", "generated": "reports/sqi_supplemental/existing_seed0/supplemental_protocol_summary.md"},
+        {"id": "sqi-final-claims", "report_section": "Historical SQI appendix", "table_or_figure": "domain_shift_metrics.csv", "generated": "sqi_supplemental/existing_seed0/final_claims/domain_shift_metrics.csv"},
+        {"id": "sqi-strict-table6", "report_section": "Historical SQI appendix", "table_or_figure": "table6_all_five_sqi_validation_rank.csv", "generated": "sqi_supplemental/existing_seed0/final_claims/table6_all_five_sqi_validation_rank.csv"}
+      ],
+      "reference_globs": [
+        {"id_prefix": "sqi-supp", "base": "outputs/sqi_supplemental/existing_seed0", "pattern": "**/*.csv", "generated_base": "sqi_supplemental/existing_seed0", "report_section": "SQI supplemental", "required": false}
+      ]
+    },
+    "transformer-supplemental": {
+      "dataset": "BUT v116",
+      "model_family": "transformer supplemental",
+      "required": [
+        {"id": "fig-m6", "report_section": "Supplemental transformer", "table_or_figure": "fig_M6_time_local_path_ablation.csv", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/source_data/fig_M6_time_local_path_ablation.csv", "generated": "chapter4_evidence/figures/source_data/fig_M6_time_local_path_ablation.csv"},
+        {"id": "fig-m7", "report_section": "Supplemental transformer", "table_or_figure": "fig_M7_architecture_ablation_summary.csv", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/source_data/fig_M7_architecture_ablation_summary.csv", "generated": "chapter4_evidence/figures/source_data/fig_M7_architecture_ablation_summary.csv"},
+        {"id": "fig-m8", "report_section": "Supplemental transformer", "table_or_figure": "fig_M8_local_degradation_summary.csv", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/source_data/fig_M8_local_degradation_summary.csv", "generated": "chapter4_evidence/figures/source_data/fig_M8_local_degradation_summary.csv"},
+        {"id": "fig-m9", "report_section": "Supplemental transformer", "table_or_figure": "fig_M9_segment_transplant_summary.csv", "reference": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/source_data/fig_M9_segment_transplant_summary.csv", "generated": "chapter4_evidence/figures/source_data/fig_M9_segment_transplant_summary.csv"}
+      ],
+      "reference_globs": [
+        {"id_prefix": "transformer-supp", "base": "outputs/transformer/supplemental/chapter4_evidence_frozen_final/figures/source_data", "pattern": "fig_M[6789]_*.csv", "generated_base": "chapter4_evidence/figures/source_data", "report_section": "Transformer supplemental"}
+      ]
+    }
+  }
+}

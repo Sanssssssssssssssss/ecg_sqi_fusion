@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +14,10 @@ from src.transformer_pipeline.data_v1_gapfill.common import report_dir as but_re
 
 def _read_csv(path):
     return pd.read_csv(path) if path.exists() else pd.DataFrame()
+
+
+def _sqi_supplemental_existing() -> Path:
+    return Path(os.environ.get("ECG_SQI_SUPPLEMENTAL_ROOT", Path("outputs") / "sqi_supplemental")) / "existing_seed0"
 
 
 def _ordered(df: pd.DataFrame, preferred: list[str]) -> pd.DataFrame:
@@ -178,8 +183,9 @@ def _but_model_display(df: pd.DataFrame, paths: Paths) -> pd.DataFrame:
 
 
 def _paper_synthetic_domain_table(paths: Paths) -> pd.DataFrame:
-    final_claims = Path("outputs") / "sqi_supplemental" / "existing_seed0" / "final_claims"
-    waveform = Path("outputs") / "sqi_supplemental" / "existing_seed0" / "waveform_domain_auc" / "paper_waveform_all_domain_auc.csv"
+    base = _sqi_supplemental_existing()
+    final_claims = base / "final_claims"
+    waveform = base / "waveform_domain_auc" / "paper_waveform_all_domain_auc.csv"
     metrics = _read_csv(final_claims / "domain_shift_metrics.csv")
     all_wave = _read_csv(waveform)
     rows: list[dict[str, Any]] = []
@@ -237,7 +243,7 @@ def _paper_synthetic_domain_table(paths: Paths) -> pd.DataFrame:
 
 
 def _paper_cross_domain_display(paths: Paths) -> pd.DataFrame:
-    cross = _read_csv(Path("outputs") / "sqi_supplemental" / "existing_seed0" / "final_claims" / "cross_domain_auc_matrix.csv")
+    cross = _read_csv(_sqi_supplemental_existing() / "final_claims" / "cross_domain_auc_matrix.csv")
     if cross.empty:
         return cross
     out = cross.copy()
@@ -265,7 +271,7 @@ def _paper_cross_domain_display(paths: Paths) -> pd.DataFrame:
 
 
 def _paper_selected5_aggregate(paths: Paths) -> pd.DataFrame:
-    boot = _read_csv(Path("outputs") / "sqi_supplemental" / "existing_seed0" / "model_diagnostics" / "selected5_source_bootstrap_metrics.csv")
+    boot = _read_csv(_sqi_supplemental_existing() / "model_diagnostics" / "selected5_source_bootstrap_metrics.csv")
     if boot.empty:
         return boot
     rows: list[dict[str, Any]] = []
@@ -291,7 +297,7 @@ def _paper_selected5_aggregate(paths: Paths) -> pd.DataFrame:
 
 
 def _paper_selected5_subgroup_recall(paths: Paths) -> pd.DataFrame:
-    strat = _read_csv(Path("outputs") / "sqi_supplemental" / "existing_seed0" / "model_diagnostics" / "stratified_score_summary.csv")
+    strat = _read_csv(_sqi_supplemental_existing() / "model_diagnostics" / "stratified_score_summary.csv")
     if strat.empty:
         return strat
     keep_models = {"SVM selected-five", "MLP selected-five"}
@@ -330,7 +336,7 @@ def _paper_selected5_subgroup_recall(paths: Paths) -> pd.DataFrame:
 
 
 def _paper_cross_noise_generalization(paths: Paths) -> pd.DataFrame:
-    gen = _read_csv(Path("outputs") / "sqi_supplemental" / "existing_seed0" / "generalization" / "cross_noise_generalization_svm.csv")
+    gen = _read_csv(_sqi_supplemental_existing() / "generalization" / "cross_noise_generalization_svm.csv")
     if gen.empty:
         return gen
     out = gen.copy()

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import subprocess
 import sys
+import os
 from pathlib import Path
 
 from src.utils.paths import project_root
@@ -11,7 +12,7 @@ ROOT = project_root()
 RUN_TAG = "v116_e31"
 POLICY = "v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876"
 SPLIT_ALIAS = "v116_gapfill_dual_goodorig_nm40__k1_s20260876"
-ARTIFACTS = ROOT / "outputs" / "transformer" / RUN_TAG
+ARTIFACTS = Path(os.environ.get("ECG_TRANSFORMER_ARTIFACTS", ROOT / "outputs" / "transformer" / RUN_TAG)).resolve()
 ANALYSIS = ARTIFACTS / "analysis" / "good_medium_geometry_repair"
 REPORT_ANALYSIS = ARTIFACTS / "reports" / "analysis" / "good_medium_geometry_repair"
 SUPPORT = Path(__file__).resolve().parent / "support"

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -38,7 +39,9 @@ def _ensure_but_sqi(paths: Paths, *, force: bool, device: str) -> dict[str, Any]
 
 
 def _find_e31_predictions() -> Path:
-    run_root = Path("outputs") / "transformer" / "v116_e31" / "runs"
+    base = os.environ.get("ECG_E31_PREDICTION_ROOT") or os.environ.get("ECG_TRANSFORMER_ARTIFACTS")
+    root = Path(base) if base else Path("outputs") / "transformer" / "v116_e31"
+    run_root = root / "runs"
     roots = list(run_root.glob(f"**/{E31_QUERY_MEAN_ARTIFACT}/test_predictions.npz"))
     if not roots:
         raise FileNotFoundError(f"missing E31 query-mean predictions under {run_root}")

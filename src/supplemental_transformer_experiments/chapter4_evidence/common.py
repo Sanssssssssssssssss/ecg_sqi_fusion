@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from dataclasses import dataclass
 from datetime import datetime
@@ -99,6 +100,10 @@ def ensure_dirs(paths: Paths) -> None:
         paths.source_data,
     ]:
         path.mkdir(parents=True, exist_ok=True)
+
+
+def v116_artifacts_root() -> Path:
+    return Path(os.environ.get("ECG_TRANSFORMER_ARTIFACTS", ROOT / "outputs" / "transformer" / "v116_e31")).resolve()
 
 
 def rel(path: Path) -> str:
