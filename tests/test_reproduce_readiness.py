@@ -89,3 +89,70 @@ def test_v116_gap_fill_downsamples_oversized_public_native_pool():
     assert selected_x.shape == (9, 8)
     assert selected["class_name"].value_counts().to_dict() == {"good": 3, "medium": 3, "bad": 3}
     assert set(trace["gap_fill_component"]) == {"original_but_downsample"}
+
+
+def test_v116_gap_fill_reallocates_when_residual_pool_is_short(monkeypatch):
+    def fake_select_component(**kwargs):
+        n = int(kwargs["final_n"])
+        pool = kwargs["pool_cls"].iloc[:n].copy()
+        x = kwargs["pool_x"][:n]
+        trace = pd.DataFrame(
+            [
+                {
+                    "class_name_quota": kwargs["cls"],
+                    "gap_fill_component": kwargs["label"],
+                    "selected_n": n,
+                    "pool_n": len(kwargs["pool_cls"]),
+                }
+            ]
+        )
+        return pool, x, trace
+
+    monkeypatch.setattr(v116, "select_component", fake_select_component)
+
+    rows = []
+    signals = []
+    for cls, count in {"good": 5, "medium": 2, "bad": 2}.items():
+        for _ in range(count):
+            rows.append({"class_name": cls, "split": "train", "_row_pos": len(rows), "source_idx": len(rows)})
+            signals.append(np.full(8, len(rows), dtype=np.float32))
+    native = pd.DataFrame(rows)
+    native_x = np.stack(signals).astype(np.float32)
+
+    def pool_frame(cls: str, count: int) -> pd.DataFrame:
+        return pd.DataFrame(
+            [
+                {"class_name": cls, "split": "train", "_row_pos": i, "source_idx": i}
+                for i in range(count)
+            ]
+        )
+
+    morph = pd.concat([pool_frame("medium", 4), pool_frame("bad", 4)], ignore_index=True)
+    residual = pd.concat([pool_frame("medium", 1), pool_frame("bad", 1)], ignore_index=True)
+    clean = native.iloc[[]].copy()
+
+    selected, _, trace = v116.select_gap_fill(
+        but_train=native,
+        pools={"native": native, "clean": clean, "native_morph": morph, "residual": residual},
+        pool_xs={
+            "native": native_x,
+            "clean": native_x[:0],
+            "native_morph": np.zeros((len(morph), 8), dtype=np.float32),
+            "residual": np.zeros((len(residual), 8), dtype=np.float32),
+        },
+        final_per_class=5,
+        clean_cap=0.0,
+        native_morph_min_frac=0.4,
+        native_morph_selection="smc",
+        features=[],
+        seed=123,
+        swaps=0,
+        support_rows=0,
+        device="cpu",
+        rff_dim=16,
+    )
+
+    assert selected["class_name"].value_counts().to_dict() == {"good": 5, "medium": 5, "bad": 5}
+    realloc = trace.loc[trace["gap_fill_component"].astype(str).eq("dynamic_shortage_reallocation")]
+    assert len(realloc) == 2
+    assert set(realloc["ptb_morph_n"].astype(int)) == {1}

@@ -1001,9 +1001,55 @@ def select_gap_fill(
         frames.append(orig)
         xs.append(pool_xs["native"][native_idx])
         gap_n = int(final_per_class) - len(native_cls)
-        clean_n = min(int(round(gap_n * max(0.0, float(clean_cap)))), gap_n)
         clean_cls = pools["clean"].loc[pools["clean"]["class_name"].astype(str).eq(cls)].copy()
         clean_idx = clean_cls.index.to_numpy(dtype=int)
+        morph_cls = pools["native_morph"].loc[pools["native_morph"]["class_name"].astype(str).eq(cls)].copy()
+        morph_idx = morph_cls.index.to_numpy(dtype=int)
+        residual_cls = pools["residual"].loc[pools["residual"]["class_name"].astype(str).eq(cls)].copy()
+        residual_idx = residual_cls.index.to_numpy(dtype=int)
+
+        base_clean_n = min(int(round(gap_n * max(0.0, float(clean_cap)))), gap_n)
+        rest_n = gap_n - base_clean_n
+        base_morph_n = min(rest_n, len(morph_cls), int(round(rest_n * max(0.0, float(native_morph_min_frac)))))
+        base_ptb_n = rest_n - base_morph_n
+        clean_n = base_clean_n
+        morph_n = base_morph_n
+        ptb_n = min(base_ptb_n, len(residual_cls))
+        short_n = gap_n - clean_n - morph_n - ptb_n
+        if short_n > 0:
+            add_morph = min(short_n, max(0, len(morph_cls) - morph_n))
+            morph_n += add_morph
+            short_n -= add_morph
+        if short_n > 0:
+            add_clean = min(short_n, max(0, len(clean_cls) - clean_n))
+            clean_n += add_clean
+            short_n -= add_clean
+        if short_n > 0:
+            raise RuntimeError(
+                f"{cls}/gap_fill pools too small: need {gap_n} generated, "
+                f"clean={len(clean_cls)}, native_morph={len(morph_cls)}, residual={len(residual_cls)}, short={short_n}"
+            )
+        if (clean_n, morph_n, ptb_n) != (base_clean_n, base_morph_n, base_ptb_n):
+            traces.append(
+                pd.DataFrame(
+                    [
+                        {
+                            "class_name_quota": cls,
+                            "gap_fill_component": "dynamic_shortage_reallocation",
+                            "selector": "capacity_aware",
+                            "selected_n": int(gap_n),
+                            "pool_n": int(len(clean_cls) + len(morph_cls) + len(residual_cls)),
+                            "base_clean_n": int(base_clean_n),
+                            "base_native_morph_n": int(base_morph_n),
+                            "base_ptb_morph_n": int(base_ptb_n),
+                            "clean_n": int(clean_n),
+                            "native_morph_n": int(morph_n),
+                            "ptb_morph_n": int(ptb_n),
+                            "note": "public fallback candidate pools differed from frozen capacity",
+                        }
+                    ]
+                )
+            )
         if clean_n > 0:
             clean_sel, clean_x, tr = select_component(
                 cls=cls,
@@ -1023,12 +1069,6 @@ def select_gap_fill(
             frames.append(clean_sel)
             xs.append(clean_x)
             traces.append(tr)
-        rest_n = gap_n - clean_n
-        morph_cls = pools["native_morph"].loc[pools["native_morph"]["class_name"].astype(str).eq(cls)].copy()
-        morph_idx = morph_cls.index.to_numpy(dtype=int)
-        residual_cls = pools["residual"].loc[pools["residual"]["class_name"].astype(str).eq(cls)].copy()
-        residual_idx = residual_cls.index.to_numpy(dtype=int)
-        morph_n = min(rest_n, len(morph_cls), int(round(rest_n * max(0.0, float(native_morph_min_frac)))))
         if morph_n > 0:
             morph_pool = relabel_for_gap_fill(morph_cls, "but_native_morph", 1)
             morph_x = pool_xs["native_morph"][morph_idx]
@@ -1060,7 +1100,6 @@ def select_gap_fill(
             frames.append(morph_sel)
             xs.append(morph_sel_x)
             traces.append(tr)
-        ptb_n = rest_n - morph_n
         ptb_sel, ptb_sel_x, tr = select_component(
             cls=cls,
             label="ptb_morph",
