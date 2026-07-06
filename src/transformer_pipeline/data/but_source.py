@@ -44,10 +44,10 @@ def read_json(path: Path) -> Any:
 
 def file_digest(path: Path) -> dict[str, Any]:
     h = hashlib.sha256()
-    with path.open("rb") as f:
+    with open(long_path(path), "rb") as f:
         for chunk in iter(lambda: f.read(1024 * 1024), b""):
             h.update(chunk)
-    return {"path": str(path), "bytes": int(path.stat().st_size), "sha256": h.hexdigest()}
+    return {"path": str(path), "bytes": int(os.path.getsize(long_path(path))), "sha256": h.hexdigest()}
 
 
 def now() -> str:
@@ -556,8 +556,8 @@ def audit_source(cfg: TransformerPipelineConfig) -> dict[str, Any]:
         / SUPPORT_POLICY
         / "original_region_atlas.csv"
     )
-    atlas = pd.read_csv(protocol)
-    support_atlas = pd.read_csv(support)
+    atlas = pd.read_csv(long_path(protocol))
+    support_atlas = pd.read_csv(long_path(support))
     out = {
         "candidate_gap5_rows": int(len(atlas)),
         "candidate_gap5_class_counts": atlas["class_name"].value_counts().sort_index().astype(int).to_dict(),
@@ -571,7 +571,8 @@ def audit_source(cfg: TransformerPipelineConfig) -> dict[str, Any]:
     if not out["historical_support_exact"]:
         out["historical_expected_support"] = expected_support
         out["support_warning"] = "public-data fallback support differs from historical v116 support"
-    if not out["historical_support_exact"] and not (cfg.artifacts_dir / "source" / "cleanbut_support_assets.json").exists():
+    support_manifest = cfg.artifacts_dir / "source" / "cleanbut_support_assets.json"
+    if not out["historical_support_exact"] and not os.path.exists(long_path(support_manifest)):
         raise SystemExit(f"CleanBUT support audit failed: {out}")
     print(json.dumps(out, indent=2, sort_keys=True))
     return out

@@ -2,20 +2,67 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 from pathlib import Path
 from typing import Any
 
 from src.utils.paths import project_root
 
+from wfdb_qrs_kit.exceptions import DetectorNotFoundError
 from wfdb_qrs_kit.install import detector_status, install_detectors
+from wfdb_qrs_kit.install import find_executable
 
 
 def _find_exe(name: str, executables: dict[str, str | None]) -> str | None:
     value = executables.get(name)
     if value and Path(value).exists():
         return str(Path(value).resolve())
+    try:
+        return str(find_executable(name, cache_dir=None))
+    except DetectorNotFoundError:
+        pass
     return shutil.which(name) or shutil.which(f"{name}.exe")
+
+
+def _has_detector_pair(path: Path) -> bool:
+    names = ["wqrs.exe", "eplimited.exe"] if os.name == "nt" else ["wqrs", "eplimited"]
+    if all((path / name).is_file() for name in names):
+        return True
+    return (path / "wqrs").is_file() and (path / "eplimited").is_file()
+
+
+def _candidate_bin_dirs(root: Path, out_dir: Path) -> list[Path]:
+    env = [key for key in ["WFDB_QRS_KIT_BIN_DIR", "SQI_QRS_BIN_DIR"] if key]
+    raw: list[Path] = []
+    for key in env:
+        value = os.environ.get(key)
+        if value:
+            raw.append(Path(value))
+    raw.append(out_dir / "bin")
+    for parent in [root, *root.parents]:
+        raw.extend(
+            [
+                parent / "wfdb-qrs-kit" / "detector-cache" / "bin",
+                parent / "wfdb-qrs-kit" / "detector-cache-wsl" / "bin",
+            ]
+        )
+    raw.append(root / "outputs" / "sqi_paper_aligned" / "qrs" / "tools" / "bin")
+    seen: set[str] = set()
+    out: list[Path] = []
+    for path in raw:
+        key = str(path)
+        if key not in seen:
+            seen.add(key)
+            out.append(path)
+    return out
+
+
+def _auto_bin_dir(root: Path, out_dir: Path) -> Path | None:
+    for path in _candidate_bin_dirs(root, out_dir):
+        if path.is_dir() and _has_detector_pair(path):
+            return path
+    return None
 
 
 def write_setup_note(out_dir: Path, manifest: dict[str, Any]) -> Path:
@@ -59,9 +106,11 @@ def run(
     require_executables: bool = False,
 ) -> dict[str, Any]:
     out_dir.mkdir(parents=True, exist_ok=True)
+    root = project_root()
+    auto_from_bin_dir = Path(from_bin_dir) if from_bin_dir else _auto_bin_dir(root, out_dir)
     install_manifest = install_detectors(
         cache_dir=out_dir,
-        from_bin_dir=from_bin_dir,
+        from_bin_dir=auto_from_bin_dir,
         download=download_sources,
         compile=compile_sources,
         compiler=compiler,
@@ -72,6 +121,7 @@ def run(
     manifest: dict[str, Any] = {
         "manager": "wfdb-qrs-kit",
         "cache_dir": str(out_dir),
+        "auto_from_bin_dir": str(auto_from_bin_dir) if auto_from_bin_dir else None,
         "status": status,
         "install_manifest": json.loads(install_manifest.to_json()),
         "executables": {

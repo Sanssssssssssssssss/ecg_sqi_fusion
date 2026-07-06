@@ -1,5 +1,7 @@
 import sys
+import os
 from pathlib import Path
+from types import SimpleNamespace
 
 import numpy as np
 import pandas as pd
@@ -12,6 +14,8 @@ from src.transformer_pipeline.data_v1_gapfill.support import run_event_factorize
 from src.transformer_pipeline.data_v1_gapfill.support import run_v116_native_budget_repair as v116
 from src.transformer_pipeline.data_v1_gapfill import audit as gapfill_audit
 from src.transformer_pipeline.data_v1_gapfill import common as gapfill_common
+from src.transformer_pipeline.data import but_source
+from src.sqi_pipeline.qrs import setup_paper_detectors
 from src.supplemental_transformer_experiments.but_sqi_baseline import run as but_sqi
 from src.utils import data_downloads
 
@@ -202,3 +206,44 @@ def test_gapfill_audit_accepts_public_fallback_original_surplus():
     gapfill_audit.validate(out)
 
     assert out["expected_warnings"] == ["public fallback original_but rows exceed frozen v116 counts"]
+
+
+def test_qrs_setup_auto_discovers_detector_cache(tmp_path, monkeypatch):
+    root = tmp_path / "repo"
+    sibling_cache = tmp_path / "wfdb-qrs-kit" / "detector-cache" / "bin"
+    sibling_cache.mkdir(parents=True)
+    exe_suffix = ".exe" if sys.platform.startswith("win") else ""
+    (sibling_cache / f"wqrs{exe_suffix}").write_bytes(b"wqrs")
+    (sibling_cache / f"eplimited{exe_suffix}").write_bytes(b"eplimited")
+
+    monkeypatch.setattr(setup_paper_detectors, "project_root", lambda: root)
+
+    assert setup_paper_detectors._auto_bin_dir(root, root / "outputs" / "tools") == sibling_cache
+
+
+def test_but_source_audit_reads_long_windows_paths(tmp_path):
+    long_root = tmp_path / ("a" * 80) / ("b" * 80) / ("c" * 80)
+    analysis = long_root / "analysis" / "good_medium_geometry_repair"
+    protocol = analysis / "clean_but_protocols" / "margin_ge_5s_drop_outlier" / "original_region_atlas.csv"
+    support = (
+        analysis
+        / "clean_but_protocols"
+        / but_source.SUPPORT_POLICY
+        / "original_region_atlas.csv"
+    )
+    assets = long_root / "source" / "cleanbut_support_assets.json"
+    for path in [protocol, support, assets]:
+        os.makedirs(but_source.long_path(path.parent), exist_ok=True)
+
+    frame = pd.DataFrame({"class_name": ["good", "medium", "bad"]})
+    frame.to_csv(but_source.long_path(protocol), index=False)
+    frame.to_csv(but_source.long_path(support), index=False)
+    with open(but_source.long_path(assets), "w", encoding="utf-8") as f:
+        f.write("{}")
+
+    cfg = SimpleNamespace(analysis_dir=analysis, artifacts_dir=long_root)
+    out = but_source.audit_source(cfg)
+
+    assert out["candidate_gap5_rows"] == 3
+    assert out["support_pool_rows"] == 3
+    assert out["historical_support_exact"] is False
