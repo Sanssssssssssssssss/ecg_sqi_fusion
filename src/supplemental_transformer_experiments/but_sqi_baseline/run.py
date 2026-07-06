@@ -170,10 +170,27 @@ def _features_ready(paths: Paths) -> bool:
     )
 
 
+def _require_protocol_inputs() -> None:
+    required = [
+        protocol_dir() / "signals.npz",
+        protocol_dir() / "metadata.csv",
+        split_dir() / "original_region_atlas.csv",
+    ]
+    missing = [str(path) for path in required if not path.exists() or path.stat().st_size == 0]
+    if missing:
+        raise SystemExit(
+            "missing BUT v116 protocol input(s); run "
+            "`python -m src.transformer_pipeline.run_all --run --train none "
+            "--artifacts-dir outputs/transformer/v116_e31 --seed 20260876` first. "
+            f"Missing: {missing[:5]}"
+        )
+
+
 def cmd_prepare(paths: Paths, *, run: bool, force: bool) -> None:
     if not run:
         dry("prepare", paths)
         return
+    _require_protocol_inputs()
     ensure_dirs(paths)
     if paths.split_csv.exists() and paths.manifest_csv.exists() and not force:
         print(f"[prepare] exists: {paths.split_csv}")
@@ -301,6 +318,7 @@ def cmd_features(paths: Paths, *, run: bool, force: bool, jobs: int) -> None:
     if not run:
         dry("features", paths)
         return
+    _require_protocol_inputs()
     ensure_dirs(paths)
     if _features_ready(paths) and not force:
         print(f"[features] exists: {paths.record7_norm_parquet}")

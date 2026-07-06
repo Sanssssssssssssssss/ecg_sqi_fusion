@@ -236,7 +236,7 @@ def _write_workspace(root: Path, protocol: pd.DataFrame, X: np.ndarray) -> None:
 
 
 def _paper_detector_paths(root: Path) -> tuple[Path, Path]:
-    result = setup_paper_detectors(root / "qrs" / "tools", download_sources=False, require_executables=True)
+    result = setup_paper_detectors(root / "qrs" / "tools", require_executables=True)
     executables = result["executables"]
     return Path(executables["wqrs"]), Path(executables["eplimited"])
 

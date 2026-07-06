@@ -1,16 +1,160 @@
 from __future__ import annotations
 
+import json
+import os
 from pathlib import Path
+from urllib.parse import urljoin
+from urllib.request import Request, urlopen
 
 import wfdb
 
 
+def _nonempty(path: Path) -> bool:
+    return path.exists() and (path.is_dir() or path.stat().st_size > 0)
+
+
+def _marker(target: Path) -> Path:
+    return target / ".download_complete.json"
+
+
+def _write_marker(target: Path, slug: str, checked: list[str]) -> None:
+    _marker(target).write_text(
+        json.dumps({"slug": slug, "checked": checked}, indent=2),
+        encoding="utf-8",
+    )
+
+
+def _download_url(url: str, target: Path) -> None:
+    if _nonempty(target):
+        return
+    target.parent.mkdir(parents=True, exist_ok=True)
+    req = Request(url, headers={"User-Agent": "ecg-sqi-fusion"})
+    tmp = target.with_suffix(target.suffix + ".tmp")
+    with urlopen(req, timeout=120) as r, tmp.open("wb") as f:
+        while True:
+            chunk = r.read(1024 * 1024)
+            if not chunk:
+                break
+            f.write(chunk)
+    tmp.replace(target)
+
+
+def _downloads_disabled() -> bool:
+    return os.environ.get("ECG_NO_DOWNLOAD", "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _require_download_allowed(slug: str, target: Path) -> None:
+    if _downloads_disabled():
+        raise FileNotFoundError(f"{slug} raw data incomplete at {target}; ECG_NO_DOWNLOAD=1")
+
+
+def _generic_complete(target: Path, required: tuple[str, ...]) -> bool:
+    if not target.exists():
+        return False
+    for name in required:
+        path = target / name
+        if not _nonempty(path):
+            return False
+        if path.is_dir() and not any(path.iterdir()):
+            return False
+    return True
+
+
+def _but_record_ids(target: Path) -> list[str]:
+    records = target / "RECORDS"
+    if records.exists():
+        ids = set()
+        for line in records.read_text(errors="ignore").splitlines():
+            value = line.strip().split("/")[-1]
+            if value.endswith(("_ECG", "_ACC")):
+                ids.add(value.rsplit("_", 1)[0])
+        if ids:
+            return sorted(ids)
+    dirs = [p.name for p in target.iterdir() if p.is_dir()] if target.exists() else []
+    return sorted([name for name in dirs if name[:1].isdigit()])
+
+
+def _but_missing(target: Path) -> list[Path]:
+    ids = _but_record_ids(target)
+    if not ids:
+        return [target / "RECORDS"]
+    missing: list[Path] = []
+    root_required = ["RECORDS", "SHA256SUMS.txt", "subject-info.csv"]
+    for name in root_required:
+        path = target / name
+        if not _nonempty(path):
+            missing.append(path)
+    for rid in ids:
+        rec_dir = target / rid
+        for suffix in ["ACC.hea", "ACC.dat", "ECG.hea", "ECG.dat", "ANN.csv"]:
+            path = rec_dir / f"{rid}_{suffix}"
+            if not _nonempty(path):
+                missing.append(path)
+    return missing
+
+
+def _but_complete(target: Path) -> bool:
+    return target.exists() and not _but_missing(target)
+
+
+def _download_butqdb(target: Path) -> None:
+    target.mkdir(parents=True, exist_ok=True)
+    record_names = wfdb.get_record_list("butqdb")
+    ids = sorted({Path(name).parts[0] for name in record_names if Path(name).parts})
+    for i, rid in enumerate(ids, start=1):
+        print(f"Downloading BUT QDB record {i}/{len(ids)}: {rid}", flush=True)
+        wfdb.dl_database(
+            "butqdb",
+            dl_dir=str(target),
+            records=[f"{rid}/{rid}_ACC", f"{rid}/{rid}_ECG"],
+            annotators=None,
+        )
+        _download_url(
+            f"https://physionet.org/files/butqdb/1.0.0/{rid}/{rid}_ANN.csv",
+            target / rid / f"{rid}_ANN.csv",
+        )
+    base = "https://physionet.org/files/butqdb/1.0.0/"
+    for name in ["RECORDS", "SHA256SUMS.txt", "subject-info.csv", "ANNOTATORS", "LICENSE.txt"]:
+        _download_url(urljoin(base, name), target / name)
+
+
+def _ptbxl_complete(target: Path) -> bool:
+    csv_path = target / "ptbxl_database.csv"
+    records = target / "records100"
+    if not (_nonempty(csv_path) and records.exists()):
+        return False
+    hea = list(records.rglob("*.hea"))
+    dat = list(records.rglob("*.dat"))
+    return len(hea) >= 100 and len(dat) >= 100
+
+
 def ensure_wfdb_database(slug: str, target: Path, required: tuple[str, ...]) -> None:
     target = Path(target)
-    if all((target / name).exists() for name in required):
+    if slug == "butqdb" and _but_complete(target):
+        _write_marker(target, slug, ["butqdb_records"])
         return
+    if slug == "ptb-xl" and _ptbxl_complete(target):
+        _write_marker(target, slug, ["ptbxl_database.csv", "records100"])
+        return
+    if slug not in {"butqdb", "ptb-xl"} and _generic_complete(target, required):
+        _write_marker(target, slug, list(required))
+        return
+    _require_download_allowed(slug, target)
     target.mkdir(parents=True, exist_ok=True)
+    if slug == "butqdb":
+        _download_butqdb(target)
+        missing = _but_missing(target)
+        if missing:
+            examples = ", ".join(str(p) for p in missing[:5])
+            raise FileNotFoundError(f"BUT QDB download incomplete; missing {len(missing)} file(s), examples: {examples}")
+        _write_marker(target, slug, ["butqdb_records"])
+        return
     wfdb.dl_database(slug, dl_dir=str(target))
+    if slug == "ptb-xl" and not _ptbxl_complete(target):
+        raise FileNotFoundError(f"PTB-XL download incomplete at {target}")
+    if slug not in {"ptb-xl"} and not _generic_complete(target, required):
+        raise FileNotFoundError(f"{slug} download incomplete at {target}")
+    _write_marker(target, slug, list(required))
 
 
 def ensure_sqi_raw_data(root: Path) -> None:
