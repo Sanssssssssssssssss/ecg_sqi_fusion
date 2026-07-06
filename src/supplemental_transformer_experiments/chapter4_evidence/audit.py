@@ -73,12 +73,19 @@ def _but_audit() -> dict[str, Any]:
     return out
 
 
-def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
+def run(paths: Paths, *, execute: bool, scope: str = "all") -> dict[str, Any]:
     if not execute:
         dry("audit", paths)
-        return {"step": "audit", "skipped": True}
+        return {"step": "audit", "skipped": True, "scope": scope}
     ensure_dirs(paths)
-    out = {"seta": _seta_audit(paths), "but": _but_audit()}
+    if scope not in {"all", "seta", "but"}:
+        raise ValueError(f"unknown audit scope: {scope}")
+    out: dict[str, Any] = {}
+    if scope in {"all", "seta"}:
+        out["seta"] = _seta_audit(paths)
+    if scope in {"all", "but"}:
+        out["but"] = _but_audit()
+    out["scope"] = scope
     write_json(paths.audit_json, out)
     print(paths.audit_json)
-    return {"step": "audit", "skipped": False, "outputs": out}
+    return {"step": "audit", "skipped": False, "scope": scope, "outputs": out}

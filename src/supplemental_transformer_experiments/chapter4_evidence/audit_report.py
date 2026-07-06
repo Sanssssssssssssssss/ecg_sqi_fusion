@@ -388,14 +388,34 @@ def _audit_but_boundary(rows: list[dict[str, Any]], path: Path, model_path: Path
     )
 
 
-def _audit_figures(rows: list[dict[str, Any]], paths: Paths) -> None:
-    expected = {
+def _audit_figures(rows: list[dict[str, Any]], paths: Paths, *, scope: str = "all") -> None:
+    expected: dict[str, str] = {}
+    if scope in {"all", "seta"}:
+        expected.update(
+            {
+                "fig_D3_seta_ours_vs_paper_em_ma_distribution": "fig_D3_seta_ours_vs_paper_em_ma_pca.csv",
+            }
+        )
+    if scope in {"all", "but"}:
+        expected.update(
+            {
+                "fig_D4_but_medium_bad_gapfill_distribution": "fig_D4_but_medium_bad_pca.csv",
+                "fig_D5_but_v116_generation_examples": "fig_D5_but_v116_generation_examples_source_data.csv",
+                "fig_M3_but_good_medium_boundary_audit": "fig_M3_boundary_counts.csv",
+                "fig_M4_but_mlp_error_conformer_correct_examples": "fig_M4_mlp_error_conformer_correct_examples.csv",
+            }
+        )
+    if scope not in {"all", "seta", "but"}:
+        raise ValueError(f"unknown audit-report scope: {scope}")
+    legacy_expected = {
         "fig_D3_seta_ours_vs_paper_em_ma_distribution": "fig_D3_seta_ours_vs_paper_em_ma_pca.csv",
         "fig_D4_but_medium_bad_gapfill_distribution": "fig_D4_but_medium_bad_pca.csv",
         "fig_D5_but_v116_generation_examples": "fig_D5_but_v116_generation_examples_source_data.csv",
         "fig_M3_but_good_medium_boundary_audit": "fig_M3_boundary_counts.csv",
         "fig_M4_but_mlp_error_conformer_correct_examples": "fig_M4_mlp_error_conformer_correct_examples.csv",
     }
+    if scope == "all":
+        expected = legacy_expected
     for fig, source_name in expected.items():
         figure_files = [paths.figures / f"{fig}.{ext}" for ext in ["png", "svg", "pdf", "tiff"]]
         source_path = paths.source_data / source_name
@@ -434,27 +454,31 @@ def _audit_0529(rows: list[dict[str, Any]], paths: Paths) -> None:
     )
 
 
-def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
+def run(paths: Paths, *, execute: bool, scope: str = "all") -> dict[str, Any]:
     if not execute:
         dry("audit-report", paths)
-        return {"step": "audit-report", "skipped": True}
+        return {"step": "audit-report", "skipped": True, "scope": scope}
     ensure_dirs(paths)
+    if scope not in {"all", "seta", "but"}:
+        raise ValueError(f"unknown audit-report scope: {scope}")
     audit = read_json(paths.audit_json)
     rows: list[dict[str, Any]] = []
 
-    _audit_seta_model_table(rows, paths.tables / "seta_construction_source_only_models.csv", table_name="Set-A source-only construction models")
-    _audit_seta_model_table(rows, paths.tables / "seta_repaired_model_comparison.csv", table_name="Set-A repaired setup models")
-    _audit_fixed_synthetic_source(rows, paths)
-    _audit_seta_construction_eval_scope(rows, paths)
-    _audit_candidate_percentages(rows, paths.tables / "but_candidate_type_composition.csv")
-    _audit_but_official_split(rows, audit)
-    _audit_but_binary_or_multiclass(
-        rows,
-        paths.tables / "but_model_comparison.csv",
-        _find_e31_predictions(),
-    )
-    _audit_but_boundary(rows, paths.tables / "but_good_medium_boundary_audit.csv", paths.tables / "but_model_comparison.csv")
-    _audit_figures(rows, paths)
+    if scope in {"all", "seta"}:
+        _audit_seta_model_table(rows, paths.tables / "seta_construction_source_only_models.csv", table_name="Set-A source-only construction models")
+        _audit_seta_model_table(rows, paths.tables / "seta_repaired_model_comparison.csv", table_name="Set-A repaired setup models")
+        _audit_fixed_synthetic_source(rows, paths)
+        _audit_seta_construction_eval_scope(rows, paths)
+    if scope in {"all", "but"}:
+        _audit_candidate_percentages(rows, paths.tables / "but_candidate_type_composition.csv")
+        _audit_but_official_split(rows, audit)
+        _audit_but_binary_or_multiclass(
+            rows,
+            paths.tables / "but_model_comparison.csv",
+            _find_e31_predictions(),
+        )
+        _audit_but_boundary(rows, paths.tables / "but_good_medium_boundary_audit.csv", paths.tables / "but_model_comparison.csv")
+    _audit_figures(rows, paths, scope=scope)
     _audit_0529(rows, paths)
 
     manifest = pd.DataFrame(rows)
@@ -466,6 +490,7 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
     status = "pass" if not failures and not warnings else ("fail" if failures else "warn")
     payload = {
         "status": status,
+        "scope": scope,
         "failures": failures,
         "warnings": warnings,
         "manifest_csv": rel(csv_path),
@@ -473,4 +498,4 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
     }
     write_json(json_path, payload)
     print(json.dumps(payload, indent=2, ensure_ascii=False))
-    return {"step": "audit-report", "skipped": False, "status": status, "manifest_csv": str(csv_path), "manifest_json": str(json_path)}
+    return {"step": "audit-report", "skipped": False, "scope": scope, "status": status, "manifest_csv": str(csv_path), "manifest_json": str(json_path)}

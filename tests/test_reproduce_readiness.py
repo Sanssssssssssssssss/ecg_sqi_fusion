@@ -17,6 +17,9 @@ from src.transformer_pipeline.data_v1_gapfill import common as gapfill_common
 from src.transformer_pipeline.data import but_source
 from src.sqi_pipeline.qrs import setup_paper_detectors
 from src.supplemental_transformer_experiments.but_sqi_baseline import run as but_sqi
+from src.supplemental_transformer_experiments.chapter4_evidence import audit as chapter4_audit
+from src.supplemental_transformer_experiments.chapter4_evidence import run as chapter4_run
+from src.supplemental_transformer_experiments.chapter4_evidence.common import Paths as Chapter4Paths
 from src.utils import data_downloads
 
 
@@ -247,3 +250,35 @@ def test_but_source_audit_reads_long_windows_paths(tmp_path):
     assert out["candidate_gap5_rows"] == 3
     assert out["support_pool_rows"] == 3
     assert out["historical_support_exact"] is False
+
+
+def test_chapter4_out_path_does_not_duplicate_outputs_prefix(monkeypatch):
+    root = Path(r"C:\repo") if os.name == "nt" else Path("/repo")
+    monkeypatch.setattr(chapter4_run, "project_root", lambda: root)
+    monkeypatch.setattr(chapter4_run, "OUT_DEFAULT", root / "outputs" / "transformer" / "supplemental" / "chapter4_evidence_work")
+
+    args = SimpleNamespace(out="outputs/transformer/supplemental/chapter4_evidence")
+    paths = chapter4_run._paths(args)
+
+    assert paths.out == root / "outputs" / "transformer" / "supplemental" / "chapter4_evidence"
+
+
+def test_chapter4_seta_audit_scope_does_not_require_but(monkeypatch, tmp_path):
+    calls: list[str] = []
+
+    monkeypatch.setattr(chapter4_audit, "_seta_audit", lambda paths: {"split_counts": {"train_acceptable": 1}})
+
+    def forbidden_but():
+        calls.append("but")
+        raise AssertionError("BUT audit should not run in Set-A scope")
+
+    monkeypatch.setattr(chapter4_audit, "_but_audit", forbidden_but)
+
+    paths = Chapter4Paths(tmp_path / "chapter4")
+    out = chapter4_audit.run(paths, execute=True, scope="seta")
+
+    assert calls == []
+    assert out["scope"] == "seta"
+    assert out["outputs"]["seta"]["split_counts"] == {"train_acceptable": 1}
+    assert out["outputs"]["scope"] == "seta"
+    assert "but" not in out["outputs"]

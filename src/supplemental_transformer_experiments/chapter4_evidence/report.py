@@ -470,12 +470,16 @@ def _but_cross_check_table(paths: Paths, audit: dict[str, Any], but_models: pd.D
     return out
 
 
-def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
+def run(paths: Paths, *, execute: bool, scope: str = "all") -> dict[str, Any]:
     if not execute:
         dry("report", paths)
-        return {"step": "report", "skipped": True}
+        return {"step": "report", "skipped": True, "scope": scope}
     ensure_dirs(paths)
+    if scope not in {"all", "seta", "but"}:
+        raise ValueError(f"unknown report scope: {scope}")
     audit = read_json(paths.audit_json)
+    seta_audit = audit.get("seta", {})
+    but_audit = audit.get("but", {})
     out_root = rel(paths.out)
     figure_index = read_json(paths.reports / "figure_index.json") if (paths.reports / "figure_index.json").exists() else {}
     manifest = pd.DataFrame(
@@ -485,7 +489,7 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
             {"Field": "random seed", "Value": "0"},
             {"Field": "data policy", "Value": "split first; train-only repair; validation/test original only"},
             {"Field": "Set-A protocol path", "Value": rel(paths.seta / "data" / "protocol_gapfill.csv")},
-            {"Field": "BUT protocol path", "Value": audit["but"]["protocol_path"]},
+            {"Field": "BUT protocol path", "Value": but_audit.get("protocol_path", "not generated in this scope")},
             {"Field": "output root", "Value": out_root},
             {
                 "Field": "code command",
@@ -496,7 +500,7 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
         ]
     )
     protocol_rows = []
-    for key, value in audit["seta"]["split_counts"].items():
+    for key, value in seta_audit.get("split_counts", {}).items():
         split, cls = key.split("_", 1)
         protocol_rows.append(
             {
@@ -509,7 +513,7 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
                 "Generated in val/test": 0,
             }
         )
-    for key, value in audit["but"]["split_counts"].items():
+    for key, value in but_audit.get("split_counts", {}).items():
         split, cls = key.split("_", 1)
         generated = 0 if split in {"val", "test"} else ""
         protocol_rows.append(
@@ -520,7 +524,7 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
                 "Original rows": "",
                 "Generated rows": generated,
                 "Total rows": value,
-                "Generated in val/test": audit["but"]["val_test_generated_rows"] if split in {"val", "test"} else "",
+                "Generated in val/test": but_audit.get("val_test_generated_rows", "") if split in {"val", "test"} else "",
             }
         )
     protocol_table = pd.DataFrame(protocol_rows)
@@ -727,4 +731,4 @@ def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
     ]
     paths.report_md.write_text("\n".join(lines), encoding="utf-8")
     print(paths.report_md)
-    return {"step": "report", "skipped": False, "output": str(paths.report_md)}
+    return {"step": "report", "skipped": False, "scope": scope, "output": str(paths.report_md)}

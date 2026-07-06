@@ -747,36 +747,31 @@ def _fig_m4(paths: Paths) -> Path:
     return out.with_suffix(".png")
 
 
-def run(paths: Paths, *, execute: bool) -> dict[str, Any]:
+def run(paths: Paths, *, execute: bool, scope: str = "all") -> dict[str, Any]:
     if not execute:
         dry("figures", paths)
-        return {"step": "figures", "skipped": True}
+        return {"step": "figures", "skipped": True, "scope": scope}
     ensure_dirs(paths)
-    figures = {
-        "fig_D1_distribution_repair_summary": str(_fig_d1(paths)),
-        "fig_D2_top_drift_features": str(_fig_d2(paths)),
-        "fig_D3_seta_ours_vs_paper_em_ma_distribution": str(_fig_d3_seta_ours_vs_paper(paths)),
-        "fig_M1_seta_model_performance": str(_fig_m1(paths)),
-    }
-    try:
+    if scope not in {"all", "seta", "but"}:
+        raise ValueError(f"unknown figure scope: {scope}")
+    figures: dict[str, str] = {}
+    if scope in {"all", "seta"}:
+        figures.update(
+            {
+                "fig_D1_distribution_repair_summary": str(_fig_d1(paths)),
+                "fig_D2_top_drift_features": str(_fig_d2(paths)),
+                "fig_D3_seta_ours_vs_paper_em_ma_distribution": str(_fig_d3_seta_ours_vs_paper(paths)),
+                "fig_M1_seta_model_performance": str(_fig_m1(paths)),
+            }
+        )
+    if scope in {"all", "but"}:
         figures["fig_D4_but_medium_bad_gapfill_distribution"] = str(_fig_d4_but_balanced_classes(paths))
-    except FileNotFoundError:
-        pass
-    try:
         figures["fig_M2_but_model_comparison"] = str(_fig_m2(paths))
-    except FileNotFoundError:
-        pass
-    try:
         figures["fig_M3_but_good_medium_boundary_audit"] = str(_fig_m3(paths))
-    except FileNotFoundError:
-        pass
-    try:
         figures["fig_M4_but_mlp_error_conformer_correct_examples"] = str(_fig_m4(paths))
-    except FileNotFoundError:
-        pass
-    m5 = paths.figures / "fig_M5_but_query_patching.png"
-    if m5.exists():
-        figures["fig_M5_but_query_patching"] = str(m5)
+        m5 = paths.figures / "fig_M5_but_query_patching.png"
+        if m5.exists():
+            figures["fig_M5_but_query_patching"] = str(m5)
     (paths.reports / "figure_index.json").write_text(json.dumps(figures, indent=2), encoding="utf-8")
     print(json.dumps(figures, indent=2))
-    return {"step": "figures", "skipped": False, "outputs": figures}
+    return {"step": "figures", "skipped": False, "scope": scope, "outputs": figures}

@@ -12,7 +12,10 @@ from .common import FROZEN_OUT, OUT_DEFAULT, Paths
 def _paths(args: argparse.Namespace) -> Paths:
     out = Path(args.out)
     if not out.is_absolute():
-        out = OUT_DEFAULT.parent / out if str(out) != str(OUT_DEFAULT) else OUT_DEFAULT
+        if out.parts and out.parts[0] == "outputs":
+            out = project_root() / out
+        else:
+            out = OUT_DEFAULT.parent / out
     return Paths(out)
 
 
@@ -24,6 +27,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--max-ptb", type=int, default=2400)
     p.add_argument("--device", default="cuda")
+    p.add_argument("--scope", choices=["all", "seta", "but"], default="all")
     sub = p.add_subparsers(dest="cmd", required=True)
     for name in [
         "audit",
@@ -81,7 +85,7 @@ def main() -> None:
     elif args.cmd == "audit":
         from . import audit
 
-        audit.run(paths, execute=args.run)
+        audit.run(paths, execute=args.run, scope=args.scope)
     elif args.cmd == "seta-repair":
         from . import repair
 
@@ -117,15 +121,15 @@ def main() -> None:
     elif args.cmd == "figures":
         from . import figures
 
-        figures.run(paths, execute=args.run)
+        figures.run(paths, execute=args.run, scope=args.scope)
     elif args.cmd == "report":
         from . import report
 
-        report.run(paths, execute=args.run)
+        report.run(paths, execute=args.run, scope=args.scope)
     elif args.cmd == "audit-report":
         from . import audit_report
 
-        audit_report.run(paths, execute=args.run)
+        audit_report.run(paths, execute=args.run, scope=args.scope)
     elif args.cmd == "pipeline":
         if not args.run:
             from .common import dry
@@ -136,15 +140,15 @@ def main() -> None:
 
         seta_build.run(paths, execute=True, force=args.force, seed=args.seed, max_ptb=args.max_ptb)
         seta_sqi.run(paths, execute=True, force=args.force, seed=args.seed, max_ptb=args.max_ptb)
-        audit.run(paths, execute=True)
+        audit.run(paths, execute=True, scope="all")
         repair.run(paths, execute=True, force=args.force)
         seta_models.run(paths, execute=True, force=args.force, device=args.device)
         but_models.run(paths, execute=True, force=args.force, device=args.device)
         but_boundary_audit.run(paths, execute=True, force=args.force, device=args.device)
         but_query_patching.run(paths, execute=True, force=args.force, device=args.device)
-        figures.run(paths, execute=True)
-        report.run(paths, execute=True)
-        audit_report.run(paths, execute=True)
+        figures.run(paths, execute=True, scope="all")
+        report.run(paths, execute=True, scope="all")
+        audit_report.run(paths, execute=True, scope="all")
     else:
         raise SystemExit(f"unknown command: {args.cmd}")
 
