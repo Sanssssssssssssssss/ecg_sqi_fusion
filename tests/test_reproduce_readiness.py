@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.transformer_pipeline.data_v1_gapfill.support import build_v114_but_style_residual_hybrid as v114
 from src.transformer_pipeline.data_v1_gapfill.support import run_event_factorized_sqi_conformer as event_factorized
 from src.transformer_pipeline.data_v1_gapfill.support import run_v116_native_budget_repair as v116
+from src.transformer_pipeline.data_v1_gapfill import audit as gapfill_audit
 from src.transformer_pipeline.data_v1_gapfill import common as gapfill_common
 from src.supplemental_transformer_experiments.but_sqi_baseline import run as but_sqi
 from src.utils import data_downloads
@@ -181,3 +182,23 @@ def test_v116_original_split_keeps_extra_public_rows_in_train():
     assert medium["val"] == event_factorized.V116_ORIGINAL_SPLIT_COUNTS["medium"]["val"]
     assert medium["test"] == event_factorized.V116_ORIGINAL_SPLIT_COUNTS["medium"]["test"]
     assert medium["train"] == event_factorized.V116_ORIGINAL_SPLIT_COUNTS["medium"]["train"] + 51
+
+
+def test_gapfill_audit_accepts_public_fallback_original_surplus():
+    out = {
+        "protocol_class_counts": gapfill_audit.EXPECTED_PROTOCOL,
+        "protocol_rows": 31590,
+        "original_but_class_counts": {"bad": 5156, "good": 10530, "medium": 9212},
+        "original_but_rows": 24898,
+        "train_class_counts": gapfill_audit.EXPECTED_TRAIN,
+        "val_test_generated_rows": 0,
+        "train_generated_donor_split_problems": 0,
+        "allowed_candidate_types": gapfill_audit.EXPECTED_TYPES,
+        "missing_class_rows": 0,
+        "missing_idx_rows": 0,
+        "raw_alias_max_abs_delta": {"raw_rms_vs_rms": 0.0, "raw_ptp_vs_ptp": 0.0, "raw_diff_vs_non_qrs_diff": 0.0},
+    }
+
+    gapfill_audit.validate(out)
+
+    assert out["expected_warnings"] == ["public fallback original_but rows exceed frozen v116 counts"]
