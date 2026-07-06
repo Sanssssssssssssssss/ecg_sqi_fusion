@@ -972,6 +972,22 @@ def select_gap_fill(
     for i, cls in enumerate(v114.CLASS_ORDER):
         target_cls = but_train.loc[but_train["class_name"].astype(str).eq(cls)].copy()
         native_cls = pools["native"].loc[pools["native"]["class_name"].astype(str).eq(cls)].copy()
+        if len(native_cls) > int(final_per_class):
+            native_cls = sample_frame(native_cls, int(final_per_class), rng)
+            traces.append(
+                pd.DataFrame(
+                    [
+                        {
+                            "class_name_quota": cls,
+                            "gap_fill_component": "original_but_downsample",
+                            "selector": "seeded_random",
+                            "selected_n": int(final_per_class),
+                            "pool_n": int(len(pools["native"].loc[pools["native"]["class_name"].astype(str).eq(cls)])),
+                            "note": "public fallback native pool exceeded frozen final_per_class",
+                        }
+                    ]
+                )
+            )
         native_idx = native_cls.index.to_numpy(dtype=int)
         if cls == "good":
             if len(native_cls) != int(final_per_class):
@@ -981,8 +997,6 @@ def select_gap_fill(
             xs.append(pool_xs["native"][native_idx])
             continue
 
-        if len(native_cls) > int(final_per_class):
-            raise RuntimeError(f"gap_fill expects {cls} original <= final count, got {len(native_cls)} > {final_per_class}")
         orig = relabel_for_gap_fill(native_cls, "original_but", 0)
         frames.append(orig)
         xs.append(pool_xs["native"][native_idx])
