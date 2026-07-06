@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -34,7 +35,22 @@ def report_dir() -> Path:
     return REPORT_ANALYSIS / "v116_native_budget_repair" / "s20260876"
 
 
+def unbuffer_python_command(cmd: list[str]) -> list[str]:
+    if not cmd:
+        return cmd
+    exe = Path(str(cmd[0])).name.lower()
+    if not exe.startswith("python"):
+        return cmd
+    rest = [str(part) for part in cmd[1:]]
+    if rest[:1] == ["-u"]:
+        return [str(cmd[0]), *rest]
+    return [str(cmd[0]), "-u", *rest]
+
+
 def run_or_print(cmd: list[str], *, run: bool) -> None:
-    print(subprocess.list2cmdline([str(part) for part in cmd]))
+    cmd = unbuffer_python_command([str(part) for part in cmd])
+    print(subprocess.list2cmdline(cmd))
     if run:
-        subprocess.run(cmd, cwd=ROOT, check=True)
+        env = os.environ.copy()
+        env.setdefault("PYTHONFAULTHANDLER", "1")
+        subprocess.run(cmd, cwd=ROOT, check=True, env=env)

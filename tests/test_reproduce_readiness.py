@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.transformer_pipeline.data_v1_gapfill.support import build_v114_but_style_residual_hybrid as v114
 from src.transformer_pipeline.data_v1_gapfill.support import run_v116_native_budget_repair as v116
+from src.transformer_pipeline.data_v1_gapfill import common as gapfill_common
 from src.supplemental_transformer_experiments.but_sqi_baseline import run as but_sqi
 from src.utils import data_downloads
 
@@ -156,3 +157,9 @@ def test_v116_gap_fill_reallocates_when_residual_pool_is_short(monkeypatch):
     realloc = trace.loc[trace["gap_fill_component"].astype(str).eq("dynamic_shortage_reallocation")]
     assert len(realloc) == 2
     assert set(realloc["ptb_morph_n"].astype(int)) == {1}
+
+
+def test_gapfill_subprocess_python_is_unbuffered():
+    assert gapfill_common.unbuffer_python_command(["python", "script.py"]) == ["python", "-u", "script.py"]
+    assert gapfill_common.unbuffer_python_command(["python", "-u", "script.py"]) == ["python", "-u", "script.py"]
+    assert gapfill_common.unbuffer_python_command(["cmd", "/c", "echo", "ok"]) == ["cmd", "/c", "echo", "ok"]
