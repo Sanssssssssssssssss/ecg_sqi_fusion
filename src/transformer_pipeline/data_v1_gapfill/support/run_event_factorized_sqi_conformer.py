@@ -186,9 +186,9 @@ def v116_original_split(original: pd.DataFrame, seed: int) -> pd.Series:
     split = pd.Series("train", index=original.index, dtype=object)
     for cls, counts in V116_ORIGINAL_SPLIT_COUNTS.items():
         idx = original.index[original["class_name"].astype(str).eq(cls)].to_numpy()
-        expected = int(sum(counts.values()))
-        if len(idx) != expected:
-            raise ValueError(f"v116 original split expects {expected} {cls} rows, got {len(idx)}")
+        min_needed = int(counts["val"]) + int(counts["test"])
+        if len(idx) < min_needed:
+            raise ValueError(f"v116 original split needs at least {min_needed} {cls} rows, got {len(idx)}")
         rng = np.random.default_rng(int(seed) + CLASS_TO_INT[cls] * 1009)
         idx = idx.copy()
         rng.shuffle(idx)

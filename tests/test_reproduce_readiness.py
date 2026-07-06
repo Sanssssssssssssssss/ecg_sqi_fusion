@@ -8,6 +8,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.transformer_pipeline.data_v1_gapfill.support import build_v114_but_style_residual_hybrid as v114
+from src.transformer_pipeline.data_v1_gapfill.support import run_event_factorized_sqi_conformer as event_factorized
 from src.transformer_pipeline.data_v1_gapfill.support import run_v116_native_budget_repair as v116
 from src.transformer_pipeline.data_v1_gapfill import common as gapfill_common
 from src.supplemental_transformer_experiments.but_sqi_baseline import run as but_sqi
@@ -163,3 +164,20 @@ def test_gapfill_subprocess_python_is_unbuffered():
     assert gapfill_common.unbuffer_python_command(["python", "script.py"]) == ["python", "-u", "script.py"]
     assert gapfill_common.unbuffer_python_command(["python", "-u", "script.py"]) == ["python", "-u", "script.py"]
     assert gapfill_common.unbuffer_python_command(["cmd", "/c", "echo", "ok"]) == ["cmd", "/c", "echo", "ok"]
+
+
+def test_v116_original_split_keeps_extra_public_rows_in_train():
+    rows = []
+    for cls, counts in event_factorized.V116_ORIGINAL_SPLIT_COUNTS.items():
+        total = int(sum(counts.values()))
+        if cls == "medium":
+            total += 51
+        rows.extend({"class_name": cls} for _ in range(total))
+    frame = pd.DataFrame(rows)
+
+    split = event_factorized.v116_original_split(frame, seed=20260876)
+    medium = split.loc[frame["class_name"].astype(str).eq("medium")].value_counts().to_dict()
+
+    assert medium["val"] == event_factorized.V116_ORIGINAL_SPLIT_COUNTS["medium"]["val"]
+    assert medium["test"] == event_factorized.V116_ORIGINAL_SPLIT_COUNTS["medium"]["test"]
+    assert medium["train"] == event_factorized.V116_ORIGINAL_SPLIT_COUNTS["medium"]["train"] + 51
