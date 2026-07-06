@@ -21,6 +21,7 @@ dependencies = [
     "openpyxl",
     "PyWavelets",
     "tqdm",
+    "wfdb-qrs-kit @ https://github.com/Sanssssssssssssssss/wfdb-qrs-kit/releases/download/v0.1.0/wfdb_qrs_kit-0.1.0-py3-none-any.whl#sha256=ae2d9622bffa2774499ffc899ae53f127383fdfd6ab231503c06ee543d18ffdd",
 ]
 
 [project.optional-dependencies]

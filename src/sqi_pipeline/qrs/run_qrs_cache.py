@@ -4,7 +4,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 import logging
-import os
 import numpy as np
 import pandas as pd
 
@@ -70,10 +69,6 @@ def _scalar_to_str(x: Any) -> str:
     if arr.shape == ():
         return str(arr.item())
     return str(x)
-
-
-def _truthy(value: Any) -> bool:
-    return str(value).strip().lower() in {"1", "true", "yes", "on"}
 
 
 def _summary_rows_from_cache(path: Path, *, fallback_profile: str, fallback_warmup_sec: float) -> list[dict[str, Any]]:
@@ -154,35 +149,24 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     record_ids = df["record_id"].astype(str).tolist()
 
     paper_executables = None
-    runtime_detector_profile = detector_profile
     paper_work_dir = Path(str(params.get("paper_qrs_work_dir") or (out_dir / "_wfdb_tmp")))
     if detector_profile == "paper":
         try:
             paper_executables = resolve_paper_qrs_executables(params, out_dir)
         except PaperQRSUnavailable:
-            if _truthy(params.get("allow_wfdb_qrs_fallback")) or _truthy(os.environ.get("SQI_ALLOW_WFDB_QRS_FALLBACK")):
-                runtime_detector_profile = "paper_fallback_wfdb"
-                logger.warning(
-                    "paper QRS executables are unavailable; using WFDB Python xqrs/gqrs fallback "
-                    "because SQI_ALLOW_WFDB_QRS_FALLBACK is enabled. Results are runnable but not paper-exact."
-                )
-            else:
-                raise
-        if paper_executables is not None:
-            logger.info("paper QRS executables: wqrs=%s eplimited=%s", paper_executables.wqrs, paper_executables.eplimited)
+            raise
+        logger.info("paper QRS executables: wqrs=%s eplimited=%s", paper_executables.wqrs, paper_executables.eplimited)
 
     logger.info("split_csv: %s", split_csv)
     logger.info("resampled_125: %s", resampled_dir)
     logger.info("out qrs dir: %s", out_dir)
-    if runtime_detector_profile == "paper":
+    if detector_profile == "paper":
         logger.info(
             "fs=%d, detectors=(wqrs,eplimited), beat_match_tol_ms=%d, eplimited_warmup_sec=%.3f",
             FS,
             BEAT_MATCH_TOL_MS,
             eplimited_warmup_sec,
         )
-    elif runtime_detector_profile == "paper_fallback_wfdb":
-        logger.info("fs=%d, detectors=(xqrs,gqrs), beat_match_tol_ms=%d, profile=paper_fallback_wfdb", FS, BEAT_MATCH_TOL_MS)
     else:
         logger.info("fs=%d, detectors=(%s,%s), beat_match_tol_ms=%d", FS, DETECTOR1, DETECTOR2, BEAT_MATCH_TOL_MS)
     logger.info("records=%d", len(record_ids))
@@ -197,7 +181,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
             summary_rows.extend(
                 _summary_rows_from_cache(
                     out_npz,
-                    fallback_profile=runtime_detector_profile,
+                    fallback_profile=detector_profile,
                     fallback_warmup_sec=eplimited_warmup_sec,
                 )
             )
@@ -212,7 +196,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
             if leads != LEADS_12:
                 raise ValueError(f"{rid}: lead order mismatch")
 
-            if runtime_detector_profile == "paper":
+            if detector_profile == "paper":
                 if paper_executables is None:
                     raise RuntimeError("paper QRS executables were not resolved")
                 r1_list, r2_list = run_paper_qrs_12lead(
@@ -243,8 +227,8 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
                     "detector2": detector2,
                     "n_detector1": int(len(r1)),
                     "n_detector2": int(len(r2)),
-                    "detector_profile": runtime_detector_profile,
-                    "eplimited_warmup_sec": eplimited_warmup_sec if runtime_detector_profile == "paper" else 0.0,
+                    "detector_profile": detector_profile,
+                    "eplimited_warmup_sec": eplimited_warmup_sec if detector_profile == "paper" else 0.0,
                 })
 
             np.savez(
@@ -254,8 +238,8 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
                 leads=np.array(LEADS_12, dtype=object),
                 detector1=np.array(detector1, dtype=object),
                 detector2=np.array(detector2, dtype=object),
-                detector_profile=np.array(runtime_detector_profile, dtype=object),
-                eplimited_warmup_sec=np.array(eplimited_warmup_sec if runtime_detector_profile == "paper" else 0.0),
+                detector_profile=np.array(detector_profile, dtype=object),
+                eplimited_warmup_sec=np.array(eplimited_warmup_sec if detector_profile == "paper" else 0.0),
                 beat_match_tol_ms=np.array(BEAT_MATCH_TOL_MS, dtype=np.int32),
                 rpeaks_1=np.array(r1_list, dtype=object),
                 rpeaks_2=np.array(r2_list, dtype=object),
@@ -281,7 +265,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
         logger.info("summary: %s rows=%d", summary_csv, len(summary_rows))
         outputs.append(str(summary_csv))
 
-    if runtime_detector_profile == "paper" and n_fail > 0:
+    if detector_profile == "paper" and n_fail > 0:
         raise RuntimeError(f"paper QRS failed for {n_fail} records; see logs above")
 
     return {"step": "qrs_cache", "skipped": False, "outputs": outputs}

@@ -11,6 +11,7 @@ import pandas as pd
 from src.sqi_pipeline.features.make_record84 import run as record84_run
 from src.sqi_pipeline.features.norm_record84_ks import run as norm_run
 from src.sqi_pipeline.qrs.run_qrs_cache import run as qrs_run
+from src.sqi_pipeline.qrs.setup_paper_detectors import run as setup_paper_detectors
 from src.supplemental_transformer_experiments.sqi12_gapfill import run as sqi12
 
 from .common import LEADS_12, ROOT, SYNTH_QUOTA, Paths, dry, ensure_dirs, stable_record_ids, write_json
@@ -234,22 +235,15 @@ def _write_workspace(root: Path, protocol: pd.DataFrame, X: np.ndarray) -> None:
         )
 
 
-def _paper_detector_paths() -> tuple[Path, Path]:
-    tool_dir = ROOT / "outputs" / "sqi_paper_aligned" / "qrs" / "tools" / "bin"
-    wqrs = tool_dir / "wqrs.exe"
-    eplimited = tool_dir / "eplimited.exe"
-    missing = [str(p) for p in (wqrs, eplimited) if not p.exists()]
-    if missing:
-        raise FileNotFoundError(
-            "Chapter 4 paper-SQI rerun needs the checked paper QRS tools. "
-            f"Missing: {missing}"
-        )
-    return wqrs, eplimited
+def _paper_detector_paths(root: Path) -> tuple[Path, Path]:
+    result = setup_paper_detectors(root / "qrs" / "tools", download_sources=False, require_executables=True)
+    executables = result["executables"]
+    return Path(executables["wqrs"]), Path(executables["eplimited"])
 
 
 def _run_sqi(root: Path, *, force: bool) -> None:
     split_csv = root / "splits" / "split.csv"
-    wqrs, eplimited = _paper_detector_paths()
+    wqrs, eplimited = _paper_detector_paths(root)
     qrs_run(
         {
             "force": force,

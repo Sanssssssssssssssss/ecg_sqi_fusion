@@ -94,3 +94,7 @@ notes.
 Full report reproduction is orchestrated outside this repository from the
 workspace-level `../reproduce/` controller so fresh clones, temporary data, and
 generated outputs stay isolated from the main project tree.
+
+Paper-aligned SQI targets use `wfdb-qrs-kit` to manage the external
+`wqrs` and EP Limited/Hamilton detector executables; detector provenance is
+written by `python -m src.sqi_pipeline.qrs.setup_paper_detectors`.

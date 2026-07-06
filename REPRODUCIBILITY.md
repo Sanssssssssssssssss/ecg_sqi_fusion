@@ -11,6 +11,18 @@ pip install -r requirements.txt
 Use Python 3.11 where possible. `req.txt` omits `torch` for CUDA/cluster installs
 where PyTorch is managed separately.
 
+Paper-aligned SQI runs require the external `wqrs` and EP Limited/Hamilton
+detectors. The Python wrapper/setup layer is `wfdb-qrs-kit`; install or copy the
+detectors before running `paper_aligned`:
+
+```bash
+python -m src.sqi_pipeline.qrs.setup_paper_detectors --out_dir outputs/sqi_paper_aligned/qrs/tools --from-bin-dir <wfdb-qrs-bin> --no_download --require
+```
+
+If a WFDB C development environment is available, use `--compile` instead of
+`--from-bin-dir`. The setup command writes detector provenance to
+`paper_qrs_detector_manifest.json`.
+
 ## Main Commands
 
 ```bash
@@ -54,6 +66,9 @@ python ../reproduce/run_reproduce.py --target conformer-but
 That external controller fresh-clones this repository, installs dependencies in
 an external virtual environment, and writes all generated data under
 `../reproduce/work/`.
+For paper SQI targets, set `WFDB_QRS_KIT_FROM_BIN_DIR` or the
+`WFDB_QRS_KIT_*_EXE` variables before launching the controller, unless the
+detectors are already on `PATH` or installed in the `wfdb-qrs-kit` cache.
 
 ## Output Roots
 
