@@ -21,7 +21,10 @@ python -m src.sqi_pipeline.qrs.setup_paper_detectors --out_dir outputs/sqi_paper
 
 If a WFDB C development environment is available, use `--compile` instead of
 `--from-bin-dir`. The setup command writes detector provenance to
-`paper_qrs_detector_manifest.json`.
+`paper_qrs_detector_manifest.json`. The Python wrapper is installed as
+`wfdb-qrs-kit`, but copied or compiled `wqrs` and EP Limited/Hamilton detector
+binaries/sources remain under their upstream WFDB/EP Limited GPL/LGPL terms;
+this repository does not relicense those local detector artifacts.
 
 ## Main Commands
 

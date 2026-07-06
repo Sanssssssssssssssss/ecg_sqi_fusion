@@ -45,9 +45,64 @@ def load_sig125(record_id: str, resampled_dir: Path) -> tuple[np.ndarray, int, l
     leads = list(z["leads"].tolist())
     return sig, fs, leads
 
-def _outputs_exist(out_dir: Path, split_csv: Path) -> bool:
+def _expected_detector_metadata(detector_profile: str, eplimited_warmup_sec: float) -> tuple[str, str, str, float]:
+    if detector_profile == "paper":
+        return "paper", "wqrs", "eplimited", float(eplimited_warmup_sec)
+    return "wfdb", DETECTOR1, DETECTOR2, 0.0
+
+
+def _cache_matches_metadata(
+    path: Path,
+    *,
+    expected_record_id: str,
+    detector_profile: str,
+    eplimited_warmup_sec: float,
+) -> bool:
+    expected_profile, expected_detector1, expected_detector2, expected_warmup = _expected_detector_metadata(
+        detector_profile,
+        eplimited_warmup_sec,
+    )
+    try:
+        with np.load(path, allow_pickle=True) as z:
+            required = {
+                "record_id",
+                "fs",
+                "leads",
+                "detector1",
+                "detector2",
+                "detector_profile",
+                "eplimited_warmup_sec",
+                "beat_match_tol_ms",
+                "rpeaks_1",
+                "rpeaks_2",
+            }
+            if not required.issubset(set(z.files)):
+                return False
+            if _scalar_to_str(z["record_id"]) != expected_record_id:
+                return False
+            if int(np.asarray(z["fs"]).item()) != FS:
+                return False
+            if [str(x) for x in z["leads"].tolist()] != LEADS_12:
+                return False
+            if _scalar_to_str(z["detector_profile"]) != expected_profile:
+                return False
+            if _scalar_to_str(z["detector1"]) != expected_detector1:
+                return False
+            if _scalar_to_str(z["detector2"]) != expected_detector2:
+                return False
+            if int(np.asarray(z["beat_match_tol_ms"]).item()) != BEAT_MATCH_TOL_MS:
+                return False
+            warmup = float(np.asarray(z["eplimited_warmup_sec"]).item())
+            if abs(warmup - expected_warmup) > 1e-9:
+                return False
+    except Exception:
+        return False
+    return True
+
+
+def _outputs_exist(out_dir: Path, split_csv: Path, *, detector_profile: str, eplimited_warmup_sec: float) -> bool:
     """
-    Skip only when every split row has a matching QRS .npz.
+    Skip only when every split row has a matching QRS .npz for this detector profile.
     """
     if not out_dir.exists():
         return False
@@ -60,8 +115,18 @@ def _outputs_exist(out_dir: Path, split_csv: Path) -> bool:
     expected = {str(x) for x in df["record_id"].astype(str)}
     if not expected:
         return False
-    have = {p.stem for p in out_dir.glob("*.npz")}
-    return expected.issubset(have)
+    for rid in expected:
+        path = out_dir / f"{rid}.npz"
+        if not path.exists():
+            return False
+        if not _cache_matches_metadata(
+            path,
+            expected_record_id=rid,
+            detector_profile=detector_profile,
+            eplimited_warmup_sec=eplimited_warmup_sec,
+        ):
+            return False
+    return True
 
 
 def _scalar_to_str(x: Any) -> str:
@@ -138,7 +203,12 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     if "beat_match_tol_ms" in params and params["beat_match_tol_ms"] is not None:
         BEAT_MATCH_TOL_MS = int(params["beat_match_tol_ms"])
 
-    if (not force) and _outputs_exist(out_dir, split_csv):
+    if (not force) and _outputs_exist(
+        out_dir,
+        split_csv,
+        detector_profile=detector_profile,
+        eplimited_warmup_sec=eplimited_warmup_sec,
+    ):
         logger.info("qrs_cache: outputs exist -> skip (set force=True to rerun)")
         outputs = [str(out_dir)]
         if summary_csv.exists():
@@ -176,7 +246,16 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
 
     for i, rid in enumerate(record_ids, start=1):
         out_npz = out_dir / f"{rid}.npz"
-        if out_npz.exists() and not force:
+        if (
+            out_npz.exists()
+            and not force
+            and _cache_matches_metadata(
+                out_npz,
+                expected_record_id=rid,
+                detector_profile=detector_profile,
+                eplimited_warmup_sec=eplimited_warmup_sec,
+            )
+        ):
             n_skip += 1
             summary_rows.extend(
                 _summary_rows_from_cache(
@@ -188,6 +267,8 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
             if i <= 5 or i % 200 == 0:
                 logger.info("[skip] %s", rid)
             continue
+        if out_npz.exists() and not force:
+            logger.info("[recompute] %s cache metadata does not match detector profile=%s", rid, detector_profile)
 
         try:
             sig12, fs, leads = load_sig125(rid, resampled_dir)

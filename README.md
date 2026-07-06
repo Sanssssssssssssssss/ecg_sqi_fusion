@@ -98,3 +98,6 @@ generated outputs stay isolated from the main project tree.
 Paper-aligned SQI targets use `wfdb-qrs-kit` to manage the external
 `wqrs` and EP Limited/Hamilton detector executables; detector provenance is
 written by `python -m src.sqi_pipeline.qrs.setup_paper_detectors`.
+The Python wrapper is a project dependency, but local detector binaries or
+sources remain under their upstream WFDB/EP Limited GPL/LGPL terms and are not
+relicensed by this repository.
