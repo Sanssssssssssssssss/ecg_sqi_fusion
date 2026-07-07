@@ -268,7 +268,15 @@ def prepare_paths(cfg: RunConfig, params: dict[str, Any]) -> Paths:
     )
 
 
-def outputs_exist(paths: Paths, seed: int) -> bool:
+def _expected_table_outputs(paths: Paths, seed: int) -> list[Path]:
+    return [
+        paths.tables_dir / f"table5_mlp_12lead_single_sqi_seed{seed}.csv",
+        paths.tables_dir / f"table6_mlp_12lead_combo_sqi_seed{seed}.csv",
+        paths.tables_dir / f"table7_mlp_selected5_seed{seed}.csv",
+    ]
+
+
+def outputs_exist(paths: Paths, seed: int, *, tables: bool = False) -> bool:
     out_csv = paths.models_dir / f"search_J_results_seed{seed}.csv"
     best_json = paths.models_dir / f"best_J_seed{seed}.json"
     out_metrics = paths.out_dir / f"lm_mlp_test_metrics_seed{seed}.json"
@@ -282,6 +290,10 @@ def outputs_exist(paths: Paths, seed: int) -> bool:
         return False
     if not (out_metrics.exists() and out_metrics.stat().st_size > 0):
         return False
+    if tables:
+        for table in _expected_table_outputs(paths, seed):
+            if not (table.exists() and table.stat().st_size > 0):
+                return False
     return True
 
 
@@ -1039,13 +1051,15 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     logger.info("device: %s", cfg.device)
     logger.info("dtype: %s", cfg.dtype)
 
-    if (not cfg.force) and outputs_exist(paths, cfg.seed):
+    if (not cfg.force) and outputs_exist(paths, cfg.seed, tables=cfg.tables):
         logger.info("lm_mlp_search: outputs exist -> skip (set force=True to rerun)")
         outs = [
             str(paths.models_dir / f"search_J_results_seed{cfg.seed}.csv"),
             str(paths.models_dir / f"best_J_seed{cfg.seed}.json"),
             str(paths.out_dir / f"lm_mlp_test_metrics_seed{cfg.seed}.json"),
         ]
+        if cfg.tables:
+            outs.extend(str(path) for path in _expected_table_outputs(paths, cfg.seed))
         return {"step": "lm_mlp_search", "skipped": True, "outputs": outs}
 
     # load once; keep merged df only if tables

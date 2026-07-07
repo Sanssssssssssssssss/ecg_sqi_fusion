@@ -16,6 +16,7 @@ from src.transformer_pipeline.data_v1_gapfill import audit as gapfill_audit
 from src.transformer_pipeline.data_v1_gapfill import common as gapfill_common
 from src.transformer_pipeline.data import but_source
 from src.sqi_pipeline.qrs import setup_paper_detectors
+from src.sqi_pipeline.models import lm_mlp_search
 from src.supplemental_transformer_experiments.but_sqi_baseline import run as but_sqi
 from src.supplemental_transformer_experiments.chapter4_evidence import audit as chapter4_audit
 from src.supplemental_transformer_experiments.chapter4_evidence import run as chapter4_run
@@ -282,3 +283,31 @@ def test_chapter4_seta_audit_scope_does_not_require_but(monkeypatch, tmp_path):
     assert out["outputs"]["seta"]["split_counts"] == {"train_acceptable": 1}
     assert out["outputs"]["scope"] == "seta"
     assert "but" not in out["outputs"]
+
+
+def test_lm_mlp_tables_required_for_tables_skip(tmp_path):
+    paths = lm_mlp_search.Paths(
+        root=tmp_path,
+        features_parquet=tmp_path / "record84_norm.parquet",
+        split_csv=tmp_path / "split.csv",
+        out_dir=tmp_path / "lm_mlp",
+        models_dir=tmp_path / "lm_mlp" / "models",
+        tables_dir=tmp_path / "lm_mlp" / "tables",
+        roc_dir=tmp_path / "lm_mlp" / "roc",
+        probs_dir=tmp_path / "lm_mlp" / "probs",
+        maxacc_dir=tmp_path / "lm_mlp" / "maxacc",
+    )
+    paths.mkdirs()
+    seed = 0
+    (paths.models_dir / f"search_J_results_seed{seed}.csv").write_text("J,val_acc\n2,0.5\n", encoding="utf-8")
+    (paths.models_dir / f"best_J_seed{seed}.json").write_text("{}", encoding="utf-8")
+    (paths.models_dir / f"model_84-6-1_seed{seed}.pkl").write_bytes(b"model")
+    (paths.out_dir / f"lm_mlp_test_metrics_seed{seed}.json").write_text("{}", encoding="utf-8")
+
+    assert lm_mlp_search.outputs_exist(paths, seed, tables=False)
+    assert not lm_mlp_search.outputs_exist(paths, seed, tables=True)
+
+    for table in lm_mlp_search._expected_table_outputs(paths, seed):
+        table.write_text("metric,value\nacc,1\n", encoding="utf-8")
+
+    assert lm_mlp_search.outputs_exist(paths, seed, tables=True)
