@@ -12,7 +12,7 @@ from matplotlib.patches import Ellipse
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
-from .common import Paths, dry, ensure_dirs, feature_cols, read_json
+from .common import ROOT, Paths, dry, ensure_dirs, feature_cols, read_json
 from .seta_sqi import arm_dir
 from src.transformer_pipeline.data_v1_gapfill.common import protocol_dir, split_dir
 
@@ -181,11 +181,22 @@ def _robust_z(x: np.ndarray, center: np.ndarray, scale: np.ndarray) -> np.ndarra
 def _fig_d3_seta_ours_vs_paper(paths: Paths) -> Path:
     our_feat_path = paths.seta_arms / "smc_gapfill" / "features" / "record84_norm.parquet"
     our_split_path = paths.seta_arms / "smc_gapfill" / "splits" / "split.csv"
-    paper_root = paths.out.parent / "sqi12_gapfill" / "sqi_full_rerun_clean"
-    paper_feat_path = paper_root / "features" / "record84_norm.parquet"
-    paper_split_path = paper_root / "splits" / "split_seta_seed0_paper_balanced.csv"
-    if not (our_feat_path.exists() and our_split_path.exists() and paper_feat_path.exists() and paper_split_path.exists()):
-        raise FileNotFoundError("missing Set-A SQI feature tables for Fig D3")
+    paper_roots = [paths.out.parent / "sqi12_gapfill" / "sqi_full_rerun_clean"]
+    try:
+        paper_roots.append(paths.out.parents[2] / "sqi_paper_aligned")
+    except IndexError:
+        pass
+    paper_roots.append(ROOT / "outputs" / "sqi_paper_aligned")
+    paper_feat_path = paper_split_path = None
+    for paper_root in paper_roots:
+        feat = paper_root / "features" / "record84_norm.parquet"
+        split = paper_root / "splits" / "split_seta_seed0_paper_balanced.csv"
+        if feat.exists() and split.exists():
+            paper_feat_path, paper_split_path = feat, split
+            break
+    if not (our_feat_path.exists() and our_split_path.exists() and paper_feat_path is not None and paper_split_path is not None):
+        checked = ", ".join(str(p) for p in paper_roots)
+        raise FileNotFoundError(f"missing Set-A SQI feature tables for Fig D3; checked paper roots: {checked}")
 
     our_feat = pd.read_parquet(our_feat_path)
     our_split = pd.read_csv(our_split_path)
