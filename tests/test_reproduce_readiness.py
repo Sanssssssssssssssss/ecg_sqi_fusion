@@ -194,6 +194,13 @@ def test_v116_original_split_keeps_extra_public_rows_in_train():
     assert medium["train"] == event_factorized.V116_ORIGINAL_SPLIT_COUNTS["medium"]["train"] + 51
 
 
+def test_v116_gapfill_policy_alias_stays_short_for_fresh_clone_paths():
+    alias = event_factorized.policy_alias("v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876")
+
+    assert alias == "v116gap_smc"
+    assert len(alias) < 16
+
+
 def test_gapfill_audit_accepts_public_fallback_original_surplus():
     out = {
         "protocol_class_counts": gapfill_audit.EXPECTED_PROTOCOL,

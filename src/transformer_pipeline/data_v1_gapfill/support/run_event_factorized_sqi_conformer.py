@@ -169,13 +169,16 @@ DETECTOR_FACTOR_IDX = FACTOR_COLUMNS.index("detector_agreement")
 
 
 def policy_alias(policy: str) -> str:
+    text = str(policy)
+    if text.startswith("v116_gapfill_dual_goodorig_nm40_ms10_smc"):
+        return "v116gap_smc"
     aliases = {
         "margin_ge_5s_drop_outlier": "mg5_drop",
         "margin_ge_2s_drop_outlier": "mg2_drop",
         "margin_ge_8s_drop_outlier": "mg8_drop",
         "margin_ge_10s_drop_outlier": "mg10_drop",
     }
-    return aliases.get(str(policy), str(policy).replace("margin_ge_", "mg").replace("_drop_outlier", "_drop")[:32])
+    return aliases.get(text, text.replace("margin_ge_", "mg").replace("_drop_outlier", "_drop")[:32])
 
 
 def v116_gapfill_policy(policy: str) -> bool:
