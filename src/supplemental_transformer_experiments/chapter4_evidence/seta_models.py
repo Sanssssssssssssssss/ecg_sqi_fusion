@@ -315,10 +315,12 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
         source_only_rows.append(_row_from_source_only_svm(arm, root))
 
     smc_root = arm_dir(paths, "smc_gapfill")
+    smc_svm = paths.seta_models / "smc_gapfill" / "svm"
+    _run_svm(smc_root, smc_svm, force=force)
+
     mlp_out = paths.seta_models / "smc_gapfill" / "lm_mlp"
     _run_mlp(smc_root, mlp_out, force=force, device=device)
 
-    smc_svm = paths.seta_models / "smc_gapfill" / "svm"
     model_rows = [
         _row_from_svm("smc_gapfill", "SQI SVM-RBF selected5", smc_svm),
         _row_from_svm("smc_gapfill", "SQI SVM-RBF all84", smc_svm),

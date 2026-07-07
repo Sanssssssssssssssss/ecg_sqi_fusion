@@ -20,6 +20,7 @@ from src.sqi_pipeline.models import lm_mlp_search
 from src.supplemental_transformer_experiments.but_sqi_baseline import run as but_sqi
 from src.supplemental_transformer_experiments.chapter4_evidence import audit as chapter4_audit
 from src.supplemental_transformer_experiments.chapter4_evidence import run as chapter4_run
+from src.supplemental_transformer_experiments.chapter4_evidence import seta_models
 from src.supplemental_transformer_experiments.chapter4_evidence.common import Paths as Chapter4Paths
 from src.utils import data_downloads
 
@@ -311,3 +312,35 @@ def test_lm_mlp_tables_required_for_tables_skip(tmp_path):
         table.write_text("metric,value\nacc,1\n", encoding="utf-8")
 
     assert lm_mlp_search.outputs_exist(paths, seed, tables=True)
+
+
+def test_seta_models_runs_svm_before_reading_svm_rows(tmp_path, monkeypatch):
+    paths = Chapter4Paths(tmp_path / "chapter4")
+    calls: list[str] = []
+
+    def row(model: str) -> dict[str, str]:
+        return {"run_id": model, "construction": "smc_gapfill", "model": model}
+
+    monkeypatch.setattr(seta_models, "ARMS", ("smc_gapfill",))
+    monkeypatch.setattr(seta_models, "_row_from_source_only_svm", lambda arm, root: row("source-only"))
+
+    def fake_run_svm(root, out, *, force):
+        calls.append("run-svm")
+        out.mkdir(parents=True, exist_ok=True)
+
+    def fake_row_from_svm(arm, model, out):
+        assert "run-svm" in calls
+        calls.append(f"read-{model}")
+        return row(model)
+
+    monkeypatch.setattr(seta_models, "_run_svm", fake_run_svm)
+    monkeypatch.setattr(seta_models, "_row_from_svm", fake_row_from_svm)
+    monkeypatch.setattr(seta_models, "_run_mlp", lambda root, out, *, force, device: calls.append("run-mlp"))
+    monkeypatch.setattr(seta_models, "_row_from_mlp", lambda out: row("mlp"))
+    monkeypatch.setattr(seta_models, "_row_from_conformer", lambda paths, *, force, device: row("conformer"))
+
+    out = seta_models.run(paths, execute=True, force=False, device="cpu")
+
+    assert calls[0] == "run-svm"
+    assert out["outputs"]["model_comparison"][0]["model"] == "SQI SVM-RBF selected5"
+    assert (paths.tables / "seta_repaired_model_comparison.csv").exists()
