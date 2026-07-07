@@ -199,6 +199,7 @@ def test_v116_gapfill_policy_alias_stays_short_for_fresh_clone_paths():
 
     assert alias == "v116gap_smc"
     assert len(alias) < 16
+    assert gapfill_common.SPLIT_ALIAS == f"{alias}_k1_s20260876"
 
 
 def test_gapfill_audit_accepts_public_fallback_original_surplus():
