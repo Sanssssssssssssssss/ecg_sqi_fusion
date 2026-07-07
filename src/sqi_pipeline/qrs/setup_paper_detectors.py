@@ -164,6 +164,25 @@ def parse_args() -> argparse.Namespace:
     return p.parse_args()
 
 
+def _cli_summary(result: dict[str, Any]) -> dict[str, Any]:
+    install = result.get("install_manifest", {})
+    sources = install.get("sources") if isinstance(install, dict) else None
+    return {
+        "manifest": result.get("manifest"),
+        "note": result.get("note"),
+        "manager": result.get("manager"),
+        "cache_dir": result.get("cache_dir"),
+        "auto_from_bin_dir": result.get("auto_from_bin_dir"),
+        "executables": result.get("executables", {}),
+        "install_manifest": {
+            "skipped": install.get("skipped") if isinstance(install, dict) else None,
+            "reason": install.get("reason") if isinstance(install, dict) else None,
+            "bin_dir": install.get("bin_dir") if isinstance(install, dict) else None,
+            "source_count": len(sources) if isinstance(sources, list) else 0,
+        },
+    }
+
+
 def main() -> None:
     args = parse_args()
     root = project_root()
@@ -180,7 +199,7 @@ def main() -> None:
         wfdb_lib=args.wfdb_lib,
         require_executables=args.require,
     )
-    print(json.dumps(result, indent=2))
+    print(json.dumps(_cli_summary(result), indent=2))
 
 
 if __name__ == "__main__":

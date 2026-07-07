@@ -1,5 +1,6 @@
 import sys
 import os
+import json
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -262,6 +263,26 @@ def test_qrs_setup_reuses_complete_local_cache(tmp_path, monkeypatch):
     assert result["install_manifest"]["skipped"] is True
     assert Path(result["executables"]["wqrs"]) == wqrs.resolve()
     assert Path(result["executables"]["eplimited"]) == eplimited.resolve()
+
+
+def test_qrs_setup_cli_summary_omits_source_urls():
+    summary = setup_paper_detectors._cli_summary(
+        {
+            "manifest": "manifest.json",
+            "note": "note.md",
+            "manager": "wfdb-qrs-kit",
+            "cache_dir": "cache",
+            "auto_from_bin_dir": "bin",
+            "executables": {"wqrs": "wqrs.exe", "eplimited": "eplimited.exe"},
+            "install_manifest": {
+                "sources": [{"url": "https://physionet.org/files/wfdb/10.7.0/app/wqrs.c"}],
+            },
+        }
+    )
+
+    text = json.dumps(summary)
+    assert "physionet.org" not in text
+    assert summary["install_manifest"]["source_count"] == 1
 
 
 def test_but_source_audit_reads_long_windows_paths(tmp_path):
