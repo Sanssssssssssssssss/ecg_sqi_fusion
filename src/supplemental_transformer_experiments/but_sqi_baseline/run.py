@@ -580,7 +580,7 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="BUT v116 classical SQI baseline control.")
     p.add_argument("--out", default=str(OUT_DEFAULT))
     p.add_argument("--force", action="store_true")
-    p.add_argument("--jobs", type=int, default=max(1, min(4, (os.cpu_count() or 2) - 1)))
+    p.add_argument("--jobs", type=int, default=1)
     p.add_argument("--device", default="cuda")
     sub = p.add_subparsers(dest="cmd", required=True)
     for name in ["prepare", "features", "train"]:
