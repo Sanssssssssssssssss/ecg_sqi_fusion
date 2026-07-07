@@ -33,12 +33,17 @@ def _features_ready(root: Path) -> bool:
         return False
     try:
         split_n = len(pd.read_csv(split_csv, usecols=["record_id"]))
-        qrs_n = len(pd.read_csv(qrs_csv, usecols=["record_id"]))
+        qrs = pd.read_csv(qrs_csv, usecols=["record_id"])
         feat = pd.read_parquet(norm)
     except Exception:
         return False
     cols = [c for c in feat.columns if "__" in c]
-    return len(feat) == split_n and qrs_n == split_n and len(cols) == 84
+    return (
+        len(feat) == split_n
+        and qrs["record_id"].astype(str).nunique() == split_n
+        and len(qrs) == split_n * len(LEADS_12)
+        and len(cols) == 84
+    )
 
 
 def _load_smc(paths: Paths) -> tuple[pd.DataFrame, np.ndarray]:
@@ -295,14 +300,17 @@ def _seed_original_qrs(root: Path, native_root: Path) -> int:
         return 0
     split = pd.read_csv(root / "splits" / "split.csv")
     original_ids = split.loc[split["is_augmented"].astype(int).eq(0), "record_id"].astype(str).tolist()
-    copied = 0
+    seeded = 0
     for rid in original_ids:
         src = src_dir / f"{rid}.npz"
         dst = dst_dir / f"{rid}.npz"
+        if dst.exists():
+            seeded += 1
+            continue
         if src.exists() and not dst.exists():
             shutil.copy2(src, dst)
-            copied += 1
-    return copied
+            seeded += 1
+    return seeded
 
 
 def run(paths: Paths, *, execute: bool, force: bool, seed: int = 0, max_ptb: int = 2400) -> dict[str, Any]:

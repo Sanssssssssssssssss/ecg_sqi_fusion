@@ -107,23 +107,33 @@ def run(
 ) -> dict[str, Any]:
     out_dir.mkdir(parents=True, exist_ok=True)
     root = project_root()
-    auto_from_bin_dir = Path(from_bin_dir) if from_bin_dir else _auto_bin_dir(root, out_dir)
-    install_manifest = install_detectors(
-        cache_dir=out_dir,
-        from_bin_dir=auto_from_bin_dir,
-        download=download_sources,
-        compile=compile_sources,
-        compiler=compiler,
-        wfdb_include=wfdb_include,
-        wfdb_lib=wfdb_lib,
-    )
+    existing_bin_dir = out_dir / "bin"
+    if _has_detector_pair(existing_bin_dir):
+        auto_from_bin_dir = existing_bin_dir
+        install_manifest_data: dict[str, Any] = {
+            "skipped": True,
+            "reason": "existing detector cache is complete",
+            "bin_dir": str(existing_bin_dir),
+        }
+    else:
+        auto_from_bin_dir = Path(from_bin_dir) if from_bin_dir else _auto_bin_dir(root, out_dir)
+        install_manifest = install_detectors(
+            cache_dir=out_dir,
+            from_bin_dir=auto_from_bin_dir,
+            download=download_sources,
+            compile=compile_sources,
+            compiler=compiler,
+            wfdb_include=wfdb_include,
+            wfdb_lib=wfdb_lib,
+        )
+        install_manifest_data = json.loads(install_manifest.to_json())
     status = detector_status(out_dir)
     manifest: dict[str, Any] = {
         "manager": "wfdb-qrs-kit",
         "cache_dir": str(out_dir),
         "auto_from_bin_dir": str(auto_from_bin_dir) if auto_from_bin_dir else None,
         "status": status,
-        "install_manifest": json.loads(install_manifest.to_json()),
+        "install_manifest": install_manifest_data,
         "executables": {
             "wqrs": _find_exe("wqrs", status.get("executables", {})),
             "eplimited": _find_exe("eplimited", status.get("executables", {})),

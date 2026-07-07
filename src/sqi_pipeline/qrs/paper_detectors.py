@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +12,8 @@ from wfdb_qrs_kit.install import find_executable
 
 
 LEADS_12 = ["I", "II", "III", "aVR", "aVL", "aVF", "V1", "V2", "V3", "V4", "V5", "V6"]
+PAPER_QRS_ATTEMPTS = 3
+logger = logging.getLogger(__name__)
 
 
 class PaperQRSUnavailable(RuntimeError):
@@ -56,10 +59,27 @@ def _as_samples(items: list[Any]) -> list[np.ndarray]:
 
 
 def _run_kit(callable_name: str, fn: Any, *args: Any, **kwargs: Any) -> Any:
-    try:
-        return fn(*args, **kwargs)
-    except (DetectorNotFoundError, WFDBQRSKitError, OSError, RuntimeError) as exc:
-        raise PaperQRSUnavailable(f"{callable_name} failed: {exc}") from exc
+    last_exc: Exception | None = None
+    for attempt in range(1, PAPER_QRS_ATTEMPTS + 1):
+        try:
+            return fn(*args, **kwargs)
+        except DetectorNotFoundError as exc:
+            raise PaperQRSUnavailable(f"{callable_name} failed: {exc}") from exc
+        except (WFDBQRSKitError, OSError, RuntimeError) as exc:
+            last_exc = exc
+            if attempt < PAPER_QRS_ATTEMPTS:
+                logger.warning(
+                    "%s failed on attempt %d/%d; retrying: %s",
+                    callable_name,
+                    attempt,
+                    PAPER_QRS_ATTEMPTS,
+                    exc,
+                )
+                continue
+            break
+    raise PaperQRSUnavailable(
+        f"{callable_name} failed after {PAPER_QRS_ATTEMPTS} attempts: {last_exc}"
+    ) from last_exc
 
 
 def run_paper_qrs_12lead(

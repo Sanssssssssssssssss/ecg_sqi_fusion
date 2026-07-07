@@ -21,6 +21,7 @@ from src.supplemental_transformer_experiments.but_sqi_baseline import run as but
 from src.supplemental_transformer_experiments.chapter4_evidence import audit as chapter4_audit
 from src.supplemental_transformer_experiments.chapter4_evidence import but_models
 from src.supplemental_transformer_experiments.chapter4_evidence import run as chapter4_run
+from src.supplemental_transformer_experiments.chapter4_evidence import seta_sqi
 from src.supplemental_transformer_experiments.chapter4_evidence import seta_models
 from src.supplemental_transformer_experiments.chapter4_evidence.common import Paths as Chapter4Paths
 from src.utils import data_downloads
@@ -235,6 +236,34 @@ def test_qrs_setup_auto_discovers_detector_cache(tmp_path, monkeypatch):
     assert setup_paper_detectors._auto_bin_dir(root, root / "outputs" / "tools") == sibling_cache
 
 
+def test_qrs_setup_reuses_complete_local_cache(tmp_path, monkeypatch):
+    out = tmp_path / "qrs" / "tools"
+    bin_dir = out / "bin"
+    bin_dir.mkdir(parents=True)
+    exe_suffix = ".exe" if os.name == "nt" else ""
+    wqrs = bin_dir / f"wqrs{exe_suffix}"
+    eplimited = bin_dir / f"eplimited{exe_suffix}"
+    wqrs.write_bytes(b"wqrs")
+    eplimited.write_bytes(b"eplimited")
+
+    def forbidden_install(*args, **kwargs):
+        raise AssertionError("complete local detector cache should be reused")
+
+    monkeypatch.setattr(setup_paper_detectors, "project_root", lambda: tmp_path)
+    monkeypatch.setattr(setup_paper_detectors, "install_detectors", forbidden_install)
+    monkeypatch.setattr(
+        setup_paper_detectors,
+        "detector_status",
+        lambda cache_dir: {"executables": {"wqrs": str(wqrs), "eplimited": str(eplimited)}},
+    )
+
+    result = setup_paper_detectors.run(out, require_executables=True)
+
+    assert result["install_manifest"]["skipped"] is True
+    assert Path(result["executables"]["wqrs"]) == wqrs.resolve()
+    assert Path(result["executables"]["eplimited"]) == eplimited.resolve()
+
+
 def test_but_source_audit_reads_long_windows_paths(tmp_path):
     long_root = tmp_path / ("a" * 80) / ("b" * 80) / ("c" * 80)
     analysis = long_root / "analysis" / "good_medium_geometry_repair"
@@ -293,6 +322,42 @@ def test_chapter4_seta_audit_scope_does_not_require_but(monkeypatch, tmp_path):
     assert out["outputs"]["seta"]["split_counts"] == {"train_acceptable": 1}
     assert out["outputs"]["scope"] == "seta"
     assert "but" not in out["outputs"]
+
+
+def test_seta_sqi_features_ready_accepts_leadwise_qrs_summary(tmp_path):
+    root = tmp_path / "arm"
+    (root / "splits").mkdir(parents=True)
+    (root / "qrs").mkdir()
+    (root / "features").mkdir()
+    pd.DataFrame({"record_id": ["r00000", "r00001"]}).to_csv(root / "splits" / "split.csv", index=False)
+    pd.DataFrame(
+        [{"record_id": rid} for rid in ["r00000", "r00001"] for _ in seta_sqi.LEADS_12]
+    ).to_csv(root / "qrs" / "qrs_summary.csv", index=False)
+    pd.DataFrame(
+        [{"record_id": rid, **{f"lead{i}__sSQI": 0.0 for i in range(84)}} for rid in ["r00000", "r00001"]]
+    ).to_parquet(root / "features" / "record84_norm.parquet", index=False)
+    (root / "features" / "record84.parquet").write_bytes(b"exists")
+
+    assert seta_sqi._features_ready(root)
+
+
+def test_seta_sqi_seed_original_qrs_counts_existing_cache(tmp_path):
+    native = tmp_path / "native"
+    arm = tmp_path / "fixed"
+    (native / "qrs").mkdir(parents=True)
+    (arm / "qrs").mkdir(parents=True)
+    (arm / "splits").mkdir()
+    pd.DataFrame(
+        {
+            "record_id": ["r00000", "r00001", "r00002"],
+            "is_augmented": [0, 0, 1],
+        }
+    ).to_csv(arm / "splits" / "split.csv", index=False)
+    (arm / "qrs" / "r00000.npz").write_bytes(b"already here")
+    (native / "qrs" / "r00001.npz").write_bytes(b"copy me")
+
+    assert seta_sqi._seed_original_qrs(arm, native) == 2
+    assert (arm / "qrs" / "r00001.npz").read_bytes() == b"copy me"
 
 
 def test_lm_mlp_tables_required_for_tables_skip(tmp_path):
