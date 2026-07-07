@@ -435,6 +435,7 @@ def _fig_m1(paths: Paths) -> Path:
         row["figure_label"] = label
         rows.append(row)
     plot = pd.DataFrame(rows)
+    plot.to_csv(paths.source_data / "fig_M1_models.csv", index=False)
     plot.to_csv(paths.source_data / "fig_M1_seta_model_confusions.csv", index=False)
     recall_rows = []
     for _, row in plot.iterrows():

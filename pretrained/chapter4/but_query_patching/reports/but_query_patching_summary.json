@@ -1,0 +1,8 @@
+{
+  "rescue_pairs": 123,
+  "self_patch_max_logit_error": 0.0,
+  "gm_boundary_qe_rank": 7,
+  "gm_boundary_qe_mean_delta_h_int": 0.46549435747348195,
+  "bad_stress_qe_mean_delta_h_int": 0.4367086693523376,
+  "verdict": "supports a distributed boundary decision path, not a GM_BOUNDARY-only claim"
+}

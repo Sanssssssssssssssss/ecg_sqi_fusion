@@ -10,6 +10,7 @@ PRETRAINED_ROOT = ROOT / "pretrained" / "chapter4"
 SETA_E31_DIR = PRETRAINED_ROOT / "seta_e31_leadwise_shared"
 BUT_E31_QUERY_MEAN_DIR = PRETRAINED_ROOT / "but_e31_query_mean_fused_conformer"
 BUT_ARCHITECTURE_ABLATION_DIR = PRETRAINED_ROOT / "but_architecture_ablation"
+BUT_QUERY_PATCHING_DIR = PRETRAINED_ROOT / "but_query_patching"
 
 
 def use_pretrained_on_cpu(device: str) -> bool:

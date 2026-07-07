@@ -336,6 +336,9 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
     models = pd.DataFrame(model_rows)
     source_only.to_csv(paths.tables / "seta_construction_source_only_models.csv", index=False)
     models.to_csv(paths.tables / "seta_repaired_model_comparison.csv", index=False)
+    from .report import _seta_construction_source_audit
+
+    _seta_construction_source_audit(paths)
     out = {
         "construction_source_only": source_only.to_dict(orient="records"),
         "model_comparison": models.to_dict(orient="records"),

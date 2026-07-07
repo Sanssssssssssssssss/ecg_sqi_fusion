@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
@@ -13,27 +14,32 @@ import torch
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
 
+from src.transformer_pipeline.data_v1_gapfill.common import split_dir
 from src.transformer_pipeline.data_v1_gapfill.support import run_event_factorized_sqi_conformer as EVT
 from src.transformer_pipeline.data_v1_gapfill.support import run_gm_mechanism_repair_suite as GM
 
 from .but_models import _find_e31_predictions
 from .common import ROOT, Paths, dry, ensure_dirs, rel, table_to_md, write_json
 from .figures import _save
+from .pretrained import BUT_E31_QUERY_MEAN_DIR, BUT_QUERY_PATCHING_DIR, require_files, use_pretrained_on_cpu
 
 
 LABELS = ["good", "medium", "bad"]
 QUERY_NAMES = EVT.EventFactorizedSQIConformer.query_names
 LOCATIONS = ["Z_Q", "Q_e"]
-SPLIT_ROOT = (
-    ROOT
-    / "outputs"
-    / "transformer"
-    / "v116_e31"
-    / "analysis"
-    / "good_medium_geometry_repair"
-    / "gm_mechanism_repair_suite"
-    / "rh_splits"
-    / "v116_gapfill_dual_goodorig_nm40__k1_s20260876"
+SPLIT_ROOT = split_dir().parent
+PRETRAINED_FILES = (
+    "tables/but_query_patching_raw.csv",
+    "tables/but_query_patching_summary.csv",
+    "tables/but_query_probe_summary.csv",
+    "reports/but_query_patching_summary.json",
+    "reports/but_query_patching_summary.md",
+    "figures/fig_M5_but_query_patching.pdf",
+    "figures/fig_M5_but_query_patching.png",
+    "figures/fig_M5_but_query_patching.svg",
+    "figures/source_data/fig_M5_forward_qe.csv",
+    "figures/source_data/fig_M5_layer_line.csv",
+    "figures/source_data/fig_M5_reverse_qe.csv",
 )
 
 
@@ -42,6 +48,22 @@ def _load_ckpt(path: Path, device: torch.device) -> dict[str, Any]:
         return torch.load(path, map_location=device, weights_only=False)
     except TypeError:
         return torch.load(path, map_location=device)
+
+
+def _install_pretrained(paths: Paths, *, force: bool) -> dict[str, Any]:
+    require_files(BUT_QUERY_PATCHING_DIR, PRETRAINED_FILES)
+    for name in PRETRAINED_FILES:
+        src = BUT_QUERY_PATCHING_DIR / name
+        dst = paths.out / name
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        if force or not dst.exists():
+            shutil.copy2(src, dst)
+    fig = paths.figures / "fig_M5_but_query_patching.png"
+    index_path = paths.reports / "figure_index.json"
+    figure_index = json.loads(index_path.read_text(encoding="utf-8")) if index_path.exists() else {}
+    figure_index["fig_M5_but_query_patching"] = str(fig.resolve())
+    write_json(index_path, figure_index)
+    return {"step": "but-query-patching", "pretrained": rel(BUT_QUERY_PATCHING_DIR), "figure": rel(fig)}
 
 
 def _args(device: str) -> SimpleNamespace:
@@ -59,14 +81,18 @@ def _args(device: str) -> SimpleNamespace:
 
 
 def _load_model(device_name: str):
-    run_dir = _find_e31_predictions().parent
-    if not (run_dir / "ckpt_best.pt").exists():
-        raise FileNotFoundError(f"missing E31 checkpoint: {run_dir / 'ckpt_best.pt'}")
+    pred_path = _find_e31_predictions()
+    run_dir = pred_path.parent
+    ckpt_path = run_dir / "ckpt_best.pt"
+    if not ckpt_path.exists():
+        require_files(BUT_E31_QUERY_MEAN_DIR, ("ckpt_best.pt", "test_predictions.npz"))
+        ckpt_path = BUT_E31_QUERY_MEAN_DIR / "ckpt_best.pt"
+        pred_path = BUT_E31_QUERY_MEAN_DIR / "test_predictions.npz"
     if not (SPLIT_ROOT / "fold0" / "source_protocol.json").exists():
         raise FileNotFoundError(f"missing E31 split root: {SPLIT_ROOT}")
     device = torch.device("cuda" if device_name == "cuda" and torch.cuda.is_available() else "cpu")
     GM.install_patches()
-    ckpt = _load_ckpt(run_dir / "ckpt_best.pt", device)
+    ckpt = _load_ckpt(ckpt_path, device)
     cfg = dict(ckpt["candidate_config"])
     GM.ACTIVE_CFG = dict(cfg)
     train_loader, _, test_loader, _ = GM.EVT.make_loaders(_args(device_name), SPLIT_ROOT, 0)
@@ -79,7 +105,7 @@ def _load_model(device_name: str):
     ).to(device)
     model.load_state_dict(ckpt["model_state"], strict=False)
     model.eval()
-    return model, train_loader.dataset, test_loader.dataset, device
+    return model, train_loader.dataset, test_loader.dataset, device, pred_path
 
 
 @torch.no_grad()
@@ -149,13 +175,13 @@ def _rescue_pairs(records: pd.DataFrame, test_ds: Any) -> pd.DataFrame:
     return rescue.reset_index(drop=True)
 
 
-def _align_clean_predictions(model: torch.nn.Module, test_ds: Any, device: torch.device) -> None:
+def _align_clean_predictions(model: torch.nn.Module, test_ds: Any, device: torch.device, pred_path: Path) -> None:
     probs = []
     for i in range(0, len(test_ds), 512):
         x = torch.from_numpy(test_ds.x[i : i + 512]).to(device=device, dtype=torch.float32)
         probs.append(_forward(model, x)["probs"].detach().cpu().numpy())
     got = np.concatenate(probs, axis=0)
-    ref = np.load(_find_e31_predictions(), allow_pickle=True)
+    ref = np.load(pred_path, allow_pickle=True)
     if not np.array_equal(ref["y"].astype(int), test_ds.y.astype(int)):
         raise RuntimeError("E31 y does not align with official test split")
     err = float(np.max(np.abs(got - ref["probs"].astype(np.float32))))
@@ -360,9 +386,11 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
         dry("but-query-patching", paths)
         return {"step": "but-query-patching", "skipped": True}
     ensure_dirs(paths)
+    if use_pretrained_on_cpu(device):
+        return _install_pretrained(paths, force=force)
     records = _ensure_boundary_records(paths, force=False, device=device)
-    model, train_ds, test_ds, torch_device = _load_model(device)
-    _align_clean_predictions(model, test_ds, torch_device)
+    model, train_ds, test_ds, torch_device, pred_path = _load_model(device)
+    _align_clean_predictions(model, test_ds, torch_device, pred_path)
     rescue = _rescue_pairs(records, test_ds)
     raw, max_self_err = _patch_rows(model, test_ds, rescue, torch_device)
     if max_self_err > 1.0e-5:
