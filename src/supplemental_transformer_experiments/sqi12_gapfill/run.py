@@ -5,6 +5,7 @@ import json
 import math
 import os
 import random
+import shutil
 import subprocess
 import sys
 import time
@@ -1442,15 +1443,27 @@ def factor_targets(feat: pd.DataFrame, train_mask: np.ndarray) -> tuple[np.ndarr
     return ((x - mu) / sd).astype(np.float32), {"columns": cols, "mean": mu.ravel().tolist(), "std": sd.ravel().tolist()}
 
 
-def load_train_arrays(paths: Paths) -> tuple[pd.DataFrame, np.ndarray, np.ndarray, np.ndarray, dict[str, Any]]:
+def load_train_arrays(paths: Paths, normalization: dict[str, Any] | None = None) -> tuple[pd.DataFrame, np.ndarray, np.ndarray, np.ndarray, dict[str, Any]]:
     protocol = pd.read_csv(paths.protocol_csv)
     feat = pd.read_csv(paths.feature_csv)
     X = np.load(paths.signals_npz, allow_pickle=True)["X"].astype(np.float32)
     train_mask = protocol["split"].eq("train").to_numpy()
-    mu = X[train_mask].mean(axis=(0, 1), keepdims=True)
-    sd = np.maximum(X[train_mask].std(axis=(0, 1), keepdims=True), 1e-6)
+    if normalization is None:
+        mu = X[train_mask].mean(axis=(0, 1), keepdims=True)
+        sd = np.maximum(X[train_mask].std(axis=(0, 1), keepdims=True), 1e-6)
+    else:
+        mu = np.asarray(normalization["mean_per_lead"], dtype=np.float32).reshape(1, 1, -1)
+        sd = np.asarray(normalization["std_per_lead"], dtype=np.float32).reshape(1, 1, -1)
     Xn = ((X - mu) / sd).astype(np.float32).transpose(0, 2, 1)
-    factors, factor_stats = factor_targets(feat, train_mask)
+    if normalization is None:
+        factors, factor_stats = factor_targets(feat, train_mask)
+    else:
+        factor_stats = dict(normalization["factors"])
+        cols = list(factor_stats["columns"])
+        raw = np.nan_to_num(feat[cols].to_numpy(dtype=np.float32), nan=0.0, posinf=0.0, neginf=0.0)
+        f_mu = np.asarray(factor_stats["mean"], dtype=np.float32).reshape(1, -1)
+        f_sd = np.maximum(np.asarray(factor_stats["std"], dtype=np.float32).reshape(1, -1), 1e-6)
+        factors = ((raw - f_mu) / f_sd).astype(np.float32)
     norm = {"lead_order": LEADS_12, "mean_per_lead": mu.reshape(-1).tolist(), "std_per_lead": sd.reshape(-1).tolist(), "factors": factor_stats}
     return protocol, Xn, protocol["y"].astype(int).to_numpy(), factors, norm
 
@@ -1479,6 +1492,141 @@ def predict(model: nn.Module, loader: DataLoader, device: torch.device) -> tuple
         ys.append(batch["y"].cpu().numpy())
         ps.append(prob.detach().cpu().numpy())
     return np.concatenate(ys), np.concatenate(ps)
+
+
+def _load_torch(path: Path, device: torch.device) -> dict[str, Any]:
+    try:
+        return torch.load(path, map_location=device, weights_only=False)
+    except TypeError:
+        return torch.load(path, map_location=device)
+
+
+def _train_config_from_checkpoint(values: dict[str, Any], *, device: str) -> TrainConfig:
+    cfg = asdict(TrainConfig())
+    cfg.update({k: values[k] for k in cfg if k in values})
+    cfg["device"] = device
+    cfg["num_workers"] = 0
+    return TrainConfig(**cfg)
+
+
+def _write_pretrained_eval_outputs(
+    paths: Paths,
+    *,
+    model: nn.Module,
+    cfg: TrainConfig,
+    protocol: pd.DataFrame,
+    X: np.ndarray,
+    y: np.ndarray,
+    factors: np.ndarray,
+    norm: dict[str, Any],
+    device: torch.device,
+    checkpoint_dir: Path,
+) -> None:
+    loaders, datasets = make_loaders(protocol, X, y, factors, cfg)
+    split_metrics: dict[str, Any] = {}
+    split_probs: dict[str, tuple[np.ndarray, np.ndarray]] = {}
+    pred_by_split: dict[str, pd.DataFrame] = {}
+    for split in ["train", "val", "test"]:
+        eval_loader = DataLoader(
+            datasets[split],
+            batch_size=cfg.batch_size,
+            shuffle=False,
+            num_workers=cfg.num_workers,
+            pin_memory=torch.cuda.is_available(),
+        )
+        yy, pp = predict(model, eval_loader, device)
+        split_probs[split] = (yy, pp)
+        split_metrics[split] = metrics_binary(yy, pp)
+        sub = datasets[split].rows.copy()
+        sub["prob_acceptable"] = pp
+        sub["pred_fixed"] = (pp >= 0.5).astype(int)
+        pred_by_split[split] = sub
+    val_threshold = best_threshold(*split_probs["val"])
+    test_at_val_threshold = metrics_binary(split_probs["test"][0], split_probs["test"][1], val_threshold["threshold"])
+    pred_rows: list[pd.DataFrame] = []
+    for split, sub in pred_by_split.items():
+        sub = sub.copy()
+        sub["pred_val_threshold"] = (sub["prob_acceptable"].to_numpy() >= val_threshold["threshold"]).astype(int)
+        pred_rows.append(sub)
+    metrics = {
+        "task": "binary acceptable(1) vs unacceptable(0)",
+        "config": asdict(cfg),
+        "device": str(device),
+        "n": {k: int(len(v)) for k, v in datasets.items()},
+        "normalization": norm,
+        "fixed_threshold_metrics": split_metrics,
+        "val_selected_threshold": val_threshold,
+        "test_at_val_selected_threshold": test_at_val_threshold,
+        "checkpoint_source": str(checkpoint_dir),
+        "pretrained_inference": True,
+    }
+    paths.models.mkdir(parents=True, exist_ok=True)
+    history_src = checkpoint_dir / "history.csv"
+    if history_src.exists():
+        shutil.copy2(history_src, paths.models / "history.csv")
+    else:
+        pd.DataFrame().to_csv(paths.models / "history.csv", index=False)
+    pd.concat(pred_rows, ignore_index=True).to_csv(paths.models / "predictions.csv", index=False)
+    shutil.copy2(checkpoint_dir / "best_model.pt", paths.models / "best_model.pt")
+    (paths.models / "metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+    lines = [
+        "# SQI12 Gap-Fill E31 Lead-Wise Shared",
+        "",
+        f"- pretrained checkpoint: {checkpoint_dir}",
+        f"- train/val/test: {metrics['n']['train']} / {metrics['n']['val']} / {metrics['n']['test']}",
+        f"- test acc: {split_metrics['test']['acc']:.4f}",
+        f"- test macro F1: {split_metrics['test']['macro_f1']:.4f}",
+        f"- test AUC: {split_metrics['test']['auc']:.4f}",
+        f"- sensitivity: {split_metrics['test']['sensitivity']:.4f}",
+        f"- specificity: {split_metrics['test']['specificity']:.4f}",
+        f"- val-selected threshold: {val_threshold['threshold']:.3f}",
+        f"- test acc at val threshold: {test_at_val_threshold['acc']:.4f}",
+        f"- test macro F1 at val threshold: {test_at_val_threshold['macro_f1']:.4f}",
+    ]
+    (paths.models / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(json.dumps({"out_dir": str(paths.models), "pretrained": str(checkpoint_dir), "test": split_metrics["test"]}, indent=2))
+
+
+def cmd_predict_from_checkpoint(paths: Paths, *, run: bool, checkpoint_dir: Path, device: str) -> None:
+    if not run:
+        print(
+            json.dumps(
+                {
+                    "step": "predict-from-checkpoint",
+                    "checkpoint_dir": str(checkpoint_dir),
+                    "out_dir": str(paths.models),
+                },
+                indent=2,
+            )
+        )
+        return
+    checkpoint_dir = checkpoint_dir.resolve()
+    ckpt_path = checkpoint_dir / "best_model.pt"
+    if not ckpt_path.exists():
+        raise FileNotFoundError(f"missing pretrained E31 checkpoint: {ckpt_path}")
+    ensure_dirs(paths)
+    torch_device = torch.device("cuda" if str(device).lower() == "cuda" and torch.cuda.is_available() else "cpu")
+    ckpt = _load_torch(ckpt_path, torch_device)
+    cfg = _train_config_from_checkpoint(dict(ckpt.get("config", {})), device=str(torch_device))
+    protocol, X, y, factors, norm = load_train_arrays(paths, ckpt.get("normalization"))
+    model = LeadWiseSharedConformer(cfg.width, cfg.layers, cfg.heads, factors.shape[1]).to(torch_device)
+    state = ckpt.get("model_state_dict", ckpt.get("model_state"))
+    if state is None:
+        raise KeyError(f"checkpoint has no model_state_dict/model_state: {ckpt_path}")
+    model.load_state_dict(state, strict=True)
+    model.eval()
+    _write_pretrained_eval_outputs(
+        paths,
+        model=model,
+        cfg=cfg,
+        protocol=protocol,
+        X=X,
+        y=y,
+        factors=factors,
+        norm=norm,
+        device=torch_device,
+        checkpoint_dir=checkpoint_dir,
+    )
 
 
 def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:

@@ -12,6 +12,7 @@ from src.sqi_pipeline.models.svm_rbf import SVMConfig, SVMRBF
 from src.supplemental_transformer_experiments.sqi12_gapfill import run as sqi12
 
 from .common import Paths, binary_metrics, dry, ensure_dirs, write_json
+from .pretrained import SETA_E31_DIR, require_files, use_pretrained_on_cpu
 from .seta_sqi import ARMS, arm_dir
 
 
@@ -261,24 +262,28 @@ def _row_from_conformer(paths: Paths, *, force: bool, device: str) -> dict[str, 
     metrics_path = paths.seta / "models" / "e31_leadwise_shared" / "metrics.json"
     predictions_path = paths.seta / "models" / "e31_leadwise_shared" / "predictions.csv"
     if force or not metrics_path.exists():
-        # Same lead-wise E31-style architecture; these are the stable Set-A
-        # training parameters from the local seed sweep.
-        sqi12.cmd_train(
-            sp,
-            run=True,
-            cfg=sqi12.TrainConfig(
-                epochs=45,
-                patience=45,
-                batch_size=24,
-                grad_accum_steps=1,
-                seed=3,
-                device=device,
-                bad_class_weight=1.50,
-                lr=1.5e-4,
-                factor_weight=0.06,
-                local_weight=0.03,
-            ),
-        )
+        if use_pretrained_on_cpu(device):
+            require_files(SETA_E31_DIR, ("best_model.pt", "history.csv"))
+            sqi12.cmd_predict_from_checkpoint(sp, run=True, checkpoint_dir=SETA_E31_DIR, device=device)
+        else:
+            # Same lead-wise E31-style architecture; these are the stable Set-A
+            # training parameters from the local seed sweep.
+            sqi12.cmd_train(
+                sp,
+                run=True,
+                cfg=sqi12.TrainConfig(
+                    epochs=45,
+                    patience=45,
+                    batch_size=24,
+                    grad_accum_steps=1,
+                    seed=3,
+                    device=device,
+                    bad_class_weight=1.50,
+                    lr=1.5e-4,
+                    factor_weight=0.06,
+                    local_weight=0.03,
+                ),
+            )
     obj = json.loads(metrics_path.read_text(encoding="utf-8"))
     _, val_met, met = _acceptability_preserving_threshold(predictions_path)
     cm = met["confusion"]

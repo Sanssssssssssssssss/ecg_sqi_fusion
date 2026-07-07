@@ -20,6 +20,7 @@ from src.transformer_pipeline.data_v1_gapfill.support import run_gm_mechanism_re
 
 from .common import ROOT, Paths, dry, ensure_dirs, rel, table_to_md, write_json
 from .figures import _save
+from .pretrained import BUT_ARCHITECTURE_ABLATION_DIR, require_files, use_pretrained_on_cpu
 
 
 SEEDS = [20260876, 20260877, 20260878]
@@ -397,6 +398,19 @@ def _validate_split(seed_root: Path) -> dict[str, Any]:
     return {"train": train, "test": test, "test_generated_rows": generated_test}
 
 
+def _install_pretrained(paths: Paths, seed: int, *, force: bool) -> Path:
+    src = BUT_ARCHITECTURE_ABLATION_DIR / f"s{seed}"
+    dst = paths.out / "but_architecture_ablation" / f"s{seed}"
+    require_files(BUT_ARCHITECTURE_ABLATION_DIR, ("split_audits.json",))
+    if not src.exists():
+        raise FileNotFoundError(f"missing pretrained architecture ablation seed: {src}")
+    if force and dst.exists():
+        shutil.rmtree(dst)
+    if not dst.exists():
+        shutil.copytree(src, dst)
+    return dst
+
+
 def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> dict[str, Any]:
     if not execute:
         dry("but-architecture-ablation", paths)
@@ -404,14 +418,24 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
     ensure_dirs(paths)
     rows: list[pd.DataFrame] = []
     split_audits: dict[str, Any] = {}
+    pretrained_cpu = use_pretrained_on_cpu(device)
+    pretrained_split_audits = (
+        json.loads((BUT_ARCHITECTURE_ABLATION_DIR / "split_audits.json").read_text(encoding="utf-8"))
+        if pretrained_cpu and (BUT_ARCHITECTURE_ABLATION_DIR / "split_audits.json").exists()
+        else {}
+    )
     for seed in SEEDS:
         seed_root = paths.out / "but_architecture_ablation" / f"s{seed}"
-        for candidate in ORDER:
-            done = seed_root / "runs" / f"{candidate}_fold0_seed0" / "test_predictions.npz"
-            if force or not done.exists():
-                print(f"[architecture-ablation] running seed={seed} candidate={candidate}", flush=True)
-                _run_candidate(paths, seed, candidate, device=device)
-        split_audits[str(seed)] = _validate_split(seed_root)
+        if pretrained_cpu:
+            seed_root = _install_pretrained(paths, seed, force=force)
+            split_audits[str(seed)] = pretrained_split_audits.get(str(seed), {})
+        else:
+            for candidate in ORDER:
+                done = seed_root / "runs" / f"{candidate}_fold0_seed0" / "test_predictions.npz"
+                if force or not done.exists():
+                    print(f"[architecture-ablation] running seed={seed} candidate={candidate}", flush=True)
+                    _run_candidate(paths, seed, candidate, device=device)
+            split_audits[str(seed)] = _validate_split(seed_root)
         rows.append(_test_rows(seed_root, seed))
     raw = pd.concat(rows, ignore_index=True)
     raw["candidate"] = pd.Categorical(raw["candidate"], ORDER, ordered=True)

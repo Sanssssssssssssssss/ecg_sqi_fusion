@@ -19,6 +19,7 @@ from src.sqi_pipeline.qrs import setup_paper_detectors
 from src.sqi_pipeline.models import lm_mlp_search
 from src.supplemental_transformer_experiments.but_sqi_baseline import run as but_sqi
 from src.supplemental_transformer_experiments.chapter4_evidence import audit as chapter4_audit
+from src.supplemental_transformer_experiments.chapter4_evidence import but_models
 from src.supplemental_transformer_experiments.chapter4_evidence import run as chapter4_run
 from src.supplemental_transformer_experiments.chapter4_evidence import seta_models
 from src.supplemental_transformer_experiments.chapter4_evidence.common import Paths as Chapter4Paths
@@ -344,3 +345,59 @@ def test_seta_models_runs_svm_before_reading_svm_rows(tmp_path, monkeypatch):
     assert calls[0] == "run-svm"
     assert out["outputs"]["model_comparison"][0]["model"] == "SQI SVM-RBF selected5"
     assert (paths.tables / "seta_repaired_model_comparison.csv").exists()
+
+
+def test_seta_conformer_cpu_uses_pretrained_instead_of_training(tmp_path, monkeypatch):
+    paths = Chapter4Paths(tmp_path / "chapter4")
+    checkpoint_dir = tmp_path / "pretrained" / "seta_e31_leadwise_shared"
+    checkpoint_dir.mkdir(parents=True)
+    (checkpoint_dir / "best_model.pt").write_bytes(b"checkpoint")
+    (checkpoint_dir / "history.csv").write_text("epoch,val_acc\n1,1.0\n", encoding="utf-8")
+    calls: list[tuple[str, Path, str]] = []
+
+    def fake_predict(sp, *, run, checkpoint_dir, device):
+        calls.append(("predict", Path(checkpoint_dir), device))
+        sp.models.mkdir(parents=True, exist_ok=True)
+        (sp.models / "metrics.json").write_text("{}", encoding="utf-8")
+        (sp.models / "predictions.csv").write_text("split,y,prob_acceptable,pred_fixed\n", encoding="utf-8")
+
+    def forbidden_train(*args, **kwargs):
+        raise AssertionError("CPU reproduction must not retrain Set-A Conformer by default")
+
+    val_met = {
+        "acc": 1.0,
+        "macro_f1": 1.0,
+        "acceptable_recall": 1.0,
+        "original_unacceptable_recall": 1.0,
+    }
+    test_met = {
+        "threshold": 0.5,
+        "acc": 1.0,
+        "auc": 1.0,
+        "acceptable_recall": 1.0,
+        "original_unacceptable_recall": 1.0,
+        "confusion": {"tn": 1, "fp": 0, "fn": 0, "tp": 1},
+    }
+
+    monkeypatch.delenv("ECG_ALLOW_CPU_CONFORMER_TRAIN", raising=False)
+    monkeypatch.setattr(seta_models, "SETA_E31_DIR", checkpoint_dir)
+    monkeypatch.setattr(seta_models.sqi12, "cmd_predict_from_checkpoint", fake_predict)
+    monkeypatch.setattr(seta_models.sqi12, "cmd_train", forbidden_train)
+    monkeypatch.setattr(seta_models, "_acceptability_preserving_threshold", lambda path: (0.5, val_met, test_met))
+    monkeypatch.setattr(seta_models, "_fixed_original_bad_recall", lambda path: {})
+
+    row = seta_models._row_from_conformer(paths, force=True, device="cpu")
+
+    assert calls == [("predict", checkpoint_dir, "cpu")]
+    assert row["run_id"] == "seta_smc_gapfill_e31style_waveform"
+
+
+def test_but_e31_predictions_falls_back_to_pretrained(tmp_path, monkeypatch):
+    pretrained = tmp_path / "but_e31_query_mean_fused_conformer"
+    pretrained.mkdir(parents=True)
+    np.savez(pretrained / "test_predictions.npz", y=np.array([0]), probs=np.array([[1.0, 0.0, 0.0]]))
+
+    monkeypatch.setattr(but_models, "E31_QUERY_MEAN_ARTIFACT", "missing_artifact_for_test")
+    monkeypatch.setattr(but_models, "BUT_E31_QUERY_MEAN_DIR", pretrained)
+
+    assert but_models._find_e31_predictions() == (pretrained / "test_predictions.npz").resolve()

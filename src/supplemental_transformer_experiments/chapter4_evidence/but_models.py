@@ -14,6 +14,7 @@ from src.supplemental_transformer_experiments.but_sqi_baseline import run as but
 
 from src.sqi_pipeline.models.lm_mlp import LMConfig, LMMLP
 from .common import Paths, binary_metrics, dry, ensure_dirs, multiclass_summary, read_json, write_json
+from .pretrained import BUT_E31_QUERY_MEAN_DIR
 
 SELECTED5_SQI = {"bSQI", "basSQI", "kSQI", "sSQI", "fSQI"}
 SVM_RBF_C = 1.0
@@ -41,9 +42,13 @@ def _find_e31_predictions() -> Path:
     run_root = Path("outputs") / "transformer" / "v116_e31" / "runs"
     roots = list(run_root.glob(f"**/{E31_QUERY_MEAN_ARTIFACT}/test_predictions.npz"))
     if not roots:
-        raise FileNotFoundError(f"missing E31 query-mean predictions under {run_root}")
+        pretrained = BUT_E31_QUERY_MEAN_DIR / "test_predictions.npz"
+        if pretrained.exists():
+            roots = [pretrained]
+        else:
+            raise FileNotFoundError(f"missing E31 query-mean predictions under {run_root} or {BUT_E31_QUERY_MEAN_DIR}")
     pred = roots[0].resolve()
-    if E31_QUERY_MEAN_ARTIFACT not in pred.as_posix():
+    if E31_QUERY_MEAN_ARTIFACT not in pred.as_posix() and BUT_E31_QUERY_MEAN_DIR.name not in pred.as_posix():
         raise RuntimeError(f"E31 artifact/label mismatch: {pred}")
     return pred
 

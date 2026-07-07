@@ -1,0 +1,41 @@
+{
+  "20260876": {
+    "train": {
+      "good": 8310,
+      "medium": 8310,
+      "bad": 8310
+    },
+    "test": {
+      "good": 1053,
+      "medium": 632,
+      "bad": 164
+    },
+    "test_generated_rows": 0
+  },
+  "20260877": {
+    "train": {
+      "good": 8310,
+      "medium": 8310,
+      "bad": 8310
+    },
+    "test": {
+      "good": 1053,
+      "medium": 632,
+      "bad": 164
+    },
+    "test_generated_rows": 0
+  },
+  "20260878": {
+    "train": {
+      "good": 8310,
+      "medium": 8310,
+      "bad": 8310
+    },
+    "test": {
+      "good": 1053,
+      "medium": 632,
+      "bad": 164
+    },
+    "test_generated_rows": 0
+  }
+}
