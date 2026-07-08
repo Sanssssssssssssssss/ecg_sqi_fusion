@@ -54,21 +54,21 @@ val/test generated rows: 0
 candidate types: original_but, but_native_morph, ptb_morph, clean_style
 ```
 
-## Full Reproduction
+## External Full Reproduction
 
-Full report reproduction is launched from the tracked `reproduce/` entrypoint.
-It writes generated data under `../reproduce/work/`, not into this checkout:
+Full report reproduction is intentionally orchestrated from a sibling
+workspace folder, not from a tracked `reproduce/` directory inside this repo:
 
 ```bash
-python reproduce/run_reproduce.py --target baseline-cinc2011
-python reproduce/run_reproduce.py --target baseline-but
-python reproduce/run_reproduce.py --target conformer-cinc2011
-python reproduce/run_reproduce.py --target conformer-but
+python ../reproduce/run_reproduce.py --target baseline-cinc2011
+python ../reproduce/run_reproduce.py --target baseline-but
+python ../reproduce/run_reproduce.py --target conformer-cinc2011
+python ../reproduce/run_reproduce.py --target conformer-but
 ```
 
-The controller installs dependencies in an external virtual environment and
-uses `ECG_V116_ARTIFACTS_DIR` internally to keep BUT v116 artifacts outside
-tracked `outputs/`.
+That external controller fresh-clones this repository, installs dependencies in
+an external virtual environment, and writes all generated data under
+`../reproduce/work/`.
 For paper SQI targets, set `WFDB_QRS_KIT_FROM_BIN_DIR` or the
 `WFDB_QRS_KIT_*_EXE` variables before launching the controller, unless the
 detectors are already on `PATH` or installed in the `wfdb-qrs-kit` cache.

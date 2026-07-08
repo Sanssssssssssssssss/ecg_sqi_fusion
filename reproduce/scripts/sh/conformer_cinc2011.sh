@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-bash "$(dirname "$0")/_run_target.sh" conformer-cinc2011 "$@"

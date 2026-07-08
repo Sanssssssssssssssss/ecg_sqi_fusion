@@ -14,7 +14,7 @@ from sklearn.preprocessing import StandardScaler
 
 from .common import ROOT, Paths, dry, ensure_dirs, feature_cols, read_json
 from .seta_sqi import arm_dir
-from src.transformer_pipeline.data_v1_gapfill.common import ARTIFACTS, protocol_dir, split_dir
+from src.transformer_pipeline.data_v1_gapfill.common import protocol_dir, split_dir
 
 BUT_ALL7_MODEL = "SQI SVM-RBF single-lead all7"
 BUT_E31_MODEL = "E31 query-mean fused Conformer"
@@ -691,7 +691,7 @@ def _fig_m4(paths: Paths) -> Path:
             chosen[f"{kind}_{name}"] = [float(by_record.loc[str(rid), col]) for rid in chosen[f"{kind}_record_id"]]
     chosen.to_csv(paths.source_data / "fig_M4_selection.csv", index=False)
 
-    signals = np.load(ARTIFACTS / "source" / "processed_butqdb" / "signals.npz", allow_pickle=True)["X"]
+    signals = np.load(Path("outputs") / "transformer" / "v116_e31" / "source" / "processed_butqdb" / "signals.npz", allow_pickle=True)["X"]
     time = np.arange(signals.shape[-1]) / 125.0
     wave_rows: list[dict[str, Any]] = []
     fig, ax = plt.subplots(len(chosen), 2, figsize=(7.4, 5.4), sharex=True, sharey=True)

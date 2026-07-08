@@ -1,8 +1,6 @@
 import sys
 import os
 import json
-import importlib
-import importlib.util
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -179,72 +177,6 @@ def test_gapfill_subprocess_python_is_unbuffered():
     assert gapfill_common.unbuffer_python_command(["python", "script.py"]) == ["python", "-u", "script.py"]
     assert gapfill_common.unbuffer_python_command(["python", "-u", "script.py"]) == ["python", "-u", "script.py"]
     assert gapfill_common.unbuffer_python_command(["cmd", "/c", "echo", "ok"]) == ["cmd", "/c", "echo", "ok"]
-
-
-def test_v116_artifacts_dir_can_be_external(tmp_path, monkeypatch):
-    external = tmp_path / "v116"
-    monkeypatch.setenv("ECG_V116_ARTIFACTS_DIR", str(external))
-    reloaded = importlib.reload(gapfill_common)
-    support_path = Path(__file__).resolve().parents[1] / "src" / "transformer_pipeline" / "data_v1_gapfill" / "support" / "support_paths.py"
-    spec = importlib.util.spec_from_file_location("support_paths_for_test", support_path)
-    assert spec and spec.loader
-    support_paths = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(support_paths)
-
-    assert reloaded.ARTIFACTS == external
-    assert support_paths.OUT_ROOT == external
-    assert reloaded.protocol_dir() == external / "analysis" / "good_medium_geometry_repair" / "clean_but_protocols" / reloaded.POLICY
-
-    monkeypatch.delenv("ECG_V116_ARTIFACTS_DIR", raising=False)
-    importlib.reload(gapfill_common)
-
-
-def test_reproduce_audit_maps_outputs_to_external_artifacts(tmp_path):
-    runner_path = Path(__file__).resolve().parents[1] / "reproduce" / "run_reproduce.py"
-    spec = importlib.util.spec_from_file_location("reproduce_runner_for_test", runner_path)
-    assert spec and spec.loader
-    runner = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(runner)
-
-    mapped = runner.generated_path(
-        "outputs/transformer/v116_e31/source/cleanbut_support_assets.json",
-        tmp_path / "repo",
-        tmp_path / "run",
-    )
-
-    assert mapped == tmp_path / "run" / "artifacts" / "transformer" / "v116_e31" / "source" / "cleanbut_support_assets.json"
-
-
-def test_reproduce_data_root_is_external_for_empty_clone(tmp_path):
-    runner_path = Path(__file__).resolve().parents[1] / "reproduce" / "run_reproduce.py"
-    spec = importlib.util.spec_from_file_location("reproduce_runner_data_for_test", runner_path)
-    assert spec and spec.loader
-    runner = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(runner)
-
-    repo = tmp_path / "repo"
-    external_data = tmp_path / "run" / "data"
-    repo.mkdir()
-
-    data_dir, mode = runner.ensure_repo_data(repo, external_data)
-
-    assert data_dir == external_data
-    assert mode in {"junction", "symlink"}
-    assert (repo / "data").exists()
-
-
-def test_reproduce_command_plan_writes_external_artifacts(tmp_path):
-    runner_path = Path(__file__).resolve().parents[1] / "reproduce" / "run_reproduce.py"
-    spec = importlib.util.spec_from_file_location("reproduce_runner_commands_for_test", runner_path)
-    assert spec and spec.loader
-    runner = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(runner)
-
-    commands = runner.command_plan("conformer-but", Path("python"), tmp_path / "repo", "cpu", tmp_path / "run")
-    joined = "\n".join(" ".join(map(str, cmd)) for _, cmd in commands)
-
-    assert "outputs/" not in joined.replace("\\", "/")
-    assert str(tmp_path / "run" / "artifacts" / "transformer" / "v116_e31") in joined
 
 
 def test_v116_original_split_keeps_extra_public_rows_in_train():

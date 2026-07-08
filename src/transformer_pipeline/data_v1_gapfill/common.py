@@ -12,17 +12,7 @@ ROOT = project_root()
 RUN_TAG = "v116_e31"
 POLICY = "v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876"
 SPLIT_ALIAS = "v116gap_smc_k1_s20260876"
-
-
-def _env_path(name: str, default: Path) -> Path:
-    value = os.environ.get(name)
-    if not value:
-        return default
-    path = Path(value).expanduser()
-    return path if path.is_absolute() else ROOT / path
-
-
-ARTIFACTS = _env_path("ECG_V116_ARTIFACTS_DIR", ROOT / "outputs" / "transformer" / RUN_TAG)
+ARTIFACTS = ROOT / "outputs" / "transformer" / RUN_TAG
 ANALYSIS = ARTIFACTS / "analysis" / "good_medium_geometry_repair"
 REPORT_ANALYSIS = ARTIFACTS / "reports" / "analysis" / "good_medium_geometry_repair"
 SUPPORT = Path(__file__).resolve().parent / "support"
