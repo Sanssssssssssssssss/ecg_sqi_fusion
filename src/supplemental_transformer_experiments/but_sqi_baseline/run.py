@@ -181,7 +181,7 @@ def _require_protocol_inputs() -> None:
         raise SystemExit(
             "missing BUT v116 protocol input(s); run "
             "`python -m src.transformer_pipeline.run_all --run --train none "
-            "--artifacts-dir outputs/transformer/v116_e31 --seed 20260876` first. "
+            "--artifacts-dir <ECG_V116_ARTIFACTS_DIR> --seed 20260876` first. "
             f"Missing: {missing[:5]}"
         )
 

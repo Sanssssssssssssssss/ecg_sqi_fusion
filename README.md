@@ -91,9 +91,9 @@ outputs/reports/
 See `DATA_AVAILABILITY.md` and `REPRODUCIBILITY.md` for the compact release
 notes.
 
-Full report reproduction is orchestrated outside this repository from the
-workspace-level `../reproduce/` controller so fresh clones, temporary data, and
-generated outputs stay isolated from the main project tree.
+Full report reproduction is launched from `reproduce/`; generated outputs are
+written outside the checkout under `../reproduce/work/` so fresh clones stay
+clean.
 
 Paper-aligned SQI targets use `wfdb-qrs-kit` to manage the external
 `wqrs` and EP Limited/Hamilton detector executables; detector provenance is

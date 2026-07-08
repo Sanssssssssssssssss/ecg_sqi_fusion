@@ -13,6 +13,7 @@ import torch
 from src.supplemental_transformer_experiments.but_sqi_baseline import run as but_sqi
 
 from src.sqi_pipeline.models.lm_mlp import LMConfig, LMMLP
+from src.transformer_pipeline.data_v1_gapfill.common import ARTIFACTS
 from .common import Paths, binary_metrics, dry, ensure_dirs, multiclass_summary, read_json, write_json
 from .pretrained import BUT_E31_QUERY_MEAN_DIR
 
@@ -39,7 +40,7 @@ def _ensure_but_sqi(paths: Paths, *, force: bool, device: str) -> dict[str, Any]
 
 
 def _find_e31_predictions() -> Path:
-    run_root = Path("outputs") / "transformer" / "v116_e31" / "runs"
+    run_root = ARTIFACTS / "runs"
     roots = list(run_root.glob(f"**/{E31_QUERY_MEAN_ARTIFACT}/test_predictions.npz"))
     if not roots:
         pretrained = BUT_E31_QUERY_MEAN_DIR / "test_predictions.npz"

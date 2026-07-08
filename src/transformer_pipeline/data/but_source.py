@@ -521,7 +521,7 @@ def ensure_cleanbut_support_assets(cfg: TransformerPipelineConfig) -> dict[str, 
                 copied.append({"src": str(fallback), "dst": str(dst), "copied": ok, "method": "public_but_fallback_not_historical"})
                 continue
         if dst.name == PTB_CARRIER_POLICY:
-            default_built = cfg.root / "outputs" / "transformer" / "v116_e31" / "analysis" / "good_medium_geometry_repair" / "raw_ptbxl_carrier_protocols" / PTB_CARRIER_POLICY
+            default_built = cfg.analysis_dir / "raw_ptbxl_carrier_protocols" / PTB_CARRIER_POLICY
             if default_built.exists():
                 built = default_built
             else:

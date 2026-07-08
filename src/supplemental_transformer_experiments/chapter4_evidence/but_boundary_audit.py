@@ -14,6 +14,7 @@ from src.supplemental_transformer_experiments.but_sqi_baseline import run as but
 
 from .but_models import LM_MLP_J, SVM_RBF_C, SVM_RBF_GAMMA, _ensure_but_sqi, _find_e31_predictions, _lm_mlp_ovr_scores
 from .common import Paths, dry, ensure_dirs, write_json
+from src.transformer_pipeline.data_v1_gapfill.common import ARTIFACTS
 
 
 LABELS = ["good", "medium", "bad"]
@@ -173,7 +174,7 @@ def run(paths: Paths, *, execute: bool, force: bool, device: str = "cuda") -> di
     records["conformer_bad_prob"] = e31_prob[:, 2]
     records = _nearest_good(records, xte, xtr)
 
-    signals = np.load(Path("outputs") / "transformer" / "v116_e31" / "source" / "processed_butqdb" / "signals.npz", allow_pickle=True)["X"]
+    signals = np.load(ARTIFACTS / "source" / "processed_butqdb" / "signals.npz", allow_pickle=True)["X"]
     details = []
     bases = []
     for source_idx in pd.to_numeric(records["source_idx"], errors="raise").astype(int):

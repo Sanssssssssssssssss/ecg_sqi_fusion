@@ -1,0 +1,46 @@
+{
+  "baseline-cinc2011": [
+    {"name": "Paper QRS detector manifest", "path": "outputs/sqi_paper_aligned/qrs/tools/paper_qrs_detector_manifest.json", "required": true},
+    {"name": "SQI run summary", "path": "outputs/sqi_paper_aligned/config/run_summary_seed0.json", "required": true},
+    {"name": "Table 5 single SQI SVM", "path": "outputs/sqi_paper_aligned/models/svm/table5_12lead_single_sqi_seed0.csv", "required": true},
+    {"name": "Table 6 SQI combinations", "path": "outputs/sqi_paper_aligned/models/svm/table6_12lead_combo_sqi_seed0.csv", "required": true},
+    {"name": "Table 7 SVM selected-five", "path": "outputs/sqi_paper_aligned/models/svm/table7_svm_selected5_seed0.csv", "required": true},
+    {"name": "Table 7 MLP selected-five", "path": "outputs/sqi_paper_aligned/models/lm_mlp/tables/table7_mlp_selected5_seed0.csv", "required": true},
+    {"name": "Like-paper workbook", "path": "outputs/sqi_paper_aligned/paper_tables/paper_tables_like_paper.xlsx", "required": true}
+  ],
+  "baseline-but": [
+    {"name": "BUT v116 protocol signals", "path": "outputs/transformer/v116_e31/analysis/good_medium_geometry_repair/clean_but_protocols/v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876/signals.npz", "required": true},
+    {"name": "BUT v116 protocol metadata", "path": "outputs/transformer/v116_e31/analysis/good_medium_geometry_repair/clean_but_protocols/v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876/metadata.csv", "required": true},
+    {"name": "BUT v116 split atlas", "path": "outputs/transformer/v116_e31/analysis/good_medium_geometry_repair/event_factorized_sqi_conformer/rh_splits/v116gap_smc_k1_s20260876/fold0/original_region_atlas.csv", "required": true},
+    {"name": "BUT SQI record7", "path": "outputs/transformer/supplemental/but_sqi_baseline/features/record7.parquet", "required": true},
+    {"name": "BUT SQI summary", "path": "outputs/transformer/supplemental/but_sqi_baseline/reports/but_sqi_baseline_summary.json", "required": true}
+  ],
+  "conformer-cinc2011": [
+    {"name": "Paper QRS detector manifest", "path": "outputs/sqi_paper_aligned/qrs/tools/paper_qrs_detector_manifest.json", "required": true},
+    {"name": "Set-A construction audit", "path": "outputs/transformer/supplemental/chapter4_evidence/tables/seta_construction_source_audit.csv", "required": true},
+    {"name": "Set-A repair metrics", "path": "outputs/transformer/supplemental/chapter4_evidence/tables/seta_distribution_repair_metrics.csv", "required": true},
+    {"name": "Set-A model comparison", "path": "outputs/transformer/supplemental/chapter4_evidence/tables/seta_repaired_model_comparison.csv", "required": true},
+    {"name": "Fig D1 source data", "path": "outputs/transformer/supplemental/chapter4_evidence/figures/source_data/fig_D1_metrics.csv", "required": true},
+    {"name": "Fig M1 source data", "path": "outputs/transformer/supplemental/chapter4_evidence/figures/source_data/fig_M1_models.csv", "required": true}
+  ],
+  "conformer-but": [
+    {"name": "BUT model comparison", "path": "outputs/transformer/supplemental/chapter4_evidence/tables/but_model_comparison.csv", "required": true},
+    {"name": "BUT boundary audit", "path": "outputs/transformer/supplemental/chapter4_evidence/tables/but_good_medium_boundary_audit.csv", "required": true},
+    {"name": "BUT query patching", "path": "outputs/transformer/supplemental/chapter4_evidence/tables/but_query_patching_summary.csv", "required": true},
+    {"name": "Fig D4 source data", "path": "outputs/transformer/supplemental/chapter4_evidence/figures/source_data/fig_D4_but_medium_bad_counts.csv", "required": true},
+    {"name": "Fig M2 source data", "path": "outputs/transformer/supplemental/chapter4_evidence/figures/source_data/fig_M2_but_models.csv", "required": true}
+  ],
+  "sqi-supplemental": [
+    {"name": "Paper QRS detector manifest", "path": "outputs/sqi_paper_aligned/qrs/tools/paper_qrs_detector_manifest.json", "required": true},
+    {"name": "Strict Table 6", "path": "outputs/sqi_supplemental/existing_seed0/strict_table6/strict_table6_auc_summary.csv", "required": true},
+    {"name": "Selected-five diagnostics", "path": "outputs/sqi_supplemental/existing_seed0/model_diagnostics/selected5_source_bootstrap_metrics.csv", "required": true},
+    {"name": "Cross-noise generalization", "path": "outputs/sqi_supplemental/existing_seed0/generalization/cross_noise_generalization_svm.csv", "required": true},
+    {"name": "Supplemental summary", "path": "outputs/reports/sqi_supplemental/existing_seed0/supplemental_protocol_summary.md", "required": true}
+  ],
+  "transformer-supplemental": [
+    {"name": "M6 time-local transplant", "path": "outputs/transformer/supplemental/chapter4_evidence/tables/but_time_local_transplant_summary.csv", "required": true},
+    {"name": "M7 architecture ablation", "path": "outputs/transformer/supplemental/chapter4_evidence/tables/but_architecture_ablation_summary.csv", "required": true},
+    {"name": "M8 local degradation", "path": "outputs/transformer/supplemental/chapter4_evidence/tables/but_sqi_locked_local_degradation_summary.csv", "required": true},
+    {"name": "M9 segment transplant", "path": "outputs/transformer/supplemental/chapter4_evidence/tables/but_real_pair_segment_transplant_summary.csv", "required": true}
+  ]
+}
