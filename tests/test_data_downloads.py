@@ -58,22 +58,16 @@ def test_challenge_seta_missing_downloads_only_missing_records(tmp_path, monkeyp
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text("1002603\n", encoding="utf-8")
 
-    seen: dict[str, object] = {}
-
-    def fake_dl_database(slug: str, *, dl_dir: str, records: list[str]) -> None:
-        seen["slug"] = slug
-        seen["records"] = records
-        set_a = Path(dl_dir) / "set-a"
-        set_a.mkdir(parents=True, exist_ok=True)
-        (set_a / "1002603.hea").write_text("header\n", encoding="utf-8")
-        (set_a / "1002603.dat").write_bytes(b"data")
+    def forbidden_download(*args, **kwargs):
+        raise AssertionError("Challenge Set-A uses direct file downloads")
 
     monkeypatch.setattr(data_downloads, "_download_url", fake_download_url)
-    monkeypatch.setattr(data_downloads.wfdb, "dl_database", fake_dl_database)
+    monkeypatch.setattr(data_downloads.wfdb, "dl_database", forbidden_download)
 
     data_downloads.ensure_wfdb_database("challenge-2011", challenge_root, ("set-a",))
 
-    assert seen == {"slug": "challenge-2011", "records": ["set-a/1002603"]}
+    assert (challenge_root / "set-a" / "1002603.hea").exists()
+    assert (challenge_root / "set-a" / "1002603.dat").exists()
     assert (challenge_root / ".download_complete.json").exists()
 
 

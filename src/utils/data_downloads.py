@@ -80,12 +80,8 @@ def _read_record_ids(path: Path) -> list[str]:
     return ids
 
 
-def _challenge_seta_dir(target: Path) -> Path:
-    return target / "set-a"
-
-
 def _challenge_seta_missing(target: Path) -> list[Path]:
-    set_a = _challenge_seta_dir(target)
+    set_a = target / "set-a"
     missing: list[Path] = []
     for name in CHALLENGE_2011_SETA_FILES:
         path = set_a / name
@@ -104,23 +100,18 @@ def _challenge_seta_missing(target: Path) -> list[Path]:
     return missing
 
 
-def _challenge_seta_complete(target: Path) -> bool:
-    return target.exists() and not _challenge_seta_missing(target)
-
-
 def _download_challenge_2011_seta(target: Path) -> None:
-    set_a = _challenge_seta_dir(target)
+    set_a = target / "set-a"
     set_a.mkdir(parents=True, exist_ok=True)
     for name in CHALLENGE_2011_SETA_FILES:
         _download_url(urljoin(CHALLENGE_2011_BASE_URL, name), set_a / name)
 
     record_ids = _read_record_ids(set_a / "RECORDS")
-    missing_records = []
-    for rid in record_ids:
+    for i, rid in enumerate(record_ids, start=1):
         if not (_nonempty(set_a / f"{rid}.hea") and _nonempty(set_a / f"{rid}.dat")):
-            missing_records.append(f"set-a/{rid}")
-    if missing_records:
-        wfdb.dl_database("challenge-2011", dl_dir=str(target), records=missing_records)
+            print(f"Downloading Challenge 2011 Set-A record {i}/{len(record_ids)}: {rid}", flush=True)
+            _download_url(urljoin(CHALLENGE_2011_BASE_URL, f"{rid}.hea"), set_a / f"{rid}.hea")
+            _download_url(urljoin(CHALLENGE_2011_BASE_URL, f"{rid}.dat"), set_a / f"{rid}.dat")
 
 
 def _but_record_ids(target: Path) -> list[str]:
@@ -192,7 +183,7 @@ def _ptbxl_complete(target: Path) -> bool:
 
 def ensure_wfdb_database(slug: str, target: Path, required: tuple[str, ...]) -> None:
     target = Path(target)
-    if slug == "challenge-2011" and _challenge_seta_complete(target):
+    if slug == "challenge-2011" and target.exists() and not _challenge_seta_missing(target):
         _write_marker(target, slug, ["set-a"])
         return
     if slug == "butqdb" and _but_complete(target):
