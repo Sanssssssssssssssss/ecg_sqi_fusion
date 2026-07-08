@@ -9,6 +9,10 @@ from urllib.request import Request, urlopen
 import wfdb
 
 
+CHALLENGE_2011_SETA_FILES = ("RECORDS", "RECORDS-acceptable", "RECORDS-unacceptable")
+CHALLENGE_2011_BASE_URL = "https://physionet.org/files/challenge-2011/1.0.0/set-a/"
+
+
 def _nonempty(path: Path) -> bool:
     return path.exists() and (path.is_dir() or path.stat().st_size > 0)
 
@@ -60,12 +64,70 @@ def _generic_complete(target: Path, required: tuple[str, ...]) -> bool:
     return True
 
 
+def _read_record_ids(path: Path) -> list[str]:
+    if not path.exists():
+        return []
+    ids: list[str] = []
+    seen: set[str] = set()
+    for line in path.read_text(errors="ignore").splitlines():
+        value = line.strip()
+        if not value:
+            continue
+        rid = Path(value.replace("\\", "/").split("/")[-1]).stem
+        if rid and rid not in seen:
+            seen.add(rid)
+            ids.append(rid)
+    return ids
+
+
+def _challenge_seta_dir(target: Path) -> Path:
+    return target / "set-a"
+
+
+def _challenge_seta_missing(target: Path) -> list[Path]:
+    set_a = _challenge_seta_dir(target)
+    missing: list[Path] = []
+    for name in CHALLENGE_2011_SETA_FILES:
+        path = set_a / name
+        if not _nonempty(path):
+            missing.append(path)
+
+    record_ids = _read_record_ids(set_a / "RECORDS")
+    if not record_ids:
+        return missing or [set_a / "RECORDS"]
+
+    for rid in record_ids:
+        for suffix in (".hea", ".dat"):
+            path = set_a / f"{rid}{suffix}"
+            if not _nonempty(path):
+                missing.append(path)
+    return missing
+
+
+def _challenge_seta_complete(target: Path) -> bool:
+    return target.exists() and not _challenge_seta_missing(target)
+
+
+def _download_challenge_2011_seta(target: Path) -> None:
+    set_a = _challenge_seta_dir(target)
+    set_a.mkdir(parents=True, exist_ok=True)
+    for name in CHALLENGE_2011_SETA_FILES:
+        _download_url(urljoin(CHALLENGE_2011_BASE_URL, name), set_a / name)
+
+    record_ids = _read_record_ids(set_a / "RECORDS")
+    missing_records = []
+    for rid in record_ids:
+        if not (_nonempty(set_a / f"{rid}.hea") and _nonempty(set_a / f"{rid}.dat")):
+            missing_records.append(f"set-a/{rid}")
+    if missing_records:
+        wfdb.dl_database("challenge-2011", dl_dir=str(target), records=missing_records)
+
+
 def _but_record_ids(target: Path) -> list[str]:
     records = target / "RECORDS"
     if records.exists():
-        ids = set()
-        for line in records.read_text(errors="ignore").splitlines():
-            value = line.strip().split("/")[-1]
+        ids: set[str] = set()
+        for value in _read_record_ids(records):
             if value.endswith(("_ECG", "_ACC")):
                 ids.add(value.rsplit("_", 1)[0])
         if ids:
@@ -130,17 +192,31 @@ def _ptbxl_complete(target: Path) -> bool:
 
 def ensure_wfdb_database(slug: str, target: Path, required: tuple[str, ...]) -> None:
     target = Path(target)
+    if slug == "challenge-2011" and _challenge_seta_complete(target):
+        _write_marker(target, slug, ["set-a"])
+        return
     if slug == "butqdb" and _but_complete(target):
         _write_marker(target, slug, ["butqdb_records"])
         return
     if slug == "ptb-xl" and _ptbxl_complete(target):
         _write_marker(target, slug, ["ptbxl_database.csv", "records100"])
         return
-    if slug not in {"butqdb", "ptb-xl"} and _generic_complete(target, required):
+    if slug not in {"challenge-2011", "butqdb", "ptb-xl"} and _generic_complete(target, required):
         _write_marker(target, slug, list(required))
         return
     _require_download_allowed(slug, target)
     target.mkdir(parents=True, exist_ok=True)
+    if slug == "challenge-2011":
+        _download_challenge_2011_seta(target)
+        missing = _challenge_seta_missing(target)
+        if missing:
+            examples = ", ".join(str(p) for p in missing[:5])
+            raise FileNotFoundError(
+                f"Challenge 2011 Set-A download incomplete; missing {len(missing)} file(s), "
+                f"examples: {examples}"
+            )
+        _write_marker(target, slug, ["set-a"])
+        return
     if slug == "butqdb":
         _download_butqdb(target)
         missing = _but_missing(target)
@@ -152,7 +228,7 @@ def ensure_wfdb_database(slug: str, target: Path, required: tuple[str, ...]) -> 
     wfdb.dl_database(slug, dl_dir=str(target))
     if slug == "ptb-xl" and not _ptbxl_complete(target):
         raise FileNotFoundError(f"PTB-XL download incomplete at {target}")
-    if slug not in {"ptb-xl"} and not _generic_complete(target, required):
+    if slug not in {"challenge-2011", "ptb-xl"} and not _generic_complete(target, required):
         raise FileNotFoundError(f"{slug} download incomplete at {target}")
     _write_marker(target, slug, list(required))
 
@@ -160,7 +236,7 @@ def ensure_wfdb_database(slug: str, target: Path, required: tuple[str, ...]) -> 
 def ensure_sqi_raw_data(root: Path) -> None:
     physionet = Path(root) / "data" / "physionet"
     ensure_wfdb_database("challenge-2011", physionet / "challenge-2011", ("set-a",))
-    ensure_wfdb_database("nstdb", physionet / "nstdb", ("em.hea", "ma.hea"))
+    ensure_wfdb_database("nstdb", physionet / "nstdb", ("em.hea", "em.dat", "ma.hea", "ma.dat"))
 
 
 def ensure_ptbxl_raw_data(root: Path) -> None:
