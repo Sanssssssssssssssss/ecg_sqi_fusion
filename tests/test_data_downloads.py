@@ -87,3 +87,26 @@ def test_sqi_raw_data_skips_download_when_complete(tmp_path, monkeypatch):
     data_downloads.ensure_sqi_raw_data(root)
 
     assert (nstdb / ".download_complete.json").exists()
+
+
+def test_butqdb_download_uses_direct_files(tmp_path, monkeypatch):
+    root = tmp_path / "butqdb"
+
+    def fake_download_url(url: str, target: Path) -> None:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if target.name == "RECORDS":
+            target.write_text("100001/100001_ACC\n100001/100001_ECG\n", encoding="utf-8")
+        else:
+            target.write_bytes(b"data")
+
+    def forbidden_wfdb_download(*args, **kwargs):
+        raise AssertionError("BUT QDB download should not use wfdb.dl_database")
+
+    monkeypatch.setattr(data_downloads, "_download_url", fake_download_url)
+    monkeypatch.setattr(data_downloads.wfdb, "dl_database", forbidden_wfdb_download)
+
+    data_downloads.ensure_wfdb_database("butqdb", root, ("100001",))
+
+    for suffix in ("ACC.hea", "ACC.dat", "ECG.hea", "ECG.dat", "ANN.csv"):
+        assert (root / "100001" / f"100001_{suffix}").exists()
+    assert (root / ".download_complete.json").exists()

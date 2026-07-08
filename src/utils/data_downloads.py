@@ -11,6 +11,7 @@ import wfdb
 
 CHALLENGE_2011_SETA_FILES = ("RECORDS", "RECORDS-acceptable", "RECORDS-unacceptable")
 CHALLENGE_2011_BASE_URL = "https://physionet.org/files/challenge-2011/1.0.0/set-a/"
+BUTQDB_BASE_URL = "https://physionet.org/files/butqdb/1.0.0/"
 
 
 def _nonempty(path: Path) -> bool:
@@ -152,23 +153,15 @@ def _but_complete(target: Path) -> bool:
 
 def _download_butqdb(target: Path) -> None:
     target.mkdir(parents=True, exist_ok=True)
-    record_names = wfdb.get_record_list("butqdb")
-    ids = sorted({Path(name).parts[0] for name in record_names if Path(name).parts})
+    for name in ["RECORDS", "SHA256SUMS.txt", "subject-info.csv", "ANNOTATORS", "LICENSE.txt"]:
+        _download_url(urljoin(BUTQDB_BASE_URL, name), target / name)
+
+    ids = _but_record_ids(target)
     for i, rid in enumerate(ids, start=1):
         print(f"Downloading BUT QDB record {i}/{len(ids)}: {rid}", flush=True)
-        wfdb.dl_database(
-            "butqdb",
-            dl_dir=str(target),
-            records=[f"{rid}/{rid}_ACC", f"{rid}/{rid}_ECG"],
-            annotators=None,
-        )
-        _download_url(
-            f"https://physionet.org/files/butqdb/1.0.0/{rid}/{rid}_ANN.csv",
-            target / rid / f"{rid}_ANN.csv",
-        )
-    base = "https://physionet.org/files/butqdb/1.0.0/"
-    for name in ["RECORDS", "SHA256SUMS.txt", "subject-info.csv", "ANNOTATORS", "LICENSE.txt"]:
-        _download_url(urljoin(base, name), target / name)
+        for suffix in ["ACC.hea", "ACC.dat", "ECG.hea", "ECG.dat", "ANN.csv"]:
+            name = f"{rid}_{suffix}"
+            _download_url(urljoin(BUTQDB_BASE_URL, f"{rid}/{name}"), target / rid / name)
 
 
 def _ptbxl_complete(target: Path) -> bool:
