@@ -33,7 +33,7 @@ def _has_detector_pair(path: Path) -> bool:
 
 
 def _candidate_bin_dirs(root: Path, out_dir: Path) -> list[Path]:
-    env = [key for key in ["WFDB_QRS_KIT_BIN_DIR", "SQI_QRS_BIN_DIR"] if key]
+    env = ["WFDB_QRS_KIT_FROM_BIN_DIR", "WFDB_QRS_KIT_BIN_DIR", "SQI_QRS_BIN_DIR"]
     raw: list[Path] = []
     for key in env:
         value = os.environ.get(key)

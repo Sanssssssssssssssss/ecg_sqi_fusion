@@ -239,6 +239,19 @@ def test_qrs_setup_auto_discovers_detector_cache(tmp_path, monkeypatch):
     assert setup_paper_detectors._auto_bin_dir(root, root / "outputs" / "tools") == sibling_cache
 
 
+def test_qrs_setup_reads_documented_from_bin_env(tmp_path, monkeypatch):
+    root = tmp_path / "repo"
+    bin_dir = tmp_path / "detectors"
+    bin_dir.mkdir()
+    exe_suffix = ".exe" if os.name == "nt" else ""
+    (bin_dir / f"wqrs{exe_suffix}").write_bytes(b"wqrs")
+    (bin_dir / f"eplimited{exe_suffix}").write_bytes(b"eplimited")
+
+    monkeypatch.setenv("WFDB_QRS_KIT_FROM_BIN_DIR", str(bin_dir))
+
+    assert setup_paper_detectors._auto_bin_dir(root, root / "outputs" / "tools") == bin_dir
+
+
 def test_qrs_setup_reuses_complete_local_cache(tmp_path, monkeypatch):
     out = tmp_path / "qrs" / "tools"
     bin_dir = out / "bin"
