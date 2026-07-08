@@ -17,6 +17,8 @@ from src.transformer_pipeline.data_v1_gapfill import audit as gapfill_audit
 from src.transformer_pipeline.data_v1_gapfill import common as gapfill_common
 from src.transformer_pipeline.data import but_source
 from src.sqi_pipeline.qrs import setup_paper_detectors
+from src.sqi_pipeline.qrs import run_qrs_cache
+from src.sqi_pipeline.qrs.paper_detectors import PaperQRSExecutables
 from src.sqi_pipeline.models import lm_mlp_search
 from src.supplemental_transformer_experiments.but_sqi_baseline import run as but_sqi
 from src.supplemental_transformer_experiments.chapter4_evidence import audit as chapter4_audit
@@ -283,6 +285,51 @@ def test_qrs_setup_cli_summary_omits_source_urls():
     text = json.dumps(summary)
     assert "physionet.org" not in text
     assert summary["install_manifest"]["source_count"] == 1
+
+
+def test_paper_qrs_cache_auto_runs_detector_setup(tmp_path, monkeypatch):
+    split_csv = tmp_path / "split.csv"
+    split_csv.write_text("record_id\nr1\n", encoding="utf-8")
+    resampled = tmp_path / "resampled"
+    resampled.mkdir()
+    np.savez(
+        resampled / "r1.npz",
+        sig_125=np.zeros((32, 12), dtype=np.float32),
+        fs=np.array(125),
+        leads=np.array(run_qrs_cache.LEADS_12, dtype=object),
+    )
+    out = tmp_path / "qrs"
+    calls: list[Path] = []
+
+    def fake_setup(path, **kwargs):
+        calls.append(Path(path))
+        assert kwargs["require_executables"] is True
+        return {}
+
+    monkeypatch.setattr(run_qrs_cache.setup_paper_detectors, "run", fake_setup)
+    monkeypatch.setattr(
+        run_qrs_cache,
+        "resolve_paper_qrs_executables",
+        lambda params, work_dir: PaperQRSExecutables(Path("wqrs"), Path("eplimited")),
+    )
+    monkeypatch.setattr(
+        run_qrs_cache,
+        "run_paper_qrs_12lead",
+        lambda **kwargs: ([np.array([8]) for _ in run_qrs_cache.LEADS_12], [np.array([9]) for _ in run_qrs_cache.LEADS_12]),
+    )
+
+    run_qrs_cache.run(
+        {
+            "split_csv": str(split_csv),
+            "resampled_dir": str(resampled),
+            "out_dir": str(out),
+            "detector_profile": "paper",
+            "force": True,
+        }
+    )
+
+    assert calls == [out / "tools"]
+    assert (out / "r1.npz").exists()
 
 
 def test_but_source_audit_reads_long_windows_paths(tmp_path):

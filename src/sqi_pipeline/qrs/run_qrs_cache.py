@@ -10,6 +10,7 @@ import pandas as pd
 
 from src.utils.paths import project_root
 from src.sqi_pipeline.qrs.detectors import run_xqrs, run_gqrs
+from src.sqi_pipeline.qrs import setup_paper_detectors
 from src.sqi_pipeline.qrs.paper_detectors import (
     PaperQRSUnavailable,
     resolve_paper_qrs_executables,
@@ -221,6 +222,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     paper_executables = None
     paper_work_dir = Path(str(params.get("paper_qrs_work_dir") or (out_dir / "_wfdb_tmp")))
     if detector_profile == "paper":
+        setup_paper_detectors.run(out_dir / "tools", require_executables=True)
         try:
             paper_executables = resolve_paper_qrs_executables(params, out_dir)
         except PaperQRSUnavailable:
