@@ -1,6 +1,20 @@
 from __future__ import annotations
 
+import os
+
 from .common import POLICY, SUPPORT, py, run_or_print
+
+
+def cuda_available() -> bool:
+    try:
+        import torch
+    except Exception:
+        return False
+    return bool(torch.cuda.is_available())
+
+
+def allow_cpu_train() -> bool:
+    return os.environ.get("ECG_ALLOW_CPU_CONFORMER_TRAIN", "").strip().lower() in {"1", "true", "yes"}
 
 
 def command(model: str) -> list[str]:
@@ -80,5 +94,11 @@ def models(value: str) -> list[str]:
 
 
 def main(*, model: str = "E31", run: bool = False) -> None:
+    if run and not cuda_available() and not allow_cpu_train():
+        print(
+            "SKIP_GPU_REQUIRED: Conformer training was requested, but CUDA is not available. "
+            "Set ECG_ALLOW_CPU_CONFORMER_TRAIN=1 to force slow CPU training."
+        )
+        return
     for name in models(model):
         run_or_print(command(name), run=run)
