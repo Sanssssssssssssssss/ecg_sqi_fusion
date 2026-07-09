@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-
 import pytest
 
 from src.utils import data_downloads
@@ -110,3 +109,39 @@ def test_butqdb_download_uses_direct_files(tmp_path, monkeypatch):
     for suffix in ("ACC.hea", "ACC.dat", "ECG.hea", "ECG.dat", "ANN.csv"):
         assert (root / "100001" / f"100001_{suffix}").exists()
     assert (root / ".download_complete.json").exists()
+
+
+def test_download_url_retries_and_removes_partial_file(tmp_path, monkeypatch):
+    target = tmp_path / "file.dat"
+    calls = {"n": 0}
+
+    class FakeResponse:
+        def __init__(self):
+            self.done = False
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def read(self, size: int) -> bytes:
+            if calls["n"] == 1:
+                raise ConnectionResetError("reset")
+            if self.done:
+                return b""
+            self.done = True
+            return b"ok"
+
+    def fake_urlopen(req, timeout):
+        calls["n"] += 1
+        return FakeResponse()
+
+    monkeypatch.setattr(data_downloads, "urlopen", fake_urlopen)
+    monkeypatch.setattr(data_downloads.time, "sleep", lambda seconds: None)
+
+    data_downloads._download_url("https://example.test/file.dat", target, attempts=2)
+
+    assert calls["n"] == 2
+    assert target.read_bytes() == b"ok"
+    assert not target.with_suffix(".dat.tmp").exists()

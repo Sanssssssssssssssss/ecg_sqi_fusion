@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 from pathlib import Path
 from urllib.parse import urljoin
 from urllib.request import Request, urlopen
@@ -29,19 +30,29 @@ def _write_marker(target: Path, slug: str, checked: list[str]) -> None:
     )
 
 
-def _download_url(url: str, target: Path) -> None:
+def _download_url(url: str, target: Path, *, attempts: int = 3) -> None:
     if _nonempty(target):
         return
     target.parent.mkdir(parents=True, exist_ok=True)
-    req = Request(url, headers={"User-Agent": "ecg-sqi-fusion"})
     tmp = target.with_suffix(target.suffix + ".tmp")
-    with urlopen(req, timeout=120) as r, tmp.open("wb") as f:
-        while True:
-            chunk = r.read(1024 * 1024)
-            if not chunk:
-                break
-            f.write(chunk)
-    tmp.replace(target)
+    last_exc: Exception | None = None
+    for attempt in range(1, attempts + 1):
+        try:
+            req = Request(url, headers={"User-Agent": "ecg-sqi-fusion"})
+            with urlopen(req, timeout=120) as r, tmp.open("wb") as f:
+                while True:
+                    chunk = r.read(1024 * 1024)
+                    if not chunk:
+                        break
+                    f.write(chunk)
+            tmp.replace(target)
+            return
+        except Exception as exc:
+            last_exc = exc
+            tmp.unlink(missing_ok=True)
+            if attempt < attempts:
+                time.sleep(min(10, 2 * attempt))
+    raise RuntimeError(f"failed to download {url} after {attempts} attempts") from last_exc
 
 
 def _downloads_disabled() -> bool:
