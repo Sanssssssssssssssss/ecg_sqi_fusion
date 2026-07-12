@@ -1,0 +1,2 @@
+pretrained/inference/manifest.json text eol=lf
+pretrained/inference/**/*.json text eol=lf
