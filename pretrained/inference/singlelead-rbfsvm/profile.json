@@ -1,0 +1,23 @@
+{
+  "model": "singlelead-rbfsvm",
+  "model_kind": "rbf_svm",
+  "n_leads": 1,
+  "fs": 125,
+  "classes": [
+    "good",
+    "medium",
+    "bad"
+  ],
+  "feature_columns": [
+    "single__iSQI",
+    "single__bSQI",
+    "single__pSQI",
+    "single__sSQI",
+    "single__kSQI",
+    "single__fSQI",
+    "single__basSQI"
+  ],
+  "norm_stats": {
+    "columns": []
+  }
+}

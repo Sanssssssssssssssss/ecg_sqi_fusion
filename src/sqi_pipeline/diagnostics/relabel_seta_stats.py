@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 from src.utils.paths import project_root
 
-# reuse your existing modules
+# Reuse the production preprocessing and QRS stages.
 from src.sqi_pipeline.preprocess.resample_125 import run as run_resample
 from src.sqi_pipeline.qrs.run_qrs_cache import run as run_qrs
 from src.sqi_pipeline.features.make_record84 import run as run_record84

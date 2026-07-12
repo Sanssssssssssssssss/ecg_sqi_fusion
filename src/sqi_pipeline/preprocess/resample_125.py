@@ -43,13 +43,13 @@ SPLIT_CSV = "outputs/sqi/splits/split_seta_seed0_balanced.csv"
 # 500Hz cases folder: contains both clean + noisy *.npz with key 'sig_500'
 CASES_500_DIR = "outputs/sqi/cases_500"
 
-# output cache (same as your old pipeline)
+# Output cache used by the downstream SQI pipeline.
 OUT_DIR = "outputs/sqi/resampled_125"
 
 # overwrite behavior
 OVERWRITE = True  # True => always overwrite; False => skip if exists
 
-# decimate config (keep consistent with your previous 1.3)
+# Decimation settings retained for compatibility with the frozen pipeline.
 DECIMATE_FTYPE = "fir"
 DECIMATE_ZERO_PHASE = True
 

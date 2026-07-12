@@ -199,7 +199,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     out_dir.mkdir(parents=True, exist_ok=True)
     summary_csv = Path(str(params.get("qrs_summary_csv") or (out_dir / "qrs_summary.csv")))
 
-    # optional override (default keeps your constant)
+    # Optional override; otherwise retain the module default.
     global BEAT_MATCH_TOL_MS
     if "beat_match_tol_ms" in params and params["beat_match_tol_ms"] is not None:
         BEAT_MATCH_TOL_MS = int(params["beat_match_tol_ms"])

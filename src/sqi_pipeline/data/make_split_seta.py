@@ -144,7 +144,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
     logger.info("Reading manifest: %s", manifest_path)
     df = pd.read_csv(manifest_path)
 
-    # --- sanity: required columns from your manifest script ---
+    # Validate the manifest contract.
     required = ["record_id", "quality_record"]
     for c in required:
         if c not in df.columns:

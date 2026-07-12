@@ -46,7 +46,7 @@ Leave blank / mark pending for:
 
 ## Commands For The SQI Baseline Thread
 
-Run these in `E:/GPTProject2/ecg` with `.venv`:
+Run these from the repository root with `.venv`:
 
 ```powershell
 .venv\Scripts\python.exe -m src.sqi_pipeline.cli --profile paper_aligned --artifacts_dir outputs/sqi_paper_aligned_ch4_rerun --fresh --force --seed 0

@@ -1,0 +1,23 @@
+{
+  "model": "singlelead-conformer",
+  "model_kind": "GMMechanismConformer",
+  "task": "three-class ECG signal quality",
+  "classes": [
+    "good",
+    "medium",
+    "bad"
+  ],
+  "n_leads": 1,
+  "fs": 125,
+  "window_seconds": 10,
+  "checkpoint": "pretrained/chapter4/but_e31_query_mean_fused_conformer/ckpt_best.pt",
+  "channel_stats": {
+    "global_mean": 0.03171645007540971,
+    "global_std": 0.23080643580494464
+  },
+  "normalization_provenance": {
+    "policy": "v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876",
+    "split": "record-heldout fold0 train only",
+    "train_rows": 24930
+  }
+}

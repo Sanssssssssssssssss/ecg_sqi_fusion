@@ -616,8 +616,12 @@ class EventFactorizedSQIConformer(nn.Module):
         use_artifact_aux: bool = True,
         use_hierarchical_head: bool = True,
         branch_upper_block: bool = False,
+        dropout: float = 0.08,
     ):
         super().__init__()
+        dropout = float(dropout)
+        if not 0.0 <= dropout < 1.0:
+            raise ValueError("dropout must be in [0, 1)")
         self.factor_dim = int(factor_dim)
         self.use_queries = bool(use_queries)
         self.use_highres_fusion = bool(use_highres_fusion)
@@ -640,13 +644,13 @@ class EventFactorizedSQIConformer(nn.Module):
         )
         self.pos = PositionalEncoding(width)
         self.query = nn.Parameter(torch.randn(len(self.query_names), width) * 0.02)
-        self.blocks = nn.Sequential(*[ConformerBlock(width, heads) for _ in range(layers)])
-        self.physiology_blocks = nn.Sequential(*[ConformerBlock(width, heads) for _ in range(1 if branch_upper_block else 0)])
-        self.artifact_blocks = nn.Sequential(*[ConformerBlock(width, heads) for _ in range(1 if branch_upper_block else 0)])
+        self.blocks = nn.Sequential(*[ConformerBlock(width, heads, dropout) for _ in range(layers)])
+        self.physiology_blocks = nn.Sequential(*[ConformerBlock(width, heads, dropout) for _ in range(1 if branch_upper_block else 0)])
+        self.artifact_blocks = nn.Sequential(*[ConformerBlock(width, heads, dropout) for _ in range(1 if branch_upper_block else 0)])
         self.pool = AttentionPool(width)
         self.hi_cross_attn = nn.MultiheadAttention(width, heads, dropout=0.05, batch_first=True)
         self.local_heads = nn.Conv1d(width, len(LOCAL_MAP_NAMES), kernel_size=1)
-        self.factor_head = nn.Sequential(nn.LayerNorm(width * 6), nn.Linear(width * 6, 192), nn.GELU(), nn.Dropout(0.08), nn.Linear(192, factor_dim))
+        self.factor_head = nn.Sequential(nn.LayerNorm(width * 6), nn.Linear(width * 6, 192), nn.GELU(), nn.Dropout(dropout), nn.Linear(192, factor_dim))
         self.factor_override = nn.Parameter(torch.zeros(factor_dim), requires_grad=False)
         self.artifact_head = nn.Sequential(nn.LayerNorm(width), nn.Linear(width, 64), nn.GELU(), nn.Linear(64, 1))
         self.severity_head = nn.Sequential(nn.LayerNorm(width), nn.Linear(width, 64), nn.GELU(), nn.Linear(64, 1))
@@ -658,7 +662,7 @@ class EventFactorizedSQIConformer(nn.Module):
         self.boundary_family_head = nn.Sequential(nn.LayerNorm(width), nn.Linear(width, 64), nn.GELU(), nn.Linear(64, len(BOUNDARY_FAMILY_NAMES)))
         self.boundary_label_head = nn.Sequential(nn.LayerNorm(width), nn.Linear(width, 64), nn.GELU(), nn.Linear(64, 1))
         self.artifact_type_head = nn.Sequential(nn.LayerNorm(width), nn.Linear(width, 64), nn.GELU(), nn.Linear(64, len(ARTIFACT_TYPE_NAMES)))
-        self.ce_head = nn.Sequential(nn.LayerNorm(width * 2), nn.Linear(width * 2, 128), nn.GELU(), nn.Dropout(0.08), nn.Linear(128, 3))
+        self.ce_head = nn.Sequential(nn.LayerNorm(width * 2), nn.Linear(width * 2, 128), nn.GELU(), nn.Dropout(dropout), nn.Linear(128, 3))
         self.recon_head = nn.Conv1d(width, in_ch, kernel_size=1)
 
     def _maybe_patch_query(self, query_tokens: torch.Tensor, location: str) -> torch.Tensor:
@@ -811,7 +815,12 @@ def factor_loss(out: dict[str, torch.Tensor], batch: dict[str, torch.Tensor], de
     parts: dict[str, float] = {}
     for j, name in enumerate(FACTOR_COLUMNS):
         if name in RATIO_LIKE:
-            val = F.binary_cross_entropy(pred[:, j].clamp(1e-5, 1.0 - 1e-5) if name == "detector_agreement" else torch.sigmoid(pred[:, j]).clamp(1e-5, 1.0 - 1e-5), target[:, j].clamp(0.0, 1.0))
+            # Probability-form BCE is unsafe under CUDA autocast. Keep only
+            # this scalar auxiliary term in float32 so the Conformer forward
+            # and the remaining losses can still use AMP.
+            with torch.autocast(device_type=pred.device.type, enabled=False):
+                prob = pred[:, j].float() if name == "detector_agreement" else torch.sigmoid(pred[:, j].float())
+                val = F.binary_cross_entropy(prob.clamp(1e-5, 1.0 - 1e-5), target[:, j].float().clamp(0.0, 1.0))
         else:
             val = F.smooth_l1_loss(pred[:, j], target[:, j])
         losses.append(val)
@@ -1169,7 +1178,7 @@ def record_balanced_sampler(ds: CleanProtocolDataset, seed: int) -> WeightedRand
     return WeightedRandomSampler(torch.as_tensor(weights_np, dtype=torch.double), num_samples=len(weights_np), replacement=True, generator=gen)
 
 
-def make_loaders(args: argparse.Namespace, split_root: Path | None = None, fold: int = 0) -> tuple[DataLoader, DataLoader, DataLoader, CleanProtocolDataset]:
+def make_loaders(args: argparse.Namespace, split_root: Path | None = None, fold: int = 0) -> tuple[DataLoader, DataLoader, DataLoader | None, CleanProtocolDataset]:
     if split_root is None:
         source = DUAL.PROTOCOL_ROOT / str(args.policy)
         atlas_frame = None
@@ -1187,22 +1196,24 @@ def make_loaders(args: argparse.Namespace, split_root: Path | None = None, fold:
         max_rows=int(args.max_val_rows),
         seed=int(args.seed) + 1,
     )
-    test_ds = CleanProtocolDataset(
-        source,
-        "test",
-        atlas_frame=atlas_frame,
-        channel_stats=train_ds.channel_stats,
-        feature_norm=train_ds.feature_norm,
-        factor_transform=train_ds.factor_transform,
-        artifact_thresholds=train_ds.artifact_thresholds,
-        max_rows=int(args.max_test_rows),
-        seed=int(args.seed) + 2,
-    )
+    test_ds = None
+    if not bool(getattr(args, "skip_test", False)):
+        test_ds = CleanProtocolDataset(
+            source,
+            "test",
+            atlas_frame=atlas_frame,
+            channel_stats=train_ds.channel_stats,
+            feature_norm=train_ds.feature_norm,
+            factor_transform=train_ds.factor_transform,
+            artifact_thresholds=train_ds.artifact_thresholds,
+            max_rows=int(args.max_test_rows),
+            seed=int(args.seed) + 2,
+        )
     pin = torch.cuda.is_available()
     sampler = record_balanced_sampler(train_ds, int(args.seed)) if bool(args.record_balanced_sampler) else None
     train_loader = DataLoader(train_ds, batch_size=int(args.batch_size), shuffle=(sampler is None), sampler=sampler, num_workers=int(args.num_workers), pin_memory=pin)
     val_loader = DataLoader(val_ds, batch_size=int(args.batch_size) * 2, shuffle=False, num_workers=int(args.num_workers), pin_memory=pin)
-    test_loader = DataLoader(test_ds, batch_size=int(args.batch_size) * 2, shuffle=False, num_workers=int(args.num_workers), pin_memory=pin)
+    test_loader = None if test_ds is None else DataLoader(test_ds, batch_size=int(args.batch_size) * 2, shuffle=False, num_workers=int(args.num_workers), pin_memory=pin)
     return train_loader, val_loader, test_loader, train_ds
 
 

@@ -147,7 +147,7 @@ def _save_probs_npz(out_npz: Path, y01: np.ndarray, p: np.ndarray, threshold_fix
 def _fit_fixed_params(model: SVMRBF, X: np.ndarray, y: np.ndarray, *, C: float, gamma: float) -> dict[str, Any]:
     """
     Fit SVMRBF once with fixed (C, gamma), no grid search.
-    Keeps using YOUR SVMRBF object; we just build its pipeline and set params.
+    Reuses SVMRBF while constructing its pipeline with fixed parameters.
     """
     X = np.asarray(X, dtype=np.float64)
     y = np.asarray(y, dtype=int).ravel()

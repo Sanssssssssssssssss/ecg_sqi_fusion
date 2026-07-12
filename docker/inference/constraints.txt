@@ -1,0 +1,2 @@
+# The shipped sklearn bundles are exported with the Python 3.10-compatible release.
+scikit-learn==1.7.2

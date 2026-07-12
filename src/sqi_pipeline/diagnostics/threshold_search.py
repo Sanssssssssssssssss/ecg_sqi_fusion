@@ -379,8 +379,7 @@ PARAMS = {
     # -------------------------
     "waveform": {
         "enabled": True,
-        # Set this to where your cached 12-lead signals live.
-        # Examples you can use:
+        # Directory containing cached 12-lead signals, for example:
         #   "outputs/sqi/resample_125/signals"  (if you saved per record_id)
         #   "outputs/sqi/preprocess/resample_125" ...
         "signal_dir": "outputs/sqi/relabel_stats/resampled_125",
@@ -592,10 +591,9 @@ def _pick_npz_array(z: np.lib.npyio.NpzFile, prefer_key: str | None):
             raise KeyError(f"prefer_key='{prefer_key}' not found in npz keys={sorted(keys)}")
         return prefer_key, z[prefer_key]
 
-    # 2) whitelist of common waveform keys (extend if needed)
-    # IMPORTANT: put your actual cache key first
+    # 2) Whitelist common waveform keys in preferred order.
     candidates = [
-        "sig_125",   # <- your resample_125 saves this
+        "sig_125",
         "x", "X",
         "sig", "signal", "ecg", "data",
         "arr_0",
@@ -786,7 +784,7 @@ def run(params: dict) -> None:
 
         print(f"\n[FN waveform dump] saved={ok} missing_waveform={miss} -> {fn_dir}")
         if ok == 0:
-            print("  -> You need to set PARAMS['waveform']['signal_dir'/'fmt'/'pattern'] to match your cached signals.")
+            print("  -> Set PARAMS['waveform']['signal_dir'/'fmt'/'pattern'] to match the cached signals.")
 
 
 def main() -> None:

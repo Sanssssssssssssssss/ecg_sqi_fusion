@@ -128,7 +128,7 @@ def subtype_labels(frame: pd.DataFrame) -> np.ndarray:
     """Build interpretable subtype targets from waveform-computable SQI features.
 
     Priority is used only to make a single auxiliary label.  Multi-label audit is
-    saved separately so we do not forget that BW/contact/low-QRS overlap.
+    saved separately to retain the BW/contact/low-QRS overlap distinction.
     """
 
     f = add_missing_columns(frame)

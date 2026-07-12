@@ -184,13 +184,13 @@ def seed_all(seed: int) -> None:
 def build_cfg(params: dict[str, Any]) -> RunConfig:
     """
     Convert params dict into an immutable RunConfig.
-    Keeps defaults identical to your current script.
+    Retains the frozen script defaults.
     """
     verbose = bool(params.get("verbose", False))
     force = bool(params.get("force", False))
     tables = bool(params.get("tables", False))
     tables_mode = str(params.get("tables_mode", "fixedJ"))
-    j_fixed = int(params.get("J_fixed", 12))  # keep your param key
+    j_fixed = int(params.get("J_fixed", 12))
     final_patience = int(params.get("final_patience", 15))
     threshold_fixed = float(params.get("threshold_fixed", 0.7))
     threshold_mode = str(params.get("threshold_mode", "fixed"))
@@ -591,11 +591,8 @@ def train_final(data: DataSplit, cfg: RunConfig, bestJ: int) -> FinalResult:
     test_metrics_fixed = compute_metrics(data.yte, p_test, threshold=threshold)
     test_bestthr = find_maxacc_threshold(data.yte, p_test)
 
-    # store model payload (pickle dict) in train_summary? no — return only what is needed,
-    # model serialization happens in save_main_artifacts for consistency.
-    # But we DO need model object to pickle. We'll re-instantiate? expensive.
-    # Easiest: return model pickle dict via train_summary bundle.
-    # We’ll tuck it under train_summary for now (small and explicit).
+    # Return the compact model payload with the training summary so artifact
+    # serialization remains centralized in save_main_artifacts.
     train_summary = dict(train_summary)
     train_summary["_model_pickle_dict"] = m_final.to_pickle_dict()
 
@@ -991,7 +988,7 @@ def run_tables(data: DataSplit, cfg: RunConfig, paths: Paths, bestJ_global: int)
     outs.append(str(out6))
 
     # -------- Table 7 --------
-    logger.info("Table7 (MLP): selected five SQIs on 12-lead (your split proxy)")
+    logger.info("Table7 (MLP): selected five SQIs on the 12-lead split proxy")
     res7 = fit_eval_setting_from_dfm(
         dfm=dfm, split_all=split_all, y01_all=y01_all,
         cfg=cfg, paths=paths, name="Selected5", sqis=SELECTED_5,
@@ -999,7 +996,7 @@ def run_tables(data: DataSplit, cfg: RunConfig, paths: Paths, bestJ_global: int)
     )
     out7 = paths.tables_dir / f"table7_mlp_selected5_seed{cfg.seed}.csv"
     pd.DataFrame([{
-        "Setting": "your split: train/train+val earlystop, test once",
+        "Setting": "project split: train/train+val early stop, test once",
         "Selected_SQI": ",".join(SELECTED_5),
         "n_features": res7.n_features,
         "J_star": res7.J_star,

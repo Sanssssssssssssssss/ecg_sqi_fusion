@@ -393,6 +393,7 @@ class GMMechanismConformer(BaseModel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         width = int(self.query.shape[1])
+        dropout = float(ACTIVE_CFG.get("dropout", 0.08))
         factor_dim = len(EVT.FACTOR_COLUMNS)
         stats_dim = 10
         fused_dim = width + factor_dim + stats_dim
@@ -437,7 +438,7 @@ class GMMechanismConformer(BaseModel):
             nn.LayerNorm(width),
             nn.Linear(width, width),
             nn.GELU(),
-            nn.Dropout(0.08),
+            nn.Dropout(dropout),
             nn.Linear(width, 3),
         )
 
@@ -535,8 +536,8 @@ class GMMechanismConformer(BaseModel):
 
         if str(cfg.get("decision_query_fusion", "")) == "mean_direct3":
             raw_logits = self.query_mean_class_head(query.mean(dim=1))
-            probs = F.softmax(raw_logits, dim=1).clamp(1.0e-6, 1.0 - 1.0e-6)
-            logits = torch.log(probs)
+            logits = F.log_softmax(raw_logits, dim=1)
+            probs = logits.exp()
             medium_logit = raw_logits[:, 1] - raw_logits[:, 0]
             bad_logit = raw_logits[:, 2] - torch.logsumexp(raw_logits[:, :2], dim=1)
         else:
@@ -1393,6 +1394,7 @@ def suite_candidates() -> list[tuple[str, dict[str, Any]]]:
             "E31_wave_mechanism_conformer",
             {
                 **common,
+                "dropout": 0.08,
                 "factor_contract": "mechanism",
                 "gm_mode": "direct",
                 "decision_query_fusion": "mean_direct3",

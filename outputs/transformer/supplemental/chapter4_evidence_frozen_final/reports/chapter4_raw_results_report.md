@@ -11,7 +11,7 @@ This is a raw experiment report, not manuscript prose. Main sections use only cu
 | random seed | 0 |
 | data policy | split first; train-only repair; validation/test original only |
 | Set-A protocol path | outputs\transformer\supplemental\chapter4_evidence_frozen_final\seta_gapfill\data\protocol_gapfill.csv |
-| BUT protocol path | E:\GPTProject2\ecg\outputs\transformer\v116_e31\analysis\good_medium_geometry_repair\clean_but_protocols\v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876 |
+| BUT protocol path | ./outputs/transformer/v116_e31/analysis/good_medium_geometry_repair/clean_but_protocols/v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876 |
 | output root | outputs\transformer\supplemental\chapter4_evidence_frozen_final |
 | code command | python -m supplemental_transformer_experiments.chapter4_evidence.run --out chapter4_evidence_frozen_final pipeline --run |
 | config file | CLI defaults; seed=0; Python/matplotlib figures |

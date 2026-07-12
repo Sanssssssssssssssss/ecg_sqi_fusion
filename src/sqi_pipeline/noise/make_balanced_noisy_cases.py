@@ -58,7 +58,7 @@ HALF_POLICY = {"train": "first", "val": "first", "test": "second"}
 # cap for debugging (None = full)
 MAX_NEW_PER_SPLIT = None  # e.g. 50
 
-# write an audit csv (recommended). Set False if you truly hate it :)
+# Write the audit CSV unless only signal artifacts are required.
 WRITE_AUDIT_CSV = True
 # ========================================================
 
@@ -207,7 +207,7 @@ def write_case_500_npz(out_path: Path, sig500: np.ndarray, meta: dict) -> None:
         sig_500=sig500.astype(np.float32),
         fs=np.int32(FS_ECG),
         leads=np.array(LEADS_12, dtype=object),
-        # keep meta as a tiny string to avoid you hating json files on disk
+        # Store compact metadata in the NPZ rather than a separate JSON file.
         meta_str=str(meta),
     )
 
@@ -357,7 +357,7 @@ def _outputs_exist(root: Path) -> bool:
     Minimal skip check:
       - balanced split csv exists and non-empty
       - cases_500 dir exists
-    (We do NOT try to verify every npz for stability.)
+    Individual NPZ payloads are not reopened during this stability check.
     """
     out_csv = root / OUT_SPLIT_CSV
     cases_dir = root / CASES_500_DIR
@@ -437,7 +437,7 @@ def run(params: dict[str, Any]) -> dict[str, Any]:
 
     df = pd.read_csv(split_csv)
 
-    # 0) cache ALL original clean records into cases_500 first (your requirement)
+    # 0) Cache all original clean records into cases_500 first.
     logger.info("[Step0] caching all original clean 500Hz records into cases_500 ...")
     cache_all_clean_cases(df, root)
 

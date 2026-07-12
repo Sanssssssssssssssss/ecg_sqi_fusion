@@ -127,8 +127,7 @@ def make_table6_paper(df: pd.DataFrame, nd: int = 3) -> pd.DataFrame:
 # ============================================================
 def _normalize_setting(s: str) -> str:
     """
-    Map your internal names to two canonical settings used in Table7.
-    Adjust this if your CSV uses different names.
+    Map internal names to the two canonical Table 7 settings.
     """
     s = str(s)
     # common guesses:
@@ -143,7 +142,7 @@ def make_table7_paper(mlp_df: pd.DataFrame, svm_df: Optional[pd.DataFrame], nd: 
     Expect each df to contain rows for the 4 metrics, plus balanced versions (‡).
     Minimal required cols (per row):
       Setting, balanced (0/1 or False/True), Ac_test, Se_test, Sp_test, (optional) PNet
-    We'll lay out columns:
+    The output columns are:
       Training Set-a: MLP SVM | Test Set-b: MLP SVM | Training Set-b: MLP SVM | Test Set-a: MLP SVM
     Rows:
       Ac / Se / Sp / PNet, then Ac‡ / Se‡ / Sp‡ / PNet‡
@@ -199,7 +198,7 @@ def make_table7_paper(mlp_df: pd.DataFrame, svm_df: Optional[pd.DataFrame], nd: 
                 sub_s = sub[sub["Setting"] == setting]
                 if len(sub_s) == 0:
                     continue
-                # if multiple rows, take first (you can make it stricter if you want)
+                # Duplicate rows are resolved deterministically by taking the first.
                 r = sub_s.iloc[0]
 
                 # map to the 2 column groups
@@ -322,7 +321,7 @@ def main() -> None:
         outputs["Table7_MLP+SVM"] = make_table7_paper(mlp_df, svm_df, nd=nd)
 
     if not outputs:
-        raise FileNotFoundError("No input tables found. Run your svm/mlp pipelines that export tables first.")
+        raise FileNotFoundError("No input tables found. Run the SVM/MLP table-export pipelines first.")
 
     # save CSVs (note: MultiIndex will be written with extra header rows, OK)
     for name, df in outputs.items():
@@ -343,7 +342,7 @@ def main() -> None:
             title = sheet.title
             if title.startswith("Table5_"):
                 # find data range roughly: MultiIndex rows -> first col is blank, second col metric label
-                # We'll underline max in the two "Ac" rows only (best-effort)
+                # Underline maxima in the two accuracy rows when available.
                 _underline_max_in_rows(
                     sheet,
                     start_row=2, start_col=1,
@@ -351,9 +350,7 @@ def main() -> None:
                     row_names={"Ac"}
                 )
             if title.startswith("Table6_"):
-                # underline max in both accuracy columns across groups (best-effort)
-                # Here first column is index (Group), then Selected SQI, then 2 acc columns
-                # We'll just underline max within each acc column not implemented (keep simple)
+                # Accuracy-column emphasis is intentionally omitted.
                 pass
             if title.startswith("Table7_"):
                 _underline_max_in_rows(

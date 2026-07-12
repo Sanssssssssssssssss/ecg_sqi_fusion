@@ -45,7 +45,7 @@ class BaselineCfg:
     y_col: str = "y"                # expect +1 good, -1 bad
     pred_col: Optional[str] = "pred" # if present, we will print FN
 
-    # optional thresholds -> for hit_count (you can tune later)
+    # Optional thresholds used for hit_count.
     thr: Dict[str, float] = None     # type: ignore # e.g. {"BR_max": 0.8, "JS_max": 5.0}
 
 
@@ -202,7 +202,7 @@ def compute_record_metrics(cfg: BaselineCfg, sig12: np.ndarray) -> Tuple[pd.Seri
                 a = np.asarray(per_lead[name], dtype=np.float64)
                 out[f"{name}_hitcount"] = float(np.sum(a >= thr))
             else:
-                # ignore unknown keys silently (so you can iterate fast)
+                # Ignore unknown keys to preserve compatibility with older configurations.
                 pass
 
     return pd.Series(out), per_lead_named
@@ -277,8 +277,7 @@ def run(cfg: BaselineCfg) -> None:
     metric_cols = [c for c in out.columns if c.endswith("_max") or c.endswith("_top3_mean")]
     metric_cols = [c for c in metric_cols if c.split("_")[0] in {"BR", "BRng", "BSE", "JS"}]
 
-    # choose a primary score for sorting (you can change quickly)
-    # I recommend BRng_max + JS_max as "baseline issues + pops"
+    # Sort by combined baseline-range and jump scores when both are available.
     if "BRng_max" in out.columns and "JS_max" in out.columns:
         out["score_primary"] = out["BRng_max"].fillna(0) + out["JS_max"].fillna(0)
     elif "BR_max" in out.columns:
@@ -356,7 +355,7 @@ def run(cfg: BaselineCfg) -> None:
 # CLI example
 # =========================
 if __name__ == "__main__":
-    # You can hardcode exactly your PARAMS here for now (fast iteration)
+    # Standalone diagnostic defaults.
     cfg = BaselineCfg(
         in_parquet=Path(r"outputs/sqi/relabel_stats/features/record84.parquet"),
         out_dir=Path(r"outputs/sqi/relabel_stats/baseline_eval/run0"),

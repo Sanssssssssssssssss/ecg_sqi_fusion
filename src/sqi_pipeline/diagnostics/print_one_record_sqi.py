@@ -72,7 +72,6 @@ def main() -> None:
 
     sub = df[df[RID_COL].astype(str) == str(RID)]
     if len(sub) == 0:
-        # help you debug: maybe rid is int in parquet
         raise ValueError(f"record_id={RID!r} not found in {PARQUET}")
 
     r = sub.iloc[0].to_dict()

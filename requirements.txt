@@ -3,7 +3,7 @@ pandas
 scipy
 matplotlib
 wfdb
-scikit-learn
+scikit-learn==1.7.2
 torch
 pyarrow
 openpyxl

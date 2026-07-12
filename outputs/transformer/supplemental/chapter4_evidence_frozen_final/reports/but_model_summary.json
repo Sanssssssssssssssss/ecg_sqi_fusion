@@ -2,9 +2,9 @@
   "sqi_baseline": {
     "task": "BUT v116 good-vs-medium/bad classical SQI baselines",
     "note": "BUT is single-lead; one lead is copied into pseudo-12-lead SQI columns. SVM uses all 84 normalized SQIs with a linear SVM; LM-MLP reuses the SQI baseline implementation.",
-    "source_protocol": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\analysis\\good_medium_geometry_repair\\clean_but_protocols\\v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876",
-    "source_split": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\analysis\\good_medium_geometry_repair\\event_factorized_sqi_conformer\\rh_splits\\v116_gapfill_dual_goodorig_nm40__k1_s20260876\\fold0",
-    "features": "E:\\GPTProject2\\ecg\\outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\but_v116\\sqi_baseline\\features\\record84_norm.parquet",
+    "source_protocol": "./outputs/transformer/v116_e31/analysis/good_medium_geometry_repair/clean_but_protocols/v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876",
+    "source_split": "./outputs/transformer/v116_e31/analysis/good_medium_geometry_repair/event_factorized_sqi_conformer/rh_splits/v116_gapfill_dual_goodorig_nm40__k1_s20260876/fold0",
+    "features": "./outputs/transformer/supplemental/chapter4_evidence_frozen_final/but_v116/sqi_baseline/features/record84_norm.parquet",
     "split_counts_class": {
       "bad": {
         "test": 164,
@@ -53,7 +53,7 @@
     }
   },
   "e31": {
-    "prediction_path": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\runs\\gm_mechanism_repair_suite\\E31_query_mean_fused_conformer_fold0_seed0\\test_predictions.npz",
+    "prediction_path": "./outputs/transformer/v116_e31/runs/gm_mechanism_repair_suite/E31_query_mean_fused_conformer_fold0_seed0/test_predictions.npz",
     "three_class": {
       "acc": 0.9486208761492698,
       "macro_f1": 0.9576542243616153,

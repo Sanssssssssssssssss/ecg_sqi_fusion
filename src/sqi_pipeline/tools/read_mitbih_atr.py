@@ -162,8 +162,7 @@ def main() -> None:
     # dump every public attribute in ann (helps discover noise/rhythm markers)
     dump_ann(ann, print_arrays_head=50)
 
-    # optional: write a JSON snapshot of ann attributes (very handy for diff/debug)
-    # you can delete this block if you don't want files.
+    # Write an optional JSON snapshot of annotation attributes for comparison and debugging.
     ann_dump_path = root / Path("outputs/sqi/mitbih") / f"{RECORD_ID}_{ANN_EXT}_ann_dump.json"
     ann_dump_path.parent.mkdir(parents=True, exist_ok=True)
 

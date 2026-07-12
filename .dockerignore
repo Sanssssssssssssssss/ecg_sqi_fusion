@@ -1,0 +1,11 @@
+.git
+.venv
+.pytest_cache
+.benchmarks
+data
+outputs
+tmp
+report
+*.pyc
+__pycache__
+ecg_sqi_fusion.egg-info

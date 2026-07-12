@@ -64,6 +64,7 @@ python ../reproduce/run_reproduce.py --target baseline-cinc2011
 python ../reproduce/run_reproduce.py --target baseline-but
 python ../reproduce/run_reproduce.py --target conformer-cinc2011
 python ../reproduce/run_reproduce.py --target conformer-but
+python ../reproduce/run_reproduce.py --target inference-service
 ```
 
 That external controller fresh-clones this repository, installs dependencies in
@@ -86,3 +87,6 @@ Top-level `report/` is reserved for the final submitted PDF/materials.
 
 Supplemental targets are also split in the external controller as
 `sqi-supplemental` and `transformer-supplemental`.
+
+The `inference-service` target is data-free: it installs a fresh clone and
+verifies the hashes of all model files shipped in the inference container.

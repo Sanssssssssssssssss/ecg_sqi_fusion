@@ -11,7 +11,7 @@ import sys
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 
@@ -55,6 +55,7 @@ SUPPORT_BINS = ("subtle", "mid", "severe")
 @dataclass(frozen=True)
 class Paths:
     out: Path
+    model_dir_name: str = "e31_leadwise_shared"
 
     @property
     def data(self) -> Path:
@@ -70,7 +71,7 @@ class Paths:
 
     @property
     def models(self) -> Path:
-        return self.out / "models" / "e31_leadwise_shared"
+        return self.out / "models" / self.model_dir_name
 
     @property
     def manifest_csv(self) -> Path:
@@ -462,7 +463,7 @@ def _smooth_time(x: np.ndarray, width: int = 7) -> np.ndarray:
 
 
 def match_detail_to_target(y: np.ndarray, target: np.ndarray) -> np.ndarray:
-    """ponytail: cheap guard; replace with SQI-in-pool selection if this becomes mainline."""
+    """Apply a lightweight detail guard before the exact downstream evaluation."""
     out = y.astype(np.float32).copy()
     t_diff = np.percentile(np.abs(np.diff(target, axis=0)), 95, axis=0, keepdims=True)
     cap = np.maximum(1.35 * t_diff, 0.015 * np.std(target, axis=0, keepdims=True))
@@ -1629,7 +1630,14 @@ def cmd_predict_from_checkpoint(paths: Paths, *, run: bool, checkpoint_dir: Path
     )
 
 
-def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
+def cmd_train(
+    paths: Paths,
+    *,
+    run: bool,
+    cfg: TrainConfig,
+    model_factory: Callable[[int], nn.Module] | None = None,
+    model_name: str = "E31 Lead-Wise Shared Conformer",
+) -> None:
     if not run:
         print(subprocess.list2cmdline([sys.executable, "-m", "src.supplemental_transformer_experiments.sqi12_gapfill.run", "train", "--run"]))
         dry("train", paths)
@@ -1639,7 +1647,11 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
     protocol, X, y, factors, norm = load_train_arrays(paths)
     loaders, datasets = make_loaders(protocol, X, y, factors, cfg)
     device = torch.device("cuda" if cfg.device == "auto" and torch.cuda.is_available() else cfg.device if cfg.device != "auto" else "cpu")
-    model = LeadWiseSharedConformer(cfg.width, cfg.layers, cfg.heads, factors.shape[1]).to(device)
+    model = (
+        model_factory(factors.shape[1])
+        if model_factory is not None
+        else LeadWiseSharedConformer(cfg.width, cfg.layers, cfg.heads, factors.shape[1])
+    ).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     best_state: dict[str, torch.Tensor] | None = None
     best = {"epoch": 0, "val_macro_f1": -1.0, "val_acc": -1.0, "val_auc": -1.0}
@@ -1658,10 +1670,12 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
             out = model(xb)
             class_weight = torch.as_tensor([cfg.bad_class_weight, 1.0], device=device, dtype=out["logits"].dtype)
             ce = F.cross_entropy(out["logits"], yb, weight=class_weight)
-            fl = F.smooth_l1_loss(out["factor"], fb, beta=0.35)
-            local_target = pseudo_local_targets(xb, out["local_logits"].shape[-1])
-            ll = F.smooth_l1_loss(torch.tanh(out["local_logits"]), local_target)
-            loss = ce + cfg.factor_weight * fl + cfg.local_weight * ll
+            loss = ce
+            if cfg.factor_weight:
+                loss = loss + cfg.factor_weight * F.smooth_l1_loss(out["factor"], fb, beta=0.35)
+            if cfg.local_weight:
+                local_target = pseudo_local_targets(xb, out["local_logits"].shape[-1])
+                loss = loss + cfg.local_weight * F.smooth_l1_loss(torch.tanh(out["local_logits"]), local_target)
             (loss / accum).backward()
             if bi % accum == 0 or bi == len(loaders["train"]):
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
@@ -1671,12 +1685,17 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
         yv, pv = predict(model, loaders["val"], device)
         vm = metrics_binary(yv, pv)
         vm_selected = best_threshold(yv, pv)
+        pv_clip = np.clip(pv, 1e-8, 1.0 - 1e-8)
+        val_loss = float(-np.mean(yv * np.log(pv_clip) + (1 - yv) * np.log(1.0 - pv_clip)))
         row = {
             "epoch": epoch,
             "train_loss": float(np.mean(losses)),
+            "val_loss": val_loss,
             **{f"val_{k}": v for k, v in vm.items() if k != "confusion_matrix"},
             **{f"val_selected_{k}": v for k, v in vm_selected.items() if k != "confusion_matrix"},
         }
+        if not np.isfinite(row["train_loss"]) or not np.isfinite(row["val_loss"]):
+            raise FloatingPointError(f"non-finite training state at epoch {epoch}")
         history.append(row)
         fixed_ok = vm["acc"] >= 0.75
         score = (vm["macro_f1"], vm["acc"], vm["auc"]) if fixed_ok else (-1.0, -1.0, -1.0)
@@ -1724,6 +1743,7 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
         sub["pred_val_threshold"] = (sub["prob_acceptable"].to_numpy() >= val_threshold["threshold"]).astype(int)
         pred_rows.append(sub)
     metrics = {
+        "model": model_name,
         "task": "binary acceptable(1) vs unacceptable(0)",
         "config": asdict(cfg),
         "device": str(device),
@@ -1738,10 +1758,13 @@ def cmd_train(paths: Paths, *, run: bool, cfg: TrainConfig) -> None:
     paths.models.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(history).to_csv(paths.models / "history.csv", index=False)
     pd.concat(pred_rows, ignore_index=True).to_csv(paths.models / "predictions.csv", index=False)
-    torch.save({"model_state_dict": best_state, "config": asdict(cfg), "normalization": norm}, paths.models / "best_model.pt")
+    torch.save(
+        {"model_state_dict": best_state, "config": asdict(cfg), "normalization": norm, "model": model_name},
+        paths.models / "best_model.pt",
+    )
     (paths.models / "metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
     lines = [
-        "# SQI12 Gap-Fill E31 Lead-Wise Shared",
+        f"# SQI12 Gap-Fill {model_name}",
         "",
         f"- train/val/test: {metrics['n']['train']} / {metrics['n']['val']} / {metrics['n']['test']}",
         f"- best epoch: {metrics['best_epoch']}",

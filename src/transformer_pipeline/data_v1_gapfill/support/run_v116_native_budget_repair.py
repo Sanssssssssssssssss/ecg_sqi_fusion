@@ -797,7 +797,7 @@ def strict_smc_set_select(
     target_q = np.nanpercentile(target_z, [10, 50, 90], axis=0)
 
     def score(indices: np.ndarray) -> float:
-        # ponytail: fast particle score; exact support/MMD objective is computed once for the selected set.
+        # Approximate particle score; the selected set receives the exact support/MMD evaluation.
         z = pool_z[indices]
         mean_gap = float(np.nanmean(np.abs(np.nanmean(z, axis=0) - target_mean)))
         std_gap = float(np.nanmean(np.abs(np.nanstd(z, axis=0) - target_std)))

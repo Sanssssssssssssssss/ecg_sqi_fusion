@@ -92,7 +92,7 @@
       "original_but",
       "ptb_morph"
     ],
-    "protocol_path": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\analysis\\good_medium_geometry_repair\\clean_but_protocols\\v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876",
-    "split_path": "E:\\GPTProject2\\ecg\\outputs\\transformer\\v116_e31\\analysis\\good_medium_geometry_repair\\event_factorized_sqi_conformer\\rh_splits\\v116_gapfill_dual_goodorig_nm40__k1_s20260876\\fold0"
+    "protocol_path": "./outputs/transformer/v116_e31/analysis/good_medium_geometry_repair/clean_but_protocols/v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876",
+    "split_path": "./outputs/transformer/v116_e31/analysis/good_medium_geometry_repair/event_factorized_sqi_conformer/rh_splits/v116_gapfill_dual_goodorig_nm40__k1_s20260876/fold0"
   }
 }

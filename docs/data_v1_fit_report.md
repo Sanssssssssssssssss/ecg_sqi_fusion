@@ -7,8 +7,8 @@
 > current mainline.
 
 - policy: `v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876`
-- protocol path: `E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\analysis\good_medium_geometry_repair\clean_but_protocols\v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876`
-- split path: `E:\GPTProject2\ecg\outputs\external_benchmarks\e311_but_node_ladder_tuning_10s_2026_06_08\analysis\good_medium_geometry_repair\event_factorized_sqi_conformer\rh_splits\v116_gapfill_dual_goodorig_nm40__k1_s20260876\fold0`
+- protocol path: `./outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysis/good_medium_geometry_repair/clean_but_protocols/v116_gapfill_dual_goodorig_nm40_ms10_smc_s20260876`
+- split path: `./outputs/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysis/good_medium_geometry_repair/event_factorized_sqi_conformer/rh_splits/v116_gapfill_dual_goodorig_nm40__k1_s20260876/fold0`
 - selector runtime: CPU numpy/sklearn; `--device auto` is recorded but not used by the current data selector.
 
 ## Protocol Counts
@@ -101,11 +101,11 @@ bad                         15.81             28.80      54.57         0.82
 
 ## Figures
 
-- `E:\GPTProject2\ecg\docs\data_v1_figures\distribution_domain_auc.png`
-- `E:\GPTProject2\ecg\docs\data_v1_figures\distribution_pca_overlap.png`
-- `E:\GPTProject2\ecg\docs\data_v1_figures\distribution_rbf_mmd.png`
-- `E:\GPTProject2\ecg\docs\data_v1_figures\distribution_sliced_wasserstein.png`
-- `E:\GPTProject2\ecg\docs\data_v1_figures\generated_gap_component_share.png`
-- `E:\GPTProject2\ecg\docs\data_v1_figures\original_but_class_counts.png`
-- `E:\GPTProject2\ecg\docs\data_v1_figures\split_class_counts.png`
-- `E:\GPTProject2\ecg\docs\data_v1_figures\train_candidate_type_composition.png`
+- `./docs/data_v1_figures/distribution_domain_auc.png`
+- `./docs/data_v1_figures/distribution_pca_overlap.png`
+- `./docs/data_v1_figures/distribution_rbf_mmd.png`
+- `./docs/data_v1_figures/distribution_sliced_wasserstein.png`
+- `./docs/data_v1_figures/generated_gap_component_share.png`
+- `./docs/data_v1_figures/original_but_class_counts.png`
+- `./docs/data_v1_figures/split_class_counts.png`
+- `./docs/data_v1_figures/train_candidate_type_composition.png`

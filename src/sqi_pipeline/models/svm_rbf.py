@@ -90,7 +90,7 @@ class SVMRBF:
             Grid search over (C, gamma) using PROVIDED validation set (Xva, yva).
             No random split; respects split_csv's 'val'.
 
-            Returns dict compatible with your existing callers.
+            Returns a dictionary compatible with the existing callers.
             """
             Xtr = np.asarray(Xtr, dtype=np.float64)
             ytr = np.asarray(ytr, dtype=int).ravel()
