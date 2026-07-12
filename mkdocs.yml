@@ -1,0 +1,37 @@
+site_name: ECG SQI Fusion
+site_url: https://Sanssssssssssssssss.github.io/ecg_sqi_fusion/
+repo_url: https://github.com/Sanssssssssssssssss/ecg_sqi_fusion
+repo_name: Sanssssssssssssssss/ecg_sqi_fusion
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.instant
+    - navigation.top
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Quick Start: quickstart.md
+  - Inference and Docker: inference.md
+  - Reproduction:
+      - Reproduction Guide: reproduction.md
+      - Data Availability: data_availability.md
+      - Code Architecture: code_architecture.md
+  - Research Notes:
+      - Gap-Fill Method: data_v1_gapfill_method.md
+      - Fit Report: data_v1_fit_report.md
+      - E31 Comparison: e31_wave_mechanism_conformer_comparison.md
+  - Supporting Library: wfdb_qrs_kit.md
+  - Tests and CI: tests_ci.md
+  - Submission:
+      - Report: report.md
+      - Executive Summary: executive_summary.md
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+

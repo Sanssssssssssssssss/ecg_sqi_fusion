@@ -10,6 +10,7 @@
 # ECG project outputs (VERY IMPORTANT)
 # ======================
 /outputs/
+/site/
 /artifacts/
 /artifact1/
 /models/

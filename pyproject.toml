@@ -28,6 +28,9 @@ dependencies = [
 test = [
     "pytest",
 ]
+docs = [
+    "mkdocs-material>=9.5,<10",
+]
 no-torch = [
     "numpy",
     "pandas",

@@ -6,4 +6,4 @@ declaration of autogeneration-tool use.
 
 Generated experiment reports remain under `outputs/`; this directory is only
 for the full report and final submission bundle. The executive summary is kept
-separately in `executive summary/`.
+separately in `Executive Summary/`.
