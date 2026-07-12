@@ -1,2 +1,6 @@
 pretrained/inference/manifest.json text eol=lf
 pretrained/inference/**/*.json text eol=lf
+reproduce/scripts/sh/*.sh text eol=lf
+reproduce/scripts/sh/**/*.sh text eol=lf
+docker/*/Dockerfile text eol=lf
+*.yml text eol=lf

@@ -8,7 +8,7 @@ Conformers on public 12-lead Set-A and single-lead Brno University of Technology
 
 ## Submission Documents
 
-- [`report/`](report/) contains the complete report and final submission material.
+- [`Report/`](Report/) contains the complete report and final submission material.
 - [`executive summary/`](executive%20summary/) contains the separate executive summary.
 
 Both directories currently contain placeholders; the final documents will be
@@ -44,6 +44,9 @@ For reproduction instructions, see [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md),
 [`docs/code_architecture.md`](docs/code_architecture.md) for commands, data,
 outputs, and experiment lineage. Generated artifacts belong under `outputs/`;
 the final report and executive summary remain separate.
+
+Fresh-clone targets and the reproduction Docker wrapper are documented in
+[`reproduce/README.md`](reproduce/README.md).
 
 ## Test
 

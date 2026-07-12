@@ -19,6 +19,8 @@ not source modules.
 | `src/ecg_sqi_inference/` | Inference-only CLI used by Docker |
 | `pretrained/` | Frozen checkpoints and inference bundles |
 | `docker/inference/` | CPU inference image and user instructions |
+| `docker/reproduce/` | Container wrapper for isolated reproduction targets |
+| `reproduce/` | Fresh-clone controller and expected-output audits |
 | `tests/` | Reproducibility, metric-contract, and inference tests |
 | `outputs/` | Generated or frozen evidence; not a Python package |
 

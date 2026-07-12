@@ -5,7 +5,8 @@
 data
 outputs
 tmp
-report
+Report
+executive summary
 *.pyc
 __pycache__
 ecg_sqi_fusion.egg-info

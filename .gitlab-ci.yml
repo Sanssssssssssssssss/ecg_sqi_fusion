@@ -1,0 +1,16 @@
+image: python:3.11-slim
+
+stages: [test]
+
+test:
+  stage: test
+  timeout: 30m
+  cache:
+    paths: [.cache/pip]
+  before_script:
+    - python -m pip install --index-url https://download.pytorch.org/whl/cpu torch
+    - python -m pip install -r req.txt pytest
+    - python -m pip install --no-deps -e .
+  script:
+    - python -m pytest -q
+    - python -m src.ecg_sqi_inference verify-bundles

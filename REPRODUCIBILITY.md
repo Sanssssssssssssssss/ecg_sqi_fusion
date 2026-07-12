@@ -54,22 +54,22 @@ val/test generated rows: 0
 candidate types: original_but, but_native_morph, ptb_morph, clean_style
 ```
 
-## External Full Reproduction
+## Full Reproduction
 
-Full report reproduction is intentionally orchestrated from a sibling
-workspace folder, not from a tracked `reproduce/` directory inside this repo:
+The tracked controller fresh-clones `main`, creates an isolated environment,
+runs one pipeline target, and audits its expected outputs:
 
 ```bash
-python ../reproduce/run_reproduce.py --target baseline-cinc2011
-python ../reproduce/run_reproduce.py --target baseline-but
-python ../reproduce/run_reproduce.py --target conformer-cinc2011
-python ../reproduce/run_reproduce.py --target conformer-but
-python ../reproduce/run_reproduce.py --target inference-service
+python reproduce/run_reproduce.py --target baseline-cinc2011
+python reproduce/run_reproduce.py --target baseline-but
+python reproduce/run_reproduce.py --target conformer-cinc2011
+python reproduce/run_reproduce.py --target conformer-but
+python reproduce/run_reproduce.py --target inference-service
 ```
 
-That external controller fresh-clones this repository, installs dependencies in
-an external virtual environment, and writes all generated data under
-`../reproduce/work/`.
+The controller writes all generated clones, environments, data, and logs under
+the ignored `reproduce/work/` directory. See `reproduce/README.md` for the
+Docker wrapper and local-data options.
 For paper SQI targets, set `WFDB_QRS_KIT_FROM_BIN_DIR` or the
 `WFDB_QRS_KIT_*_EXE` variables before launching the controller, unless the
 detectors are already on `PATH` or installed in the `wfdb-qrs-kit` cache.
@@ -83,7 +83,7 @@ outputs/sqi_supplemental/
 outputs/reports/
 ```
 
-Top-level `report/` is reserved for the final submitted PDF/materials.
+Top-level `Report/` is reserved for the final submitted PDF/materials.
 
 Supplemental targets are also split in the external controller as
 `sqi-supplemental` and `transformer-supplemental`.
