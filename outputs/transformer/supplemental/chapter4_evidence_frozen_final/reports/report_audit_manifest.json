@@ -1,7 +1,0 @@
-{
-  "status": "pass",
-  "failures": [],
-  "warnings": [],
-  "manifest_csv": "outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\tables\\report_audit_manifest.csv",
-  "row_count": 14
-}

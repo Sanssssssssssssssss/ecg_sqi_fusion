@@ -1,5 +1,0 @@
-construction,train_original_unacceptable_n,train_generated_unacceptable_n,train_generated_candidate_types,synthetic_source_contract,split_contract
-native_imbalanced,158,0,{},native_imbalanced,train-only generated; val/test original only
-fixed_synthetic,158,383,"{""paper_em"": 192, ""paper_ma"": 191}",paper -6 dB em/ma,train-only generated; val/test original only
-quota_draw,158,383,"{""noise_style"": 19, ""ptb12_morph"": 211, ""seta_native_morph"": 153}",quota_draw,train-only generated; val/test original only
-smc_gapfill,158,383,"{""noise_style"": 19, ""ptb12_morph"": 211, ""seta_native_morph"": 153}",current SMC-selected pool,train-only generated; val/test original only

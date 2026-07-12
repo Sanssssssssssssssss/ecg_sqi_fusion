@@ -1,4 +1,0 @@
-scope,status,rows,original_n,generated_n,generated_vs_original_domain_auc,symmetric_generated_vs_original_domain_auc,acc,ideal_pass
-medium,ok,9081,5000,4081,0.7098058582425273,0.7098058582425273,0.6857502359232464,False
-bad,ok,6656,1656,5000,0.7090418719211823,0.7090418719211823,0.6193133047210301,False
-pooled_medium_bad_class_balanced,ok,9156,4156,5000,0.705286205203731,0.705286205203731,0.653978159126365,False

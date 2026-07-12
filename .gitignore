@@ -19,6 +19,21 @@
 *.tiff
 *.tif
 
+# Regenerable experiment bundles. Only the four inference models and their
+# runtime profiles are kept in Git.
+/pretrained/chapter4/but_architecture_ablation/
+/pretrained/chapter4/but_query_patching/
+/pretrained/chapter4/README.md
+/pretrained/chapter4/manifest.json
+/pretrained/chapter4/wandb_runs_manifest.json
+/pretrained/chapter4/seta_e31_leadwise_shared/history.csv
+/pretrained/chapter4/seta_e31_leadwise_shared/metrics.json
+/pretrained/chapter4/seta_e31_leadwise_shared/predictions.csv
+/pretrained/chapter4/seta_e31_leadwise_shared/summary.md
+/pretrained/chapter4/but_e31_query_mean_fused_conformer/test_predictions.npz
+/pretrained/chapter4/but_e31_query_mean_fused_conformer/train_log.csv
+/pretrained/chapter4/but_e31_query_mean_fused_conformer/val_predictions.npz
+
 # Generated experiment reports. Keep curated writeups/figures in docs/.
 /reports/external_benchmarks/e311_but_node_ladder_tuning_10s_2026_06_08/analysis/good_medium_geometry_repair/
 /reports/v116_native_budget_repair_clipped/

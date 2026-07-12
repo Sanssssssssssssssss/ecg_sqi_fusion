@@ -11,10 +11,9 @@ The pipelines download public WFDB data into `data/` when required:
 | PTB-XL | Clean ECG carriers for gap-fill proposals. |
 | BUT QDB | Official single-lead Transformer v116 experiment. |
 
-Generated arrays, checkpoints, and local raw data stay outside version control.
-Curated Chapter 4 evidence under
-`outputs/transformer/supplemental/chapter4_evidence_frozen_final/` is tracked as
-release evidence. Public-data rebuilds can validate the pipeline, but exact
-frozen v116 support-pool replay requires the archived support assets used when
-that evidence was frozen; otherwise the clean-smoke report marks
-`historical_support_exact=false`.
+Generated arrays, tables, figures, predictions, and local raw data stay outside
+version control and are recreated under `outputs/`. Only the four inference
+model artifacts and their runtime profiles are tracked. Public-data rebuilds
+can validate the pipeline, but exact frozen v116 support-pool replay requires
+the archived support assets used when that evidence was frozen; otherwise the
+clean-smoke report marks `historical_support_exact=false`.

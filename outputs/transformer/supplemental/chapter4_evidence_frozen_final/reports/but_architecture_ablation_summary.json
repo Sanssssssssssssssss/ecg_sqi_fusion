@@ -1,9 +1,0 @@
-{
-  "seeds": [
-    20260876,
-    20260877,
-    20260878
-  ],
-  "verdict": "partial support: the full Conformer is best and pooled-H is clearly worse, but no-hires is only modestly worse",
-  "figure": "outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M7_but_architecture_ablation.png"
-}

@@ -1,8 +1,0 @@
-{
-  "rescue_pairs": 123,
-  "self_patch_max_logit_error": 0.0,
-  "verdict": "supports the high-resolution query-fusion path, but not a uniquely top-local transplant effect",
-  "top_local_beats_controls": false,
-  "path_ablation_support": true,
-  "figure": "outputs\\transformer\\supplemental\\chapter4_evidence_frozen_final\\figures\\fig_M6_but_time_local_latent_transplant.png"
-}

@@ -22,7 +22,7 @@ not source modules.
 | `docker/reproduce/` | Container wrapper for isolated reproduction targets |
 | `reproduce/` | Fresh-clone controller and expected-output audits |
 | `tests/` | Reproducibility, metric-contract, and inference tests |
-| `outputs/` | Generated or frozen evidence; not a Python package |
+| `outputs/` | Generated evidence; ignored by Git and not a Python package |
 
 ## Main entry points
 
@@ -110,11 +110,10 @@ are not part of the public workflow.
 
 ## Frozen and generated files
 
-- `pretrained/` contains model inputs required for inference or documented
-  evaluation.
-- `outputs/.../chapter4_evidence_frozen_final/` contains selected evidence
-  referenced by the report.
-- `data/`, `tmp/`, normal generated `outputs/`, caches, logs, and virtual
+- `pretrained/` contains only the four model artifacts and runtime profiles
+  required for inference.
+- `outputs/` contains regenerable experiment evidence and is not submitted.
+- `data/`, `tmp/`, generated `outputs/`, caches, logs, and virtual
   environments are excluded from commits.
 - Do not stage ignored replacement outputs with `git add -f` unless the report
   explicitly references them.
