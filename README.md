@@ -45,11 +45,12 @@ For reproduction instructions, see [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md),
 outputs, and experiment lineage. Generated artifacts belong under `outputs/`;
 the final report and executive summary remain separate.
 
-For tests:
+## Test
 
 ```bash
 pip install -e ".[test]"
 python -m pytest -q
+python -m src.ecg_sqi_inference verify-bundles
 ```
 
 ## AI Tool Use
