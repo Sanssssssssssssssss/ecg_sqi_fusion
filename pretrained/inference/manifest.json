@@ -17,14 +17,14 @@
     "12lead-rbfsvm": {
       "profile": "pretrained/inference/12lead-rbfsvm/profile.json",
       "artifacts": {
-        "pretrained/inference/12lead-rbfsvm/profile.json": "ea7796c438c6ec1b8052ade6e29f25690a6c9cb1b61262dccd437354575b4d22",
+        "pretrained/inference/12lead-rbfsvm/profile.json": "709d8c492a424fbab52842d2cf9411a59f927bd22c3126a54578bdf4b4214602",
         "pretrained/inference/12lead-rbfsvm/model.joblib": "3d739eac5d378d08c0a47e913979a5f127618fe6a0a868a3095d2cb6a69031c2"
       }
     },
     "singlelead-rbfsvm": {
       "profile": "pretrained/inference/singlelead-rbfsvm/profile.json",
       "artifacts": {
-        "pretrained/inference/singlelead-rbfsvm/profile.json": "384a76fe013c6ebe831a0d87de7445ab59e3f756d15ce9e5cd833266cf874b44",
+        "pretrained/inference/singlelead-rbfsvm/profile.json": "e66303df6ff36bea09bb4ba963caac212111f7b98d8d69c7752e3dc54c4d9ec6",
         "pretrained/inference/singlelead-rbfsvm/model.joblib": "906ed289c203cf6fab9f85ec4eee0f99f8d07d5f65b8f05e3aa9fc38b1f6e7ee"
       }
     }
