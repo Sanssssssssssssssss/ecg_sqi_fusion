@@ -1,0 +1,86 @@
+:root {
+  --ecg-blue: #0f62fe;
+  --ecg-ink: #161616;
+  --ecg-muted: #525252;
+  --ecg-surface: #f4f4f4;
+  --ecg-hairline: #e0e0e0;
+  --md-primary-fg-color: var(--ecg-blue);
+  --md-accent-fg-color: #0043ce;
+  --md-typeset-a-color: #0043ce;
+}
+
+body,
+.md-typeset {
+  color: var(--ecg-ink);
+  letter-spacing: 0.01rem;
+}
+
+.md-grid {
+  max-width: 88rem;
+}
+
+.md-content__inner {
+  max-width: 58rem;
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3 {
+  color: var(--ecg-ink);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.md-typeset h1 {
+  font-weight: 300;
+}
+
+.md-typeset table:not([class]) {
+  border: 1px solid var(--ecg-hairline);
+  box-shadow: none;
+}
+
+.md-typeset table:not([class]) th {
+  background: var(--ecg-surface);
+  color: var(--ecg-ink);
+}
+
+.md-typeset code,
+.md-typeset pre {
+  border-radius: 0;
+}
+
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.md-typeset figure {
+  margin: 2rem auto;
+}
+
+.md-typeset figcaption {
+  color: var(--ecg-muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  max-width: 46rem;
+}
+
+.evidence-table td:first-child,
+.model-table td:first-child {
+  font-weight: 600;
+}
+
+.archive-note {
+  border-left: 3px solid var(--ecg-blue);
+  background: var(--ecg-surface);
+  padding: 0.8rem 1rem;
+}
+
+@media screen and (max-width: 44.99em) {
+  .md-typeset table:not([class]) {
+    display: block;
+    overflow-x: auto;
+  }
+}

@@ -89,6 +89,11 @@ def read_record(path: Path) -> InputRecord:
 
     Raises:
         ValueError: If the format or signal shape is unsupported.
+
+    Example:
+        >>> record = read_record(Path("record.npy"))
+        >>> record.signal.ndim in {1, 2}
+        True
     """
 
     suffix = path.suffix.lower()
@@ -121,6 +126,11 @@ def iter_input_files(path: Path) -> list[Path]:
 
     Raises:
         FileNotFoundError: If the input path does not exist.
+
+    Example:
+        >>> files = iter_input_files(Path("input-records"))
+        >>> files == sorted(files)
+        True
     """
 
     if path.is_file():
@@ -143,6 +153,10 @@ def as_samples_by_lead(signal: np.ndarray, n_leads: int) -> np.ndarray:
 
     Raises:
         ValueError: If the signal cannot satisfy the requested lead count.
+
+    Example:
+        >>> as_samples_by_lead(np.zeros((12, 1250)), 12).shape
+        (1250, 12)
     """
 
     arr = np.asarray(signal, dtype=np.float32)
@@ -178,6 +192,10 @@ def resample_signal(signal: np.ndarray, fs: float, target_fs: int = MODEL_FS) ->
 
     Raises:
         ValueError: If the source frequency is not positive.
+
+    Example:
+        >>> resample_signal(np.zeros((5000, 1)), 500).shape
+        (1250, 1)
     """
 
     if fs <= 0:
@@ -196,6 +214,11 @@ def segment_signal(signal: np.ndarray) -> tuple[np.ndarray, float]:
 
     Returns:
         Segment batch and discarded tail duration in seconds.
+
+    Example:
+        >>> segments, dropped = segment_signal(np.zeros((1300, 1)))
+        >>> (segments.shape, dropped)
+        ((1, 1250, 1), 0.4)
     """
 
     n = int(signal.shape[0] // WINDOW_SAMPLES)
@@ -228,6 +251,15 @@ def predict_records(
         SystemExit: If one or more records fail; outputs and a failure summary
             are still written for reproducibility.
         ValueError: If recursive inputs contain duplicate record identifiers.
+
+    Example:
+        >>> from src.ecg_sqi_inference.models import get_predictor
+        >>> summary = predict_records(
+        ...     input_path=Path("record.npy"),
+        ...     out_dir=Path("predictions"),
+        ...     fs=125,
+        ...     predictor=get_predictor("singlelead-rbfsvm"),
+        ... )
     """
 
     out_dir.mkdir(parents=True, exist_ok=True)

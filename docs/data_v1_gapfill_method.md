@@ -1,5 +1,7 @@
 # Data v1 Gap-Fill Method
 
+<div class="archive-note"><strong>Archive.</strong> This page documents the historical v116 construction path. Use the current Methods and Reproduction pages for supported claims and commands.</div>
+
 > Archive note: this is the frozen v116 method note. The current compact
 > reproduction commands live in `README.md` and `REPRODUCIBILITY.md`.
 > Public-data rebuilds are smoke checks unless the support-pool audit reports

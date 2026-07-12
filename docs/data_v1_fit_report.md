@@ -1,5 +1,7 @@
 # Data v1 Fit Report
 
+<div class="archive-note"><strong>Archive.</strong> This page records an earlier frozen experiment snapshot. The final report and current Findings page are authoritative.</div>
+
 > Archive note: this is a frozen fit-report snapshot kept for audit context.
 > Current runnable outputs are under `outputs/transformer/` and Chapter 4
 > evidence outputs are under `outputs/transformer/supplemental/`.

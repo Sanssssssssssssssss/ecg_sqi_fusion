@@ -1,5 +1,7 @@
 # E31 Wave-Mechanism Conformer Comparison
 
+<div class="archive-note"><strong>Archive.</strong> This checkpoint-level note is retained for provenance. The final report and current Findings page are authoritative.</div>
+
 > Archive note: this comparison is a frozen checkpoint-level snapshot. The
 > current official pipeline command and data contract live in `README.md`;
 > generated Chapter 4 evidence tables live under

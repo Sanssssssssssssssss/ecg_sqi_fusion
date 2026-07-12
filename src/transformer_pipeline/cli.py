@@ -15,6 +15,12 @@ from src.transformer_pipeline.data_v1_gapfill import audit, build, plot, report,
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse the guarded v116/E31 Transformer command line.
+
+    Returns:
+        Parsed global configuration and one required subcommand.
+    """
+
     parser = argparse.ArgumentParser(description="Run the v116/E31 Transformer SQI pipeline.")
     parser.add_argument("--artifacts-dir", default="outputs/transformer/v116_e31")
     parser.add_argument("--seed", type=int, default=20260876)
@@ -49,6 +55,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    """Dispatch one audit, construction, training, plotting, or report action."""
+
     args = parse_args()
     logging.basicConfig(
         level=logging.DEBUG if args.verbose else logging.INFO,

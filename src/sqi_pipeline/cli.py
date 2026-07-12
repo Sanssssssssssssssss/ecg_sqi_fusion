@@ -16,6 +16,12 @@ from src.utils.data_downloads import ensure_sqi_raw_data
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command-line options for the classical SQI pipeline.
+
+    Returns:
+        Parsed profile, output, seed, stage-selection, and logging options.
+    """
+
     parser = argparse.ArgumentParser(description="Run the classical ECG SQI pipeline.")
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--fresh", action="store_true", help="delete generated SQI artifacts and rerun")
@@ -28,6 +34,12 @@ def parse_args() -> argparse.Namespace:
 
 
 def setup_logging(verbose: bool) -> None:
+    """Configure line-buffered project logging.
+
+    Args:
+        verbose: Use debug level when true, otherwise information level.
+    """
+
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(line_buffering=True)
     logging.basicConfig(
@@ -46,6 +58,8 @@ def setup_logging(verbose: bool) -> None:
 
 
 def main() -> None:
+    """Resolve data and configuration, execute stages, and print a summary."""
+
     args = parse_args()
     setup_logging(args.verbose)
     artifacts_dir = args.artifacts_dir

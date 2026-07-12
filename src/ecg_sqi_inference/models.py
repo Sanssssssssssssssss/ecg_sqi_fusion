@@ -22,7 +22,18 @@ MODEL_NAMES = ("12lead-conformer", "singlelead-conformer", "12lead-rbfsvm", "sin
 
 @dataclass
 class Conformer12Predictor:
-    """Load and run the frozen 12-lead Conformer checkpoint."""
+    """Load and run the frozen 12-lead Conformer checkpoint.
+
+    Attributes:
+        ckpt_dir: Directory containing ``best_model.pt``.
+        device: Requested Torch device, ``cpu`` or ``cuda``.
+        name: Stable public model identifier.
+        n_leads: Required ECG lead count.
+
+    Raises:
+        FileNotFoundError: If the checkpoint is absent.
+        ValueError: If normalization metadata are absent or incompatible.
+    """
 
     ckpt_dir: Path
     device: str = "cpu"
@@ -61,10 +72,15 @@ class Conformer12Predictor:
         """Classify 12-lead ECG segments with the Conformer.
 
         Args:
-            segments: Float-compatible array shaped batch, 1250, 12.
+            segments: Float-compatible array shaped ``(batch, 1250, 12)``.
 
         Returns:
             Class labels and binary probabilities for each segment.
+
+        Example:
+            >>> output = predictor.predict(np.zeros((1, 1250, 12), dtype=np.float32))
+            >>> output.shape[0]
+            1
         """
 
         x = ((segments.astype(np.float32) - self._mean) / self._std).transpose(0, 2, 1)
@@ -84,7 +100,18 @@ class Conformer12Predictor:
 
 @dataclass
 class Conformer1Predictor:
-    """Load and run the current single-lead BUT three-class Conformer."""
+    """Load and run the frozen single-lead BUT Conformer.
+
+    Attributes:
+        bundle_dir: Directory containing the runtime profile.
+        device: Requested Torch device, ``cpu`` or ``cuda``.
+        name: Stable public model identifier.
+        n_leads: Required ECG lead count.
+
+    Raises:
+        FileNotFoundError: If the profile or referenced checkpoint is absent.
+        ValueError: If the checkpoint state is incompatible with the model.
+    """
 
     bundle_dir: Path
     device: str = "cpu"
@@ -131,10 +158,15 @@ class Conformer1Predictor:
         """Classify single-lead ECG segments as good, medium, or bad.
 
         Args:
-            segments: Float-compatible array shaped batch, 1250, 1.
+            segments: Float-compatible array shaped ``(batch, 1250, 1)``.
 
         Returns:
             Class labels and three-class probabilities for each segment.
+
+        Example:
+            >>> output = predictor.predict(np.zeros((1, 1250, 1), dtype=np.float32))
+            >>> output.shape[0]
+            1
         """
 
         raw = np.asarray(segments, dtype=np.float32)[:, :, 0]
@@ -157,7 +189,17 @@ class Conformer1Predictor:
 
 @dataclass
 class RBFSVMBundlePredictor:
-    """Run a packaged binary or three-class RBF-SVM."""
+    """Run a packaged binary or three-class RBF-SVM.
+
+    Attributes:
+        bundle_dir: Directory containing ``profile.json`` and ``model.joblib``.
+        name: Stable public model identifier.
+        n_leads: Required ECG lead count.
+
+    Raises:
+        FileNotFoundError: If a bundle file is absent.
+        ValueError: If the serialized estimator is incompatible with its profile.
+    """
 
     bundle_dir: Path
     name: str
@@ -172,6 +214,23 @@ class RBFSVMBundlePredictor:
         self._model = joblib.load(self.bundle_dir / "model.joblib")["estimator"]
 
     def predict(self, segments: np.ndarray) -> pd.DataFrame:
+        """Classify ECG segments using profile-compatible SQI features.
+
+        Args:
+            segments: Float-compatible array shaped ``(batch, 1250, n_leads)``.
+
+        Returns:
+            One class label and probability row per segment.
+
+        Raises:
+            RuntimeError: If required 12-lead QRS executables are unavailable.
+
+        Example:
+            >>> output = predictor.predict(np.zeros((1, 1250, predictor.n_leads)))
+            >>> output.shape[0]
+            1
+        """
+
         features = feature_frame(segments, self.n_leads, self._profile)
         probability = self._model.predict_proba(features[self._feature_columns].to_numpy(dtype=np.float64))
         if self._classes == ["unacceptable", "acceptable"]:
@@ -208,6 +267,11 @@ def get_predictor(model: str, *, device: str = "cpu") -> Any:
     Raises:
         ValueError: If the model identifier is unknown.
         FileNotFoundError: If a required checkpoint or bundle file is absent.
+
+    Example:
+        >>> predictor = get_predictor("singlelead-rbfsvm")
+        >>> (predictor.name, predictor.n_leads)
+        ('singlelead-rbfsvm', 1)
     """
 
     root = project_root()
@@ -231,6 +295,10 @@ def verify_inference_bundles() -> dict[str, Any]:
     Raises:
         FileNotFoundError: If the manifest, profile, or model artifact is absent.
         ValueError: If an artifact hash does not match the manifest.
+
+    Example:
+        >>> verify_inference_bundles()["status"]
+        'ok'
     """
 
     root = project_root()
@@ -280,6 +348,10 @@ def feature_frame(segments: np.ndarray, n_leads: int, profile: dict[str, Any]) -
 
     Raises:
         RuntimeError: If required 12-lead QRS executables are unavailable.
+
+    Example:
+        ``feature_frame`` is normally called by ``RBFSVMBundlePredictor`` so
+        that the bundle profile, feature order, and normalization stay aligned.
     """
 
     if n_leads == 1:
@@ -322,6 +394,10 @@ def export_inference_bundles(out_dir: Path | None = None) -> dict[str, str]:
     Returns:
         Mapping of exported model names to bundle directories; models whose
         source artifacts are absent are omitted.
+
+    Note:
+        This is a maintainer utility. End users should consume the frozen
+        bundles already listed in ``pretrained/inference/manifest.json``.
     """
 
     root = project_root()

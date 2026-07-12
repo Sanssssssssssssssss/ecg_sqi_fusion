@@ -17,6 +17,14 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class StepSpec:
+    """Import contract for one ordered classical pipeline stage.
+
+    Attributes:
+        name: Stable stage name accepted by the CLI ``--only`` option.
+        module: Import path containing the stage callable.
+        func: Callable name; stages use ``run`` by default.
+    """
+
     name: str
     module: str
     func: str = "run"
@@ -49,6 +57,18 @@ PAPER_ALIGNED_STEPS: tuple[StepSpec, ...] = (
 
 
 def steps_for_profile(profile: str) -> tuple[StepSpec, ...]:
+    """Return the ordered stage contract for a classical pipeline profile.
+
+    Args:
+        profile: ``baseline`` or ``paper_aligned``.
+
+    Returns:
+        Immutable ordered stage specifications.
+
+    Raises:
+        ValueError: If the profile is unknown.
+    """
+
     if profile == "baseline":
         return BASELINE_STEPS
     if profile == "paper_aligned":
@@ -247,6 +267,26 @@ def step_params(cfg: SQIPipelineConfig, step_name: str) -> dict[str, Any]:
 
 
 def run_pipeline(cfg: SQIPipelineConfig, *, only: list[str] | None = None) -> dict[str, Any]:
+    """Execute selected stages and collect a portable run summary.
+
+    Args:
+        cfg: Resolved classical pipeline configuration.
+        only: Optional stage-name subset. Omitted dependencies must already
+            exist below ``cfg.artifacts_dir``.
+
+    Returns:
+        Summary containing profile metadata, stage outputs, reuse state, and
+        duration. Output paths are repository-relative where possible.
+
+    Raises:
+        ValueError: If a requested stage is not part of the selected profile.
+        TypeError: If a stage violates the required dictionary return contract.
+
+    Example:
+        >>> cfg = SQIPipelineConfig.build(profile="baseline")
+        >>> summary = run_pipeline(cfg, only=["manifest_raw"])
+    """
+
     steps = steps_for_profile(cfg.profile)
     step_names = tuple(spec.name for spec in steps)
     allowed = set(only) if only else None
