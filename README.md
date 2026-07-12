@@ -9,7 +9,7 @@ Conformers on public 12-lead Set-A and single-lead Brno University of Technology
 ## Submission Documents
 
 - [`Report/`](Report/) contains the complete report and final submission material.
-- [`Executive Summary/`](Executive%20Summary/) contains the separate executive summary.
+- [`executive summary/`](executive%20summary/) contains the separate executive summary.
 
 The complete project documentation is published as a static site at
 <https://Sanssssssssssssssss.github.io/ecg_sqi_fusion/>. It includes quick

@@ -1,9 +1,8 @@
 # Report
 
-Place the final report PDF here before submission. It must be no more than
-7,000 words, show its word count on the front cover, and include the required
-declaration of autogeneration-tool use.
+The final report is [`Report.pdf`](Report.pdf). It declares 6,737 words on the
+front cover and includes the required declaration of autogeneration-tool use.
 
 Generated experiment reports remain under `outputs/`; this directory is only
 for the full report and final submission bundle. The executive summary is kept
-separately in `Executive Summary/`.
+separately in `executive summary/`.

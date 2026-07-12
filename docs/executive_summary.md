@@ -1,8 +1,7 @@
 # Executive Summary
 
 The separate executive summary belongs in
-[`Executive Summary/`](https://github.com/Sanssssssssssssssss/ecg_sqi_fusion/tree/main/Executive%20Summary).
+[`executive summary/`](https://github.com/Sanssssssssssssssss/ecg_sqi_fusion/tree/main/executive%20summary).
 
-The final PDF will be added before submission and must be no more than 1,000
-words.
-
+The final [`Executive_Summary.pdf`](https://github.com/Sanssssssssssssssss/ecg_sqi_fusion/blob/main/executive%20summary/Executive_Summary.pdf)
+is below the 1,000-word limit.
